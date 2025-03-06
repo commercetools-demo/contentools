@@ -16,7 +16,16 @@
   "dependencies": {
     "@commercetools/platform-sdk": "^4.0.0",
     "@commercetools/sdk-client-v2": "^2.0.0",
-    "dotenv": "^16.0.3"
+    "@reduxjs/toolkit": "^2.6.0",
+    "@types/sortablejs": "^1.15.8",
+    "@types/uuid": "^10.0.0",
+    "dotenv": "^16.0.3",
+    "lit": "^3.2.1",
+    "lit-redux-watch": "^0.3.8",
+    "redux": "^5.0.1",
+    "redux-thunk": "^3.1.0",
+    "sortablejs": "^1.15.6",
+    "uuid": "^11.1.0"
   },
   "packageManager": "yarn@1.22.22"
 }
