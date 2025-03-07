@@ -1,6 +1,6 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import { connect } from 'lit-redux-watch';
+import { connect, watch } from 'lit-redux-watch';
 import { store } from '../store';
 import { RootState, Component, Page } from '../types';
 import { fetchPages, updatePage } from '../store/pages.slice';
@@ -14,40 +14,30 @@ import './property-editor';
 
 @customElement('cms-app')
 export class CmsApp extends connect(store)(LitElement) {
-  static get stateProps() {
-    return {
-      pages: (state: RootState) => state.pages.pages,
-      currentPage: (state: RootState) => state.pages.currentPage,
-      loading: (state: RootState) => state.pages.loading,
-      error: (state: RootState) => state.pages.error,
-      unsavedChanges: (state: RootState) => state.pages.unsavedChanges,
-      selectedComponentId: (state: RootState) => state.editor.selectedComponentId,
-      showSidebar: (state: RootState) => state.editor.showSidebar,
-    };
-  }
+  
 
   @property({ type: String })
   baseURL: string = '';
 
-  @property({ type: Array })
+  @watch('pages.pages')
   pages: Page[] = [];
 
-  @property({ type: Object })
+  @watch('pages.currentPage')
   currentPage: Page | null = null;
 
-  @property({ type: Boolean })
+  @watch('pages.loading')
   loading = false;
 
-  @property({ type: String })
+  @watch('pages.error')
   error: string | null = null;
 
-  @property({ type: Boolean })
+  @watch('pages.unsavedChanges')
   unsavedChanges = false;
 
-  @property({ type: String })
+  @watch('editor.selectedComponentId')
   selectedComponentId: string | null = null;
 
-  @property({ type: Boolean })
+  @watch('editor.showSidebar')
   showSidebar = true;
     
   @state()
