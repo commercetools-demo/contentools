@@ -7,6 +7,9 @@ import { setCurrentPage, deletePage } from '../store/pages.slice';
 
 @customElement('cms-page-list')
 export class PageList extends connect(store)(LitElement) {
+  @property({ type: String })
+  baseURL: string = '';
+
   @property({ type: Array })
   pages: Page[] = [];
 
@@ -244,7 +247,7 @@ export class PageList extends connect(store)(LitElement) {
 
   private async _handleConfirmDelete(key: string) {
     try {
-      await store.dispatch(deletePage(key)).unwrap();
+      await store.dispatch(deletePage({baseUrl: this.baseURL, key})).unwrap();
       this.showDeleteConfirm = null;
       
       if (this.selectedPageKey === key) {

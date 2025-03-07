@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit';
-import { customElement } from 'lit/decorators.js';
+import { customElement, property } from 'lit/decorators.js';
 import { store } from './store';
 import { connect } from 'lit-redux-watch';
 import './components/cms-app';
@@ -7,14 +7,8 @@ import './styles/cms.css';
 
 @customElement('layout-cms')
 export class LayoutCMS extends connect(store)(LitElement) {
-  static properties = {
-    baseURL: { type: String }
-  };
-  
-  constructor() {
-    super();
-    this.baseURL = '/service';
-  }
+  @property({ type: String, attribute: 'baseurl' })
+  baseURL = '/service'; 
 
   static styles = css`
     :host {

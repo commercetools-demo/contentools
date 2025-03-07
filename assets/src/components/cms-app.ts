@@ -49,7 +49,7 @@ export class CmsApp extends connect(store)(LitElement) {
 
   @property({ type: Boolean })
   showSidebar = true;
-
+    
   @state()
   private view: 'list' | 'editor' | 'new' = 'list';
 
@@ -229,7 +229,7 @@ export class CmsApp extends connect(store)(LitElement) {
 
   connectedCallback() {
     super.connectedCallback();
-    store.dispatch(fetchPages());
+    store.dispatch(fetchPages(this.baseURL));
   }
 
   render() {
@@ -314,6 +314,7 @@ export class CmsApp extends connect(store)(LitElement) {
           <cms-page-list 
             .pages=${this.pages}
             .selectedPageKey=${this.currentPage?.key || null}
+            .baseURL=${this.baseURL}
             @create-page=${() => this._setView('new')}
             @select-page=${() => this._setView('editor')}
           ></cms-page-list>
@@ -340,6 +341,7 @@ export class CmsApp extends connect(store)(LitElement) {
           <a class="cms-back" @click=${() => this._setView('list')}>← Back to Pages</a>
           
           <cms-page-form
+            .baseURL=${this.baseURL}
             @page-created=${() => this._setView('editor')}
           ></cms-page-form>
         `;
@@ -360,6 +362,7 @@ export class CmsApp extends connect(store)(LitElement) {
           <cms-property-editor
             .component=${component}
             @component-updated=${this._handleComponentUpdated}
+            .baseURL=${this.baseURL}
           ></cms-property-editor>
         `;
       }
@@ -398,7 +401,7 @@ export class CmsApp extends connect(store)(LitElement) {
   private async _handleSaveChanges() {
     if (this.currentPage) {
       try {
-        await store.dispatch(updatePage(this.currentPage)).unwrap();
+        await store.dispatch(updatePage({baseUrl: this.baseURL, page: this.currentPage})).unwrap();
       } catch (error) {
         console.error('Failed to save changes:', error);
       }
@@ -406,6 +409,6 @@ export class CmsApp extends connect(store)(LitElement) {
   }
 
   private _handleDiscardChanges() {
-    store.dispatch(fetchPages());
+    store.dispatch(fetchPages(this.baseURL));
   }
 }

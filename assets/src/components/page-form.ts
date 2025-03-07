@@ -10,6 +10,9 @@ export class PageForm extends connect(store)(LitElement) {
   @property({ type: Boolean })
   isEdit = false;
 
+  @property({ type: String })
+  baseURL: string = '';
+
   @property({ type: Object })
   page?: Page;
 
@@ -174,7 +177,7 @@ export class PageForm extends connect(store)(LitElement) {
           route: this.formData.route,
         };
         
-        await store.dispatch(updatePage(updatedPage)).unwrap();
+        await store.dispatch(updatePage({baseUrl: this.baseURL, page: updatedPage})).unwrap();
         
         // Dispatch event to notify parent
         this.dispatchEvent(new CustomEvent('page-updated', {
@@ -191,7 +194,7 @@ export class PageForm extends connect(store)(LitElement) {
         
         // Save to API
         if (store.getState().pages.currentPage) {
-          await store.dispatch(createPage(store.getState().pages.currentPage)).unwrap();
+          await store.dispatch(createPage({baseUrl: this.baseURL, page: store.getState().pages.currentPage as Page})).unwrap();
         }
         
         // Dispatch event to notify parent

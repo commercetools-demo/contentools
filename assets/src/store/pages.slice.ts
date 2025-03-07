@@ -6,11 +6,9 @@ import { debounce } from '../utils/debounce';
 const LOCAL_STORAGE_KEY = 'cms_pages';
 const DEBOUNCE_DELAY = 1000;
 
-// API functions
-const API_BASE_URL = '/service';
 
-const fetchPagesApi = async (): Promise<Page[]> => {
-  const response = await fetch(`${API_BASE_URL}/custom-objects`);
+const fetchPagesApi = async (baseUrl: string): Promise<Page[]> => {
+  const response = await fetch(`${baseUrl}/custom-objects`);
   if (!response.ok) {
     throw new Error('Failed to fetch pages');
   }
@@ -18,8 +16,8 @@ const fetchPagesApi = async (): Promise<Page[]> => {
   return data.map(item => item.value);
 };
 
-const fetchPageApi = async (key: string): Promise<Page> => {
-  const response = await fetch(`${API_BASE_URL}/custom-objects/${key}`);
+const fetchPageApi = async (baseUrl: string, key: string): Promise<Page> => {
+  const response = await fetch(`${baseUrl}/custom-objects/${key}`);
   if (!response.ok) {
     throw new Error(`Failed to fetch page with key: ${key}`);
   }
@@ -27,8 +25,8 @@ const fetchPageApi = async (key: string): Promise<Page> => {
   return data.value;
 };
 
-const createPageApi = async (page: Page): Promise<Page> => {
-  const response = await fetch(`${API_BASE_URL}/custom-objects/${page.key}`, {
+const createPageApi = async (baseUrl: string, page: Page): Promise<Page> => {
+  const response = await fetch(`${baseUrl}/custom-objects/${page.key}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -42,8 +40,8 @@ const createPageApi = async (page: Page): Promise<Page> => {
   return data.value;
 };
 
-const updatePageApi = async (page: Page): Promise<Page> => {
-  const response = await fetch(`${API_BASE_URL}/custom-objects/${page.key}`, {
+const updatePageApi = async (baseUrl: string, page: Page): Promise<Page> => {
+  const response = await fetch(`${baseUrl}/custom-objects/${page.key}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -57,8 +55,8 @@ const updatePageApi = async (page: Page): Promise<Page> => {
   return data.value;
 };
 
-const deletePageApi = async (key: string): Promise<void> => {
-  const response = await fetch(`${API_BASE_URL}/custom-objects/${key}`, {
+const deletePageApi = async (baseUrl: string, key: string): Promise<void> => {
+  const response = await fetch(`${baseUrl}/custom-objects/${key}`, {
     method: 'DELETE',
   });
   if (!response.ok) {
@@ -76,7 +74,7 @@ const saveToSessionStorage = debounce((pages: Page[]) => {
 }, DEBOUNCE_DELAY);
 
 // Thunks
-export const fetchPages = createAsyncThunk('pages/fetchPages', async () => {
+export const fetchPages = createAsyncThunk('pages/fetchPages', async (baseUrl: string) => {
   try {
     // First try to get from session storage
     const storedPages = sessionStorage.getItem(LOCAL_STORAGE_KEY);
@@ -85,7 +83,7 @@ export const fetchPages = createAsyncThunk('pages/fetchPages', async () => {
     }
     
     // If not in session storage, fetch from API
-    const pages = await fetchPagesApi();
+    const pages = await fetchPagesApi(baseUrl);
     return pages;
   } catch (error) {
     // If API fails, fallback to empty array
@@ -93,20 +91,20 @@ export const fetchPages = createAsyncThunk('pages/fetchPages', async () => {
   }
 });
 
-export const fetchPage = createAsyncThunk('pages/fetchPage', async (key: string) => {
-  return await fetchPageApi(key);
+export const fetchPage = createAsyncThunk('pages/fetchPage', async ({baseUrl, key}: {baseUrl: string, key: string}) => {
+  return await fetchPageApi(baseUrl, key);
 });
 
-export const createPage = createAsyncThunk('pages/createPage', async (page: Page) => {
-  return await createPageApi(page);
+export const createPage = createAsyncThunk('pages/createPage', async ({baseUrl, page}: {baseUrl: string, page: Page}) => {
+  return await createPageApi(baseUrl, page);
 });
 
-export const updatePage = createAsyncThunk('pages/updatePage', async (page: Page) => {
-  return await updatePageApi(page);
+export const updatePage = createAsyncThunk('pages/updatePage', async ({baseUrl, page}: {baseUrl: string, page: Page}) => {
+  return await updatePageApi(baseUrl, page);
 });
 
-export const deletePage = createAsyncThunk('pages/deletePage', async (key: string) => {
-  await deletePageApi(key);
+export const deletePage = createAsyncThunk('pages/deletePage', async ({baseUrl, key}: {baseUrl: string, key: string}) => {
+    await deletePageApi(baseUrl, key);
   return key;
 });
 
