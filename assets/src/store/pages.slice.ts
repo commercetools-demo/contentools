@@ -67,7 +67,9 @@ const deletePageApi = async (baseUrl: string, key: string): Promise<void> => {
 // Create a debounced session storage save function
 const saveToSessionStorage = debounce((pages: Page[]) => {
   try {
-    sessionStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(pages));
+    // Create a deep clone of the pages to avoid proxy issues
+    const safePages = JSON.parse(JSON.stringify({ pages })).pages;
+    sessionStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(safePages));
   } catch (error) {
     console.error('Error saving to session storage:', error);
   }
