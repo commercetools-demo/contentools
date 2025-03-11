@@ -7,7 +7,6 @@ import { addRow, removeRow, updateCellSpan, moveComponent } from '../store/pages
 import { selectComponent } from '../store/editor.slice';
 import { renderComponentPreview } from './templates';
 import { createComponent, ComponentType } from './registry';
-import { initComponentDragDrop } from '../utils/drag-drop';
 import Sortable from 'sortablejs';
 
 @customElement('cms-layout-grid')
@@ -20,6 +19,9 @@ export class LayoutGrid extends connect(store)(LitElement) {
 
   @property({ type: Object })
   selectedCell: { rowId: string, cellId: string } | null = null;
+  
+  @property({ type: String })
+  activeComponentType: ComponentType | null = null;
 
   @state()
   private _sortableInstances: Sortable[] = [];
@@ -162,6 +164,12 @@ export class LayoutGrid extends connect(store)(LitElement) {
     .sortable-chosen {
       outline: 2px dashed #3498db;
     }
+    
+    .grid-cell.drag-over {
+      border-color: #3498db;
+      box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.5);
+      background-color: rgba(52, 152, 219, 0.1);
+    }
   `;
 
   disconnectedCallback() {
@@ -169,8 +177,21 @@ export class LayoutGrid extends connect(store)(LitElement) {
     this._destroySortable();
   }
 
-  updated() {
-    this._setupDragDrop();
+  // Track if we have a pending sortable setup to avoid infinite loops
+  private _setupPending = false;
+
+  updated(changedProperties: Map<string, any>) {
+    // Only setup sortable if rows or components changed
+    // and we don't already have a setup in progress
+    if ((changedProperties.has('rows') || changedProperties.has('components')) && !this._setupPending) {
+      this._setupPending = true;
+      
+      // Use setTimeout to ensure the DOM is ready and to break the update cycle
+      setTimeout(() => {
+        this._setupSortable();
+        this._setupPending = false;
+      }, 0);
+    }
   }
 
   render() {
@@ -213,6 +234,9 @@ export class LayoutGrid extends connect(store)(LitElement) {
                     data-cell-id=${cell.id}
                     data-component-id=${component?.id || ''}
                     @click=${() => this._handleCellClick(row.id, cell.id, component?.id)}
+                    @dragover=${this._handleDragOver}
+                    @dragleave=${this._handleDragLeave}
+                    @drop=${(e: DragEvent) => this._handleDrop(e, row.id, cell.id)}
                   >
                     ${component 
                       ? renderComponentPreview(component) 
@@ -298,22 +322,6 @@ export class LayoutGrid extends connect(store)(LitElement) {
     store.dispatch(updateCellSpan({ rowId, cellId, colSpan: cell.colSpan - 1 }));
   }
 
-  private _setupDragDrop() {
-    // Need to wait for the DOM to update
-    setTimeout(() => {
-      // Get all the grid cells
-      const cells = Array.from(this.renderRoot.querySelectorAll('.grid-cell:not(.has-component)')) as HTMLElement[];
-      
-      // Get component items from parent
-      const componentItems = Array.from(document.querySelectorAll('.cms-component-item')) as HTMLElement[];
-      
-      // Set up drag and drop
-      initComponentDragDrop(componentItems, cells, this._handleComponentDrop.bind(this));
-      
-      // Set up Sortable for each row
-      this._setupSortable();
-    }, 0);
-  }
 
   private _setupSortable() {
     this._destroySortable();
@@ -357,27 +365,47 @@ export class LayoutGrid extends connect(store)(LitElement) {
     this._sortableInstances = [];
   }
 
-  private _handleComponentDrop(componentType: ComponentType, cellElement: HTMLElement) {
-    const rowId = cellElement.getAttribute('data-row-id');
-    const cellId = cellElement.getAttribute('data-cell-id');
+  private _handleDragOver(e: DragEvent) {
+    // Only allow drop if we have an active component type and the cell is empty
+    if (this.activeComponentType && !((e.currentTarget as HTMLElement).classList.contains('has-component'))) {
+      e.preventDefault();
+      e.stopPropagation();
+      (e.currentTarget as HTMLElement).classList.add('drag-over');
+    }
+  }
+
+  private _handleDragLeave(e: Event) {
+    (e.currentTarget as HTMLElement).classList.remove('drag-over');
+  }
+
+  private _handleDrop(e: DragEvent, rowId: string, cellId: string) {
+    e.preventDefault();
+    e.stopPropagation();
+    (e.currentTarget as HTMLElement).classList.remove('drag-over');
     
-    if (!rowId || !cellId) return;
-    
-    // Create a new component from the component type
-    const newComponent = createComponent(componentType);
-    
-    // Dispatch action to add the component
-    store.dispatch({
-      type: 'pages/addComponent',
-      payload: {
-        component: newComponent,
-        rowId,
-        cellId
-      }
-    });
-    
-    // Select the new component
-    this.selectedCell = { rowId, cellId };
-    store.dispatch(selectComponent(newComponent.id));
+    if (this.activeComponentType && !((e.currentTarget as HTMLElement).classList.contains('has-component'))) {
+      // Create a new component from the component type
+      const newComponent = createComponent(this.activeComponentType);
+      
+      // Dispatch action to add the component
+      store.dispatch({
+        type: 'pages/addComponent',
+        payload: {
+          component: newComponent,
+          rowId,
+          cellId
+        }
+      });
+      
+      // Select the new component
+      this.selectedCell = { rowId, cellId };
+      store.dispatch(selectComponent(newComponent.id));
+      
+      // Reset the active component type in the parent by dispatching a custom event
+      this.dispatchEvent(new CustomEvent('component-dropped', {
+        bubbles: true,
+        composed: true
+      }));
+    }
   }
 }

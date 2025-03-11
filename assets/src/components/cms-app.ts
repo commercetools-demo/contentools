@@ -5,6 +5,7 @@ import { store } from '../store';
 import { RootState, Component, Page } from '../types';
 import { fetchPages, updatePage } from '../store/pages.slice';
 import { selectComponent, setSidebarVisibility } from '../store/editor.slice';
+import { ComponentType } from './registry';
 
 import './page-list';
 import './page-form';
@@ -42,6 +43,9 @@ export class CmsApp extends connect(store)(LitElement) {
     
   @state()
   private view: 'list' | 'editor' | 'new' = 'list';
+  
+  @state()
+  private _activeComponentType: ComponentType | null = null;
 
   static styles = css`
     :host {
@@ -318,11 +322,15 @@ export class CmsApp extends connect(store)(LitElement) {
         return html`
           <a class="cms-back" @click=${() => this._setView('list')}>← Back to Pages</a>
           
-          <cms-component-library></cms-component-library>
+          <cms-component-library
+            @component-drag-start=${this._handleComponentDragStart}
+          ></cms-component-library>
           
           <cms-layout-grid
             .rows=${this.currentPage.layout.rows}
             .components=${this.currentPage.components}
+            .activeComponentType=${this._activeComponentType}
+            @component-dropped=${this._handleComponentDropped}
           ></cms-layout-grid>
         `;
         
@@ -400,5 +408,21 @@ export class CmsApp extends connect(store)(LitElement) {
 
   private _handleDiscardChanges() {
     store.dispatch(fetchPages(this.baseURL));
+  }
+  
+  private _handleComponentDragStart(e: CustomEvent) {
+    this._activeComponentType = e.detail.componentType;
+    
+    // Add a global dragend listener to reset activeComponentType when drag ends without a drop
+    const handleDragEnd = () => {
+      this._activeComponentType = null;
+      document.removeEventListener('dragend', handleDragEnd);
+    };
+    
+    document.addEventListener('dragend', handleDragEnd);
+  }
+  
+  private _handleComponentDropped() {
+    this._activeComponentType = null;
   }
 }

@@ -57,6 +57,37 @@ export class ComponentLibrary extends LitElement {
     }
   `;
 
+  firstUpdated() {
+    this._setupDragEvents();
+  }
+
+  private _setupDragEvents() {
+    const componentItems = this.renderRoot.querySelectorAll('.component-item');
+    componentItems.forEach(item => {
+      item.addEventListener('dragstart', this._handleDragStart.bind(this));
+    });
+  }
+
+  private _handleDragStart(e: DragEvent) {
+    const target = e.target as HTMLElement;
+    const componentType = target.getAttribute('data-component-type') as ComponentType;
+    
+    if (e.dataTransfer && componentType) {
+      // Set data for HTML5 drag and drop
+      e.dataTransfer.setData('application/component-type', componentType);
+      e.dataTransfer.effectAllowed = 'copy';
+      
+      // Dispatch custom event for component drag
+      const dragEvent = new CustomEvent('component-drag-start', {
+        bubbles: true,
+        composed: true,
+        detail: { componentType }
+      });
+      
+      this.dispatchEvent(dragEvent);
+    }
+  }
+
   render() {
     const componentTypes = getAllComponentTypes();
     
