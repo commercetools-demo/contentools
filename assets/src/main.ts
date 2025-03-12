@@ -9,6 +9,9 @@ import './styles/cms.css';
 export class LayoutCMS extends connect(store)(LitElement) {
   @property({ type: String, attribute: 'baseurl' })
   baseURL = '/service'; 
+  
+  @property({ type: String, attribute: 'business-unit-key' })
+  businessUnitKey = '';
 
   static styles = css`
     :host {
@@ -16,11 +19,32 @@ export class LayoutCMS extends connect(store)(LitElement) {
       width: 100%;
       height: 100%;
     }
+    
+    .warning {
+      background-color: #fff3cd;
+      color: #856404;
+      padding: 15px;
+      border-radius: 4px;
+      margin: 15px;
+      border: 1px solid #ffeeba;
+      font-size: 14px;
+    }
   `;
 
   render() {
+    if (!this.businessUnitKey) {
+      return html`
+        <div class="warning">
+          <strong>Warning:</strong> The "business-unit-key" attribute is required for the CMS to function properly.
+        </div>
+      `;
+    }
+    
+    // Hydrate the baseURL with businessUnitKey
+    const hydratedBaseUrl = `${this.baseURL}/${this.businessUnitKey}`;
+    
     return html`
-      <cms-app .baseURL=${this.baseURL}></cms-app>
+      <cms-app .baseURL=${hydratedBaseUrl}></cms-app>
     `;
   }
 }

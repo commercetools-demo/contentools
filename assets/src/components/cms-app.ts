@@ -371,6 +371,8 @@ export class CmsApp extends connect(store)(LitElement) {
       <cms-page-form
         .isEdit=${true}
         .page=${this.currentPage}
+        .baseURL=${this.baseURL}
+        
         @page-updated=${this._handlePageUpdated}
       ></cms-page-form>
     `;
