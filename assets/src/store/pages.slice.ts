@@ -326,6 +326,7 @@ const pagesSlice = createSlice({
       .addCase(fetchPages.fulfilled, (state, action) => {
         state.loading = false;
         state.pages = action.payload;
+        state.unsavedChanges = false;
         
         // Save to session storage
         saveToSessionStorage(state.pages);
