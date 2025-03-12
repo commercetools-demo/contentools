@@ -34,6 +34,15 @@ export class GridRowComponent extends LitElement {
       position: relative;
     }
     
+    .grid-row-content {
+      max-width: 100%;
+      width: 100%;
+      overflow-x: scroll;
+      display: flex;
+      position: relative;
+      gap: 15px;
+    }
+    
     .row-header {
       background: rgba(0,0,0,0.05);
       padding: 5px 10px;
@@ -160,7 +169,6 @@ export class GridRowComponent extends LitElement {
     return html`
       <div class="grid-row" data-row-id=${this.row.id}>
         <div class="row-header">
-          <span>Row ${this.rowIndex + 1} (${filledCells} filled, ${emptyCells} empty)</span>
           <button 
             class="row-delete" 
             @click=${this._handleRemoveRow}
@@ -169,7 +177,7 @@ export class GridRowComponent extends LitElement {
             ✕
           </button>
         </div>
-        
+        <div class="grid-row-content">
         ${this.row.cells.map(cell => {
           const component = this.getComponentForCell(cell.componentId);
           const colWidth = (cell.colSpan / NUMBER_OF_COLUMNS) * 100;
@@ -177,7 +185,7 @@ export class GridRowComponent extends LitElement {
           return html`
             <div 
               class="grid-cell ${component ? 'has-component' : 'empty'} ${this.isSelected(cell.id) ? 'selected' : ''}"
-              style="flex: 0 0 ${colWidth}%;"
+              style="flex: 0 1 ${colWidth}%;"
               data-row-id=${this.row.id}
               data-cell-id=${cell.id}
               data-component-id=${component?.id || ''}
@@ -201,7 +209,7 @@ export class GridRowComponent extends LitElement {
                 </button>
                 <button 
                   @click=${(e: Event) => this._handleIncreaseWidth(e, cell.id)}
-                  ?disabled=${cell.colSpan >= NUMBER_OF_COLUMNS}
+                  ?disabled=${this._isIncreaseDisabled(cell.id)}
                   title="Increase width"
                 >
                   +
@@ -210,6 +218,7 @@ export class GridRowComponent extends LitElement {
             </div>
           `;
         })}
+        </div>
       </div>
     `;
   }
@@ -247,10 +256,20 @@ export class GridRowComponent extends LitElement {
     const cell = this.row.cells.find(c => c.id === cellId);
     if (!cell || cell.colSpan >= NUMBER_OF_COLUMNS) return;
     
+    // Calculate total occupied columns
+    const totalOccupiedCols = this.row.cells.reduce((total, c) => total + (c.componentId ? c.colSpan : 0), 0);
+    
+    // Check if there's room to expand (must be less than or equal to NUMBER_OF_COLUMNS)
+    if (totalOccupiedCols >= NUMBER_OF_COLUMNS) {
+      // No empty cells to remove, can't increase
+      return;
+    }
+    
     store.dispatch(updateCellSpan({ 
       rowId: this.row.id, 
       cellId, 
-      colSpan: cell.colSpan + 1 
+      colSpan: cell.colSpan + 1,
+      shouldRemoveEmptyCell: true
     }));
   }
   
@@ -263,7 +282,8 @@ export class GridRowComponent extends LitElement {
     store.dispatch(updateCellSpan({ 
       rowId: this.row.id, 
       cellId, 
-      colSpan: cell.colSpan - 1 
+      colSpan: cell.colSpan - 1,
+      shouldAddEmptyCell: true
     }));
   }
   
@@ -334,5 +354,21 @@ export class GridRowComponent extends LitElement {
         composed: true
       }));
     }
+  }
+  
+  private _isIncreaseDisabled(cellId: string): boolean {
+    const cell = this.row.cells.find(c => c.id === cellId);
+    if (!cell) return true;
+    
+    // If already at max columns, disable
+    if (cell.colSpan >= NUMBER_OF_COLUMNS) return true;
+    
+    // Count empty cells (cells without components)
+    const emptyCells = this.row.cells.filter(c => !c.componentId && c.id !== cellId);
+    
+    // If no empty cells to remove, disable increase
+    if (emptyCells.length === 0) return true;
+    
+    return false;
   }
 } 

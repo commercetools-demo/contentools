@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { v4 as uuidv4 } from 'uuid';
 import { Page, PagesState, Component, GridRow, GridCell, ApiResponse } from '../types';
 import { debounce } from '../utils/debounce';
+import { NUMBER_OF_COLUMNS } from '../constants';
 
 const LOCAL_STORAGE_KEY = 'cms_pages';
 const DEBOUNCE_DELAY = 1000;
@@ -114,8 +115,9 @@ export const deletePage = createAsyncThunk('pages/deletePage', async ({baseUrl, 
 const createEmptyGridRow = (): GridRow => {
   const cells: GridCell[] = [];
   
-  // Create 12 columns
-  for (let i = 0; i < 12; i++) {
+  // Create cells that total to NUMBER_OF_COLUMNS
+  // Initially, we'll create NUMBER_OF_COLUMNS cells, each with colSpan of 1
+  for (let i = 0; i < NUMBER_OF_COLUMNS; i++) {
     cells.push({
       id: uuidv4(),
       componentId: null,
@@ -253,17 +255,63 @@ const pagesSlice = createSlice({
       }
     },
     
-    updateCellSpan: (state, action: PayloadAction<{ rowId: string, cellId: string, colSpan: number }>) => {
+    updateCellSpan: (state, action: PayloadAction<{ 
+      rowId: string, 
+      cellId: string, 
+      colSpan: number,
+      shouldRemoveEmptyCell?: boolean,
+      shouldAddEmptyCell?: boolean
+    }>) => {
       if (state.currentPage) {
-        const { rowId, cellId, colSpan } = action.payload;
+        const { rowId, cellId, colSpan, shouldRemoveEmptyCell, shouldAddEmptyCell } = action.payload;
         
         const rowIndex = state.currentPage.layout.rows.findIndex(row => row.id === rowId);
         if (rowIndex !== -1) {
-          const cellIndex = state.currentPage.layout.rows[rowIndex].cells.findIndex(
-            cell => cell.id === cellId
-          );
+          const row = state.currentPage.layout.rows[rowIndex];
+          const cellIndex = row.cells.findIndex(cell => cell.id === cellId);
+          
           if (cellIndex !== -1) {
-            state.currentPage.layout.rows[rowIndex].cells[cellIndex].colSpan = colSpan;
+            // Get the old span to calculate the difference
+            const oldSpan = row.cells[cellIndex].colSpan;
+            const spanDifference = colSpan - oldSpan;
+            
+            // Update the cell's span
+            row.cells[cellIndex].colSpan = colSpan;
+            
+            // If we're increasing the span and should remove empty cells
+            if (spanDifference > 0 && shouldRemoveEmptyCell) {
+              // Find empty cells (cells with no component)
+              const emptyCells = row.cells
+                .map((cell, idx) => ({ cell, idx }))
+                .filter(item => !item.cell.componentId && item.idx !== cellIndex);
+              
+              // Remove empty cells equal to the span difference
+              if (emptyCells.length > 0) {
+                // Sort in reverse order to avoid index shifting when removing
+                const cellsToRemove = emptyCells
+                  .slice(0, spanDifference)
+                  .sort((a, b) => b.idx - a.idx);
+                
+                // Remove cells
+                for (const { idx } of cellsToRemove) {
+                  row.cells.splice(idx, 1);
+                }
+              }
+            }
+            
+            // If we're decreasing the span and should add empty cells
+            if (spanDifference < 0 && shouldAddEmptyCell) {
+              // Create new empty cells
+              const newCells = Array(-spanDifference).fill(0).map(() => ({
+                id: uuidv4(),
+                componentId: null,
+                colSpan: 1
+              }));
+              
+              // Add them after the current cell
+              row.cells.splice(cellIndex + 1, 0, ...newCells);
+            }
+            
             state.unsavedChanges = true;
             
             // Save to session storage
