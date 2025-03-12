@@ -4,7 +4,7 @@ import { Page, PagesState, Component, GridRow, GridCell, ApiResponse } from '../
 import { debounce } from '../utils/debounce';
 import { NUMBER_OF_COLUMNS } from '../constants';
 
-const LOCAL_STORAGE_KEY = 'cms_pages';
+const LOCAL_STORAGE_KEY_PREFIX = 'cms_pages';
 const DEBOUNCE_DELAY = 1000;
 
 
@@ -66,11 +66,12 @@ const deletePageApi = async (baseUrl: string, key: string): Promise<void> => {
 };
 
 // Create a debounced session storage save function
-const saveToSessionStorage = debounce((pages: Page[]) => {
+const saveToSessionStorage = debounce((pages: Page[], businessUnitKey: string) => {
   try {
     // Create a deep clone of the pages to avoid proxy issues
     const safePages = JSON.parse(JSON.stringify({ pages })).pages;
-    sessionStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(safePages));
+    const storageKey = `${LOCAL_STORAGE_KEY_PREFIX}_${businessUnitKey}`;
+    sessionStorage.setItem(storageKey, JSON.stringify(safePages));
   } catch (error) {
     console.error('Error saving to session storage:', error);
   }
@@ -79,8 +80,12 @@ const saveToSessionStorage = debounce((pages: Page[]) => {
 // Thunks
 export const fetchPages = createAsyncThunk('pages/fetchPages', async (baseUrl: string) => {
   try {
-    // First try to get from session storage
-    const storedPages = sessionStorage.getItem(LOCAL_STORAGE_KEY);
+    // Extract businessUnitKey from baseUrl
+    const businessUnitKey = baseUrl.split('/').pop() || '';
+    
+    // First try to get from session storage with business unit specific key
+    const storageKey = `${LOCAL_STORAGE_KEY_PREFIX}_${businessUnitKey}`;
+    const storedPages = sessionStorage.getItem(storageKey);
     if (storedPages) {
       return JSON.parse(storedPages) as Page[];
     }
@@ -138,6 +143,7 @@ const initialState: PagesState = {
   loading: false,
   error: null,
   unsavedChanges: false,
+  businessUnitKey: '',
 };
 
 // Slice
@@ -150,12 +156,13 @@ const pagesSlice = createSlice({
       state.currentPage = page || null;
     },
     
-    createEmptyPage: (state, action: PayloadAction<{ name: string, route: string }>) => {
+    createEmptyPage: (state, action: PayloadAction<{ name: string, route: string, businessUnitKey: string }>) => {
       const newPage: Page = {
         key: `page-${uuidv4()}`,
         name: action.payload.name,
         uuid: uuidv4(),
         route: action.payload.route,
+        businessUnitKey: action.payload.businessUnitKey,
         layout: {
           rows: [createEmptyGridRow()],
         },
@@ -165,9 +172,10 @@ const pagesSlice = createSlice({
       state.pages.push(newPage);
       state.currentPage = newPage;
       state.unsavedChanges = true;
+      state.businessUnitKey = action.payload.businessUnitKey;
       
       // Save to session storage
-      saveToSessionStorage(state.pages);
+      saveToSessionStorage(state.pages, action.payload.businessUnitKey);
     },
     
     addRow: (state) => {
@@ -176,7 +184,7 @@ const pagesSlice = createSlice({
         state.unsavedChanges = true;
         
         // Save to session storage
-        saveToSessionStorage(state.pages);
+        saveToSessionStorage(state.pages, state.businessUnitKey);
       }
     },
     
@@ -188,7 +196,7 @@ const pagesSlice = createSlice({
         state.unsavedChanges = true;
         
         // Save to session storage
-        saveToSessionStorage(state.pages);
+        saveToSessionStorage(state.pages, state.businessUnitKey);
       }
     },
     
@@ -213,7 +221,7 @@ const pagesSlice = createSlice({
         state.unsavedChanges = true;
         
         // Save to session storage
-        saveToSessionStorage(state.pages);
+        saveToSessionStorage(state.pages, state.businessUnitKey);
       }
     },
     
@@ -227,7 +235,7 @@ const pagesSlice = createSlice({
           state.unsavedChanges = true;
           
           // Save to session storage
-          saveToSessionStorage(state.pages);
+          saveToSessionStorage(state.pages, state.businessUnitKey);
         }
       }
     },
@@ -251,7 +259,7 @@ const pagesSlice = createSlice({
         state.unsavedChanges = true;
         
         // Save to session storage
-        saveToSessionStorage(state.pages);
+        saveToSessionStorage(state.pages, state.businessUnitKey);
       }
     },
     
@@ -315,7 +323,7 @@ const pagesSlice = createSlice({
             state.unsavedChanges = true;
             
             // Save to session storage
-            saveToSessionStorage(state.pages);
+            saveToSessionStorage(state.pages, state.businessUnitKey);
           }
         }
       }
@@ -356,12 +364,16 @@ const pagesSlice = createSlice({
         state.unsavedChanges = true;
         
         // Save to session storage
-        saveToSessionStorage(state.pages);
+        saveToSessionStorage(state.pages, state.businessUnitKey);
       }
     },
     
     saveCurrentPage: (state) => {
       state.unsavedChanges = false;
+    },
+    
+    setBusinessUnitKey: (state, action: PayloadAction<string>) => {
+      state.businessUnitKey = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -376,8 +388,15 @@ const pagesSlice = createSlice({
         state.pages = action.payload;
         state.unsavedChanges = false;
         
+        // Set businessUnitKey from the first page if available
+        if (action.payload.length > 0 && action.payload[0].businessUnitKey) {
+          state.businessUnitKey = action.payload[0].businessUnitKey;
+        }
+        
         // Save to session storage
-        saveToSessionStorage(state.pages);
+        if (state.businessUnitKey) {
+          saveToSessionStorage(state.pages, state.businessUnitKey);
+        }
       })
       .addCase(fetchPages.rejected, (state, action) => {
         state.loading = false;
@@ -403,7 +422,7 @@ const pagesSlice = createSlice({
         state.currentPage = action.payload;
         
         // Save to session storage
-        saveToSessionStorage(state.pages);
+        saveToSessionStorage(state.pages, state.businessUnitKey);
       })
       .addCase(fetchPage.rejected, (state, action) => {
         state.loading = false;
@@ -429,8 +448,13 @@ const pagesSlice = createSlice({
         state.currentPage = action.payload;
         state.unsavedChanges = false;
         
+        // Update businessUnitKey if needed
+        if (action.payload.businessUnitKey) {
+          state.businessUnitKey = action.payload.businessUnitKey;
+        }
+        
         // Save to session storage
-        saveToSessionStorage(state.pages);
+        saveToSessionStorage(state.pages, state.businessUnitKey);
       })
       .addCase(createPage.rejected, (state, action) => {
         state.loading = false;
@@ -458,7 +482,7 @@ const pagesSlice = createSlice({
         state.unsavedChanges = false;
         
         // Save to session storage
-        saveToSessionStorage(state.pages);
+        saveToSessionStorage(state.pages, state.businessUnitKey);
       })
       .addCase(updatePage.rejected, (state, action) => {
         state.loading = false;
@@ -482,7 +506,7 @@ const pagesSlice = createSlice({
         }
         
         // Save to session storage
-        saveToSessionStorage(state.pages);
+        saveToSessionStorage(state.pages, state.businessUnitKey);
       })
       .addCase(deletePage.rejected, (state, action) => {
         state.loading = false;
@@ -502,6 +526,7 @@ export const {
   updateCellSpan,
   moveComponent,
   saveCurrentPage,
+  setBusinessUnitKey,
 } = pagesSlice.actions;
 
 export default pagesSlice.reducer;

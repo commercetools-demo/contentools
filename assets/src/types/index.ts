@@ -21,6 +21,7 @@ export interface Layout {
 }
 
 export interface Page {
+  businessUnitKey: string;
   key: string;
   name: string;
   uuid: string;
@@ -35,6 +36,7 @@ export interface PagesState {
   loading: boolean;
   error: string | null;
   unsavedChanges: boolean;
+  businessUnitKey: string;
 }
 
 export interface EditorState {

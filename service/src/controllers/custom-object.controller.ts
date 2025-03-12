@@ -15,16 +15,19 @@ interface CommercetoolsError {
  * @param value The custom object value
  * @returns The created custom object
  */
-export const createCustomObject = async (container: string | undefined, key: string, value: any) => {
+export const createCustomObject = async (businessUnitKey: string, key: string, value: any) => {
   try {
     const apiRoot = createApiRoot();
     const response = await apiRoot
       .customObjects()
       .post({
         body: {
-          container: container || CONTAINER,
+          container: CONTAINER,
           key,
-          value
+          value: {
+            ...value,
+            businessUnitKey
+          }
         }
       })
       .execute();
@@ -45,12 +48,12 @@ export const createCustomObject = async (container: string | undefined, key: str
  * @param key The custom object key
  * @returns The custom object if found
  */
-export const getCustomObject = async (container: string | undefined, key: string) => {
+export const getCustomObject = async (key: string) => {
   try {
     const apiRoot = createApiRoot();
     const response = await apiRoot
       .customObjects()
-      .withContainerAndKey({ container: container || CONTAINER, key })
+      .withContainerAndKey({ container: CONTAINER, key })
       .get()
       .execute();
     
@@ -74,16 +77,19 @@ export const getCustomObject = async (container: string | undefined, key: string
  * @param value The new value
  * @returns The updated custom object
  */
-export const updateCustomObject = async (container: string | undefined, key: string, value: any) => {
+export const updateCustomObject = async (businessUnitKey: string, key: string, value: any) => {
   try {
     const apiRoot = createApiRoot();
     const response = await apiRoot
       .customObjects()
       .post({
         body: {
-          container: container || CONTAINER,
+          container: CONTAINER,
           key,
-          value
+          value: {
+            ...value,
+            businessUnitKey
+          }
         }
       })
       .execute();
@@ -103,12 +109,12 @@ export const updateCustomObject = async (container: string | undefined, key: str
  * @param container The container name
  * @param key The custom object key
  */
-export const deleteCustomObject = async (container: string | undefined, key: string) => {
+export const deleteCustomObject = async (key: string) => {
   try {
     const apiRoot = createApiRoot();
     await apiRoot
       .customObjects()
-      .withContainerAndKey({ container: container || CONTAINER, key })
+      .withContainerAndKey({ container: CONTAINER, key })
       .delete()
       .execute();
   } catch (error) {
@@ -128,14 +134,14 @@ export const deleteCustomObject = async (container: string | undefined, key: str
  * @param container The container name
  * @returns Array of custom objects
  */
-export const getCustomObjects = async (container?: string) => {
+export const getCustomObjects = async (businessUnitKey?: string) => {
   try {
     const apiRoot = createApiRoot();
     const response = await apiRoot
       .customObjects()
       .get({
         queryArgs: {
-          where: `container = "${container || CONTAINER}"`
+          where: `container = "${CONTAINER}" and value(businessUnitKey = "${businessUnitKey}")`
         }
       })
       .execute();
