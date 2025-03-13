@@ -79,15 +79,21 @@ export class ComponentLibrary extends LitElement {
     try {
       this.componentTypes = await getAllComponentTypes({ baseURL: this.baseURL });
       this.loading = false;
+      // Set up drag events after component types are loaded and rendered
+      this.requestUpdate();
     } catch (err) {
       this.error = `Failed to load component types: ${err instanceof Error ? err.message : String(err)}`;
       this.loading = false;
       console.error('Error loading component types:', err);
     }
   }
-
-  firstUpdated() {
-    this._setupDragEvents();
+  updated(changedProperties: Map<string, unknown>) {
+    super.updated(changedProperties);
+    
+    // Only set up drag events if we have component types and we're not loading
+    if (this.componentTypes.length > 0 && !this.loading) {
+      this._setupDragEvents();
+    }
   }
 
   private _setupDragEvents() {
