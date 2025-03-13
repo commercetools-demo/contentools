@@ -1,9 +1,9 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { connect } from 'lit-redux-watch';
-import { store } from '../store';
-import { createEmptyPage, updatePage, createPage } from '../store/pages.slice';
-import { Page } from '../types';
+import { store } from '../../../store';
+import { createEmptyPage, updatePage, createPage } from '../../../store/pages.slice';
+import { Page } from '../../../types';
 
 @customElement('cms-page-form')
 export class PageForm extends connect(store)(LitElement) {
@@ -12,6 +12,9 @@ export class PageForm extends connect(store)(LitElement) {
 
   @property({ type: String })
   baseURL: string = '';
+
+  @property({ type: String })
+  businessUnitKey: string = '';
 
   @property({ type: Object })
   page?: Page;
@@ -177,7 +180,7 @@ export class PageForm extends connect(store)(LitElement) {
           route: this.formData.route,
         };
         
-        await store.dispatch(updatePage({baseUrl: this.baseURL, page: updatedPage})).unwrap();
+        await store.dispatch(updatePage({baseUrl: `${this.baseURL}/${this.businessUnitKey}`, page: updatedPage})).unwrap();
         
         // Dispatch event to notify parent
         this.dispatchEvent(new CustomEvent('page-updated', {
@@ -190,6 +193,7 @@ export class PageForm extends connect(store)(LitElement) {
         store.dispatch(createEmptyPage({
           name: this.formData.name,
           route: this.formData.route,
+          businessUnitKey: this.businessUnitKey,
         }));
         
         // Save to API

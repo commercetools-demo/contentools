@@ -1,12 +1,19 @@
 import { createApiRoot } from '../client/create.client';
 import CustomError from '../errors/custom.error';
 
-const CONTAINER = process.env.MAIN_CONTAINER || 'default';
 
 interface CommercetoolsError {
   statusCode: number;
   message: string;
 }
+
+export class CustomObjectController {
+  private container: string;
+
+  constructor(container: string) {
+    this.container = container;
+  }
+
 
 /**
  * Create a custom object
@@ -15,19 +22,16 @@ interface CommercetoolsError {
  * @param value The custom object value
  * @returns The created custom object
  */
-export const createCustomObject = async (businessUnitKey: string, key: string, value: any) => {
-  try {
-    const apiRoot = createApiRoot();
-    const response = await apiRoot
-      .customObjects()
-      .post({
+  createCustomObject = async (key: string, value: any) => {
+    try {
+      const apiRoot = createApiRoot();
+      const response = await apiRoot
+        .customObjects()
+        .post({
         body: {
-          container: CONTAINER,
+          container: this.container,
           key,
-          value: {
-            ...value,
-            businessUnitKey
-          }
+          value
         }
       })
       .execute();
@@ -48,12 +52,12 @@ export const createCustomObject = async (businessUnitKey: string, key: string, v
  * @param key The custom object key
  * @returns The custom object if found
  */
-export const getCustomObject = async (key: string) => {
-  try {
-    const apiRoot = createApiRoot();
-    const response = await apiRoot
+  getCustomObject = async (key: string) => {
+    try {
+      const apiRoot = createApiRoot();
+      const response = await apiRoot
       .customObjects()
-      .withContainerAndKey({ container: CONTAINER, key })
+      .withContainerAndKey({ container: this.container, key })
       .get()
       .execute();
     
@@ -77,19 +81,16 @@ export const getCustomObject = async (key: string) => {
  * @param value The new value
  * @returns The updated custom object
  */
-export const updateCustomObject = async (businessUnitKey: string, key: string, value: any) => {
-  try {
-    const apiRoot = createApiRoot();
-    const response = await apiRoot
+  updateCustomObject = async (key: string, value: any) => {
+    try {
+      const apiRoot = createApiRoot();
+      const response = await apiRoot
       .customObjects()
       .post({
         body: {
-          container: CONTAINER,
+          container: this.container,
           key,
-          value: {
-            ...value,
-            businessUnitKey
-          }
+          value
         }
       })
       .execute();
@@ -109,12 +110,12 @@ export const updateCustomObject = async (businessUnitKey: string, key: string, v
  * @param container The container name
  * @param key The custom object key
  */
-export const deleteCustomObject = async (key: string) => {
-  try {
-    const apiRoot = createApiRoot();
-    await apiRoot
+  deleteCustomObject = async (key: string) => {
+    try {
+      const apiRoot = createApiRoot();
+      await apiRoot
       .customObjects()
-      .withContainerAndKey({ container: CONTAINER, key })
+      .withContainerAndKey({ container: this.container, key })
       .delete()
       .execute();
   } catch (error) {
@@ -134,14 +135,19 @@ export const deleteCustomObject = async (key: string) => {
  * @param container The container name
  * @returns Array of custom objects
  */
-export const getCustomObjects = async (businessUnitKey?: string) => {
-  try {
-    const apiRoot = createApiRoot();
-    const response = await apiRoot
+  getCustomObjects = async (query?: string) => {
+
+    const whereClause = [`container = "${this.container}"`];
+    if (query) {
+      whereClause.push(query);
+    }
+    try {
+      const apiRoot = createApiRoot();
+      const response = await apiRoot
       .customObjects()
       .get({
         queryArgs: {
-          where: `container = "${CONTAINER}" and value(businessUnitKey = "${businessUnitKey}")`
+          where: whereClause.join(' and ')
         }
       })
       .execute();
@@ -155,3 +161,4 @@ export const getCustomObjects = async (businessUnitKey?: string) => {
     );
   }
 };
+}

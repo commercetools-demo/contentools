@@ -1,15 +1,18 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { connect } from 'lit-redux-watch';
-import { store } from '../store';
-import { GridRow, Component } from '../types';
-import { addRow, removeRow } from '../store/pages.slice';
-import { selectComponent } from '../store/editor.slice';
-import { createComponent, ComponentType } from './registry';
+import { store } from '../../../store';
+import { GridRow, Component } from '../../../types';
+import { addRow, removeRow } from '../../../store/pages.slice';
+import { selectComponent } from '../../../store/editor.slice';
+import { createComponent } from '../../registry';
 import './grid-row';
 
 @customElement('cms-layout-grid')
 export class LayoutGrid extends connect(store)(LitElement) {
+  @property({ type: String })
+  baseURL: string = '';
+
   @property({ type: Array })
   rows: GridRow[] = [];
 
@@ -19,8 +22,11 @@ export class LayoutGrid extends connect(store)(LitElement) {
   @property({ type: Object })
   selectedCell: { rowId: string, cellId: string } | null = null;
   
-  @property({ type: String })
-  activeComponentType: ComponentType | null = null;
+  @property({ type: Object })
+  activeComponentType: any | null = null;
+  
+  @property({ type: Boolean })
+  readonly = false;
 
   static styles = css`
     .layout-grid {
@@ -71,21 +77,23 @@ export class LayoutGrid extends connect(store)(LitElement) {
     super();
     this.addEventListener('cell-selected', this._handleCellSelected as EventListener);
     this.addEventListener('remove-row', this._handleRemoveRowEvent as EventListener);
-    this.addEventListener('component-dropped', this._handleComponentDropped as EventListener);
+    this.addEventListener('component-dropped', (e: Event) => this._handleComponentDropped(e as CustomEvent));
   }
 
   render() {
     return html`
       <div class="layout-grid">
-        <div class="grid-header">
-          <h2>Layout Grid</h2>
-          <button class="add-row-btn" @click=${this._handleAddRow}>+ Add Row</button>
-        </div>
-        
-        <div class="grid-info">
-          Drag components from the component library to place them on the grid.
-          Click on a component to edit its properties.
-        </div>
+        ${!this.readonly ? html`
+          <div class="grid-header">
+            <h2>Layout Grid</h2>
+            <button class="add-row-btn" @click=${this._handleAddRow}>+ Add Row</button>
+          </div>
+          
+          <div class="grid-info">
+            Drag components from the component library to place them on the grid.
+            Click on a component to edit its properties.
+          </div>
+        ` : ''}
         
         <div class="grid-container">
           ${this.rows.map((row, index) => html`
@@ -95,6 +103,7 @@ export class LayoutGrid extends connect(store)(LitElement) {
               .components=${this.components}
               .selectedCell=${this.selectedCell}
               .activeComponentType=${this.activeComponentType}
+              .readonly=${this.readonly}
             ></cms-grid-row>
           `)}
         </div>
@@ -103,10 +112,13 @@ export class LayoutGrid extends connect(store)(LitElement) {
   }
 
   private _handleAddRow() {
+    if (this.readonly) return;
     store.dispatch(addRow());
   }
 
   private _handleCellSelected(e: CustomEvent) {
+    if (this.readonly) return;
+    
     const { rowId, cellId, componentId } = e.detail;
     this.selectedCell = { rowId, cellId };
     
@@ -119,37 +131,45 @@ export class LayoutGrid extends connect(store)(LitElement) {
   }
 
   private _handleRemoveRowEvent(e: CustomEvent) {
+    if (this.readonly) return;
+    
     const { rowId } = e.detail;
     if (this.rows.length <= 1) return; // Don't remove the last row
     store.dispatch(removeRow(rowId));
   }
 
-  private _handleComponentDropped(e: CustomEvent) {
+  private async _handleComponentDropped(e: CustomEvent) {
+    if (this.readonly) return;
+    
     const { rowId, cellId, componentType } = e.detail;
     
     if (componentType) {
-      // Create a new component from the component type
-      const newComponent = createComponent(componentType);
-      
-      // Dispatch action to add the component
-      store.dispatch({
-        type: 'pages/addComponent',
-        payload: {
-          component: newComponent,
-          rowId,
-          cellId
-        }
-      });
-      
-      // Select the new component
-      this.selectedCell = { rowId, cellId };
-      store.dispatch(selectComponent(newComponent.id));
-      
-      // Reset the active component type in the parent by dispatching a custom event
-      this.dispatchEvent(new CustomEvent('component-dropped', {
-        bubbles: true,
-        composed: true
-      }));
+      try {
+        // Create a new component from the component type
+        const newComponent = await createComponent({ baseURL: this.baseURL, type: componentType });
+        
+        // Dispatch action to add the component
+        store.dispatch({
+          type: 'pages/addComponent',
+          payload: {
+            component: newComponent,
+            rowId,
+            cellId
+          }
+        });
+        
+        // Select the new component
+        this.selectedCell = { rowId, cellId };
+        store.dispatch(selectComponent(newComponent.id));
+        
+        // Reset the active component type in the parent by dispatching a custom event
+        this.dispatchEvent(new CustomEvent('component-dropped', {
+          bubbles: true,
+          composed: true
+        }));
+      } catch (error) {
+        console.error('Failed to create component:', error);
+      }
     }
   }
 }

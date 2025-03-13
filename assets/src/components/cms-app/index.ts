@@ -1,24 +1,26 @@
-import { LitElement, html, css } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { LitElement, css, html } from 'lit';
 import { connect, watch } from 'lit-redux-watch';
-import { store } from '../store';
-import { RootState, Component, Page } from '../types';
-import { fetchPages, updatePage } from '../store/pages.slice';
-import { selectComponent, setSidebarVisibility } from '../store/editor.slice';
-import { ComponentType } from './registry';
+import { customElement, property, state } from 'lit/decorators.js';
+import { store } from '../../store';
+import { selectComponent, setSidebarVisibility } from '../../store/editor.slice';
+import { fetchPages, updatePage } from '../../store/pages.slice';
+import { Page } from '../../types';
+import { ComponentType } from '../registry';
 
-import './page-list';
-import './page-form';
-import './component-library';
-import './layout-grid';
-import './property-editor';
+import './components/component-library';
+import './components/layout-grid';
+import './components/page-form';
+import './components/page-list';
+import './components/property-editor';
 
 @customElement('cms-app')
 export class CmsApp extends connect(store)(LitElement) {
   
-
   @property({ type: String })
   baseURL: string = '';
+
+  @property({ type: String })
+  businessUnitKey: string = '';
 
   @watch('pages.pages')
   pages: Page[] = [];
@@ -46,6 +48,7 @@ export class CmsApp extends connect(store)(LitElement) {
   
   @state()
   private _activeComponentType: ComponentType | null = null;
+
 
   static styles = css`
     :host {
@@ -223,7 +226,7 @@ export class CmsApp extends connect(store)(LitElement) {
 
   connectedCallback() {
     super.connectedCallback();
-    store.dispatch(fetchPages(this.baseURL));
+    store.dispatch(fetchPages({baseUrl: `${this.baseURL}/${this.businessUnitKey}`, businessUnitKey: this.businessUnitKey}));
   }
 
   render() {
@@ -309,6 +312,7 @@ export class CmsApp extends connect(store)(LitElement) {
             .pages=${this.pages}
             .selectedPageKey=${this.currentPage?.key || null}
             .baseURL=${this.baseURL}
+            .businessUnitKey=${this.businessUnitKey}
             @create-page=${() => this._setView('new')}
             @select-page=${() => this._setView('editor')}
           ></cms-page-list>
@@ -324,9 +328,13 @@ export class CmsApp extends connect(store)(LitElement) {
           
           <cms-component-library
             @component-drag-start=${this._handleComponentDragStart}
+            .baseURL=${this.baseURL}
+            .businessUnitKey=${this.businessUnitKey}
           ></cms-component-library>
           
           <cms-layout-grid
+            .baseURL=${this.baseURL}
+            .businessUnitKey=${this.businessUnitKey}
             .rows=${this.currentPage.layout.rows}
             .components=${this.currentPage.components}
             .activeComponentType=${this._activeComponentType}
@@ -340,6 +348,7 @@ export class CmsApp extends connect(store)(LitElement) {
           
           <cms-page-form
             .baseURL=${this.baseURL}
+            .businessUnitKey=${this.businessUnitKey}
             @page-created=${() => this._setView('editor')}
           ></cms-page-form>
         `;
@@ -361,6 +370,7 @@ export class CmsApp extends connect(store)(LitElement) {
             .component=${component}
             @component-updated=${this._handleComponentUpdated}
             .baseURL=${this.baseURL}
+            .businessUnitKey=${this.businessUnitKey}
           ></cms-property-editor>
         `;
       }
@@ -372,7 +382,7 @@ export class CmsApp extends connect(store)(LitElement) {
         .isEdit=${true}
         .page=${this.currentPage}
         .baseURL=${this.baseURL}
-        
+        .businessUnitKey=${this.businessUnitKey}
         @page-updated=${this._handlePageUpdated}
       ></cms-page-form>
     `;
@@ -390,11 +400,11 @@ export class CmsApp extends connect(store)(LitElement) {
     store.dispatch(setSidebarVisibility(!this.showSidebar));
   }
 
-  private _handleComponentUpdated(e: CustomEvent) {
+  private _handleComponentUpdated() {
     this.requestUpdate();
   }
 
-  private _handlePageUpdated(e: CustomEvent) {
+  private _handlePageUpdated() {
     this.requestUpdate();
   }
 
@@ -409,7 +419,7 @@ export class CmsApp extends connect(store)(LitElement) {
   }
 
   private _handleDiscardChanges() {
-    store.dispatch(fetchPages(this.baseURL));
+    store.dispatch(fetchPages({baseUrl: this.baseURL, businessUnitKey: this.businessUnitKey}));
   }
   
   private _handleComponentDragStart(e: CustomEvent) {
