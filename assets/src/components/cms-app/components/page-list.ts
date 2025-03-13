@@ -1,14 +1,17 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { connect } from 'lit-redux-watch';
-import { store } from '../store';
-import { Page } from '../types';
-import { setCurrentPage, deletePage } from '../store/pages.slice';
+import { store } from '../../../store';
+import { Page } from '../../../types';
+import { setCurrentPage, deletePage } from '../../../store/pages.slice';
 
 @customElement('cms-page-list')
 export class PageList extends connect(store)(LitElement) {
   @property({ type: String })
   baseURL: string = '';
+
+  @property({ type: String })
+  businessUnitKey: string = '';
 
   @property({ type: Array })
   pages: Page[] = [];
@@ -18,6 +21,7 @@ export class PageList extends connect(store)(LitElement) {
 
   @state()
   private showDeleteConfirm: string | null = null;
+
 
   static styles = css`
     .page-list {
@@ -247,7 +251,7 @@ export class PageList extends connect(store)(LitElement) {
 
   private async _handleConfirmDelete(key: string) {
     try {
-      await store.dispatch(deletePage({baseUrl: this.baseURL, key})).unwrap();
+      await store.dispatch(deletePage({baseUrl: `${this.baseURL}/${this.businessUnitKey}`, key})).unwrap();
       this.showDeleteConfirm = null;
       
       if (this.selectedPageKey === key) {

@@ -2,7 +2,7 @@ import { LitElement, html, css } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { fetchCustomObject, fetchCustomObjects } from '../../utils/api';
 import { Page } from '../../types';
-import '../layout-grid';
+import '../cms-app/components/layout-grid';
 import '../registry-components';
 
 @customElement('cms-renderer')

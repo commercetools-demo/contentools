@@ -62,8 +62,10 @@ export async function createCustomObject<T>(baseURL: string, data: T): Promise<A
 /**
  * Fetch registry components
  */
-export async function fetchRegistry<T>(): Promise<ApiResponse<T>[]> {
-  const response = await fetch(`/service/registry`);
+export async function fetchRegistry<T>(baseURL: string): Promise<ApiResponse<T>[]> {
+  console.log('fetchRegistry', baseURL);
+  const response = await fetch(`${baseURL}/registry`);
+  console.log('response', response);
   
   if (!response.ok) {
     throw new Error(`API request failed: ${response.status} ${response.statusText}`);
@@ -75,15 +77,15 @@ export async function fetchRegistry<T>(): Promise<ApiResponse<T>[]> {
 /**
  * Fetch a single registry component
  */
-export async function fetchRegistryComponent<T>(key: string): Promise<ApiResponse<T>> {
-  return fetchApi<T>(`/service/registry/${key}`);
+export async function fetchRegistryComponent<T>(baseURL: string, key: string): Promise<ApiResponse<T>> {
+  return fetchApi<T>(`${baseURL}/registry/${key}`);
 }
 
 /**
  * Create a registry component
  */
-export async function createRegistryComponent<T>(data: T): Promise<ApiResponse<T>> {
-  return fetchApi<T>(`/service/registry`, {
+export async function createRegistryComponent<T>(baseURL: string, data: T): Promise<ApiResponse<T>> {
+  return fetchApi<T>(`${baseURL}/registry`, {
     method: 'POST',
     body: JSON.stringify(data),
   });
@@ -92,8 +94,8 @@ export async function createRegistryComponent<T>(data: T): Promise<ApiResponse<T
 /**
  * Update a registry component
  */
-export async function updateRegistryComponent<T>(key: string, data: T): Promise<ApiResponse<T>> {
-  return fetchApi<T>(`/service/registry/${key}`, {
+export async function updateRegistryComponent<T>(baseURL: string, key: string, data: T): Promise<ApiResponse<T>> {
+  return fetchApi<T>(`${baseURL}/registry/${key}`, {
     method: 'PUT',
     body: JSON.stringify(data),
   });
@@ -102,8 +104,8 @@ export async function updateRegistryComponent<T>(key: string, data: T): Promise<
 /**
  * Delete a registry component
  */
-export async function deleteRegistryComponent(key: string): Promise<void> {
-  const response = await fetch(`/service/registry/${key}`, {
+export async function deleteRegistryComponent(baseURL: string, key: string): Promise<void> {
+  const response = await fetch(`${baseURL}/registry/${key}`, {
     method: 'DELETE',
   });
   

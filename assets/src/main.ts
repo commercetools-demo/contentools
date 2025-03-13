@@ -10,9 +10,9 @@ import './styles/cms.css';
 
 // Export the CMS App component
 @customElement('layout-cms')
-export class LayoutCMS extends connect(store)(LitElement) {
+class LayoutCMS extends connect(store)(LitElement) {
   @property({ type: String, attribute: 'baseurl' })
-  baseURL = '/service'; 
+  baseURL = ''; 
   
   @property({ type: String, attribute: 'business-unit-key' })
   businessUnitKey = '';
@@ -44,18 +44,16 @@ export class LayoutCMS extends connect(store)(LitElement) {
       `;
     }
     
-    // Hydrate the baseURL with businessUnitKey
-    const hydratedBaseUrl = `${this.baseURL}/${this.businessUnitKey}`;
     
     return html`
-      <cms-app .baseURL=${hydratedBaseUrl}></cms-app>
+      <cms-app .baseURL=${this.baseURL} .businessUnitKey=${this.businessUnitKey}></cms-app>
     `;
   }
 }
 
 // Export the CMS Renderer component
 @customElement('cms-renderer-element')
-export class CmsRendererElement extends LitElement {
+class CmsRendererElement extends LitElement {
   @property({ type: String, attribute: 'baseurl' })
   baseURL = '/service'; 
   
@@ -115,7 +113,10 @@ export class CmsRendererElement extends LitElement {
 
 // Export the Registry App component
 @customElement('registry-app-element')
-export class RegistryAppElement extends LitElement {
+class RegistryAppElement extends LitElement {
+  @property({ type: String, attribute: 'baseurl' })
+  baseURL = '';
+
   static styles = css`
     :host {
       display: block;
@@ -126,14 +127,14 @@ export class RegistryAppElement extends LitElement {
 
   render() {
     return html`
-      <registry-app></registry-app>
+      <registry-app baseurl=${this.baseURL}></registry-app>
     `;
   }
 }
 
 // Export the Registry Components
 @customElement('registry-components-element')
-export class RegistryComponentsElement extends LitElement {
+class RegistryComponentsElement extends LitElement {
   static styles = css`
     :host {
       display: block;

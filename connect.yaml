@@ -13,6 +13,10 @@ deployAs:
           description: The container to use for the service
           required: false
           default: cms_container
+        - key: REGISTRY_CONTAINER
+          description: The container to use for the registry
+          required: false
+          default: registry
 inheritAs:
   configuration:
     standardConfiguration:

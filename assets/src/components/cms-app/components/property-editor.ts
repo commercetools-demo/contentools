@@ -1,15 +1,30 @@
 import { LitElement, html, css } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { customElement, property, state } from 'lit/decorators.js';
 import { connect } from 'lit-redux-watch';
-import { store } from '../store';
-import { Component } from '../types';
-import { getComponentMetadata } from './registry';
-import { updateComponent } from '../store/pages.slice';
+import { store } from '../../../store';
+import { Component, ComponentMetadata } from '../../../types';
+import { getComponentMetadata } from '../../registry';
+import { updateComponent } from '../../../store/pages.slice';
 
 @customElement('cms-property-editor')
 export class PropertyEditor extends connect(store)(LitElement) {
   @property({ type: Object })
   component?: Component;
+
+  @property({ type: String })
+  baseURL: string = '';
+
+  @property({ type: String })
+  businessUnitKey: string = '';
+
+  @state()
+  private metadata?: ComponentMetadata;
+
+  @state()
+  private loading = false;
+
+  @state()
+  private error?: string;
 
   static styles = css`
     .property-editor {
@@ -109,13 +124,47 @@ export class PropertyEditor extends connect(store)(LitElement) {
     }
   `;
   
+  updated(changedProperties: Map<string, any>) {
+    if (changedProperties.has('component') && this.component) {
+      this.fetchMetadata();
+    }
+  }
+
+  async fetchMetadata() {
+    if (!this.component) return;
+    
+    this.loading = true;
+    this.error = undefined;
+    
+    try {
+      this.metadata = await getComponentMetadata({baseURL: this.baseURL, type: this.component.type as any});
+      this.requestUpdate();
+    } catch (err) {
+      this.error = `Failed to load component metadata: ${err instanceof Error ? err.message : String(err)}`;
+      console.error('Error loading component metadata:', err);
+    } finally {
+      this.loading = false;
+    }
+  }
+  
   render() {
     if (!this.component) {
       return html`<div>No component selected</div>`;
     }
     
-    const metadata = getComponentMetadata(this.component.type as any);
-    const schema = metadata.propertySchema;
+    if (this.loading) {
+      return html`<div>Loading component properties...</div>`;
+    }
+
+    if (this.error) {
+      return html`<div class="error">${this.error}</div>`;
+    }
+
+    if (!this.metadata) {
+      return html`<div>No metadata available for this component</div>`;
+    }
+    
+    const schema = this.metadata.propertySchema;
     
     return html`
       <div class="property-editor">
@@ -131,7 +180,7 @@ export class PropertyEditor extends connect(store)(LitElement) {
           />
         </div>
         
-        ${Object.entries(schema).map(([key, field]) => {
+        ${Object.entries(schema).map(([key, field]: [string, any]) => {
           const value = this.component!.properties[key];
           
           if (field.type === 'string') {

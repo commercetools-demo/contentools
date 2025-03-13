@@ -87,31 +87,31 @@ const defaultRegistry: Record<string, ComponentMetadata> = {
 };
 
 // Helper function to get registry components from store or load them if not available
-export const getRegistryComponentsFromStore = async (): Promise<RegistryComponentData[]> => {
+export const getRegistryComponentsFromStore = async ({ baseURL }: { baseURL: string }): Promise<RegistryComponentData[]> => {
   const state = store.getState();
   
   if (state.registry.components.length === 0 && !state.registry.loading) {
-    await store.dispatch(fetchRegistryComponents());
+    await store.dispatch(fetchRegistryComponents({ baseURL }));
   }
   
   return store.getState().registry.components;
 };
 
 // Helper functions
-export const getComponentMetadata = async (type: string): Promise<ComponentMetadata> => {
-  const components = await getRegistryComponentsFromStore();
+export const getComponentMetadata = async ({ baseURL, type }: { baseURL: string, type: string }): Promise<ComponentMetadata> => {
+  const components = await getRegistryComponentsFromStore({ baseURL });
   const component = components.find(c => c.metadata.type === type);
   
   return component?.metadata || defaultRegistry[type] || null;
 };
 
-export const getAllComponentTypes = async (): Promise<ComponentMetadata[]> => {
-  const components = await getRegistryComponentsFromStore();
+export const getAllComponentTypes = async ({ baseURL }: { baseURL: string }): Promise<ComponentMetadata[]> => {
+  const components = await getRegistryComponentsFromStore({ baseURL });
   return components.map(c => c.metadata);
 };
 
-export const createComponent = async (type: string, name?: string): Promise<Component> => {
-  const metadata = await getComponentMetadata(type);
+export const createComponent = async ({ baseURL, type, name }: { baseURL: string, type: string, name?: string }): Promise<Component> => {
+  const metadata = await getComponentMetadata({ baseURL, type });
   
   if (!metadata) {
     throw new Error(`Component type "${type}" not found in registry`);

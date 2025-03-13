@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { RegistryState, RegistryComponentData } from '../types';
 import { fetchRegistry, createRegistryComponent, updateRegistryComponent, deleteRegistryComponent } from '../utils/api';
+import { RegistryState, RegistryComponentData } from '../types';
 
 const initialState: RegistryState = {
   components: [],
@@ -11,11 +11,14 @@ const initialState: RegistryState = {
 // Thunks
 export const fetchRegistryComponents = createAsyncThunk(
   'registry/fetchRegistryComponents',
-  async (_, { rejectWithValue }) => {
+  async ({ baseURL }: { baseURL: string }, { rejectWithValue }) => {
     try {
-      const response = await fetchRegistry<RegistryComponentData>();
+      console.log('baseURL', baseURL);
+      const response = await fetchRegistry<RegistryComponentData>(baseURL);
+      console.log('response', response);
       return response.map(item => item.value);
     } catch (error) {
+      console.log('error', error);
       return rejectWithValue((error as Error).message);
     }
   }
@@ -23,9 +26,9 @@ export const fetchRegistryComponents = createAsyncThunk(
 
 export const addRegistryComponent = createAsyncThunk(
   'registry/addRegistryComponent',
-  async (component: RegistryComponentData, { rejectWithValue }) => {
+  async ({ baseURL, component }: { baseURL: string, component: RegistryComponentData }, { rejectWithValue }) => {
     try {
-      const response = await createRegistryComponent<RegistryComponentData>(component);
+      const response = await createRegistryComponent<RegistryComponentData>(baseURL, component);
       return response.value;
     } catch (error) {
       return rejectWithValue((error as Error).message);
@@ -35,9 +38,9 @@ export const addRegistryComponent = createAsyncThunk(
 
 export const updateRegistryComponentThunk = createAsyncThunk(
   'registry/updateRegistryComponent',
-  async ({ key, component }: { key: string, component: RegistryComponentData }, { rejectWithValue }) => {
+  async ({ baseURL, key, component }: { baseURL: string, key: string, component: RegistryComponentData }, { rejectWithValue }) => {
     try {
-      const response = await updateRegistryComponent<RegistryComponentData>(key, component);
+      const response = await updateRegistryComponent<RegistryComponentData>(baseURL, key, component);
       return response.value;
     } catch (error) {
       return rejectWithValue((error as Error).message);
@@ -47,9 +50,9 @@ export const updateRegistryComponentThunk = createAsyncThunk(
 
 export const removeRegistryComponent = createAsyncThunk(
   'registry/removeRegistryComponent',
-  async (key: string, { rejectWithValue }) => {
+  async ({ baseURL, key }: { baseURL: string, key: string }, { rejectWithValue }) => {
     try {
-      await deleteRegistryComponent(key);
+      await deleteRegistryComponent(baseURL, key);
       return key;
     } catch (error) {
       return rejectWithValue((error as Error).message);

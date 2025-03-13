@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit';
-import { customElement, state } from 'lit/decorators.js';
+import { customElement, state, property } from 'lit/decorators.js';
 import { connect, watch } from 'lit-redux-watch';
 import { store } from '../../store';
 import { RegistryComponentData } from '../../types';
@@ -8,6 +8,9 @@ import '../registry-components';
 
 @customElement('registry-app')
 export class RegistryApp extends connect(store)(LitElement) {
+  @property({ type: String })
+  baseURL: string = '';
+
   @watch('registry.components')
   components: RegistryComponentData[] = [];
 
@@ -183,7 +186,7 @@ export class RegistryApp extends connect(store)(LitElement) {
 
   connectedCallback() {
     super.connectedCallback();
-    store.dispatch(fetchRegistryComponents());
+    store.dispatch(fetchRegistryComponents({ baseURL: this.baseURL }));
   }
 
   render() {
@@ -374,7 +377,7 @@ export class RegistryApp extends connect(store)(LitElement) {
 
   private _removeComponent(type: string) {
     if (confirm(`Are you sure you want to delete the "${type}" component?`)) {
-      store.dispatch(removeRegistryComponent(type));
+      store.dispatch(removeRegistryComponent({ baseURL: this.baseURL, key: type }));
     }
   }
 
@@ -458,12 +461,13 @@ export class RegistryApp extends connect(store)(LitElement) {
     if (this.selectedComponent) {
       // Update existing component
       store.dispatch(updateRegistryComponentThunk({
+        baseURL: this.baseURL,
         key: component.metadata.type,
         component
       }));
     } else {
       // Add new component
-      store.dispatch(addRegistryComponent(component));
+      store.dispatch(addRegistryComponent({ baseURL: this.baseURL, component }));
     }
     
     this.isAddingComponent = false;

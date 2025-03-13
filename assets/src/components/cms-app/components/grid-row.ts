@@ -1,10 +1,10 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { GridRow, Component } from '../types';
-import { store } from '../store';
-import { updateCellSpan, moveComponent } from '../store/pages.slice';
-import { renderComponentPreview } from './templates';
-import { NUMBER_OF_COLUMNS } from '../constants';
+import { GridRow, Component } from '../../../types';
+import { store } from '../../../store';
+import { updateCellSpan, moveComponent } from '../../../store/pages.slice';
+import { renderComponentPreview } from '../../templates';
+import { NUMBER_OF_COLUMNS } from '../../../constants';
 import Sortable from 'sortablejs';
 
 @customElement('cms-grid-row')

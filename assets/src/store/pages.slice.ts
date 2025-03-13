@@ -78,11 +78,8 @@ const saveToSessionStorage = debounce((pages: Page[], businessUnitKey: string) =
 }, DEBOUNCE_DELAY);
 
 // Thunks
-export const fetchPages = createAsyncThunk('pages/fetchPages', async (baseUrl: string) => {
+export const fetchPages = createAsyncThunk('pages/fetchPages', async ({baseUrl, businessUnitKey}: {baseUrl: string, businessUnitKey: string}) => {
   try {
-    // Extract businessUnitKey from baseUrl
-    const businessUnitKey = baseUrl.split('/').pop() || '';
-    
     // First try to get from session storage with business unit specific key
     const storageKey = `${LOCAL_STORAGE_KEY_PREFIX}_${businessUnitKey}`;
     const storedPages = sessionStorage.getItem(storageKey);

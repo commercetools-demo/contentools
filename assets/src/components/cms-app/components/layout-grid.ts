@@ -1,15 +1,18 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { connect } from 'lit-redux-watch';
-import { store } from '../store';
-import { GridRow, Component } from '../types';
-import { addRow, removeRow } from '../store/pages.slice';
-import { selectComponent } from '../store/editor.slice';
-import { createComponent } from './registry';
+import { store } from '../../../store';
+import { GridRow, Component } from '../../../types';
+import { addRow, removeRow } from '../../../store/pages.slice';
+import { selectComponent } from '../../../store/editor.slice';
+import { createComponent } from '../../registry';
 import './grid-row';
 
 @customElement('cms-layout-grid')
 export class LayoutGrid extends connect(store)(LitElement) {
+  @property({ type: String })
+  baseURL: string = '';
+
   @property({ type: Array })
   rows: GridRow[] = [];
 
@@ -74,7 +77,7 @@ export class LayoutGrid extends connect(store)(LitElement) {
     super();
     this.addEventListener('cell-selected', this._handleCellSelected as EventListener);
     this.addEventListener('remove-row', this._handleRemoveRowEvent as EventListener);
-    this.addEventListener('component-dropped', this._handleComponentDropped as EventListener);
+    this.addEventListener('component-dropped', (e: Event) => this._handleComponentDropped(e as CustomEvent));
   }
 
   render() {
@@ -143,7 +146,7 @@ export class LayoutGrid extends connect(store)(LitElement) {
     if (componentType) {
       try {
         // Create a new component from the component type
-        const newComponent = await createComponent(componentType);
+        const newComponent = await createComponent({ baseURL: this.baseURL, type: componentType });
         
         // Dispatch action to add the component
         store.dispatch({

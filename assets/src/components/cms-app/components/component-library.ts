@@ -1,9 +1,22 @@
 import { LitElement, html, css } from 'lit';
-import { customElement } from 'lit/decorators.js';
-import { getAllComponentTypes, ComponentType } from './registry';
+import { customElement, property, state } from 'lit/decorators.js';
+import { getAllComponentTypes, ComponentType } from '../../registry';
+import { ComponentMetadata } from '../../../types';
 
 @customElement('cms-component-library')
 export class ComponentLibrary extends LitElement {
+  @property({ type: String })
+  baseURL: string = '';
+
+  @state()
+  private componentTypes: ComponentMetadata[] = [];
+
+  @state()
+  private loading = true;
+
+  @state()
+  private error?: string;
+
   static styles = css`
     .component-library {
       margin-bottom: 30px;
@@ -57,6 +70,22 @@ export class ComponentLibrary extends LitElement {
     }
   `;
 
+  connectedCallback() {
+    super.connectedCallback();
+    this.loadComponentTypes();
+  }
+
+  async loadComponentTypes() {
+    try {
+      this.componentTypes = await getAllComponentTypes({ baseURL: this.baseURL });
+      this.loading = false;
+    } catch (err) {
+      this.error = `Failed to load component types: ${err instanceof Error ? err.message : String(err)}`;
+      this.loading = false;
+      console.error('Error loading component types:', err);
+    }
+  }
+
   firstUpdated() {
     this._setupDragEvents();
   }
@@ -64,7 +93,7 @@ export class ComponentLibrary extends LitElement {
   private _setupDragEvents() {
     const componentItems = this.renderRoot.querySelectorAll('.component-item');
     componentItems.forEach(item => {
-      item.addEventListener('dragstart', this._handleDragStart.bind(this));
+      item.addEventListener('dragstart', (e: Event) => this._handleDragStart(e as DragEvent));
     });
   }
 
@@ -89,13 +118,25 @@ export class ComponentLibrary extends LitElement {
   }
 
   render() {
-    const componentTypes = getAllComponentTypes();
+    if (this.loading) {
+      return html`<div class="component-library">
+        <h2>Component Library</h2>
+        <div>Loading components...</div>
+      </div>`;
+    }
+
+    if (this.error) {
+      return html`<div class="component-library">
+        <h2>Component Library</h2>
+        <div class="error">${this.error}</div>
+      </div>`;
+    }
     
     return html`
       <div class="component-library">
         <h2>Component Library</h2>
         <div class="component-list">
-          ${componentTypes.map(type => html`
+          ${this.componentTypes.map(type => html`
             <div 
               class="component-item cms-component-item" 
               data-component-type=${type.type}
