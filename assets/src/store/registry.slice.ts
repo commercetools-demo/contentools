@@ -13,12 +13,9 @@ export const fetchRegistryComponents = createAsyncThunk(
   'registry/fetchRegistryComponents',
   async ({ baseURL }: { baseURL: string }, { rejectWithValue }) => {
     try {
-      console.log('baseURL', baseURL);
       const response = await fetchRegistry<RegistryComponentData>(baseURL);
-      console.log('response', response);
       return response.map(item => item.value);
     } catch (error) {
-      console.log('error', error);
       return rejectWithValue((error as Error).message);
     }
   }

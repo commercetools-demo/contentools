@@ -63,9 +63,7 @@ export async function createCustomObject<T>(baseURL: string, data: T): Promise<A
  * Fetch registry components
  */
 export async function fetchRegistry<T>(baseURL: string): Promise<ApiResponse<T>[]> {
-  console.log('fetchRegistry', baseURL);
   const response = await fetch(`${baseURL}/registry`);
-  console.log('response', response);
   
   if (!response.ok) {
     throw new Error(`API request failed: ${response.status} ${response.statusText}`);

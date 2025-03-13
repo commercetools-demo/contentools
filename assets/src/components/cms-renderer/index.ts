@@ -127,6 +127,8 @@ export class CmsRenderer extends LitElement {
     
     return html`
       <cms-layout-grid
+        .baseURL=${this.baseURL}
+        .businessUnitKey=${this.businessUnitKey}
         .rows=${this.page.layout.rows}
         .components=${this.page.components}
         .readonly=${true}
