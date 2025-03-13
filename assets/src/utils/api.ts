@@ -84,10 +84,10 @@ export async function fetchRegistryComponent<T>(baseURL: string, key: string): P
 /**
  * Create a registry component
  */
-export async function createRegistryComponent<T>(baseURL: string, data: T): Promise<ApiResponse<T>> {
-  return fetchApi<T>(`${baseURL}/registry`, {
+export async function createRegistryComponent<T>(baseURL: string, key: string, data: T): Promise<ApiResponse<T>> {
+  return fetchApi<T>(`${baseURL}/registry/${key}`, {
     method: 'POST',
-    body: JSON.stringify(data),
+    body: JSON.stringify({value: data}),
   });
 }
 
@@ -97,7 +97,7 @@ export async function createRegistryComponent<T>(baseURL: string, data: T): Prom
 export async function updateRegistryComponent<T>(baseURL: string, key: string, data: T): Promise<ApiResponse<T>> {
   return fetchApi<T>(`${baseURL}/registry/${key}`, {
     method: 'PUT',
-    body: JSON.stringify(data),
+    body: JSON.stringify({value: data}),
   });
 }
 

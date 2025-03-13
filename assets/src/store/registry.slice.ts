@@ -28,7 +28,7 @@ export const addRegistryComponent = createAsyncThunk(
   'registry/addRegistryComponent',
   async ({ baseURL, component }: { baseURL: string, component: RegistryComponentData }, { rejectWithValue }) => {
     try {
-      const response = await createRegistryComponent<RegistryComponentData>(baseURL, component);
+      const response = await createRegistryComponent<RegistryComponentData>(baseURL, component.metadata.type, component);
       return response.value;
     } catch (error) {
       return rejectWithValue((error as Error).message);
