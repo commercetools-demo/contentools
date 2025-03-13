@@ -45,9 +45,37 @@ export interface EditorState {
   showSidebar: boolean;
 }
 
+export interface PropertySchema {
+  type: 'string' | 'number' | 'boolean' | 'array' | 'object';
+  label: string;
+  defaultValue?: any;
+  required?: boolean;
+  options?: { value: any; label: string }[];
+}
+
+export interface ComponentMetadata {
+  type: string;
+  name: string;
+  icon?: string;
+  defaultProperties: Record<string, any>;
+  propertySchema: Record<string, PropertySchema>;
+}
+
+export interface RegistryComponentData {
+  metadata: ComponentMetadata;
+  deployedUrl: string;
+}
+
+export interface RegistryState {
+  components: RegistryComponentData[];
+  loading: boolean;
+  error: string | null;
+}
+
 export interface RootState {
   pages: PagesState;
   editor: EditorState;
+  registry: RegistryState;
 }
 
 export interface ApiResponse<T> {

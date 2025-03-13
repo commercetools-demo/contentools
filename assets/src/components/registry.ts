@@ -1,5 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
-import { Component } from '../types';
+import { Component, ComponentMetadata, RegistryComponentData } from '../types';
+import { store } from '../store';
+import { fetchRegistryComponents } from '../store/registry.slice';
 
 // Define component types
 export enum ComponentType {
@@ -7,25 +9,8 @@ export enum ComponentType {
   PRODUCT_SLIDER = 'productSlider',
 }
 
-// Component Metadata
-export interface ComponentMetadata {
-  type: ComponentType;
-  name: string;
-  icon?: string;
-  defaultProperties: Record<string, any>;
-  propertySchema: {
-    [key: string]: {
-      type: 'string' | 'number' | 'boolean' | 'array' | 'object';
-      label: string;
-      defaultValue?: any;
-      required?: boolean;
-      options?: { value: any; label: string }[];
-    };
-  };
-}
-
-// Component Registry
-const componentRegistry: Record<ComponentType, ComponentMetadata> = {
+// Default component metadata for fallback
+const defaultRegistry: Record<string, ComponentMetadata> = {
   [ComponentType.HERO_BANNER]: {
     type: ComponentType.HERO_BANNER,
     name: 'Hero Banner',
@@ -101,17 +86,36 @@ const componentRegistry: Record<ComponentType, ComponentMetadata> = {
   },
 };
 
+// Helper function to get registry components from store or load them if not available
+export const getRegistryComponentsFromStore = async (): Promise<RegistryComponentData[]> => {
+  const state = store.getState();
+  
+  if (state.registry.components.length === 0 && !state.registry.loading) {
+    await store.dispatch(fetchRegistryComponents());
+  }
+  
+  return store.getState().registry.components;
+};
+
 // Helper functions
-export const getComponentMetadata = (type: ComponentType): ComponentMetadata => {
-  return componentRegistry[type];
+export const getComponentMetadata = async (type: string): Promise<ComponentMetadata> => {
+  const components = await getRegistryComponentsFromStore();
+  const component = components.find(c => c.metadata.type === type);
+  
+  return component?.metadata || defaultRegistry[type] || null;
 };
 
-export const getAllComponentTypes = (): ComponentMetadata[] => {
-  return Object.values(componentRegistry);
+export const getAllComponentTypes = async (): Promise<ComponentMetadata[]> => {
+  const components = await getRegistryComponentsFromStore();
+  return components.map(c => c.metadata);
 };
 
-export const createComponent = (type: ComponentType, name?: string): Component => {
-  const metadata = getComponentMetadata(type);
+export const createComponent = async (type: string, name?: string): Promise<Component> => {
+  const metadata = await getComponentMetadata(type);
+  
+  if (!metadata) {
+    throw new Error(`Component type "${type}" not found in registry`);
+  }
   
   return {
     id: uuidv4(),
@@ -121,4 +125,4 @@ export const createComponent = (type: ComponentType, name?: string): Component =
   };
 };
 
-export default componentRegistry;
+export default defaultRegistry;

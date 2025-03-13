@@ -6,16 +6,17 @@ const __dirname = dirname(__filename);
 export default defineConfig({
   build: {
     lib: {
-      entry: resolve(__dirname, 'src/main.ts'),
-      name: 'LayoutCMS',
-      fileName: 'layout-cms',
+      entry: {
+        'layout-cms': resolve(__dirname, 'src/main.ts'),
+      },
       formats: ['es']
     },
     outDir: resolve(__dirname, 'public'),
     rollupOptions: {
       output: {
         assetFileNames: 'assets/[name][extname]',
-        manualChunks: undefined
+        entryFileNames: 'assets/[name].js',
+        chunkFileNames: 'assets/[name]-[hash].js',
       }
     }
   },
