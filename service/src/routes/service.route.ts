@@ -36,7 +36,17 @@ serviceRouter.get('/registry/:key', async (req, res, next) => {
 
 serviceRouter.post('/registry/:key', async (req, res, next) => {
   try {
+    // return error if key exists
     const { key } = req.params;
+    try {
+
+       const objectExists = await registryController.getCustomObject(key);
+      if (objectExists) {
+          return res.status(400).json({ error: 'Registry object with key already exists' });
+        }
+    } catch (error) {
+      
+    }
     const { value } = req.body;
     const object = await registryController.createCustomObject(key, value);
     res.status(201).json(object);
