@@ -1,5 +1,5 @@
 import { LitElement, css, html } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { customElement, property, state } from 'lit/decorators.js';
 import { Page } from '../../../types';
 
 @customElement('cms-sidebar')
@@ -18,6 +18,9 @@ export class CmsSidebar extends LitElement {
 
   @property({ type: String })
   businessUnitKey: string = '';
+  
+  @state()
+  private sidebarView: 'component-editor' | 'page-settings' | 'component-library' = 'page-settings';
 
   static styles = css`
     :host {
@@ -43,12 +46,12 @@ export class CmsSidebar extends LitElement {
     }
     
     .sidebar-content {
-      width: 300px;
+      width: 350px;
       border-left: 1px solid #ddd;
       background-color: white;
       position: fixed;
       right: 0;
-      top: 0px;
+      top: 0;
       bottom: 0;
       overflow-y: auto;
       transition: transform 0.3s, box-shadow 0.3s;
@@ -56,6 +59,8 @@ export class CmsSidebar extends LitElement {
       transform: translateX(0);
       z-index: 100;
       box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
     }
     
     :host(.hidden) .sidebar-content {
@@ -66,6 +71,75 @@ export class CmsSidebar extends LitElement {
     :host(.hidden) .sidebar-overlay {
       opacity: 0;
       pointer-events: none;
+    }
+    
+    .sidebar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 15px;
+    }
+    
+    .sidebar-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin: 0;
+    }
+    
+    .sidebar-close {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 20px;
+      color: #777;
+    }
+    
+    .sidebar-tabs {
+      display: flex;
+      margin-bottom: 20px;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .sidebar-tab {
+      padding: 8px 15px;
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+      font-size: 14px;
+      color: #777;
+      transition: all 0.2s;
+    }
+    
+    .sidebar-tab.active {
+      border-bottom-color: #3498db;
+      color: #3498db;
+    }
+    
+    .sidebar-content-body {
+      flex: 1;
+      overflow-y: auto;
+      position: relative;
+    }
+    
+    .sidebar-view {
+      opacity: 0;
+      visibility: hidden;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      transition: opacity 0.3s;
+      height: 0;
+    }
+    
+    .sidebar-view.active {
+      opacity: 1;
+      visibility: visible;
+      position: relative;
+      height: auto;
     }
   `;
 
@@ -81,6 +155,10 @@ export class CmsSidebar extends LitElement {
     if (changedProperties.has('showSidebar')) {
       this.updateVisibility();
     }
+    
+    if (changedProperties.has('selectedComponentId')) {
+      this.updateSidebarView();
+    }
   }
 
   private updateVisibility() {
@@ -88,6 +166,12 @@ export class CmsSidebar extends LitElement {
       this.classList.remove('hidden');
     } else {
       this.classList.add('hidden');
+    }
+  }
+  
+  private updateSidebarView() {
+    if (this.selectedComponentId) {
+      this.sidebarView = 'component-editor';
     }
   }
 
@@ -98,6 +182,23 @@ export class CmsSidebar extends LitElement {
       composed: true
     }));
   }
+  
+  private _handleCloseClick() {
+    this.dispatchEvent(new CustomEvent('close-sidebar', {
+      bubbles: true,
+      composed: true
+    }));
+  }
+  
+  // Make this method public so it can be called from outside
+  switchView(view: 'component-editor' | 'page-settings' | 'component-library') {
+    this.sidebarView = view;
+  }
+  
+  // Keep the private version for internal use
+  private _switchView(view: 'component-editor' | 'page-settings' | 'component-library') {
+    this.switchView(view);
+  }
 
   render() {
     if (!this.currentPage) return html``;
@@ -105,10 +206,50 @@ export class CmsSidebar extends LitElement {
     return html`
       <div class="sidebar-overlay" @click=${this._handleOverlayClick}></div>
       <div class="sidebar-content">
-        ${this.selectedComponentId 
-          ? this._renderComponentEditor() 
-          : this._renderPageSettings()
-        }
+        <div class="sidebar-header">
+          <h2 class="sidebar-title">
+            ${this.sidebarView === 'component-editor' ? 'Component Properties' : 
+              this.sidebarView === 'component-library' ? 'Component Library' : 'Page Settings'}
+          </h2>
+          <button class="sidebar-close" @click=${this._handleCloseClick}>×</button>
+        </div>
+        
+        <div class="sidebar-tabs">
+          ${this.selectedComponentId ? html`
+            <button 
+              class="sidebar-tab ${this.sidebarView === 'component-editor' ? 'active' : ''}"
+              @click=${() => this._switchView('component-editor')}
+            >
+              Properties
+            </button>
+          ` : ''}
+          <button 
+            class="sidebar-tab ${this.sidebarView === 'page-settings' ? 'active' : ''}"
+            @click=${() => this._switchView('page-settings')}
+          >
+            Page Settings
+          </button>
+          <button 
+            class="sidebar-tab ${this.sidebarView === 'component-library' ? 'active' : ''}"
+            @click=${() => this._switchView('component-library')}
+          >
+            Components
+          </button>
+        </div>
+        
+        <div class="sidebar-content-body">
+          <div class="sidebar-view ${this.sidebarView === 'component-editor' ? 'active' : ''}">
+            ${this._renderComponentEditor()}
+          </div>
+          
+          <div class="sidebar-view ${this.sidebarView === 'page-settings' ? 'active' : ''}">
+            ${this._renderPageSettings()}
+          </div>
+          
+          <div class="sidebar-view ${this.sidebarView === 'component-library' ? 'active' : ''}">
+            ${this._renderComponentLibrary()}
+          </div>
+        </div>
       </div>
     `;
   }
@@ -132,6 +273,16 @@ export class CmsSidebar extends LitElement {
     return html`<div>Component not found</div>`;
   }
   
+  private _renderComponentLibrary() {
+    return html`
+      <cms-component-library
+        @component-drag-start=${this._handleComponentDragStart}
+        .baseURL=${this.baseURL}
+        .businessUnitKey=${this.businessUnitKey}
+      ></cms-component-library>
+    `;
+  }
+  
   private _renderPageSettings() {
     return html`
       <h2>Page Settings</h2>
@@ -151,6 +302,15 @@ export class CmsSidebar extends LitElement {
 
   private _handlePageUpdated() {
     this.dispatchEvent(new CustomEvent('page-updated'));
+  }
+  
+  private _handleComponentDragStart(e: CustomEvent) {
+    // Forward the component-drag-start event to the parent
+    this.dispatchEvent(new CustomEvent('component-drag-start', {
+      detail: e.detail,
+      bubbles: true,
+      composed: true
+    }));
   }
 }
 

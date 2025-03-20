@@ -119,6 +119,12 @@ export class CmsApp extends connect(store)(LitElement) {
       margin-bottom: 20px;
     }
     
+    .cms-editor-buttons {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    
     .cms-back {
       display: inline-flex;
       align-items: center;
@@ -142,6 +148,28 @@ export class CmsApp extends connect(store)(LitElement) {
     
     .cms-settings-btn:hover {
       background-color: #eee;
+    }
+    
+    .cms-components-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background-color: #f5f5f5;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 6px 12px;
+      font-size: 14px;
+      cursor: pointer;
+      color: #555;
+      transition: all 0.2s;
+    }
+    
+    .cms-components-btn:hover {
+      background-color: #eee;
+    }
+    
+    .cms-components-btn .icon {
+      font-size: 16px;
     }
     
     .cms-loading {
@@ -294,8 +322,8 @@ export class CmsApp extends connect(store)(LitElement) {
             }
           </div>
           
-            <div>
-            
+          <div>
+          
           </div>
         </header>
         
@@ -324,6 +352,7 @@ export class CmsApp extends connect(store)(LitElement) {
                 @component-updated=${this._handleComponentUpdated}
                 @page-updated=${this._handlePageUpdated}
                 @close-sidebar=${this._handleCloseSidebar}
+                @component-drag-start=${this._handleComponentDragStart}
               ></cms-sidebar>
             ` 
             : ''
@@ -363,16 +392,15 @@ export class CmsApp extends connect(store)(LitElement) {
         return html`
           <div class="cms-editor-actions">
             <a class="cms-back" @click=${() => this._setView('list')}>← Back to Pages</a>
-            <button class="cms-settings-btn" @click=${this._openPageSettings} title="Page Settings">
-              ⚙️
-            </button>
+            <div class="cms-editor-buttons">
+              <button class="cms-components-btn" @click=${this._openComponentLibrary} title="Component Library">
+                <span class="icon">📦</span> Components
+              </button>
+              <button class="cms-settings-btn" @click=${this._openPageSettings} title="Page Settings">
+                ⚙️
+              </button>
+            </div>
           </div>
-          
-          <cms-component-library
-            @component-drag-start=${this._handleComponentDragStart}
-            .baseURL=${this.baseURL}
-            .businessUnitKey=${this.businessUnitKey}
-          ></cms-component-library>
           
           <cms-layout-grid
             .baseURL=${this.baseURL}
@@ -461,6 +489,16 @@ export class CmsApp extends connect(store)(LitElement) {
     if (this.view === 'editor' && this.currentPage) {
       // Clear selected component to show page settings in sidebar
       store.dispatch(selectComponent(null));
+      
+      // Open the sidebar with the page settings view
+      const sidebarEl = this.shadowRoot?.querySelector('cms-sidebar') as any;
+      if (sidebarEl) {
+        // Use the public method to switch views
+        if (typeof sidebarEl.switchView === 'function') {
+          sidebarEl.switchView('page-settings');
+        }
+      }
+      
       // Show the sidebar
       store.dispatch(setSidebarVisibility(true));
     }
@@ -468,5 +506,21 @@ export class CmsApp extends connect(store)(LitElement) {
 
   private _handleCloseSidebar() {
     store.dispatch(setSidebarVisibility(false));
+  }
+
+  private _openComponentLibrary() {
+    // Ensure we're in editor view
+    if (this.view === 'editor' && this.currentPage) {
+      // Open the sidebar with the component library view
+      const sidebarEl = this.shadowRoot?.querySelector('cms-sidebar') as any;
+      if (sidebarEl) {
+        // Use the public method to switch views
+        if (typeof sidebarEl.switchView === 'function') {
+          sidebarEl.switchView('component-library');
+        }
+      }
+      // Show the sidebar
+      store.dispatch(setSidebarVisibility(true));
+    }
   }
 }
