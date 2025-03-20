@@ -112,6 +112,10 @@ export class CmsApp extends connect(store)(LitElement) {
       transition: all 0.3s;
     }
     
+    .cms-content.with-sidebar {
+      width: calc(100% - 350px);
+    }
+    
     .cms-editor-actions {
       display: flex;
       align-items: center;
@@ -323,12 +327,23 @@ export class CmsApp extends connect(store)(LitElement) {
           </div>
           
           <div>
-          
+            ${this.view === 'editor' && this.currentPage 
+              ? html`
+                <button 
+                  class="cms-toggle-sidebar" 
+                  @click=${this._toggleSidebar}
+                  title=${this.showSidebar ? 'Hide Sidebar' : 'Show Sidebar'}
+                >
+                  ${this.showSidebar ? '⇢' : '⇠'}
+                </button>
+              ` 
+              : ''
+            }
           </div>
         </header>
         
         <div class="cms-main">
-          <div class="cms-content">
+          <div class="cms-content ${this.showSidebar && this.view === 'editor' ? 'with-sidebar' : ''}">
             ${this.error ? html`<div class="cms-error">${this.error}</div>` : ''}
             
             ${this.loading && !this.pages.length 

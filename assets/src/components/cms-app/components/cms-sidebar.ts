@@ -25,52 +25,24 @@ export class CmsSidebar extends LitElement {
   static styles = css`
     :host {
       display: block;
-    }
-    
-    .sidebar-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: rgba(0, 0, 0, 0.3);
-      z-index: 99;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.3s;
-    }
-    
-    :host(:not(.hidden)) .sidebar-overlay {
-      opacity: 1;
-      pointer-events: auto;
+      height: 100%;
     }
     
     .sidebar-content {
       width: 350px;
+      height: 100%;
       border-left: 1px solid #ddd;
       background-color: white;
-      position: fixed;
-      right: 0;
-      top: 0;
-      bottom: 0;
       overflow-y: auto;
       transition: transform 0.3s, box-shadow 0.3s;
       padding: 20px;
-      transform: translateX(0);
-      z-index: 100;
-      box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
       display: flex;
       flex-direction: column;
+      box-sizing: border-box;
     }
     
     :host(.hidden) .sidebar-content {
-      transform: translateX(100%);
-      box-shadow: none;
-    }
-    
-    :host(.hidden) .sidebar-overlay {
-      opacity: 0;
-      pointer-events: none;
+      display: none;
     }
     
     .sidebar-header {
@@ -175,14 +147,6 @@ export class CmsSidebar extends LitElement {
     }
   }
 
-  private _handleOverlayClick() {
-    // Close the sidebar when clicking on the overlay
-    this.dispatchEvent(new CustomEvent('close-sidebar', {
-      bubbles: true,
-      composed: true
-    }));
-  }
-  
   private _handleCloseClick() {
     this.dispatchEvent(new CustomEvent('close-sidebar', {
       bubbles: true,
@@ -204,7 +168,6 @@ export class CmsSidebar extends LitElement {
     if (!this.currentPage) return html``;
     
     return html`
-      <div class="sidebar-overlay" @click=${this._handleOverlayClick}></div>
       <div class="sidebar-content">
         <div class="sidebar-header">
           <h2 class="sidebar-title">
