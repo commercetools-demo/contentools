@@ -1,8 +1,7 @@
-import { LitElement, html, css } from 'lit';
+import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { fetchCustomObject, fetchCustomObjects } from '../../utils/api';
-import { Page } from '../../types';
-import '../cms-app/components/layout-grid';
+import { Page, Component } from '../../types';
 import '../registry-components';
 
 @customElement('cms-renderer')
@@ -59,6 +58,10 @@ export class CmsRenderer extends LitElement {
       margin-bottom: 20px;
       border: 1px solid #ffeeba;
     }
+    
+    .component-container {
+      margin-bottom: 30px;
+    }
   `;
 
   connectedCallback() {
@@ -108,6 +111,46 @@ export class CmsRenderer extends LitElement {
     }
   }
 
+  /**
+   * Renders a component template based on its type and properties
+   */
+  private renderComponent(component: Component) {
+    const { type, properties } = component;
+    
+    // Create a tag template for the component based on its type
+    switch (type) {
+      case 'heroBanner':
+        // HeroBanner component
+        return html`
+          <hero-banner
+            .title=${properties.title || ''}
+            .subtitle=${properties.subtitle || ''}
+            .imageUrl=${properties.imageUrl || ''}
+            .ctaText=${properties.ctaText || ''}
+            .ctaUrl=${properties.ctaUrl || '#'}
+          ></hero-banner>
+        `;
+        
+      case 'productSlider':
+        // ProductSlider component
+        return html`
+          <product-slider
+            .title=${properties.title || ''}
+            .products=${properties.products || []}
+          ></product-slider>
+        `;
+        
+      default:
+        // Handle unknown component types
+        console.warn(`Unknown component type: ${type}`);
+        return html`
+          <div class="unknown-component">
+            <p>Unknown component type: ${type}</p>
+          </div>
+        `;
+    }
+  }
+
   render() {
     if (this.error) {
       return html`<div class="error">${this.error}</div>`;
@@ -126,13 +169,13 @@ export class CmsRenderer extends LitElement {
     }
     
     return html`
-      <cms-layout-grid
-        .baseURL=${this.baseURL}
-        .businessUnitKey=${this.businessUnitKey}
-        .rows=${this.page.layout.rows}
-        .components=${this.page.components}
-        .readonly=${true}
-      ></cms-layout-grid>
+      <div class="page-content">
+        ${this.page.components.map(component => html`
+          <div class="component-container">
+            ${this.renderComponent(component)}
+          </div>
+        `)}
+      </div>
     `;
   }
 }
