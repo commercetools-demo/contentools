@@ -187,7 +187,7 @@ export class ProductSlider extends LitElement {
   }
 
   private nextSlide() {
-    const maxSlide = Math.max(0, this.skus.length - this.slidesToShow);
+    const maxSlide = Math.max(0, this.skus?.length - this.slidesToShow);
     if (this.currentSlide < maxSlide) {
       this.currentSlide++;
     } else {
@@ -201,7 +201,7 @@ export class ProductSlider extends LitElement {
       <div class="slider-container">
         <h2 class="slider-title">${this.title}</h2>
         
-        ${this.skus && this.skus.length 
+        ${this.skus && this.skus?.length 
           ? html`
             <div class="slider-wrapper">
               <div 
@@ -232,7 +232,7 @@ export class ProductSlider extends LitElement {
               <button 
                 class="slider-arrow" 
                 @click=${this.nextSlide}
-                ?disabled=${this.currentSlide >= Math.max(0, this.skus.length - this.slidesToShow)}
+                ?disabled=${this.currentSlide >= Math.max(0, this.skus?.length - this.slidesToShow)}
               >→</button>
             </div>
           `

@@ -38,7 +38,7 @@ export const renderProductSliderPreview = (component: Component): TemplateResult
       </div>
       <div class="preview-content">
         <p><strong>Title:</strong> ${props.title}</p>
-        <p><strong>Products:</strong> ${props.skus.length} SKUs</p>
+        <p><strong>Products:</strong> ${props.skus?.length} SKUs</p>
         <p><strong>Settings:</strong> ${props.slidesToShow} slides ${props.autoplay ? '(autoplay)' : ''}</p>
       </div>
     </div>
