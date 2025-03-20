@@ -12,6 +12,7 @@ import './components/layout-grid';
 import './components/page-form';
 import './components/page-list';
 import './components/property-editor';
+import './components/cms-sidebar';
 
 @customElement('cms-app')
 export class CmsApp extends connect(store)(LitElement) {
@@ -41,7 +42,7 @@ export class CmsApp extends connect(store)(LitElement) {
   selectedComponentId: string | null = null;
 
   @watch('editor.showSidebar')
-  showSidebar = true;
+  showSidebar = false;
     
   @state()
   private view: 'list' | 'editor' | 'new' = 'list';
@@ -108,40 +109,39 @@ export class CmsApp extends connect(store)(LitElement) {
       flex: 1;
       overflow-y: auto;
       padding: 20px;
-      transition: margin-right 0.3s;
+      transition: all 0.3s;
     }
     
-    .cms-content.with-sidebar {
-      margin-right: 300px;
-    }
-    
-    .cms-sidebar {
-      width: 300px;
-      border-left: 1px solid #ddd;
-      background-color: white;
-      position: fixed;
-      right: 0;
-      top: 61px;
-      bottom: 0;
-      overflow-y: auto;
-      transition: transform 0.3s;
-      padding: 20px;
-      transform: translateX(0);
-    }
-    
-    .cms-sidebar.hidden {
-      transform: translateX(100%);
+    .cms-editor-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
     }
     
     .cms-back {
       display: inline-flex;
       align-items: center;
       gap: 5px;
-      margin-bottom: 20px;
       color: #3498db;
       cursor: pointer;
       font-size: 14px;
       text-decoration: none;
+    }
+    
+    .cms-settings-btn {
+      background: none;
+      border: none;
+      font-size: 18px;
+      cursor: pointer;
+      color: #555;
+      padding: 5px;
+      border-radius: 4px;
+      transition: background-color 0.2s;
+    }
+    
+    .cms-settings-btn:hover {
+      background-color: #eee;
     }
     
     .cms-loading {
@@ -294,24 +294,13 @@ export class CmsApp extends connect(store)(LitElement) {
             }
           </div>
           
-          <div>
-            ${this.view === 'editor' && this.currentPage 
-              ? html`
-                <button 
-                  class="cms-toggle-sidebar" 
-                  @click=${this._toggleSidebar}
-                  title=${this.showSidebar ? 'Hide Sidebar' : 'Show Sidebar'}
-                >
-                  ${this.showSidebar ? '⇢' : '⇠'}
-                </button>
-              ` 
-              : ''
-            }
+            <div>
+            
           </div>
         </header>
         
         <div class="cms-main">
-          <div class="cms-content ${this.showSidebar && this.view === 'editor' ? 'with-sidebar' : ''}">
+          <div class="cms-content">
             ${this.error ? html`<div class="cms-error">${this.error}</div>` : ''}
             
             ${this.loading && !this.pages.length 
@@ -324,11 +313,18 @@ export class CmsApp extends connect(store)(LitElement) {
             }
           </div>
           
-          ${this.view === 'editor' && this.showSidebar 
+          ${this.view === 'editor'
             ? html`
-              <div class="cms-sidebar ${this.showSidebar ? '' : 'hidden'}">
-                ${this._renderSidebar()}
-              </div>
+              <cms-sidebar
+                .currentPage=${this.currentPage}
+                .selectedComponentId=${this.selectedComponentId}
+                .showSidebar=${this.showSidebar}
+                .baseURL=${this.baseURL}
+                .businessUnitKey=${this.businessUnitKey}
+                @component-updated=${this._handleComponentUpdated}
+                @page-updated=${this._handlePageUpdated}
+                @close-sidebar=${this._handleCloseSidebar}
+              ></cms-sidebar>
             ` 
             : ''
           }
@@ -365,7 +361,12 @@ export class CmsApp extends connect(store)(LitElement) {
         }
         
         return html`
-          <a class="cms-back" @click=${() => this._setView('list')}>← Back to Pages</a>
+          <div class="cms-editor-actions">
+            <a class="cms-back" @click=${() => this._setView('list')}>← Back to Pages</a>
+            <button class="cms-settings-btn" @click=${this._openPageSettings} title="Page Settings">
+              ⚙️
+            </button>
+          </div>
           
           <cms-component-library
             @component-drag-start=${this._handleComponentDragStart}
@@ -399,41 +400,13 @@ export class CmsApp extends connect(store)(LitElement) {
     }
   }
 
-  private _renderSidebar() {
-    if (!this.currentPage) return html``;
-    
-    if (this.selectedComponentId) {
-      const component = this.currentPage.components.find(c => c.id === this.selectedComponentId);
-      
-      if (component) {
-        return html`
-          <cms-property-editor
-            .component=${component}
-            @component-updated=${this._handleComponentUpdated}
-            .baseURL=${this.baseURL}
-            .businessUnitKey=${this.businessUnitKey}
-          ></cms-property-editor>
-        `;
-      }
-    }
-    
-    return html`
-      <h2>Page Settings</h2>
-      <cms-page-form
-        .isEdit=${true}
-        .page=${this.currentPage}
-        .baseURL=${this.baseURL}
-        .businessUnitKey=${this.businessUnitKey}
-        @page-updated=${this._handlePageUpdated}
-      ></cms-page-form>
-    `;
-  }
-
   private _setView(view: 'list' | 'editor' | 'new') {
     this.view = view;
     
     if (view !== 'editor') {
       store.dispatch(selectComponent(null));
+    } else {
+      store.dispatch(setSidebarVisibility(false));
     }
   }
 
@@ -481,5 +454,19 @@ export class CmsApp extends connect(store)(LitElement) {
   
   private _handleComponentDropped() {
     this._activeComponentType = null;
+  }
+
+  private _openPageSettings() {
+    // Ensure we're in editor view
+    if (this.view === 'editor' && this.currentPage) {
+      // Clear selected component to show page settings in sidebar
+      store.dispatch(selectComponent(null));
+      // Show the sidebar
+      store.dispatch(setSidebarVisibility(true));
+    }
+  }
+
+  private _handleCloseSidebar() {
+    store.dispatch(setSidebarVisibility(false));
   }
 }

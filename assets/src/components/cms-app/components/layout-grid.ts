@@ -4,7 +4,7 @@ import { connect } from 'lit-redux-watch';
 import { store } from '../../../store';
 import { GridRow, Component } from '../../../types';
 import { addRow, removeRow } from '../../../store/pages.slice';
-import { selectComponent } from '../../../store/editor.slice';
+import { selectComponent, setSidebarVisibility } from '../../../store/editor.slice';
 import { createComponent } from '../../registry';
 import './grid-row';
 
@@ -125,6 +125,8 @@ export class LayoutGrid extends connect(store)(LitElement) {
     // If the cell has a component, select it for editing
     if (componentId) {
       store.dispatch(selectComponent(componentId));
+      // Open the sidebar when a component is selected
+      store.dispatch(setSidebarVisibility(true));
     } else {
       store.dispatch(selectComponent(null));
     }
@@ -161,6 +163,9 @@ export class LayoutGrid extends connect(store)(LitElement) {
         // Select the new component
         this.selectedCell = { rowId, cellId };
         store.dispatch(selectComponent(newComponent.id));
+        
+        // Open the sidebar when a new component is added
+        store.dispatch(setSidebarVisibility(true));
         
         // Reset the active component type in the parent by dispatching a custom event
         this.dispatchEvent(new CustomEvent('component-dropped', {

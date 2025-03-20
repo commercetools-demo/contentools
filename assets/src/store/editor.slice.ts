@@ -4,7 +4,7 @@ import { EditorState } from '../types';
 const initialState: EditorState = {
   selectedComponentId: null,
   draggingComponentType: null,
-  showSidebar: true,
+  showSidebar: false,
 };
 
 const editorSlice = createSlice({
@@ -13,7 +13,6 @@ const editorSlice = createSlice({
   reducers: {
     selectComponent: (state, action: PayloadAction<string | null>) => {
       state.selectedComponentId = action.payload;
-      state.showSidebar = action.payload !== null;
     },
     setDraggingComponentType: (state, action: PayloadAction<string | null>) => {
       state.draggingComponentType = action.payload;
