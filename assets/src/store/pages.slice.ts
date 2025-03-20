@@ -79,16 +79,26 @@ export const fetchPages = createAsyncThunk('pages/fetchPages', async ({baseUrl, 
     // First try to get from session storage with business unit specific key
     const storageKey = `${LOCAL_STORAGE_KEY_PREFIX}_${businessUnitKey}`;
     const storedPages = sessionStorage.getItem(storageKey);
-    if (storedPages) {
-      return JSON.parse(storedPages) as Page[];
-    }
     
-    // If not in session storage, fetch from API
-    const pages = await fetchPagesApi(baseUrl);
-    return pages;
+    // Load from session storage if available
+    const pagesFromStorage = storedPages ? JSON.parse(storedPages) as Page[] : null;
+    
+    // Return pages from storage, or an empty array if not available
+    return pagesFromStorage || [];
   } catch (error) {
-    // If API fails, fallback to empty array
+    // If session storage access fails, fallback to empty array
     return [] as Page[];
+  }
+});
+
+// Separate thunk for background API fetching
+export const syncPagesWithApi = createAsyncThunk('pages/syncPagesWithApi', async ({baseUrl, businessUnitKey}: {baseUrl: string, businessUnitKey: string}) => {
+  try {
+    // Fetch from API
+    const pagesFromApi = await fetchPagesApi(baseUrl);
+    return pagesFromApi;
+  } catch (error) {
+    throw new Error('Failed to fetch pages from API');
   }
 });
 
@@ -394,6 +404,48 @@ const pagesSlice = createSlice({
       .addCase(fetchPages.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || 'Failed to fetch pages';
+      })
+      
+      // Sync pages with API
+      .addCase(syncPagesWithApi.pending, (state) => {
+        // Don't set loading true here since this is a background operation
+        state.error = null;
+      })
+      .addCase(syncPagesWithApi.fulfilled, (state, action) => {
+        const apiPages = action.payload;
+        
+        // If we have new pages from the API that aren't in our state, add them
+        for (const apiPage of apiPages) {
+          const existingPageIndex = state.pages.findIndex(p => p.key === apiPage.key);
+          
+          if (existingPageIndex === -1) {
+            // This is a new page, add it
+            state.pages.push(apiPage);
+          } else {
+            // This page exists but might have changes from the API
+            // Only update if there are no unsaved changes to this page
+            if (state.currentPage?.key !== apiPage.key || !state.unsavedChanges) {
+              state.pages[existingPageIndex] = apiPage;
+              
+              // If this is the current page, update it too
+              if (state.currentPage?.key === apiPage.key) {
+                state.currentPage = apiPage;
+              }
+            }
+          }
+        }
+        
+        // Set businessUnitKey from the first page if available
+        if (apiPages.length > 0 && apiPages[0].businessUnitKey) {
+          state.businessUnitKey = apiPages[0].businessUnitKey;
+        }
+        
+        // Save synchronized state to session storage
+        saveToSessionStorage(state.pages, state.businessUnitKey);
+      })
+      .addCase(syncPagesWithApi.rejected, (state, action) => {
+        // Don't update loading state since this is a background operation
+        state.error = action.error.message || 'Failed to sync pages with API';
       })
       
       // Fetch page

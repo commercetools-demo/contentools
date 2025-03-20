@@ -3,7 +3,7 @@ import { connect, watch } from 'lit-redux-watch';
 import { customElement, property, state } from 'lit/decorators.js';
 import { store } from '../../store';
 import { selectComponent, setSidebarVisibility } from '../../store/editor.slice';
-import { fetchPages, updatePage } from '../../store/pages.slice';
+import { fetchPages, syncPagesWithApi, updatePage } from '../../store/pages.slice';
 import { Page } from '../../types';
 import { ComponentType } from '../registry';
 
@@ -49,6 +49,11 @@ export class CmsApp extends connect(store)(LitElement) {
   @state()
   private _activeComponentType: ComponentType | null = null;
 
+  // Track the interval ID for auto-refresh
+  private _refreshInterval: number | null = null;
+  
+  // Auto-refresh interval in milliseconds (5 minutes)
+  private _refreshIntervalTime = 5 * 60 * 1000;
 
   static styles = css`
     :host {
@@ -226,7 +231,43 @@ export class CmsApp extends connect(store)(LitElement) {
 
   connectedCallback() {
     super.connectedCallback();
-    store.dispatch(fetchPages({baseUrl: `${this.baseURL}/${this.businessUnitKey}`, businessUnitKey: this.businessUnitKey}));
+    
+    // First load pages from session storage for immediate display
+    store.dispatch(fetchPages({
+      baseUrl: `${this.baseURL}/${this.businessUnitKey}`, 
+      businessUnitKey: this.businessUnitKey
+    }));
+    
+    // Then fetch pages from API in the background and sync with session storage
+    setTimeout(() => {
+      this._syncPagesWithApi();
+    }, 100); // Small delay to ensure UI renders first
+    
+    // Set up auto-refresh for pages
+    this._refreshInterval = window.setInterval(() => {
+      // Only sync if there are no unsaved changes
+      if (!this.unsavedChanges) {
+        this._syncPagesWithApi();
+      }
+    }, this._refreshIntervalTime);
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    
+    // Clear the auto-refresh interval when the component is disconnected
+    if (this._refreshInterval !== null) {
+      window.clearInterval(this._refreshInterval);
+      this._refreshInterval = null;
+    }
+  }
+  
+  // Helper method to sync pages with API
+  private _syncPagesWithApi() {
+    store.dispatch(syncPagesWithApi({
+      baseUrl: `${this.baseURL}/${this.businessUnitKey}`, 
+      businessUnitKey: this.businessUnitKey
+    }));
   }
 
   render() {
@@ -419,7 +460,8 @@ export class CmsApp extends connect(store)(LitElement) {
   }
 
   private _handleDiscardChanges() {
-    store.dispatch(fetchPages({baseUrl: `${this.baseURL}/${this.businessUnitKey}`, businessUnitKey: this.businessUnitKey}));
+    // Fetch the latest data from API to replace current state
+    this._syncPagesWithApi();
   }
   
   private _handleComponentDragStart(e: CustomEvent) {
