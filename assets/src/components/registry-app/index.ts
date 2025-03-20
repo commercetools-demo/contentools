@@ -4,7 +4,7 @@ import { connect, watch } from 'lit-redux-watch';
 import { store } from '../../store';
 import { RegistryComponentData } from '../../types';
 import { fetchRegistryComponents, addRegistryComponent, updateRegistryComponentThunk, removeRegistryComponent } from '../../store/registry.slice';
-import '../registry-components';
+import '../registry-components/renderable-components';
 import './components/component-form';
 import './components/component-table';
 import './components/header';

@@ -1,6 +1,6 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import { getAllComponentTypes, ComponentType } from '../../registry';
+import { getAllComponentTypes } from '../../registry';
 import { ComponentMetadata } from '../../../types';
 
 @customElement('cms-component-library')
@@ -105,7 +105,7 @@ export class ComponentLibrary extends LitElement {
 
   private _handleDragStart(e: DragEvent) {
     const target = e.target as HTMLElement;
-    const componentType = target.getAttribute('data-component-type') as ComponentType;
+    const componentType = target.getAttribute('data-component-type');
     
     if (e.dataTransfer && componentType) {
       // Set data for HTML5 drag and drop

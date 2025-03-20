@@ -59,6 +59,7 @@ export interface ComponentMetadata {
   icon?: string;
   defaultProperties: Record<string, any>;
   propertySchema: Record<string, PropertySchema>;
+  isBuiltIn?: boolean;
 }
 
 export interface RegistryComponentData {

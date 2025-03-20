@@ -68,6 +68,17 @@ serviceRouter.put('/registry/:key', async (req, res, next) => {
   }
 });
 
+serviceRouter.delete('/registry/:key', async (req, res, next) => {
+  try {
+    const { key } = req.params;
+    await registryController.deleteCustomObject(key);
+    res.status(204).send();
+  } catch (error) {
+    logger.error(`Failed to update registry object with key ${req.params.key}:`, error);
+    next(error);
+  }
+});
+
 
 serviceRouter.get('/:businessUnitKey/custom-objects', async (req, res, next) => {
   try {

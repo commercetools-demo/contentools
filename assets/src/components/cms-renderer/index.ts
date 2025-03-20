@@ -2,7 +2,7 @@ import { LitElement, html, css, nothing } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { fetchCustomObject, fetchCustomObjects } from '../../utils/api';
 import { Page, Component } from '../../types';
-import '../registry-components';
+import '../registry-components/renderable-components';
 
 @customElement('cms-renderer')
 export class CmsRenderer extends LitElement {

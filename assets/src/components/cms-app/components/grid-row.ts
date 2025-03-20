@@ -207,7 +207,7 @@ export class GridRowComponent extends LitElement {
               @drop=${!this.readonly ? (e: DragEvent) => this._handleDrop(e, cell.id) : null}
             >
               ${component 
-                ? renderComponentPreview(component) 
+                ? component.name 
                 : (!this.readonly ? html`<span>Drop component here</span>` : '')
               }
               

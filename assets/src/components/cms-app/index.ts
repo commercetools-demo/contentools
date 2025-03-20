@@ -5,7 +5,6 @@ import { store } from '../../store';
 import { selectComponent, setSidebarVisibility } from '../../store/editor.slice';
 import { fetchPages, syncPagesWithApi, updatePage, saveCurrentPage } from '../../store/pages.slice';
 import { Page } from '../../types';
-import { ComponentType } from '../registry';
 
 import './components/component-library';
 import './components/layout-grid';
