@@ -411,7 +411,7 @@ export class CmsApp extends connect(store)(LitElement) {
   private async _handleSaveChanges() {
     if (this.currentPage) {
       try {
-        await store.dispatch(updatePage({baseUrl: this.baseURL, page: this.currentPage})).unwrap();
+        await store.dispatch(updatePage({baseUrl: `${this.baseURL}/${this.businessUnitKey}`, page: this.currentPage})).unwrap();
       } catch (error) {
         console.error('Failed to save changes:', error);
       }
@@ -419,7 +419,7 @@ export class CmsApp extends connect(store)(LitElement) {
   }
 
   private _handleDiscardChanges() {
-    store.dispatch(fetchPages({baseUrl: this.baseURL, businessUnitKey: this.businessUnitKey}));
+    store.dispatch(fetchPages({baseUrl: `${this.baseURL}/${this.businessUnitKey}`, businessUnitKey: this.businessUnitKey}));
   }
   
   private _handleComponentDragStart(e: CustomEvent) {

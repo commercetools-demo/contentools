@@ -43,7 +43,7 @@ export async function fetchCustomObjects<T>(baseURL: string): Promise<ApiRespons
  * Update a custom object
  */
 export async function updateCustomObject<T>(baseURL: string, key: string, data: T): Promise<ApiResponse<T>> {
-  return fetchApi<T>(`${baseURL}/custom-object/${key}`, {
+  return fetchApi<T>(`${baseURL}/custom-objects/${key}`, {
     method: 'PUT',
     body: JSON.stringify(data),
   });
@@ -57,6 +57,19 @@ export async function createCustomObject<T>(baseURL: string, data: T): Promise<A
     method: 'POST',
     body: JSON.stringify(data),
   });
+}
+
+/**
+ * Delete a custom object
+ */
+export async function deleteCustomObject(baseURL: string, key: string): Promise<void> {
+  const response = await fetch(`${baseURL}/custom-objects/${key}`, {
+    method: 'DELETE',
+  });
+  
+  if (!response.ok) {
+    throw new Error(`API request failed: ${response.status} ${response.statusText}`);
+  }
 }
 
 /**

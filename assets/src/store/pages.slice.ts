@@ -3,64 +3,60 @@ import { v4 as uuidv4 } from 'uuid';
 import { Page, PagesState, Component, GridRow, GridCell, ApiResponse } from '../types';
 import { debounce } from '../utils/debounce';
 import { NUMBER_OF_COLUMNS } from '../constants';
+import { 
+  fetchCustomObjects, 
+  fetchCustomObject, 
+  createCustomObject, 
+  updateCustomObject,
+  deleteCustomObject
+} from '../utils/api';
 
 const LOCAL_STORAGE_KEY_PREFIX = 'cms_pages';
 const DEBOUNCE_DELAY = 1000;
 
-
+// Helper functions for API calls, now using the api utilities
 const fetchPagesApi = async (baseUrl: string): Promise<Page[]> => {
-  const response = await fetch(`${baseUrl}/custom-objects`);
-  if (!response.ok) {
+  try {
+    const data = await fetchCustomObjects<Page>(baseUrl);
+    return data.map(item => item.value);
+  } catch (error) {
     throw new Error('Failed to fetch pages');
   }
-  const data: ApiResponse<Page>[] = await response.json();
-  return data.map(item => item.value);
 };
 
 const fetchPageApi = async (baseUrl: string, key: string): Promise<Page> => {
-  const response = await fetch(`${baseUrl}/custom-objects/${key}`);
-  if (!response.ok) {
+  try {
+    const data = await fetchCustomObject<Page>(baseUrl, key);
+    return data.value;
+  } catch (error) {
     throw new Error(`Failed to fetch page with key: ${key}`);
   }
-  const data: ApiResponse<Page> = await response.json();
-  return data.value;
 };
 
 const createPageApi = async (baseUrl: string, page: Page): Promise<Page> => {
-  const response = await fetch(`${baseUrl}/custom-objects/${page.key}`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ value: page }),
-  });
-  if (!response.ok) {
+  try {
+    // The createCustomObject expects just the data to be passed
+    const data = await createCustomObject<{ value: Page }>(baseUrl, { value: page });
+    return data.value.value;
+  } catch (error) {
     throw new Error('Failed to create page');
   }
-  const data: ApiResponse<Page> = await response.json();
-  return data.value;
 };
 
 const updatePageApi = async (baseUrl: string, page: Page): Promise<Page> => {
-  const response = await fetch(`${baseUrl}/custom-objects/${page.key}`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ value: page }),
-  });
-  if (!response.ok) {
+  try {
+    // The updateCustomObject expects just the data to be passed
+    const data = await updateCustomObject<{ value: Page }>(baseUrl, page.key, { value: page });
+    return data.value.value;
+  } catch (error) {
     throw new Error(`Failed to update page with key: ${page.key}`);
   }
-  const data: ApiResponse<Page> = await response.json();
-  return data.value;
 };
 
 const deletePageApi = async (baseUrl: string, key: string): Promise<void> => {
-  const response = await fetch(`${baseUrl}/custom-objects/${key}`, {
-    method: 'DELETE',
-  });
-  if (!response.ok) {
+  try {
+    await deleteCustomObject(baseUrl, key);
+  } catch (error) {
     throw new Error(`Failed to delete page with key: ${key}`);
   }
 };
