@@ -36,8 +36,8 @@ const fetchPageApi = async (baseUrl: string, key: string): Promise<Page> => {
 const createPageApi = async (baseUrl: string, page: Page): Promise<Page> => {
   try {
     // The createCustomObject expects just the data to be passed
-    const data = await createCustomObject<{ value: Page }>(baseUrl, { value: page });
-    return data.value.value;
+    const data = await createCustomObject<Page>(baseUrl, page);
+    return data.value;
   } catch (error) {
     throw new Error('Failed to create page');
   }
@@ -46,8 +46,8 @@ const createPageApi = async (baseUrl: string, page: Page): Promise<Page> => {
 const updatePageApi = async (baseUrl: string, page: Page): Promise<Page> => {
   try {
     // The updateCustomObject expects just the data to be passed
-    const data = await updateCustomObject<{ value: Page }>(baseUrl, page.key, { value: page });
-    return data.value.value;
+    const data = await updateCustomObject<Page>(baseUrl, page.key, page);
+    return data.value as Page;
   } catch (error) {
     throw new Error(`Failed to update page with key: ${page.key}`);
   }

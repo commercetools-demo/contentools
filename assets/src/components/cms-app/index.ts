@@ -3,7 +3,7 @@ import { connect, watch } from 'lit-redux-watch';
 import { customElement, property, state } from 'lit/decorators.js';
 import { store } from '../../store';
 import { selectComponent, setSidebarVisibility } from '../../store/editor.slice';
-import { fetchPages, syncPagesWithApi, updatePage } from '../../store/pages.slice';
+import { fetchPages, syncPagesWithApi, updatePage, saveCurrentPage } from '../../store/pages.slice';
 import { Page } from '../../types';
 import { ComponentType } from '../registry';
 
@@ -462,6 +462,9 @@ export class CmsApp extends connect(store)(LitElement) {
   private _handleDiscardChanges() {
     // Fetch the latest data from API to replace current state
     this._syncPagesWithApi();
+    
+    // Explicitly set unsavedChanges to false in the store
+    store.dispatch(saveCurrentPage());
   }
   
   private _handleComponentDragStart(e: CustomEvent) {

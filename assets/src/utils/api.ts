@@ -45,7 +45,7 @@ export async function fetchCustomObjects<T>(baseURL: string): Promise<ApiRespons
 export async function updateCustomObject<T>(baseURL: string, key: string, data: T): Promise<ApiResponse<T>> {
   return fetchApi<T>(`${baseURL}/custom-objects/${key}`, {
     method: 'PUT',
-    body: JSON.stringify(data),
+    body: JSON.stringify({value: data}),
   });
 }
 
@@ -55,7 +55,7 @@ export async function updateCustomObject<T>(baseURL: string, key: string, data: 
 export async function createCustomObject<T>(baseURL: string, data: T): Promise<ApiResponse<T>> {
   return fetchApi<T>(`${baseURL}/custom-objects`, {
     method: 'POST',
-    body: JSON.stringify(data),
+    body: JSON.stringify({value: data}),
   });
 }
 
