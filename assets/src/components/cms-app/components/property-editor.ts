@@ -4,7 +4,7 @@ import { connect } from 'lit-redux-watch';
 import { store } from '../../../store';
 import { Component, ComponentMetadata } from '../../../types';
 import { getComponentMetadata } from '../../registry';
-import { updateComponent } from '../../../store/pages.slice';
+import { updateComponent, removeComponent } from '../../../store/pages.slice';
 
 @customElement('cms-property-editor')
 export class PropertyEditor extends connect(store)(LitElement) {
@@ -110,7 +110,7 @@ export class PropertyEditor extends connect(store)(LitElement) {
     .actions {
       margin-top: 20px;
       display: flex;
-      justify-content: flex-end;
+      justify-content: space-between;
     }
     
     .save-button {
@@ -122,7 +122,71 @@ export class PropertyEditor extends connect(store)(LitElement) {
       cursor: pointer;
       font-size: 14px;
     }
+    
+    .delete-button {
+      background: #f44336;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 8px 15px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    
+    .delete-confirm-dialog {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    
+    .dialog-content {
+      background: white;
+      padding: 20px;
+      border-radius: 4px;
+      max-width: 400px;
+      width: 100%;
+    }
+    
+    .dialog-title {
+      font-size: 18px;
+      margin-top: 0;
+      margin-bottom: 15px;
+    }
+    
+    .dialog-buttons {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 20px;
+    }
+    
+    .dialog-buttons button {
+      margin-left: 10px;
+      padding: 8px 15px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    
+    .cancel-button {
+      background: #9e9e9e;
+      color: white;
+    }
+    
+    .confirm-button {
+      background: #f44336;
+      color: white;
+    }
   `;
+  
+  @state()
+  private showDeleteConfirm = false;
   
   updated(changedProperties: Map<string, any>) {
     if (changedProperties.has('component') && this.component) {
@@ -246,10 +310,50 @@ export class PropertyEditor extends connect(store)(LitElement) {
         })}
         
         <div class="actions">
+          <button class="delete-button" @click=${this.showDeleteConfirmation}>Delete Component</button>
           <button class="save-button" @click=${this.saveChanges}>Save Changes</button>
         </div>
       </div>
+      
+      ${this.renderDeleteConfirmDialog()}
     `;
+  }
+  
+  renderDeleteConfirmDialog() {
+    if (!this.showDeleteConfirm) return '';
+    
+    return html`
+      <div class="delete-confirm-dialog">
+        <div class="dialog-content">
+          <h3 class="dialog-title">Delete Component</h3>
+          <p>Are you sure you want to delete the component "${this.component?.name}"? This action cannot be undone.</p>
+          <div class="dialog-buttons">
+            <button class="cancel-button" @click=${() => this.showDeleteConfirm = false}>Cancel</button>
+            <button class="confirm-button" @click=${this.deleteComponent}>Delete</button>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+  
+  showDeleteConfirmation() {
+    this.showDeleteConfirm = true;
+  }
+  
+  deleteComponent() {
+    if (this.component) {
+      store.dispatch(removeComponent(this.component.id));
+      
+      // Close the dialog
+      this.showDeleteConfirm = false;
+      
+      // Dispatch a custom event to notify parent components
+      this.dispatchEvent(new CustomEvent('component-deleted', {
+        detail: { componentId: this.component.id },
+        bubbles: true,
+        composed: true
+      }));
+    }
   }
   
   updateName(name: string) {
