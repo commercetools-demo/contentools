@@ -5,7 +5,7 @@ import { fetchRegistryComponents } from '../../store/registry.slice';
 import { Page } from '../../types';
 import { fetchCustomObject, fetchCustomObjects } from '../../utils/api';
 import '../registry-components/renderable-components';
-import './component-renderer';
+import './grid-renderer';
 
 @customElement('cms-renderer')
 export class CmsRenderer extends LitElement {
@@ -64,10 +64,6 @@ export class CmsRenderer extends LitElement {
       margin-bottom: 20px;
       border: 1px solid #ffeeba;
     }
-    
-    .component-container {
-      margin-bottom: 30px;
-    }
   `;
 
   connectedCallback() {
@@ -83,7 +79,6 @@ export class CmsRenderer extends LitElement {
       return;
     }
     
-    
     // Load registry components first
     this.loadRegistryComponents();
   }
@@ -94,8 +89,8 @@ export class CmsRenderer extends LitElement {
       await store.dispatch(fetchRegistryComponents({ baseURL: this.baseURL })).unwrap();
       this.registryLoaded = true;
 
-    // Hydrate the baseURL with businessUnitKey
-    const hydratedBaseUrl = `${this.baseURL}/${this.businessUnitKey}`;
+      // Hydrate the baseURL with businessUnitKey
+      const hydratedBaseUrl = `${this.baseURL}/${this.businessUnitKey}`;
       
       // After registry is loaded, load the page
       this.loadPage(hydratedBaseUrl);
@@ -150,16 +145,11 @@ export class CmsRenderer extends LitElement {
     }
     
     return html`
-      <div class="page-content">
-        ${this.page.components.map(component => html`
-          <div class="component-container">
-            <component-renderer
-              .component=${component}
-              .baseURL=${this.baseURL}
-            ></component-renderer>
-          </div>
-        `)}
-      </div>
+      <grid-renderer
+        .rows=${this.page.layout.rows}
+        .components=${this.page.components}
+        .baseURL=${this.baseURL}
+      ></grid-renderer>
     `;
   }
 }
