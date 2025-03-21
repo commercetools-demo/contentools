@@ -226,7 +226,6 @@ export class CmsSidebar extends LitElement {
       return html`
         <cms-property-editor
           .component=${component}
-          @component-updated=${this._handleComponentUpdated}
           .baseURL=${this.baseURL}
           .businessUnitKey=${this.businessUnitKey}
         ></cms-property-editor>
@@ -259,9 +258,6 @@ export class CmsSidebar extends LitElement {
     `;
   }
 
-  private _handleComponentUpdated() {
-    this.dispatchEvent(new CustomEvent('component-updated'));
-  }
 
   private _handlePageUpdated() {
     this.dispatchEvent(new CustomEvent('page-updated'));
