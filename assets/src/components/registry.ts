@@ -60,6 +60,3 @@ export const createComponent = async ({ baseURL, type, name }: { baseURL: string
     properties: { ...metadata.defaultProperties },
   };
 };
-
-// Export the default registry for direct access if needed
-export { defaultRegistry };
