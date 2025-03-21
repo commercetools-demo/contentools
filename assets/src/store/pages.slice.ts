@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { v4 as uuidv4 } from 'uuid';
-import { Page, PagesState, Component, GridRow, GridCell, ApiResponse } from '../types';
+import { Page, PagesState, Component, GridRow, GridCell } from '../types';
 import { debounce } from '../utils/debounce';
 import { NUMBER_OF_COLUMNS } from '../constants';
 import { 
@@ -74,7 +74,7 @@ const saveToSessionStorage = debounce((pages: Page[], businessUnitKey: string) =
 }, DEBOUNCE_DELAY);
 
 // Thunks
-export const fetchPages = createAsyncThunk('pages/fetchPages', async ({baseUrl, businessUnitKey}: {baseUrl: string, businessUnitKey: string}) => {
+export const fetchPages = createAsyncThunk('pages/fetchPages', async ({businessUnitKey}: {baseUrl: string, businessUnitKey: string}) => {
   try {
     // First try to get from session storage with business unit specific key
     const storageKey = `${LOCAL_STORAGE_KEY_PREFIX}_${businessUnitKey}`;
@@ -92,7 +92,7 @@ export const fetchPages = createAsyncThunk('pages/fetchPages', async ({baseUrl, 
 });
 
 // Separate thunk for background API fetching
-export const syncPagesWithApi = createAsyncThunk('pages/syncPagesWithApi', async ({baseUrl, businessUnitKey}: {baseUrl: string, businessUnitKey: string}) => {
+export const syncPagesWithApi = createAsyncThunk('pages/syncPagesWithApi', async ({baseUrl}: {baseUrl: string, businessUnitKey: string}) => {
   try {
     // Fetch from API
     const pagesFromApi = await fetchPagesApi(baseUrl);
