@@ -18,7 +18,7 @@ export class PropertyEditor extends connect(store)(LitElement) {
   businessUnitKey: string = '';
 
   @state()
-  private metadata?: ComponentMetadata;
+  private metadata?: ComponentMetadata | null;
 
   @state()
   private loading = false;

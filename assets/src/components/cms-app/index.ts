@@ -12,6 +12,7 @@ import './components/page-form';
 import './components/page-list';
 import './components/property-editor';
 import './components/cms-sidebar';
+import { ComponentType } from '../registry-components/cms-components/default-components';
 
 @customElement('cms-app')
 export class CmsApp extends connect(store)(LitElement) {
