@@ -32,7 +32,8 @@ export const defaultRegistry: Record<string, ComponentMetadata> = {
           defaultValue: 'Hero Subtitle',
         },
         imageUrl: {
-          type: 'string',
+          type: 'file',
+          extensions: ['jpg', 'jpeg', 'png'],
           label: 'Image URL',
         },
         ctaText: {

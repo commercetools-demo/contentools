@@ -1,10 +1,16 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { connect } from 'lit-redux-watch';
-import { store } from '../../../store';
-import { Component, ComponentMetadata } from '../../../types';
-import { getComponentMetadata } from '../../registry';
-import { updateComponent, removeComponent } from '../../../store/pages.slice';
+import { store } from '../../../../store';
+import { Component, ComponentMetadata } from '../../../../types';
+import { getComponentMetadata } from '../../../registry';
+import { updateComponent, removeComponent } from '../../../../store/pages.slice';
+import { debounce } from '../../../../utils/debounce';
+import './components/string-field';
+import './components/number-field';
+import './components/boolean-field';
+import './components/array-field';
+import './components/file-field';
 
 @customElement('cms-property-editor')
 export class PropertyEditor extends connect(store)(LitElement) {
@@ -26,6 +32,29 @@ export class PropertyEditor extends connect(store)(LitElement) {
   @state()
   private error?: string;
 
+  @state()
+  private showDeleteConfirm = false;
+
+  private _debouncedHandleFieldChange = debounce((key: string, value: any) => {
+    if (this.component) {
+      if (key === 'name') {
+        this.component = {
+          ...this.component,
+          name: value
+        };
+      } else {
+        this.component = {
+          ...this.component,
+          properties: {
+            ...this.component.properties,
+            [key]: value
+          }
+        };
+      }
+      this.requestUpdate();
+    }
+  }, 500);
+
   static styles = css`
     .property-editor {
       padding: 20px 0;
@@ -37,74 +66,6 @@ export class PropertyEditor extends connect(store)(LitElement) {
       margin-bottom: 20px;
       padding-bottom: 10px;
       border-bottom: 1px solid #ddd;
-    }
-    
-    .form-group {
-      margin-bottom: 15px;
-    }
-    
-    label {
-      display: block;
-      margin-bottom: 5px;
-      font-weight: 500;
-      font-size: 14px;
-    }
-    
-    input[type="text"],
-    input[type="number"],
-    input[type="url"],
-    textarea {
-      width: 100%;
-      padding: 8px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      font-size: 14px;
-    }
-    
-    input[type="checkbox"] {
-      margin-right: 8px;
-    }
-    
-    .checkbox-group {
-      display: flex;
-      align-items: center;
-    }
-    
-    .array-field {
-      border: 1px solid #eee;
-      padding: 15px;
-      border-radius: 4px;
-      margin-bottom: 10px;
-    }
-    
-    .array-item {
-      display: flex;
-      margin-bottom: 8px;
-    }
-    
-    .array-item input {
-      flex: 1;
-      margin-right: 8px;
-    }
-    
-    .array-item button {
-      background: #f44336;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 12px;
-      padding: 0 8px;
-    }
-    
-    .add-item {
-      background: #4CAF50;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      padding: 5px 10px;
-      cursor: pointer;
-      font-size: 12px;
     }
     
     .actions {
@@ -185,9 +146,6 @@ export class PropertyEditor extends connect(store)(LitElement) {
     }
   `;
   
-  @state()
-  private showDeleteConfirm = false;
-  
   updated(changedProperties: Map<string, any>) {
     if (changedProperties.has('component') && this.component) {
       this.fetchMetadata();
@@ -234,79 +192,62 @@ export class PropertyEditor extends connect(store)(LitElement) {
       <div class="property-editor">
         <h2>${this.component.name}</h2>
         
-        <div class="form-group">
-          <label for="component-name">Component Name</label>
-          <input 
-            type="text" 
-            id="component-name" 
-            .value=${this.component.name} 
-            @input=${(e: InputEvent) => this.updateName((e.target as HTMLInputElement).value)}
-          />
-        </div>
-        
         ${Object.entries(schema).map(([key, field]: [string, any]) => {
           const value = this.component!.properties[key];
           
-          if (field.type === 'string') {
-            return html`
-              <div class="form-group">
-                <label for="${key}">${field.label}</label>
-                <input 
-                  type="text" 
-                  id="${key}" 
-                  .value=${value || ''} 
-                  @input=${(e: InputEvent) => this.updateProperty(key, (e.target as HTMLInputElement).value)}
+          switch (field.type) {
+            case 'string':
+              return html`
+                <cms-string-field
+                  label=${field.label}
+                  .value=${value || ''}
+                  fieldKey=${key}
                   ?required=${field.required}
+                  @field-change=${this.handleFieldChange}
                 />
-              </div>
-            `;
-          } else if (field.type === 'number') {
-            return html`
-              <div class="form-group">
-                <label for="${key}">${field.label}</label>
-                <input 
-                  type="number" 
-                  id="${key}" 
-                  .value=${value} 
-                  @input=${(e: InputEvent) => this.updateProperty(key, Number((e.target as HTMLInputElement).value))}
+              `;
+            case 'number':
+              return html`
+                <cms-number-field
+                  label=${field.label}
+                  .value=${value}
+                  fieldKey=${key}
                   ?required=${field.required}
+                  @field-change=${this.handleFieldChange}
                 />
-              </div>
-            `;
-          } else if (field.type === 'boolean') {
-            return html`
-              <div class="form-group checkbox-group">
-                <input 
-                  type="checkbox" 
-                  id="${key}" 
-                  .checked=${value} 
-                  @change=${(e: InputEvent) => this.updateProperty(key, (e.target as HTMLInputElement).checked)}
+              `;
+            case 'boolean':
+              return html`
+                <cms-boolean-field
+                  label=${field.label}
+                  .value=${value}
+                  fieldKey=${key}
+                  @field-change=${this.handleFieldChange}
                 />
-                <label for="${key}">${field.label}</label>
-              </div>
-            `;
-          } else if (field.type === 'array') {
-            return html`
-              <div class="form-group">
-                <label>${field.label}</label>
-                <div class="array-field">
-                  ${(value as string[]).map((item, index) => html`
-                    <div class="array-item">
-                      <input 
-                        type="text" 
-                        .value=${item} 
-                        @input=${(e: InputEvent) => this.updateArrayItem(key, index, (e.target as HTMLInputElement).value)}
-                      />
-                      <button @click=${() => this.removeArrayItem(key, index)}>✕</button>
-                    </div>
-                  `)}
-                  <button class="add-item" @click=${() => this.addArrayItem(key)}>+ Add Item</button>
-                </div>
-              </div>
-            `;
+              `;
+            case 'array':
+              return html`
+                <cms-array-field
+                  label=${field.label}
+                  .value=${value || []}
+                  fieldKey=${key}
+                  @field-change=${this.handleFieldChange}
+                />
+              `;
+            case 'file':
+              return html`
+                <cms-file-field
+                  label=${field.label}
+                  .value=${value}
+                  fieldKey=${key}
+                  .baseURL=${this.baseURL}
+                  .extensions=${field.extensions || []}
+                  @field-change=${this.handleFieldChange}
+                />
+              `;
+            default:
+              return html`<div>Unsupported field type: ${field.type}</div>`;
           }
-          
-          return html`<div>Unsupported field type: ${field.type}</div>`;
         })}
         
         <div class="actions">
@@ -356,52 +297,9 @@ export class PropertyEditor extends connect(store)(LitElement) {
     }
   }
   
-  updateName(name: string) {
-    if (this.component) {
-      this.component = {
-        ...this.component,
-        name
-      };
-      this.requestUpdate();
-    }
-  }
-  
-  updateProperty(key: string, value: any) {
-    if (this.component) {
-      this.component = {
-        ...this.component,
-        properties: {
-          ...this.component.properties,
-          [key]: value
-        }
-      };
-      this.requestUpdate();
-    }
-  }
-  
-  updateArrayItem(key: string, index: number, value: string) {
-    if (this.component) {
-      const array = [...(this.component.properties[key] as any[])];
-      array[index] = value;
-      
-      this.updateProperty(key, array);
-    }
-  }
-  
-  addArrayItem(key: string) {
-    if (this.component) {
-      const array = [...(this.component.properties[key] as any[]), ''];
-      this.updateProperty(key, array);
-    }
-  }
-  
-  removeArrayItem(key: string, index: number) {
-    if (this.component) {
-      const array = [...(this.component.properties[key] as any[])];
-      array.splice(index, 1);
-      
-      this.updateProperty(key, array);
-    }
+  handleFieldChange(e: CustomEvent) {
+    const { key, value } = e.detail;
+    this._debouncedHandleFieldChange(key, value);
   }
   
   saveChanges() {

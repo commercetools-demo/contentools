@@ -46,11 +46,12 @@ export interface EditorState {
 }
 
 export interface PropertySchema {
-  type: 'string' | 'number' | 'boolean' | 'array' | 'object';
+  type: 'string' | 'number' | 'boolean' | 'array' | 'object' | 'file';
   label: string;
   defaultValue?: any;
   required?: boolean;
   options?: { value: any; label: string }[];
+  extensions?: string[];
 }
 
 export interface ComponentMetadata {
