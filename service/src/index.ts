@@ -6,7 +6,7 @@ import { logger } from './utils/logger.utils';
 
 import app from './app';
 
-const PORT = 8080;
+const PORT = 9045;
 
 // Listen the application
 const server = app.listen(PORT, () => {

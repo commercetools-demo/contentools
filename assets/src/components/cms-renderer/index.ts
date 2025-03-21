@@ -1,8 +1,11 @@
-import { LitElement, html, css, nothing } from 'lit';
+import { LitElement, css, html } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
+import { store } from '../../store';
+import { fetchRegistryComponents } from '../../store/registry.slice';
+import { Page } from '../../types';
 import { fetchCustomObject, fetchCustomObjects } from '../../utils/api';
-import { Page, Component } from '../../types';
 import '../registry-components/renderable-components';
+import './component-renderer';
 
 @customElement('cms-renderer')
 export class CmsRenderer extends LitElement {
@@ -26,6 +29,9 @@ export class CmsRenderer extends LitElement {
 
   @state()
   private error: string | null = null;
+
+  @state()
+  private registryLoaded = false;
 
   static styles = css`
     :host {
@@ -77,11 +83,26 @@ export class CmsRenderer extends LitElement {
       return;
     }
     
+    
+    // Load registry components first
+    this.loadRegistryComponents();
+  }
+
+  private async loadRegistryComponents() {
+    try {
+      // Dispatch the fetch action
+      await store.dispatch(fetchRegistryComponents({ baseURL: this.baseURL })).unwrap();
+      this.registryLoaded = true;
+
     // Hydrate the baseURL with businessUnitKey
     const hydratedBaseUrl = `${this.baseURL}/${this.businessUnitKey}`;
-    
-    // Load page data
-    this.loadPage(hydratedBaseUrl);
+      
+      // After registry is loaded, load the page
+      this.loadPage(hydratedBaseUrl);
+    } catch (error) {
+      this.error = `Failed to load registry components: ${(error as Error).message}`;
+      console.error('Failed to load registry components:', error);
+    }
   }
 
   private async loadPage(baseUrl: string) {
@@ -111,53 +132,13 @@ export class CmsRenderer extends LitElement {
     }
   }
 
-  /**
-   * Renders a component template based on its type and properties
-   */
-  private renderComponent(component: Component) {
-    const { type, properties } = component;
-    
-    // Create a tag template for the component based on its type
-    switch (type) {
-      case 'heroBanner':
-        // HeroBanner component
-        return html`
-          <hero-banner
-            .title=${properties.title || ''}
-            .subtitle=${properties.subtitle || ''}
-            .imageUrl=${properties.imageUrl || ''}
-            .ctaText=${properties.ctaText || ''}
-            .ctaUrl=${properties.ctaUrl || '#'}
-          ></hero-banner>
-        `;
-        
-      case 'productSlider':
-        // ProductSlider component
-        return html`
-          <product-slider
-            .title=${properties.title || ''}
-            .products=${properties.products || []}
-          ></product-slider>
-        `;
-        
-      default:
-        // Handle unknown component types
-        console.warn(`Unknown component type: ${type}`);
-        return html`
-          <div class="unknown-component">
-            <p>Unknown component type: ${type}</p>
-          </div>
-        `;
-    }
-  }
-
   render() {
     if (this.error) {
       return html`<div class="error">${this.error}</div>`;
     }
     
-    if (this.loading) {
-      return html`<div class="loading">Loading page content...</div>`;
+    if (this.loading || !this.registryLoaded) {
+      return html`<div class="loading">Loading content...</div>`;
     }
     
     if (!this.page) {
@@ -172,7 +153,10 @@ export class CmsRenderer extends LitElement {
       <div class="page-content">
         ${this.page.components.map(component => html`
           <div class="component-container">
-            ${this.renderComponent(component)}
+            <component-renderer
+              .component=${component}
+              .baseURL=${this.baseURL}
+            ></component-renderer>
           </div>
         `)}
       </div>
