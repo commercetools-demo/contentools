@@ -11,6 +11,7 @@ import './components/number-field';
 import './components/boolean-field';
 import './components/array-field';
 import './components/file-field';
+import './components/wysiwyg-field';
 
 @customElement('cms-property-editor')
 export class PropertyEditor extends connect(store)(LitElement) {
@@ -197,6 +198,17 @@ export class PropertyEditor extends connect(store)(LitElement) {
           
           switch (field.type) {
             case 'string':
+              if (this.component && this.component.type === 'richText' && key === 'content') {
+                return html`
+                  <cms-wysiwyg-field
+                    label=${field.label}
+                    .value=${value || ''}
+                    fieldKey=${key}
+                    ?required=${field.required}
+                    @field-change=${this.handleFieldChange}
+                  />
+                `;
+              }
               return html`
                 <cms-string-field
                   label=${field.label}
