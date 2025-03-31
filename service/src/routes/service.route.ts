@@ -1,10 +1,14 @@
 import { Router } from 'express';
 import { logger } from '../utils/logger.utils';
+import multer from 'multer';
 import {
   CustomObjectController
 } from '../controllers/custom-object.controller';
+import { FileControllerFactory } from '../controllers/file-controller';
 
 const serviceRouter = Router();
+const upload = multer({ storage: multer.memoryStorage() });
+const fileController = FileControllerFactory.createFileController();
 
 const MAIN_CONTAINER = process.env.MAIN_CONTAINER || 'default';
 const REGISTRY_CONTAINER = process.env.REGISTRY_CONTAINER || 'registry';
@@ -149,6 +153,20 @@ serviceRouter.delete('/:businessUnitKey/custom-objects/:key', async (req, res, n
     res.status(204).send();
   } catch (error) {
     logger.error(`Failed to delete custom object with key ${req.params.key}:`, error);
+    next(error);
+  }
+});
+
+serviceRouter.post('/upload-image', upload.single('file') as any, async (req, res, next) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: 'No file uploaded' });
+    }
+
+    const fileUrl = await fileController.uploadFile(req.file);
+    res.json({ url: fileUrl });
+  } catch (error) {
+    logger.error('Failed to upload file:', error);
     next(error);
   }
 });
