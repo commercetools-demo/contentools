@@ -17,6 +17,41 @@ deployAs:
           description: The container to use for the registry
           required: false
           default: registry
+        - key: AWS_ACCESS_KEY_ID
+          description: AWS Access Key ID (only used if STORAGE_TYPE is aws)
+          required: false
+        - key: AWS_REGION
+          description: AWS Region (only used if STORAGE_TYPE is aws)
+          required: false
+        - key: AWS_S3_BUCKET
+          description: AWS S3 Bucket (only used if STORAGE_TYPE is aws)
+          required: false
+        - key: GCP_BUCKET_NAME
+          description: GCP Bucket Name (only used if STORAGE_TYPE is gcp)
+          required: false
+        - key: GCP_PROJECT_ID
+          description: GCP Project ID (only used if STORAGE_TYPE is gcp)
+          required: false
+        - key: GCP_CLIENT_EMAIL
+          description: GCP Client Email (only used if STORAGE_TYPE is gcp)
+          required: false
+        - key: CLOUDINARY_CLOUD_NAME
+          description: Cloudinary Cloud Name (only used if STORAGE_TYPE is cloudinary)
+          required: false
+        - key: CLOUDINARY_API_KEY
+          description: Cloudinary API Key (only used if STORAGE_TYPE is cloudinary)
+          required: false
+      securedConfiguration:
+        - key: AWS_SECRET_ACCESS_KEY
+          description: AWS Secret Access Key (only used if STORAGE_TYPE is aws)
+          required: false
+        - key: CLOUDINARY_API_SECRET
+          description: Cloudinary API Secret (only used if STORAGE_TYPE is cloudinary)
+          required: false
+        - key: GCP_PRIVATE_KEY
+          description: GCP Private Key (only used if STORAGE_TYPE is gcp)
+          required: false
+          
 inheritAs:
   configuration:
     standardConfiguration:
@@ -33,6 +68,10 @@ inheritAs:
       - key: CTP_SCOPE
         description: commercetools Composable Commerce client scope
         required: true
+      - key: STORAGE_TYPE
+        description: Storage type (aws, gcp, cloudinary)
+        required: false
+        default: gcp
     securedConfiguration:
       - key: CTP_CLIENT_SECRET
         description: commercetools Composable Commerce client secret
