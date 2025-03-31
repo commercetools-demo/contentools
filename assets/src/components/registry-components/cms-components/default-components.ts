@@ -3,6 +3,7 @@ import { ComponentMetadata } from '../../../types';
 export enum ComponentType {
     HERO_BANNER = 'heroBanner',
     PRODUCT_SLIDER = 'productSlider',
+    RICH_TEXT = 'richText',
   }
   
   
@@ -80,6 +81,23 @@ export const defaultRegistry: Record<string, ComponentMetadata> = {
           type: 'number',
           label: 'Slides to Show',
           defaultValue: 4,
+        },
+      },
+    },
+    [ComponentType.RICH_TEXT]: {
+      type: ComponentType.RICH_TEXT,
+      name: 'Rich Text Editor',
+      icon: '📝',
+      isBuiltIn: true,
+      defaultProperties: {
+        content: '<p>Enter your content here...</p>',
+      },
+      propertySchema: {
+        content: {
+          type: 'string', // HTML content stored as string, to be edited with WYSIWYG in the CMS
+          label: 'Content',
+          defaultValue: '<p>Enter your content here...</p>',
+          required: true,
         },
       },
     },
