@@ -26,9 +26,6 @@ export class FileField extends LitElement {
   private uploading = false;
 
   @state()
-  private error?: string;
-
-  @state()
   private inputRef = createRef<HTMLInputElement>();
 
   static styles = css`
@@ -147,7 +144,6 @@ export class FileField extends LitElement {
     if (!this.selectedFile || !this.baseURL) return;
 
     this.uploading = true;
-    this.error = undefined;
 
     try {
       const formData = new FormData();
@@ -174,7 +170,6 @@ export class FileField extends LitElement {
       }));
     } catch (error) {
       console.error('Error uploading file:', error);
-      this.error = 'Failed to upload file';
     } finally {
       this.uploading = false;
     }
