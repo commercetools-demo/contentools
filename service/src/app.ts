@@ -42,6 +42,12 @@ app.use(
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// log all requests
+app.use((req, res, next) => {
+  logger.info(`${req.method} ${req.url}`);
+  next();
+});
+
 // Define routes
 app.use('/service', ServiceRoutes);
 app.use('*', () => {
