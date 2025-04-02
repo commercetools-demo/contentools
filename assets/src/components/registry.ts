@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import { Component, ComponentMetadata, RegistryComponentData } from '../types';
 import { store } from '../store';
-import { fetchRegistryComponents } from '../store/registry.slice';
+import { fetchContentTypesThunk } from '../store/registry.slice';
 import { defaultRegistry } from './registry-components/cms-components/default-components';
 
 // Helper function to convert defaultRegistry to RegistryComponentData format
@@ -17,7 +17,7 @@ export const getRegistryComponentsFromStore = async ({ baseURL }: { baseURL: str
   const state = store.getState();
   
   if (state.registry.components.length === 0 && !state.registry.loading) {
-    await store.dispatch(fetchRegistryComponents({ baseURL }));
+    await store.dispatch(fetchContentTypesThunk({ baseURL }));
   }
   
   const fetchedComponents = store.getState().registry.components;

@@ -5,7 +5,6 @@ import { connect } from 'lit-redux-watch';
 import './components/cms-app';
 import './components/cms-renderer';
 import './components/registry-app';
-import './components/registry-components';
 import './styles/cms.css';
 
 // Export the CMS App component
@@ -123,21 +122,7 @@ class RegistryAppElement extends LitElement {
   }
 }
 
-// Export the Registry Components
-@customElement('registry-components-element')
-class RegistryComponentsElement extends LitElement {
-  static styles = css`
-    :host {
-      display: block;
-    }
-  `;
 
-  render() {
-    return html`
-      <registry-components></registry-components>
-    `;
-  }
-}
 
 // Define custom elements
 if (!customElements.get('layout-cms')) {
@@ -152,21 +137,16 @@ if (!customElements.get('registry-app-element')) {
   customElements.define('registry-app-element', RegistryAppElement);
 }
 
-if (!customElements.get('registry-components-element')) {
-  customElements.define('registry-components-element', RegistryComponentsElement);
-}
 
 // Export for bundling
 export { 
   LayoutCMS, 
   CmsRendererElement, 
   RegistryAppElement, 
-  RegistryComponentsElement 
 };
 
 export default {
   LayoutCMS,
   CmsRendererElement,
   RegistryAppElement,
-  RegistryComponentsElement
 };

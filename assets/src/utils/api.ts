@@ -22,15 +22,15 @@ export async function fetchApi<T>(url: string, options: RequestInit = {}): Promi
 /**
  * Fetch a single custom object
  */
-export async function fetchCustomObject<T>(baseURL: string, key: string): Promise<ApiResponse<T>> {
-  return fetchApi<T>(`${baseURL}/custom-objects/${key}`);
+export async function fetchPageEndpoint<T>(baseURL: string, key: string): Promise<ApiResponse<T>> {
+  return fetchApi<T>(`${baseURL}/pages/${key}`);
 }
 
 /**
  * Fetch all custom objects
  */
-export async function fetchCustomObjects<T>(baseURL: string): Promise<ApiResponse<T>[]> {
-  const response = await fetch(`${baseURL}/custom-objects`);
+export async function fetchPagesEdnpoint<T>(baseURL: string): Promise<ApiResponse<T>[]> {
+  const response = await fetch(`${baseURL}/pages`);
   
   if (!response.ok) {
     throw new Error(`API request failed: ${response.status} ${response.statusText}`);
@@ -42,8 +42,8 @@ export async function fetchCustomObjects<T>(baseURL: string): Promise<ApiRespons
 /**
  * Update a custom object
  */
-export async function updateCustomObject<T>(baseURL: string, key: string, data: T): Promise<ApiResponse<T>> {
-  return fetchApi<T>(`${baseURL}/custom-objects/${key}`, {
+export async function updatePageEndpoint<T>(baseURL: string, key: string, data: T): Promise<ApiResponse<T>> {
+  return fetchApi<T>(`${baseURL}/pages/${key}`, {
     method: 'PUT',
     body: JSON.stringify({value: data}),
   });
@@ -52,8 +52,8 @@ export async function updateCustomObject<T>(baseURL: string, key: string, data: 
 /**
  * Create a custom object
  */
-export async function createCustomObject<T extends {key: string}>(baseURL: string, data: T): Promise<ApiResponse<T>> {
-  return fetchApi<T>(`${baseURL}/custom-objects/${data.key}`, {
+export async function createPageEndpoint<T extends {key: string}>(baseURL: string, data: T): Promise<ApiResponse<T>> {
+  return fetchApi<T>(`${baseURL}/pages/${data.key}`, {
     method: 'POST',
     body: JSON.stringify({value: data}),
   });
@@ -62,8 +62,8 @@ export async function createCustomObject<T extends {key: string}>(baseURL: strin
 /**
  * Delete a custom object
  */
-export async function deleteCustomObject(baseURL: string, key: string): Promise<void> {
-  const response = await fetch(`${baseURL}/custom-objects/${key}`, {
+export async function deletePageEndpoint(baseURL: string, key: string): Promise<void> {
+  const response = await fetch(`${baseURL}/pages/${key}`, {
     method: 'DELETE',
   });
   
@@ -75,8 +75,8 @@ export async function deleteCustomObject(baseURL: string, key: string): Promise<
 /**
  * Fetch registry components
  */
-export async function fetchRegistry<T>(baseURL: string): Promise<ApiResponse<T>[]> {
-  const response = await fetch(`${baseURL}/registry`);
+export async function fetchContentTypesEndpoint<T>(baseURL: string): Promise<ApiResponse<T>[]> {
+  const response = await fetch(`${baseURL}/content-type`);
   
   if (!response.ok) {
     throw new Error(`API request failed: ${response.status} ${response.statusText}`);
@@ -88,15 +88,15 @@ export async function fetchRegistry<T>(baseURL: string): Promise<ApiResponse<T>[
 /**
  * Fetch a single registry component
  */
-export async function fetchRegistryComponent<T>(baseURL: string, key: string): Promise<ApiResponse<T>> {
-  return fetchApi<T>(`${baseURL}/registry/${key}`);
+export async function fetchContentTypeEndpoint<T>(baseURL: string, key: string): Promise<ApiResponse<T>> {
+  return fetchApi<T>(`${baseURL}/content-type/${key}`);
 }
 
 /**
  * Create a registry component
  */
-export async function createRegistryComponent<T>(baseURL: string, key: string, data: T): Promise<ApiResponse<T>> {
-  return fetchApi<T>(`${baseURL}/registry/${key}`, {
+export async function createContentTypeEndpoint<T>(baseURL: string, key: string, data: T): Promise<ApiResponse<T>> {
+  return fetchApi<T>(`${baseURL}/content-type/${key}`, {
     method: 'POST',
     body: JSON.stringify({value: data}),
   });
@@ -105,8 +105,8 @@ export async function createRegistryComponent<T>(baseURL: string, key: string, d
 /**
  * Update a registry component
  */
-export async function updateRegistryComponent<T>(baseURL: string, key: string, data: T): Promise<ApiResponse<T>> {
-  return fetchApi<T>(`${baseURL}/registry/${key}`, {
+export async function updateContentTypeEndpoint<T>(baseURL: string, key: string, data: T): Promise<ApiResponse<T>> {
+  return fetchApi<T>(`${baseURL}/content-type/${key}`, {
     method: 'PUT',
     body: JSON.stringify({value: data}),
   });
@@ -115,8 +115,8 @@ export async function updateRegistryComponent<T>(baseURL: string, key: string, d
 /**
  * Delete a registry component
  */
-export async function deleteRegistryComponent(baseURL: string, key: string): Promise<void> {
-  const response = await fetch(`${baseURL}/registry/${key}`, {
+export async function deleteContentTypeEndpoint(baseURL: string, key: string): Promise<void> {
+  const response = await fetch(`${baseURL}/content-type/${key}`, {
     method: 'DELETE',
   });
   

@@ -3,7 +3,7 @@ import { customElement, state, property } from 'lit/decorators.js';
 import { connect, watch } from 'lit-redux-watch';
 import { store } from '../../store';
 import { RegistryComponentData } from '../../types';
-import { fetchRegistryComponents, addRegistryComponent, updateRegistryComponentThunk, removeRegistryComponent } from '../../store/registry.slice';
+import { fetchContentTypesThunk, addContentTypeThunk, updateContentTypeThunk, removeContentTypeThunk } from '../../store/registry.slice';
 import '../registry-components/renderable-components';
 import './components/component-form';
 import './components/component-table';
@@ -59,7 +59,7 @@ export class RegistryApp extends connect(store)(LitElement) {
 
   connectedCallback() {
     super.connectedCallback();
-    store.dispatch(fetchRegistryComponents({ baseURL: this.baseURL }));
+    store.dispatch(fetchContentTypesThunk({ baseURL: this.baseURL }));
   }
 
   render() {
@@ -133,7 +133,7 @@ export class RegistryApp extends connect(store)(LitElement) {
 
   private _handleRemoveComponent(e: CustomEvent) {
     const { type } = e.detail;
-    store.dispatch(removeRegistryComponent({ baseURL: this.baseURL, key: type }));
+    store.dispatch(removeContentTypeThunk({ baseURL: this.baseURL, key: type }));
   }
 
   private _cancelForm() {
@@ -146,14 +146,14 @@ export class RegistryApp extends connect(store)(LitElement) {
     
     if (this.selectedComponent) {
       // Update existing component
-      store.dispatch(updateRegistryComponentThunk({
+      store.dispatch(updateContentTypeThunk({
         baseURL: this.baseURL,
         key: component.metadata.type,
         component
       }));
     } else {
       // Add new component
-      store.dispatch(addRegistryComponent({ baseURL: this.baseURL, component }));
+      store.dispatch(addContentTypeThunk({ baseURL: this.baseURL, component }));
     }
     
     this.isAddingComponent = false;

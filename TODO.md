@@ -26,6 +26,7 @@ Based on the codebase analysis, our CMS appears to be missing:
 - ❌ **Versioning & History**: No version control system for content
 - ❌ **Workflows & Publishing**: No structured publishing workflow
 - ❌ **Multi-language Support**: No internationalization features
+- ❌ **Media library**: No media library for managing images, videos, and other media files
 
 ### Content Delivery
 - ❌ **GraphQL API**: No GraphQL implementation for flexible queries

@@ -4,11 +4,11 @@ import { Page, PagesState, Component, GridRow, GridCell } from '../types';
 import { debounce } from '../utils/debounce';
 import { NUMBER_OF_COLUMNS } from '../constants';
 import { 
-  fetchCustomObjects, 
-  fetchCustomObject, 
-  createCustomObject, 
-  updateCustomObject,
-  deleteCustomObject
+  fetchPagesEdnpoint, 
+  fetchPageEndpoint, 
+  createPageEndpoint, 
+  updatePageEndpoint,
+  deletePageEndpoint
 } from '../utils/api';
 
 const LOCAL_STORAGE_KEY_PREFIX = 'cms_pages';
@@ -17,7 +17,7 @@ const DEBOUNCE_DELAY = 1000;
 // Helper functions for API calls, now using the api utilities
 const fetchPagesApi = async (baseUrl: string, currentLocale: string): Promise<Page[]> => {
   try {
-    const data = await fetchCustomObjects<Page>(baseUrl);
+    const data = await fetchPagesEdnpoint<Page>(baseUrl);
     const pagesWithLocales = data.map(item => item.value);
     
     // Group pages by route/uuid to handle multiple locales
@@ -59,7 +59,7 @@ const fetchPagesApi = async (baseUrl: string, currentLocale: string): Promise<Pa
 
 const fetchPageApi = async (baseUrl: string, key: string, locale?: string): Promise<Page> => {
   try {
-    const data = await fetchCustomObject<Page>(baseUrl, key);
+    const data = await fetchPageEndpoint<Page>(baseUrl, key);
     const page = data.value;
     
     // If no locale is specified or the page has the correct locale, return it
@@ -98,7 +98,7 @@ const fetchPageApi = async (baseUrl: string, key: string, locale?: string): Prom
 const createPageApi = async (baseUrl: string, page: Page): Promise<Page> => {
   try {
     // The createCustomObject expects just the data to be passed
-    const data = await createCustomObject<Page>(baseUrl, page);
+    const data = await createPageEndpoint<Page>(baseUrl, page);
     return data.value;
   } catch (error) {
     throw new Error('Failed to create page');
@@ -108,7 +108,7 @@ const createPageApi = async (baseUrl: string, page: Page): Promise<Page> => {
 const updatePageApi = async (baseUrl: string, page: Page): Promise<Page> => {
   try {
     // The updateCustomObject expects just the data to be passed
-    const data = await updateCustomObject<Page>(baseUrl, page.key, page);
+    const data = await updatePageEndpoint<Page>(baseUrl, page.key, page);
     return data.value as Page;
   } catch (error) {
     throw new Error(`Failed to update page with key: ${page.key}`);
@@ -117,7 +117,7 @@ const updatePageApi = async (baseUrl: string, page: Page): Promise<Page> => {
 
 const deletePageApi = async (baseUrl: string, key: string): Promise<void> => {
   try {
-    await deleteCustomObject(baseUrl, key);
+    await deletePageEndpoint(baseUrl, key);
   } catch (error) {
     throw new Error(`Failed to delete page with key: ${key}`);
   }

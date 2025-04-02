@@ -17,7 +17,7 @@ The service uses commercetools authentication. Make sure you have the proper cre
 #### Get All Custom Objects
 
 ```http
-GET /custom-objects
+GET /pages
 ```
 
 Query Parameters:
@@ -38,7 +38,7 @@ Response: `200 OK`
 #### Get Custom Object by Key
 
 ```http
-GET /custom-objects/:key
+GET /pages/:key
 ```
 
 Parameters:
@@ -60,7 +60,7 @@ Response: `200 OK`
 #### Create Custom Object
 
 ```http
-POST /custom-objects/:key
+POST /pages/:key
 ```
 
 Parameters:
@@ -89,7 +89,7 @@ Response: `201 Created`
 #### Update Custom Object
 
 ```http
-PUT /custom-objects/:key
+PUT /pages/:key
 ```
 
 Parameters:
@@ -118,7 +118,7 @@ Response: `200 OK`
 #### Delete Custom Object
 
 ```http
-DELETE /custom-objects/:key
+DELETE /pages/:key
 ```
 
 Parameters:
@@ -149,35 +149,3 @@ Error Response Body:
 
 - `MAIN_CONTAINER`: Default container name for custom objects (optional, defaults to "default")
 - Other commercetools-related environment variables as specified in the main configuration
-
-## Examples
-
-### Create a Custom Object
-
-```bash
-curl -X POST \
-  'http://your-api/service/custom-objects/my-key?container=my-container' \
-  -H 'Content-Type: application/json' \
-  -d '{"value": {"name": "example", "data": 123}}'
-```
-
-### Get a Custom Object
-
-```bash
-curl 'http://your-api/service/custom-objects/my-key?container=my-container'
-```
-
-### Update a Custom Object
-
-```bash
-curl -X PUT \
-  'http://your-api/service/custom-objects/my-key?container=my-container' \
-  -H 'Content-Type: application/json' \
-  -d '{"value": {"name": "updated", "data": 456}}'
-```
-
-### Delete a Custom Object
-
-```bash
-curl -X DELETE 'http://your-api/service/custom-objects/my-key?container=my-container'
-```

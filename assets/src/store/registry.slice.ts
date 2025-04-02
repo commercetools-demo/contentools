@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { fetchRegistry, createRegistryComponent, updateRegistryComponent, deleteRegistryComponent } from '../utils/api';
+import { fetchContentTypesEndpoint, createContentTypeEndpoint, updateContentTypeEndpoint, deleteContentTypeEndpoint } from '../utils/api';
 import { RegistryState, RegistryComponentData } from '../types';
 
 const initialState: RegistryState = {
@@ -9,11 +9,11 @@ const initialState: RegistryState = {
 };
 
 // Thunks
-export const fetchRegistryComponents = createAsyncThunk(
-  'registry/fetchRegistryComponents',
+export const fetchContentTypesThunk = createAsyncThunk(
+  'content-type/fetchContentTypes',
   async ({ baseURL }: { baseURL: string }, { rejectWithValue }) => {
     try {
-      const response = await fetchRegistry<RegistryComponentData>(baseURL);
+      const response = await fetchContentTypesEndpoint<RegistryComponentData>(baseURL);
       return response.map(item => item.value);
     } catch (error) {
       return rejectWithValue((error as Error).message);
@@ -21,11 +21,11 @@ export const fetchRegistryComponents = createAsyncThunk(
   }
 );
 
-export const addRegistryComponent = createAsyncThunk(
-  'registry/addRegistryComponent',
+export const addContentTypeThunk = createAsyncThunk(
+  'content-type/addContentType',
   async ({ baseURL, component }: { baseURL: string, component: RegistryComponentData }, { rejectWithValue }) => {
     try {
-      const response = await createRegistryComponent<RegistryComponentData>(baseURL, component.metadata.type, component);
+      const response = await createContentTypeEndpoint<RegistryComponentData>(baseURL, component.metadata.type, component);
       return response.value;
     } catch (error) {
       return rejectWithValue((error as Error).message);
@@ -33,11 +33,11 @@ export const addRegistryComponent = createAsyncThunk(
   }
 );
 
-export const updateRegistryComponentThunk = createAsyncThunk(
-  'registry/updateRegistryComponent',
+export const updateContentTypeThunk = createAsyncThunk(
+  'content-type/updateContentType',
   async ({ baseURL, key, component }: { baseURL: string, key: string, component: RegistryComponentData }, { rejectWithValue }) => {
     try {
-      const response = await updateRegistryComponent<RegistryComponentData>(baseURL, key, component);
+      const response = await updateContentTypeEndpoint<RegistryComponentData>(baseURL, key, component);
       return response.value;
     } catch (error) {
       return rejectWithValue((error as Error).message);
@@ -45,11 +45,11 @@ export const updateRegistryComponentThunk = createAsyncThunk(
   }
 );
 
-export const removeRegistryComponent = createAsyncThunk(
-  'registry/removeRegistryComponent',
+export const removeContentTypeThunk = createAsyncThunk(
+  'content-type/removeContentType',
   async ({ baseURL, key }: { baseURL: string, key: string }, { rejectWithValue }) => {
     try {
-      await deleteRegistryComponent(baseURL, key);
+      await deleteContentTypeEndpoint(baseURL, key);
       return key;
     } catch (error) {
       return rejectWithValue((error as Error).message);
@@ -65,39 +65,39 @@ const registrySlice = createSlice({
   extraReducers: (builder) => {
     builder
       // Fetch components
-      .addCase(fetchRegistryComponents.pending, (state) => {
+      .addCase(fetchContentTypesThunk.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchRegistryComponents.fulfilled, (state, action) => {
+      .addCase(fetchContentTypesThunk.fulfilled, (state, action) => {
         state.components = action.payload;
         state.loading = false;
       })
-      .addCase(fetchRegistryComponents.rejected, (state, action) => {
+      .addCase(fetchContentTypesThunk.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })
       
       // Add component
-      .addCase(addRegistryComponent.pending, (state) => {
+      .addCase(addContentTypeThunk.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(addRegistryComponent.fulfilled, (state, action) => {
+      .addCase(addContentTypeThunk.fulfilled, (state, action) => {
         state.components.push(action.payload);
         state.loading = false;
       })
-      .addCase(addRegistryComponent.rejected, (state, action) => {
+      .addCase(addContentTypeThunk.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })
       
       // Update component
-      .addCase(updateRegistryComponentThunk.pending, (state) => {
+      .addCase(updateContentTypeThunk.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(updateRegistryComponentThunk.fulfilled, (state, action) => {
+      .addCase(updateContentTypeThunk.fulfilled, (state, action) => {
         const index = state.components.findIndex(
           component => component.metadata.type === action.payload.metadata.type
         );
@@ -106,23 +106,23 @@ const registrySlice = createSlice({
         }
         state.loading = false;
       })
-      .addCase(updateRegistryComponentThunk.rejected, (state, action) => {
+      .addCase(updateContentTypeThunk.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })
       
       // Remove component
-      .addCase(removeRegistryComponent.pending, (state) => {
+      .addCase(removeContentTypeThunk.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(removeRegistryComponent.fulfilled, (state, action) => {
+      .addCase(removeContentTypeThunk.fulfilled, (state, action) => {
         state.components = state.components.filter(
           component => component.metadata.type !== action.payload
         );
         state.loading = false;
       })
-      .addCase(removeRegistryComponent.rejected, (state, action) => {
+      .addCase(removeContentTypeThunk.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       });

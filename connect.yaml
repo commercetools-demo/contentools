@@ -13,10 +13,10 @@ deployAs:
           description: The container to use for the service
           required: false
           default: cms_container
-        - key: REGISTRY_CONTAINER
-          description: The container to use for the registry
+        - key: CONTENT_TYPE_CONTAINER
+          description: The container to use for the content type
           required: false
-          default: registry
+          default: content-type
         - key: AWS_ACCESS_KEY_ID
           description: AWS Access Key ID (only used if STORAGE_TYPE is aws)
           required: false

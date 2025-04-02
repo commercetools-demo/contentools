@@ -1,9 +1,9 @@
 import { LitElement, css, html } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { store } from '../../store';
-import { fetchRegistryComponents } from '../../store/registry.slice';
+import { fetchContentTypesThunk } from '../../store/registry.slice';
 import { Page } from '../../types';
-import { fetchCustomObject, fetchCustomObjects } from '../../utils/api';
+import { fetchPageEndpoint, fetchPagesEdnpoint } from '../../utils/api';
 import '../registry-components/renderable-components';
 import './grid-renderer';
 
@@ -93,7 +93,7 @@ export class CmsRenderer extends LitElement {
   private async loadRegistryComponents() {
     try {
       // Dispatch the fetch action
-      await store.dispatch(fetchRegistryComponents({ baseURL: this.baseURL })).unwrap();
+      await store.dispatch(fetchContentTypesThunk({ baseURL: this.baseURL })).unwrap();
       this.registryLoaded = true;
 
       // Hydrate the baseURL with businessUnitKey
@@ -114,7 +114,7 @@ export class CmsRenderer extends LitElement {
     try {
       if (this.key) {
         // Load by key
-        const response = await fetchCustomObject<Page>(baseUrl, this.key);
+        const response = await fetchPageEndpoint<Page>(baseUrl, this.key);
         const page = response.value;
         
         // Get all pages with the same UUID to find all available locales
@@ -136,7 +136,7 @@ export class CmsRenderer extends LitElement {
         }
       } else if (this.route) {
         // Load all pages
-        const responses = await fetchCustomObjects<Page>(baseUrl);
+        const responses = await fetchPagesEdnpoint<Page>(baseUrl);
         const allPages = responses.map(res => res.value);
         
         // Find pages with matching route
@@ -179,7 +179,7 @@ export class CmsRenderer extends LitElement {
   private async loadAvailableLocales(baseUrl: string, uuid: string) {
     try {
       // Load all pages
-      const responses = await fetchCustomObjects<Page>(baseUrl);
+      const responses = await fetchPagesEdnpoint<Page>(baseUrl);
       const allPages = responses.map(res => res.value);
       
       // Find pages with same UUID
