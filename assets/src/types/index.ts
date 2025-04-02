@@ -28,6 +28,7 @@ export interface Page {
   route: string;
   layout: Layout;
   components: Component[];
+  locale?: string;
 }
 
 export interface PagesState {

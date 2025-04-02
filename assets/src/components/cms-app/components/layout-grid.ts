@@ -7,6 +7,7 @@ import { addRow, removeRow } from '../../../store/pages.slice';
 import { selectComponent, setSidebarVisibility } from '../../../store/editor.slice';
 import { createComponent } from '../../registry';
 import './grid-row';
+import '../components/locale-selector';
 
 @customElement('cms-layout-grid')
 export class LayoutGrid extends connect(store)(LitElement) {
@@ -18,6 +19,15 @@ export class LayoutGrid extends connect(store)(LitElement) {
 
   @property({ type: Array })
   components: Component[] = [];
+    
+  @property({ type: String })
+  pageLocale: string = '';
+    
+  @property({ type: String })
+  locale: string = '';
+    
+  @property({ type: Array })
+  availableLocales: string[] = [];
 
   @property({ type: Object })
   selectedCell: { rowId: string, cellId: string } | null = null;
@@ -40,9 +50,15 @@ export class LayoutGrid extends connect(store)(LitElement) {
       margin-bottom: 15px;
     }
     
+    .grid-header-left {
+      display: flex;
+      align-items: center;
+    }
+    
     .grid-header h2 {
       font-size: 1.2rem;
       margin: 0;
+      margin-right: 15px;
     }
     
     .grid-container {
@@ -73,19 +89,20 @@ export class LayoutGrid extends connect(store)(LitElement) {
     }
   `;
 
-  constructor() {
-    super();
-    this.addEventListener('cell-selected', this._handleCellSelected as EventListener);
-    this.addEventListener('remove-row', this._handleRemoveRowEvent as EventListener);
-    this.addEventListener('component-dropped', (e: Event) => this._handleComponentDropped(e as CustomEvent));
-  }
-
   render() {
     return html`
       <div class="layout-grid">
         ${!this.readonly ? html`
           <div class="grid-header">
-            <h2>Layout Grid</h2>
+            <div class="grid-header-left">
+              <h2>Layout Grid</h2>
+              <cms-locale-selector
+                .baseURL=${this.baseURL}
+                .currentLocale=${this.locale}
+                .pageLocale=${this.pageLocale}
+                .availableLocales=${this.availableLocales}
+              ></cms-locale-selector>
+            </div>
             <button class="add-row-btn" @click=${this._handleAddRow}>+ Add Row</button>
           </div>
           
@@ -104,13 +121,15 @@ export class LayoutGrid extends connect(store)(LitElement) {
               .selectedCell=${this.selectedCell}
               .activeComponentType=${this.activeComponentType}
               .readonly=${this.readonly}
+              @cell-selected=${this._handleCellSelected}
+              @remove-row=${this._handleRemoveRowEvent}
+              @component-dropped=${this._handleComponentDropped}
             ></cms-grid-row>
           `)}
         </div>
       </div>
     `;
   }
-
   private _handleAddRow() {
     if (this.readonly) return;
     store.dispatch(addRow());
