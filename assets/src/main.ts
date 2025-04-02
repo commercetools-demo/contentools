@@ -17,6 +17,12 @@ class LayoutCMS extends connect(store)(LitElement) {
   @property({ type: String, attribute: 'business-unit-key' })
   businessUnitKey = '';
 
+  @property({ type: String, attribute: 'locale' })
+  locale = '';
+
+  @property({ type: String, attribute: 'available-locales' })
+  availableLocales = '';
+
   static styles = css`
     :host {
       display: block;
@@ -46,7 +52,7 @@ class LayoutCMS extends connect(store)(LitElement) {
     
     
     return html`
-      <cms-app .baseURL=${this.baseURL} .businessUnitKey=${this.businessUnitKey}></cms-app>
+      <cms-app .baseURL=${this.baseURL} .businessUnitKey=${this.businessUnitKey} .locale=${this.locale} .availableLocales=${JSON.parse(this.availableLocales)}></cms-app>
     `;
   }
 }
@@ -84,22 +90,7 @@ class CmsRendererElement extends LitElement {
   `;
 
   render() {
-    if (!this.businessUnitKey) {
-      return html`
-        <div class="warning">
-          <strong>Warning:</strong> The "business-unit-key" attribute is required for the CMS renderer to function properly.
-        </div>
-      `;
-    }
-    
-    if (!this.key && !this.route) {
-      return html`
-        <div class="warning">
-          <strong>Warning:</strong> Either "key" or "route" attribute must be provided to render content.
-        </div>
-      `;
-    }
-    
+   
     return html`
       <cms-renderer 
         baseurl=${this.baseURL}

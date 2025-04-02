@@ -23,7 +23,7 @@ export async function fetchApi<T>(url: string, options: RequestInit = {}): Promi
  * Fetch a single custom object
  */
 export async function fetchCustomObject<T>(baseURL: string, key: string): Promise<ApiResponse<T>> {
-  return fetchApi<T>(`${baseURL}/custom-object/${key}`);
+  return fetchApi<T>(`${baseURL}/custom-objects/${key}`);
 }
 
 /**
@@ -52,8 +52,8 @@ export async function updateCustomObject<T>(baseURL: string, key: string, data: 
 /**
  * Create a custom object
  */
-export async function createCustomObject<T>(baseURL: string, data: T): Promise<ApiResponse<T>> {
-  return fetchApi<T>(`${baseURL}/custom-objects`, {
+export async function createCustomObject<T extends {key: string}>(baseURL: string, data: T): Promise<ApiResponse<T>> {
+  return fetchApi<T>(`${baseURL}/custom-objects/${data.key}`, {
     method: 'POST',
     body: JSON.stringify({value: data}),
   });

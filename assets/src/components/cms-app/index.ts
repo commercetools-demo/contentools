@@ -3,7 +3,7 @@ import { connect, watch } from 'lit-redux-watch';
 import { customElement, property, state } from 'lit/decorators.js';
 import { store } from '../../store';
 import { selectComponent, setSidebarVisibility } from '../../store/editor.slice';
-import { fetchPages, syncPagesWithApi, updatePage, saveCurrentPage } from '../../store/pages.slice';
+import { fetchPages, syncPagesWithApi, updatePage, saveCurrentPage, createPageForLocale } from '../../store/pages.slice';
 import { Page } from '../../types';
 
 import './components/component-library';
@@ -19,6 +19,12 @@ export class CmsApp extends connect(store)(LitElement) {
   
   @property({ type: String })
   baseURL: string = '';
+  
+  @property({ type: String })
+  locale: string = '';
+
+  @property({ type: Array })
+  availableLocales: string[] = [];
 
   @property({ type: String })
   businessUnitKey: string = '';
@@ -298,7 +304,8 @@ export class CmsApp extends connect(store)(LitElement) {
   private _syncPagesWithApi() {
     store.dispatch(syncPagesWithApi({
       baseUrl: `${this.baseURL}/${this.businessUnitKey}`, 
-      businessUnitKey: this.businessUnitKey
+      currentLocale: this.locale,
+
     }));
   }
 
@@ -422,8 +429,12 @@ export class CmsApp extends connect(store)(LitElement) {
             .businessUnitKey=${this.businessUnitKey}
             .rows=${this.currentPage.layout.rows}
             .components=${this.currentPage.components}
+            .availableLocales=${this.availableLocales}
+            .locale=${this.locale}
+            .pageLocale=${this.currentPage.locale}
             .activeComponentType=${this._activeComponentType}
             @component-dropped=${this._handleComponentDropped}
+            @page-localized=${this._handlePageLocalized}
           ></cms-layout-grid>
         `;
         
@@ -434,6 +445,7 @@ export class CmsApp extends connect(store)(LitElement) {
           <cms-page-form
             .baseURL=${this.baseURL}
             .businessUnitKey=${this.businessUnitKey}
+            .locale=${this.locale}
             @page-created=${() => this._setView('editor')}
           ></cms-page-form>
         `;
@@ -537,5 +549,13 @@ export class CmsApp extends connect(store)(LitElement) {
       // Show the sidebar
       store.dispatch(setSidebarVisibility(true));
     }
+  }
+
+  private async _handlePageLocalized() {
+    await store.dispatch(createPageForLocale({
+      baseUrl: `${this.baseURL}/${this.businessUnitKey}`,
+      page: this.currentPage as Page,
+      locale: this.locale
+    }));
   }
 }

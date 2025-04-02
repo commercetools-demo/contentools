@@ -15,19 +15,81 @@ const LOCAL_STORAGE_KEY_PREFIX = 'cms_pages';
 const DEBOUNCE_DELAY = 1000;
 
 // Helper functions for API calls, now using the api utilities
-const fetchPagesApi = async (baseUrl: string): Promise<Page[]> => {
+const fetchPagesApi = async (baseUrl: string, currentLocale: string): Promise<Page[]> => {
   try {
     const data = await fetchCustomObjects<Page>(baseUrl);
-    return data.map(item => item.value);
+    const pagesWithLocales = data.map(item => item.value);
+    
+    // Group pages by route/uuid to handle multiple locales
+    const uniquePages: Record<string, Page[]> = {};
+    pagesWithLocales.forEach(page => {
+      const key = page.uuid || page.route;
+      if (!uniquePages[key]) {
+        uniquePages[key] = [];
+      }
+      uniquePages[key].push(page);
+    });
+
+    // For each group, select the appropriate page based on locale
+    return Object.values(uniquePages).map(pages => {
+      // If there's only one page in the group, return it
+      if (pages.length === 1) {
+        return pages[0];
+      }
+      
+      // first return page with current locale
+      const currentPage = pages.find(p => p.locale === currentLocale);
+      if (currentPage) {
+        return currentPage;
+      }
+      
+      // First try to find a page with no locale (default)
+      const defaultPage = pages.find(p => !p.locale);
+      if (defaultPage) {
+        return defaultPage;
+      }
+      
+      // If no default page, return the first one
+      return pages[0];
+    });
   } catch (error) {
     throw new Error('Failed to fetch pages');
   }
 };
 
-const fetchPageApi = async (baseUrl: string, key: string): Promise<Page> => {
+const fetchPageApi = async (baseUrl: string, key: string, locale?: string): Promise<Page> => {
   try {
     const data = await fetchCustomObject<Page>(baseUrl, key);
-    return data.value;
+    const page = data.value;
+    
+    // If no locale is specified or the page has the correct locale, return it
+    if (!locale || page.locale === locale) {
+      return page;
+    }
+    
+    // If locale doesn't match, try to find other pages with the same UUID but different locale
+    try {
+      const allPages = await fetchPagesApi(baseUrl, locale);
+      const pagesWithSameUuid = allPages.filter(p => p.uuid === page.uuid);
+      
+      // Try to find a page with the requested locale
+      const pageWithLocale = pagesWithSameUuid.find(p => p.locale === locale);
+      if (pageWithLocale) {
+        return pageWithLocale;
+      }
+      
+      // If no page with the requested locale, find one with no locale (default)
+      const defaultPage = pagesWithSameUuid.find(p => !p.locale);
+      if (defaultPage) {
+        return defaultPage;
+      }
+      
+      // If no default page either, return the original page
+      return page;
+    } catch {
+      // If finding other pages fails, just return the original page
+      return page;
+    }
   } catch (error) {
     throw new Error(`Failed to fetch page with key: ${key}`);
   }
@@ -92,18 +154,18 @@ export const fetchPages = createAsyncThunk('pages/fetchPages', async ({businessU
 });
 
 // Separate thunk for background API fetching
-export const syncPagesWithApi = createAsyncThunk('pages/syncPagesWithApi', async ({baseUrl}: {baseUrl: string, businessUnitKey: string}) => {
+export const syncPagesWithApi = createAsyncThunk('pages/syncPagesWithApi', async ({baseUrl, currentLocale}: {baseUrl: string, currentLocale: string}) => {
   try {
     // Fetch from API
-    const pagesFromApi = await fetchPagesApi(baseUrl);
+    const pagesFromApi = await fetchPagesApi(baseUrl, currentLocale);
     return pagesFromApi;
   } catch (error) {
     throw new Error('Failed to fetch pages from API');
   }
 });
 
-export const fetchPage = createAsyncThunk('pages/fetchPage', async ({baseUrl, key}: {baseUrl: string, key: string}) => {
-  return await fetchPageApi(baseUrl, key);
+export const fetchPage = createAsyncThunk('pages/fetchPage', async ({baseUrl, key, locale}: {baseUrl: string, key: string, locale?: string}) => {
+  return await fetchPageApi(baseUrl, key, locale);
 });
 
 export const createPage = createAsyncThunk('pages/createPage', async ({baseUrl, page}: {baseUrl: string, page: Page}) => {
@@ -118,6 +180,33 @@ export const deletePage = createAsyncThunk('pages/deletePage', async ({baseUrl, 
     await deletePageApi(baseUrl, key);
   return key;
 });
+
+const createPageForLocaleApi = async (baseUrl: string, page: Page, locale: string): Promise<Page> => {
+  console.log('createPageForLocaleApi', baseUrl, page, locale);
+  try {
+    // First, fetch the existing page
+    const existingPage = await fetchPageApi(baseUrl, page.key);
+    
+    // Create a new page with the same content but different key and locale
+    const newPage: Page = {
+      ...existingPage,
+      key: `page-${uuidv4()}`, // Generate a new key
+      locale: locale           // Set the specified locale
+    };
+    
+    // Create the new page via API
+    return await createPageApi(baseUrl, newPage);
+  } catch (error) {
+    throw new Error(`Failed to create page for locale: ${locale}`);
+  }
+};
+
+export const createPageForLocale = createAsyncThunk(
+  'pages/createPageForLocale',
+  async ({baseUrl, page, locale}: {baseUrl: string, page: Page, locale: string}) => {
+    return await createPageForLocaleApi(baseUrl, page, locale);
+  }
+);
 
 // Helper functions
 const createEmptyGridRow = (): GridRow => {
@@ -159,13 +248,14 @@ const pagesSlice = createSlice({
       state.currentPage = page || null;
     },
     
-    createEmptyPage: (state, action: PayloadAction<{ name: string, route: string, businessUnitKey: string }>) => {
+    createEmptyPage: (state, action: PayloadAction<{ name: string, route: string, businessUnitKey: string, locale?: string }>) => {
       const newPage: Page = {
         key: `page-${uuidv4()}`,
         name: action.payload.name,
         uuid: uuidv4(),
         route: action.payload.route,
         businessUnitKey: action.payload.businessUnitKey,
+        ...(action.payload.locale ? { locale: action.payload.locale } : {}),
         layout: {
           rows: [createEmptyGridRow()],
         },
@@ -556,6 +646,23 @@ const pagesSlice = createSlice({
       .addCase(deletePage.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || 'Failed to delete page';
+      })
+      .addCase(createPageForLocale.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(createPageForLocale.fulfilled, (state, action) => {
+        state.loading = false;
+        state.pages.push(action.payload);
+        state.currentPage = action.payload;
+        state.unsavedChanges = false;
+        
+        // Save to session storage
+        saveToSessionStorage(state.pages, state.businessUnitKey);
+      })
+      .addCase(createPageForLocale.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || 'Failed to create page for locale';
       });
   },
 });

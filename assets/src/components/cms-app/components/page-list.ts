@@ -13,6 +13,9 @@ export class PageList extends connect(store)(LitElement) {
   @property({ type: String })
   businessUnitKey: string = '';
 
+  @property({ type: String })
+  locale: string = '';
+
   @property({ type: Array })
   pages: Page[] = [];
 
@@ -155,6 +158,21 @@ export class PageList extends connect(store)(LitElement) {
     .delete-confirm-actions .cancel-btn {
       background-color: #eee;
     }
+    
+    .locale-badge {
+      display: inline-block;
+      background-color: #e1f5fe;
+      color: #0288d1;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 12px;
+      margin-left: 5px;
+    }
+    
+    .default-locale {
+      background-color: #e8f5e9;
+      color: #388e3c;
+    }
   `;
 
   render() {
@@ -173,6 +191,7 @@ export class PageList extends connect(store)(LitElement) {
                 <tr>
                   <th>Name</th>
                   <th>Route</th>
+                  <th>Locale</th>
                   <th>Components</th>
                   <th>Actions</th>
                 </tr>
@@ -182,6 +201,12 @@ export class PageList extends connect(store)(LitElement) {
                   <tr class=${this.selectedPageKey === page.key ? 'selected' : ''}>
                     <td @click=${() => this._handleSelectPage(page.key)}>${page.name}</td>
                     <td @click=${() => this._handleSelectPage(page.key)}>${page.route}</td>
+                    <td @click=${() => this._handleSelectPage(page.key)}>
+                      ${page.locale 
+                        ? html`<span class="locale-badge">${page.locale}</span>`
+                        : html`<span class="locale-badge default-locale">default</span>`
+                      }
+                    </td>
                     <td @click=${() => this._handleSelectPage(page.key)}>${page.components.length}</td>
                     <td>
                       <div class="page-actions">
