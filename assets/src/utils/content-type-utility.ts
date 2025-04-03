@@ -2,7 +2,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { ContentItem, ContentTypeMetaData, ContentTypeData } from '../types';
 import { store } from '../store';
 import { fetchContentTypesThunk } from '../store/content-type.slice';
-import { sampleContentTypeRegistry } from '../components/content-type-registry/sample-content-types';
+import { sampleContentTypeRegistry } from '../apps/content-type-registry/sample-content-types';
 
 // Helper function to convert defaultRegistry to RegistryComponentData format
 const convertSampleContentTypeToContentTypeData = (): ContentTypeData[] => {

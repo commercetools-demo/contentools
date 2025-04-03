@@ -2,9 +2,9 @@ import { LitElement, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { store } from './store';
 import { connect } from 'lit-redux-watch';
-import './components/cms-app';
-import './components/cms-renderer';
-import './components/content-type-app';
+import './apps/cms-app';
+import './apps/cms-renderer';
+import './apps/content-type-app';
 import './styles/cms.css';
 
 // Export the CMS App component

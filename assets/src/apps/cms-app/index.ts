@@ -13,6 +13,8 @@ import './components/page-list';
 import './components/property-editor';
 import './components/cms-sidebar';
 
+import '../../components/atoms/back-button';
+
 @customElement('cms-app')
 export class CmsApp extends connect(store)(LitElement) {
   
@@ -411,7 +413,7 @@ export class CmsApp extends connect(store)(LitElement) {
         
         return html`
           <div class="cms-editor-actions">
-            <a class="cms-back" @click=${() => this._setView('list')}>← Back to Pages</a>
+            <back-button @click=${() => this._setView('list')}></back-button>
             <div class="cms-editor-buttons">
               <button class="cms-components-btn" @click=${this._openComponentLibrary} title="Component Library">
                 <span class="icon">📦</span> Components
