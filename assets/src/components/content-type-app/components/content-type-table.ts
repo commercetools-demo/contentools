@@ -1,11 +1,11 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { RegistryComponentData } from '../../../types';
+import { ContentTypeData } from '../../../types';
 
-@customElement('component-table')
-export class ComponentTable extends LitElement {
+@customElement('content-type-table')
+export class ContentTypeTable extends LitElement {
   @property({ type: Array })
-  components: RegistryComponentData[] = [];
+  contentTypes: ContentTypeData[] = [];
 
   @property({ type: Boolean })
   loading = false;
@@ -85,13 +85,13 @@ export class ComponentTable extends LitElement {
 
   render() {
     if (this.loading) {
-      return html`<div class="loading">Loading components...</div>`;
+      return html`<div class="loading">Loading content types...</div>`;
     }
 
-    if (this.components.length === 0) {
+    if (this.contentTypes.length === 0) {
       return html`
         <div class="empty-state">
-          <p>No components registered yet. Click "Add Component" to create your first component.</p>
+          <p>No content types registered yet. Click "Add Content Type" to create your first content type.</p>
         </div>
       `;
     }
@@ -107,22 +107,22 @@ export class ComponentTable extends LitElement {
           </tr>
         </thead>
         <tbody>
-          ${this.components.map(component => html`
+          ${this.contentTypes.map(contentType => html`
             <tr>
-              <td>${component.metadata.type}</td>
-              <td>${component.metadata.name}</td>
-              <td>${component.deployedUrl}</td>
+              <td>${contentType.metadata.type}</td>
+              <td>${contentType.metadata.name}</td>
+              <td>${contentType.deployedUrl}</td>
               <td>
                 <div class="action-buttons">
                   <button 
                     class="registry-button secondary-button" 
-                    @click=${() => this._editComponent(component)}
+                    @click=${() => this._editContentType(contentType)}
                   >
                     Edit
                   </button>
                   <button 
                     class="registry-button danger-button" 
-                    @click=${() => this._removeComponent(component.metadata.type)}
+                    @click=${() => this._removeContentType(contentType.metadata.type)}
                   >
                     Delete
                   </button>
@@ -135,16 +135,16 @@ export class ComponentTable extends LitElement {
     `;
   }
 
-  private _editComponent(component: RegistryComponentData) {
+  private _editContentType(contentType: ContentTypeData) {
     this.dispatchEvent(new CustomEvent('edit', {
-      detail: { component },
+      detail: { contentType },
       bubbles: true,
       composed: true
     }));
   }
 
-  private _removeComponent(type: string) {
-    if (confirm(`Are you sure you want to delete the "${type}" component?`)) {
+  private _removeContentType(type: string) {
+    if (confirm(`Are you sure you want to delete the "${type}" content type?`)) {
       this.dispatchEvent(new CustomEvent('remove', {
         detail: { type },
         bubbles: true,
@@ -154,4 +154,4 @@ export class ComponentTable extends LitElement {
   }
 }
 
-export default ComponentTable; 
+export default ContentTypeTable; 

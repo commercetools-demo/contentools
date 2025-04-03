@@ -1,10 +1,10 @@
 import { LitElement, css, html } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { store } from '../../store';
-import { fetchContentTypesThunk } from '../../store/registry.slice';
+import { fetchContentTypesThunk } from '../../store/content-type.slice';
 import { Page } from '../../types';
 import { fetchPageEndpoint, fetchPagesEdnpoint } from '../../utils/api';
-import '../registry-components/renderable-components';
+import '../content-type-registry/sample-content-type-renderers';
 import './grid-renderer';
 
 @customElement('cms-renderer')
@@ -115,56 +115,15 @@ export class CmsRenderer extends LitElement {
       if (this.key) {
         // Load by key
         const response = await fetchPageEndpoint<Page>(baseUrl, this.key);
-        const page = response.value;
+        this.page = response.value;
         
-        // Get all pages with the same UUID to find all available locales
-        await this.loadAvailableLocales(baseUrl, page.uuid);
-        
-        // Now check if we need a different locale version
-        if (this.locale && page.locale !== this.locale) {
-          // Try to find the page with the requested locale
-          const pageWithLocale = this.findPageWithLocale(this.locale);
-          if (pageWithLocale) {
-            this.page = pageWithLocale;
-          } else {
-            // If no page with requested locale, use the default page (no locale)
-            const defaultPage = this.findPageWithLocale('');
-            this.page = defaultPage || page; // Fallback to original page if no default
-          }
-        } else {
-          this.page = page;
-        }
       } else if (this.route) {
         // Load all pages
         const responses = await fetchPagesEdnpoint<Page>(baseUrl);
-        const allPages = responses.map(res => res.value);
+        const pages = responses.map(res => res.value);
+        this.page = pages.find(page => page.route === this.route) || null;
         
-        // Find pages with matching route
-        const pagesWithRoute = allPages.filter(page => page.route === this.route);
-        
-        if (pagesWithRoute.length > 0) {
-          // Store all pages with this route to get available locales
-          const uuid = pagesWithRoute[0].uuid;
-          const pagesWithSameUuid = allPages.filter(p => p.uuid === uuid);
-          this.availableLocales = pagesWithSameUuid.map(p => p.locale || '');
-          
-          // Determine which page to show based on locale
-          if (this.locale) {
-            // First try to find page with requested locale
-            const pageWithLocale = pagesWithRoute.find(p => p.locale === this.locale);
-            if (pageWithLocale) {
-              this.page = pageWithLocale;
-            } else {
-              // If no page with requested locale, use the default page (no locale)
-              const defaultPage = pagesWithRoute.find(p => !p.locale);
-              this.page = defaultPage || pagesWithRoute[0]; // Fallback to first page if no default
-            }
-          } else {
-            // If no locale is specified, prefer the default page or the first one
-            const defaultPage = pagesWithRoute.find(p => !p.locale);
-            this.page = defaultPage || pagesWithRoute[0];
-          }
-        } else {
+        if (!this.page) {
           console.warn(`No page found for route: ${this.route}`);
         }
       }
@@ -174,37 +133,6 @@ export class CmsRenderer extends LitElement {
     } finally {
       this.loading = false;
     }
-  }
-  
-  private async loadAvailableLocales(baseUrl: string, uuid: string) {
-    try {
-      // Load all pages
-      const responses = await fetchPagesEdnpoint<Page>(baseUrl);
-      const allPages = responses.map(res => res.value);
-      
-      // Find pages with same UUID
-      const pagesWithSameUuid = allPages.filter(p => p.uuid === uuid);
-      
-      // Store pages for later use
-      this._allPagesWithSameUuid = pagesWithSameUuid;
-      
-      // Extract available locales
-      this.availableLocales = pagesWithSameUuid.map(p => p.locale || '');
-    } catch (error) {
-      console.error('Failed to load available locales:', error);
-    }
-  }
-  
-  // Keep a reference to all pages with the same UUID
-  private _allPagesWithSameUuid: Page[] = [];
-  
-  private findPageWithLocale(locale: string): Page | null {
-    return this._allPagesWithSameUuid.find(p => {
-      if (locale === '') {
-        return !p.locale; // Find page with no locale
-      }
-      return p.locale === locale;
-    }) || null;
   }
 
   render() {

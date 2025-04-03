@@ -1,9 +1,9 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { fetchContentTypesEndpoint, createContentTypeEndpoint, updateContentTypeEndpoint, deleteContentTypeEndpoint } from '../utils/api';
-import { RegistryState, RegistryComponentData } from '../types';
+import { ContentTypeState, ContentTypeData } from '../types';
 
-const initialState: RegistryState = {
-  components: [],
+const initialState: ContentTypeState = {
+  contentTypes: [],
   loading: false,
   error: null,
 };
@@ -13,7 +13,7 @@ export const fetchContentTypesThunk = createAsyncThunk(
   'content-type/fetchContentTypes',
   async ({ baseURL }: { baseURL: string }, { rejectWithValue }) => {
     try {
-      const response = await fetchContentTypesEndpoint<RegistryComponentData>(baseURL);
+      const response = await fetchContentTypesEndpoint<ContentTypeData>(baseURL);
       return response.map(item => item.value);
     } catch (error) {
       return rejectWithValue((error as Error).message);
@@ -23,9 +23,9 @@ export const fetchContentTypesThunk = createAsyncThunk(
 
 export const addContentTypeThunk = createAsyncThunk(
   'content-type/addContentType',
-  async ({ baseURL, component }: { baseURL: string, component: RegistryComponentData }, { rejectWithValue }) => {
+  async ({ baseURL, contentType }: { baseURL: string, contentType: ContentTypeData }, { rejectWithValue }) => {
     try {
-      const response = await createContentTypeEndpoint<RegistryComponentData>(baseURL, component.metadata.type, component);
+      const response = await createContentTypeEndpoint<ContentTypeData>(baseURL, contentType.metadata.type, contentType);
       return response.value;
     } catch (error) {
       return rejectWithValue((error as Error).message);
@@ -35,9 +35,9 @@ export const addContentTypeThunk = createAsyncThunk(
 
 export const updateContentTypeThunk = createAsyncThunk(
   'content-type/updateContentType',
-  async ({ baseURL, key, component }: { baseURL: string, key: string, component: RegistryComponentData }, { rejectWithValue }) => {
+  async ({ baseURL, key, contentType }: { baseURL: string, key: string, contentType: ContentTypeData }, { rejectWithValue }) => {
     try {
-      const response = await updateContentTypeEndpoint<RegistryComponentData>(baseURL, key, component);
+      const response = await updateContentTypeEndpoint<ContentTypeData>(baseURL, key, contentType);
       return response.value;
     } catch (error) {
       return rejectWithValue((error as Error).message);
@@ -58,8 +58,8 @@ export const removeContentTypeThunk = createAsyncThunk(
 );
 
 // Slice
-const registrySlice = createSlice({
-  name: 'registry',
+const contentTypeSlice = createSlice({
+  name: 'contentType',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -70,7 +70,7 @@ const registrySlice = createSlice({
         state.error = null;
       })
       .addCase(fetchContentTypesThunk.fulfilled, (state, action) => {
-        state.components = action.payload;
+        state.contentTypes = action.payload;
         state.loading = false;
       })
       .addCase(fetchContentTypesThunk.rejected, (state, action) => {
@@ -84,7 +84,7 @@ const registrySlice = createSlice({
         state.error = null;
       })
       .addCase(addContentTypeThunk.fulfilled, (state, action) => {
-        state.components.push(action.payload);
+        state.contentTypes.push(action.payload);
         state.loading = false;
       })
       .addCase(addContentTypeThunk.rejected, (state, action) => {
@@ -98,11 +98,11 @@ const registrySlice = createSlice({
         state.error = null;
       })
       .addCase(updateContentTypeThunk.fulfilled, (state, action) => {
-        const index = state.components.findIndex(
-          component => component.metadata.type === action.payload.metadata.type
+        const index = state.contentTypes.findIndex(
+          contentType => contentType.metadata.type === action.payload.metadata.type
         );
         if (index !== -1) {
-          state.components[index] = action.payload;
+          state.contentTypes[index] = action.payload;
         }
         state.loading = false;
       })
@@ -117,8 +117,8 @@ const registrySlice = createSlice({
         state.error = null;
       })
       .addCase(removeContentTypeThunk.fulfilled, (state, action) => {
-        state.components = state.components.filter(
-          component => component.metadata.type !== action.payload
+        state.contentTypes = state.contentTypes.filter(
+          contentType => contentType.metadata.type !== action.payload
         );
         state.loading = false;
       })
@@ -129,4 +129,4 @@ const registrySlice = createSlice({
   },
 });
 
-export default registrySlice.reducer;
+export default contentTypeSlice.reducer;

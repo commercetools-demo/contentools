@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import pagesRouter from './pages.route';
-import contentTypeRouter from './registry.route';
+import contentTypeRouter from './content-type.route';
 import fileRouter from './file.route';
 
 const serviceRouter = Router();

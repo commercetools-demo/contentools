@@ -13,9 +13,6 @@ export class PageList extends connect(store)(LitElement) {
   @property({ type: String })
   businessUnitKey: string = '';
 
-  @property({ type: String })
-  locale: string = '';
-
   @property({ type: Array })
   pages: Page[] = [];
 
@@ -191,7 +188,6 @@ export class PageList extends connect(store)(LitElement) {
                 <tr>
                   <th>Name</th>
                   <th>Route</th>
-                  <th>Locale</th>
                   <th>Components</th>
                   <th>Actions</th>
                 </tr>
@@ -201,13 +197,7 @@ export class PageList extends connect(store)(LitElement) {
                   <tr class=${this.selectedPageKey === page.key ? 'selected' : ''}>
                     <td @click=${() => this._handleSelectPage(page.key)}>${page.name}</td>
                     <td @click=${() => this._handleSelectPage(page.key)}>${page.route}</td>
-                    <td @click=${() => this._handleSelectPage(page.key)}>
-                      ${page.locale 
-                        ? html`<span class="locale-badge">${page.locale}</span>`
-                        : html`<span class="locale-badge default-locale">default</span>`
-                      }
-                    </td>
-                    <td @click=${() => this._handleSelectPage(page.key)}>${page.components.length}</td>
+                      <td @click=${() => this._handleSelectPage(page.key)}>${page.components.length}</td>
                     <td>
                       <div class="page-actions">
                         <button class="edit-btn" @click=${() => this._handleEditPage(page.key)}>Edit</button>

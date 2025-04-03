@@ -1,15 +1,15 @@
-import { ComponentMetadata } from '../../../types';
+import { ContentTypeMetaData } from '../../../types';
 
-export enum ComponentType {
+export enum SampleContentType {
     HERO_BANNER = 'heroBanner',
     PRODUCT_SLIDER = 'productSlider',
     RICH_TEXT = 'richText',
   }
   
   
-export const defaultRegistry: Record<string, ComponentMetadata> = {
-    [ComponentType.HERO_BANNER]: {
-      type: ComponentType.HERO_BANNER,
+export const sampleContentTypeRegistry: Record<string, ContentTypeMetaData> = {
+    [SampleContentType.HERO_BANNER]: {
+      type: SampleContentType.HERO_BANNER,
       name: 'Hero Banner',
       icon: '🖼️',
       isBuiltIn: true,
@@ -49,8 +49,8 @@ export const defaultRegistry: Record<string, ComponentMetadata> = {
         },
       },
     },
-    [ComponentType.PRODUCT_SLIDER]: {
-      type: ComponentType.PRODUCT_SLIDER,
+    [SampleContentType.PRODUCT_SLIDER]: {
+      type: SampleContentType.PRODUCT_SLIDER,
       name: 'Product Slider',
       icon: '🛒',
       isBuiltIn: true,
@@ -84,8 +84,8 @@ export const defaultRegistry: Record<string, ComponentMetadata> = {
         },
       },
     },
-    [ComponentType.RICH_TEXT]: {
-      type: ComponentType.RICH_TEXT,
+    [SampleContentType.RICH_TEXT]: {
+      type: SampleContentType.RICH_TEXT,
       name: 'Rich Text Editor',
       icon: '📝',
       isBuiltIn: true,

@@ -3,7 +3,7 @@ import { connect, watch } from 'lit-redux-watch';
 import { customElement, property, state } from 'lit/decorators.js';
 import { store } from '../../store';
 import { selectComponent, setSidebarVisibility } from '../../store/editor.slice';
-import { fetchPages, syncPagesWithApi, updatePage, saveCurrentPage, createPageForLocale } from '../../store/pages.slice';
+import { fetchPages, syncPagesWithApi, updatePage, saveCurrentPage } from '../../store/pages.slice';
 import { Page } from '../../types';
 
 import './components/component-library';
@@ -12,7 +12,6 @@ import './components/page-form';
 import './components/page-list';
 import './components/property-editor';
 import './components/cms-sidebar';
-import { ComponentType } from '../registry-components/cms-components/default-components';
 
 @customElement('cms-app')
 export class CmsApp extends connect(store)(LitElement) {
@@ -54,7 +53,7 @@ export class CmsApp extends connect(store)(LitElement) {
   private view: 'list' | 'editor' | 'new' = 'list';
   
   @state()
-  private _activeComponentType: ComponentType | null = null;
+  private _activeComponentType: string | null = null;
 
   // Track the interval ID for auto-refresh
   private _refreshInterval: number | null = null;
@@ -303,8 +302,7 @@ export class CmsApp extends connect(store)(LitElement) {
   // Helper method to sync pages with API
   private _syncPagesWithApi() {
     store.dispatch(syncPagesWithApi({
-      baseUrl: `${this.baseURL}/${this.businessUnitKey}`, 
-      currentLocale: this.locale,
+      baseUrl: `${this.baseURL}/${this.businessUnitKey}`,
 
     }));
   }
@@ -431,10 +429,8 @@ export class CmsApp extends connect(store)(LitElement) {
             .components=${this.currentPage.components}
             .availableLocales=${this.availableLocales}
             .locale=${this.locale}
-            .pageLocale=${this.currentPage.locale}
             .activeComponentType=${this._activeComponentType}
             @component-dropped=${this._handleComponentDropped}
-            @page-localized=${this._handlePageLocalized}
           ></cms-layout-grid>
         `;
         
@@ -549,13 +545,5 @@ export class CmsApp extends connect(store)(LitElement) {
       // Show the sidebar
       store.dispatch(setSidebarVisibility(true));
     }
-  }
-
-  private async _handlePageLocalized() {
-    await store.dispatch(createPageForLocale({
-      baseUrl: `${this.baseURL}/${this.businessUnitKey}`,
-      page: this.currentPage as Page,
-      locale: this.locale
-    }));
   }
 }

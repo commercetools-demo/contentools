@@ -1,4 +1,4 @@
-export interface Component {
+export interface ContentItem {
   id: string;
   type: string;
   name: string;
@@ -27,8 +27,7 @@ export interface Page {
   uuid: string;
   route: string;
   layout: Layout;
-  components: Component[];
-  locale?: string;
+  components: ContentItem[];
 }
 
 export interface PagesState {
@@ -55,7 +54,7 @@ export interface PropertySchema {
   extensions?: string[];
 }
 
-export interface ComponentMetadata {
+export interface ContentTypeMetaData {
   type: string;
   name: string;
   icon?: string;
@@ -64,13 +63,13 @@ export interface ComponentMetadata {
   isBuiltIn?: boolean;
 }
 
-export interface RegistryComponentData {
-  metadata: ComponentMetadata;
+export interface ContentTypeData {
+  metadata: ContentTypeMetaData;
   deployedUrl: string;
 }
 
-export interface RegistryState {
-  components: RegistryComponentData[];
+export interface ContentTypeState {
+  contentTypes: ContentTypeData[];
   loading: boolean;
   error: string | null;
 }
@@ -78,7 +77,7 @@ export interface RegistryState {
 export interface RootState {
   pages: PagesState;
   editor: EditorState;
-  registry: RegistryState;
+  contentType: ContentTypeState;
 }
 
 export interface ApiResponse<T> {

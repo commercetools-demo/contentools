@@ -1,7 +1,7 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import { getAllComponentTypes } from '../../registry';
-import { ComponentMetadata } from '../../../types';
+import { getAllContentTypesMetaData } from '../../../utils/content-type-utility';
+import { ContentTypeMetaData } from '../../../types';
 
 @customElement('cms-component-library')
 export class ComponentLibrary extends LitElement {
@@ -9,7 +9,7 @@ export class ComponentLibrary extends LitElement {
   baseURL: string = '';
 
   @state()
-  private componentTypes: ComponentMetadata[] = [];
+  private componentTypes: ContentTypeMetaData[] = [];
 
   @state()
   private loading = true;
@@ -77,7 +77,7 @@ export class ComponentLibrary extends LitElement {
 
   async loadComponentTypes() {
     try {
-      this.componentTypes = await getAllComponentTypes({ baseURL: this.baseURL });
+      this.componentTypes = await getAllContentTypesMetaData({ baseURL: this.baseURL });
       this.loading = false;
       // Set up drag events after component types are loaded and rendered
       this.requestUpdate();

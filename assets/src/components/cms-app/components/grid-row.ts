@@ -1,6 +1,6 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { GridRow, Component } from '../../../types';
+import { GridRow, ContentItem } from '../../../types';
 import { store } from '../../../store';
 import { updateCellSpan, moveComponent } from '../../../store/pages.slice';
 import { NUMBER_OF_COLUMNS } from '../../../constants';
@@ -15,7 +15,7 @@ export class GridRowComponent extends LitElement {
   rowIndex!: number;
   
   @property({ type: Array })
-  components: Component[] = [];
+  components: ContentItem[] = [];
   
   @property({ type: Object })
   selectedCell: { rowId: string, cellId: string } | null = null;
@@ -236,7 +236,7 @@ export class GridRowComponent extends LitElement {
     `;
   }
   
-  private getComponentForCell(componentId: string | null): Component | undefined {
+  private getComponentForCell(componentId: string | null): ContentItem | undefined {
     if (!componentId) return undefined;
     return this.components.find(c => c.id === componentId);
   }

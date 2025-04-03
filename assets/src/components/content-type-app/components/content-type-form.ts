@@ -1,11 +1,11 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { RegistryComponentData } from '../../../types';
+import { ContentTypeData } from '../../../types';
 
-@customElement('component-form')
-export class ComponentForm extends LitElement {
+@customElement('content-type-form')
+export class ContentTypeForm extends LitElement {
   @property({ type: Object })
-  component: RegistryComponentData = {
+  contentType: ContentTypeData = {
     metadata: {
       type: '',
       name: '',
@@ -84,25 +84,25 @@ export class ComponentForm extends LitElement {
   render() {
     return html`
       <div class="component-form">
-        <h2>${this.isEdit ? 'Edit Component' : 'Add New Component'}</h2>
+        <h2>${this.isEdit ? 'Edit Content Type' : 'Add New Content Type'}</h2>
         
         <div class="form-row">
-          <label class="form-label">Component Type</label>
+          <label class="form-label">Content Type</label>
           <input 
             class="form-input" 
             type="text" 
-            .value=${this.component.metadata.type}
+            .value=${this.contentType.metadata.type}
             @input=${(e: InputEvent) => this._updateFormField('type', (e.target as HTMLInputElement).value)}
             ?disabled=${this.isEdit}
           >
         </div>
         
         <div class="form-row">
-          <label class="form-label">Component Name</label>
+          <label class="form-label">Content Type Name</label>
           <input 
             class="form-input" 
             type="text" 
-            .value=${this.component.metadata.name}
+            .value=${this.contentType.metadata.name}
             @input=${(e: InputEvent) => this._updateFormField('name', (e.target as HTMLInputElement).value)}
           >
         </div>
@@ -112,7 +112,7 @@ export class ComponentForm extends LitElement {
           <input 
             class="form-input" 
             type="text" 
-            .value=${this.component.metadata.icon || ''}
+            .value=${this.contentType.metadata.icon || ''}
             @input=${(e: InputEvent) => this._updateFormField('icon', (e.target as HTMLInputElement).value)}
           >
         </div>
@@ -122,7 +122,7 @@ export class ComponentForm extends LitElement {
           <input 
             class="form-input" 
             type="text" 
-            .value=${this.component.deployedUrl}
+            .value=${this.contentType.deployedUrl}
             @input=${(e: InputEvent) => this._updateFormField('deployedUrl', (e.target as HTMLInputElement).value)}
           >
         </div>
@@ -132,7 +132,7 @@ export class ComponentForm extends LitElement {
           <textarea 
             class="form-input" 
             rows="5"
-            .value=${JSON.stringify(this.component.metadata.defaultProperties, null, 2)}
+            .value=${JSON.stringify(this.contentType.metadata.defaultProperties, null, 2)}
             @input=${(e: InputEvent) => this._updateJsonField('defaultProperties', (e.target as HTMLTextAreaElement).value)}
           ></textarea>
         </div>
@@ -142,7 +142,7 @@ export class ComponentForm extends LitElement {
           <textarea 
             class="form-input" 
             rows="10"
-            .value=${JSON.stringify(this.component.metadata.propertySchema, null, 2)}
+            .value=${JSON.stringify(this.contentType.metadata.propertySchema, null, 2)}
             @input=${(e: InputEvent) => this._updateJsonField('propertySchema', (e.target as HTMLTextAreaElement).value)}
           ></textarea>
         </div>
@@ -156,9 +156,9 @@ export class ComponentForm extends LitElement {
           </button>
           <button 
             class="registry-button primary-button" 
-            @click=${this._saveComponent}
+            @click=${this._saveContentType}
           >
-            ${this.isEdit ? 'Update' : 'Add'} Component
+            ${this.isEdit ? 'Update' : 'Add'} Content Type
           </button>
         </div>
       </div>
@@ -166,41 +166,41 @@ export class ComponentForm extends LitElement {
   }
 
   private _updateFormField(field: string, value: string) {
-    const updatedComponent = { ...this.component };
+    const updatedContentType = { ...this.contentType };
     
     if (field === 'deployedUrl') {
-      updatedComponent.deployedUrl = value;
+      updatedContentType.deployedUrl = value;
     } else {
-      updatedComponent.metadata = {
-        ...updatedComponent.metadata,
+      updatedContentType.metadata = {
+        ...updatedContentType.metadata,
         [field]: value
       };
     }
     
-    this._dispatchComponentChange(updatedComponent);
+    this._dispatchContentTypeChange(updatedContentType);
   }
 
   private _updateJsonField(field: string, jsonString: string) {
     try {
       const parsedJson = JSON.parse(jsonString);
-      const updatedComponent = { 
-        ...this.component,
+      const updatedContentType = { 
+        ...this.contentType,
         metadata: {
-          ...this.component.metadata,
+          ...this.contentType.metadata,
           [field]: parsedJson
         }
       };
       
-      this._dispatchComponentChange(updatedComponent);
+      this._dispatchContentTypeChange(updatedContentType);
     } catch (e) {
       // Don't update if JSON is invalid
       console.error('Invalid JSON:', e);
     }
   }
 
-  private _dispatchComponentChange(component: RegistryComponentData) {
-    this.dispatchEvent(new CustomEvent('component-change', {
-      detail: { component },
+  private _dispatchContentTypeChange(contentType: ContentTypeData) {
+    this.dispatchEvent(new CustomEvent('content-type-change', {
+      detail: { contentType },
       bubbles: true,
       composed: true
     }));
@@ -213,19 +213,19 @@ export class ComponentForm extends LitElement {
     }));
   }
 
-  private _saveComponent() {
+  private _saveContentType() {
     // Basic validation
-    if (!this.component.metadata.type || !this.component.metadata.name || !this.component.deployedUrl) {
-      alert('Type, name, and deployed URL are required fields');
+    if (!this.contentType.metadata.type || !this.contentType.metadata.name) {
+      alert('Type and name are required fields');
       return;
     }
     
     this.dispatchEvent(new CustomEvent('save', {
-      detail: { component: this.component },
+      detail: { contentType: this.contentType },
       bubbles: true,
       composed: true
     }));
   }
 }
 
-export default ComponentForm; 
+export default ContentTypeForm; 

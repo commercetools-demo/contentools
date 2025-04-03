@@ -1,8 +1,8 @@
 import { LitElement, html, css } from 'lit';
 import { customElement } from 'lit/decorators.js';
 
-@customElement('registry-header')
-export class RegistryHeader extends LitElement {
+@customElement('content-type-header')
+export class ContentTypeHeader extends LitElement {
   static styles = css`
     :host {
       display: block;
@@ -46,23 +46,23 @@ export class RegistryHeader extends LitElement {
   render() {
     return html`
       <header class="registry-header">
-        <h1 class="registry-title">Component Registry</h1>
+        <h1 class="registry-title">Content Type Registry</h1>
         <button 
           class="registry-button primary-button" 
-          @click=${this._addComponent}
+          @click=${this._addContentType}
         >
-          + Add Component
+          + Add Content Type
         </button>
       </header>
     `;
   }
 
-  private _addComponent() {
-    this.dispatchEvent(new CustomEvent('add-component', {
+  private _addContentType() {
+    this.dispatchEvent(new CustomEvent('add-content-type', {
       bubbles: true,
       composed: true
     }));
   }
 }
 
-export default RegistryHeader; 
+export default ContentTypeHeader; 

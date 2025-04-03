@@ -4,7 +4,7 @@ import { store } from './store';
 import { connect } from 'lit-redux-watch';
 import './components/cms-app';
 import './components/cms-renderer';
-import './components/registry-app';
+import './components/content-type-app';
 import './styles/cms.css';
 
 // Export the CMS App component
@@ -101,9 +101,9 @@ class CmsRendererElement extends LitElement {
   }
 }
 
-// Export the Registry App component
-@customElement('registry-app-element')
-class RegistryAppElement extends LitElement {
+// Export the ContentType App component
+@customElement('content-type-app-element')
+class ContentTypeAppElement extends LitElement {
   @property({ type: String, attribute: 'baseurl' })
   baseURL = '';
 
@@ -117,7 +117,7 @@ class RegistryAppElement extends LitElement {
 
   render() {
     return html`
-      <registry-app baseurl=${this.baseURL}></registry-app>
+      <content-type-app baseurl=${this.baseURL}></content-type-app>
     `;
   }
 }
@@ -133,8 +133,8 @@ if (!customElements.get('cms-renderer-element')) {
   customElements.define('cms-renderer-element', CmsRendererElement);
 }
 
-if (!customElements.get('registry-app-element')) {
-  customElements.define('registry-app-element', RegistryAppElement);
+if (!customElements.get('content-type-app-element')) {
+  customElements.define('content-type-app-element', ContentTypeAppElement);
 }
 
 
@@ -142,11 +142,11 @@ if (!customElements.get('registry-app-element')) {
 export { 
   LayoutCMS, 
   CmsRendererElement, 
-  RegistryAppElement, 
+  ContentTypeAppElement, 
 };
 
 export default {
   LayoutCMS,
   CmsRendererElement,
-  RegistryAppElement,
+  ContentTypeAppElement,
 };

@@ -1,12 +1,12 @@
 import { LitElement, html, css, PropertyValues } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import { Component } from '../../types';
-import { getComponentMetadata } from '../registry';
+import { ContentItem } from '../../types';
+import { getContentTypeMetaData } from '../../utils/content-type-utility';
 
 @customElement('component-renderer')
 export class ComponentRenderer extends LitElement {
   @property({ type: Object })
-  component!: Component;
+  component!: ContentItem;
 
   @property({ type: String })
   baseURL = '';
@@ -133,7 +133,7 @@ export class ComponentRenderer extends LitElement {
       console.log('properties', properties, type);
       
       // Get component metadata from registry
-      const metadata = await getComponentMetadata({ 
+      const metadata = await getContentTypeMetaData({ 
         baseURL: this.baseURL, 
         type 
       });
@@ -148,8 +148,8 @@ export class ComponentRenderer extends LitElement {
       // Check if the component is built-in or external
       if (!metadata.isBuiltIn) {
         // For external components, load the script first
-        const registryModule = await import('../registry');
-        const components = await registryModule.getRegistryComponentsFromStore({ 
+        const registryModule = await import('../../utils/content-type-utility');
+        const components = await registryModule.getAllContentTypes({ 
           baseURL: this.baseURL 
         });
         const deployedUrl = components.find(c => c.metadata.type === type)?.deployedUrl || '';

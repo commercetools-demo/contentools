@@ -2,8 +2,8 @@ import { LitElement, html, css } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { connect } from 'lit-redux-watch';
 import { store } from '../../../../store';
-import { Component, ComponentMetadata } from '../../../../types';
-import { getComponentMetadata } from '../../../registry';
+import { ContentItem, ContentTypeMetaData } from '../../../../types';
+import { getContentTypeMetaData } from '../../../../utils/content-type-utility';
 import { updateComponent, removeComponent } from '../../../../store/pages.slice';
 import { debounce } from '../../../../utils/debounce';
 import './components/string-field';
@@ -16,7 +16,7 @@ import './components/wysiwyg-field';
 @customElement('cms-property-editor')
 export class PropertyEditor extends connect(store)(LitElement) {
   @property({ type: Object })
-  component?: Component;
+  component?: ContentItem;
 
   @property({ type: String })
   baseURL: string = '';
@@ -25,7 +25,7 @@ export class PropertyEditor extends connect(store)(LitElement) {
   businessUnitKey: string = '';
 
   @state()
-  private metadata?: ComponentMetadata | null;
+  private metadata?: ContentTypeMetaData | null;
 
   @state()
   private loading = false;
@@ -160,7 +160,7 @@ export class PropertyEditor extends connect(store)(LitElement) {
     this.error = undefined;
     
     try {
-      this.metadata = await getComponentMetadata({baseURL: this.baseURL, type: this.component.type as any});
+      this.metadata = await getContentTypeMetaData({baseURL: this.baseURL, type: this.component.type as any});
       this.requestUpdate();
     } catch (err) {
       this.error = `Failed to load component metadata: ${err instanceof Error ? err.message : String(err)}`;

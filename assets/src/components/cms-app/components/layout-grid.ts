@@ -2,12 +2,11 @@ import { LitElement, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { connect } from 'lit-redux-watch';
 import { store } from '../../../store';
-import { GridRow, Component } from '../../../types';
+import { GridRow, ContentItem } from '../../../types';
 import { addRow, removeRow } from '../../../store/pages.slice';
 import { selectComponent, setSidebarVisibility } from '../../../store/editor.slice';
-import { createComponent } from '../../registry';
+import { createContentItem } from '../../../utils/content-type-utility';
 import './grid-row';
-import '../components/locale-selector';
 
 @customElement('cms-layout-grid')
 export class LayoutGrid extends connect(store)(LitElement) {
@@ -18,10 +17,7 @@ export class LayoutGrid extends connect(store)(LitElement) {
   rows: GridRow[] = [];
 
   @property({ type: Array })
-  components: Component[] = [];
-    
-  @property({ type: String })
-  pageLocale: string = '';
+  components: ContentItem[] = [];
     
   @property({ type: String })
   locale: string = '';
@@ -96,12 +92,6 @@ export class LayoutGrid extends connect(store)(LitElement) {
           <div class="grid-header">
             <div class="grid-header-left">
               <h2>Layout Grid</h2>
-              <cms-locale-selector
-                .baseURL=${this.baseURL}
-                .currentLocale=${this.locale}
-                .pageLocale=${this.pageLocale}
-                .availableLocales=${this.availableLocales}
-              ></cms-locale-selector>
             </div>
             <button class="add-row-btn" @click=${this._handleAddRow}>+ Add Row</button>
           </div>
@@ -167,7 +157,7 @@ export class LayoutGrid extends connect(store)(LitElement) {
     if (componentType) {
       try {
         // Create a new component from the component type
-        const newComponent = await createComponent({ baseURL: this.baseURL, type: componentType });
+        const newComponent = await createContentItem({ baseURL: this.baseURL, type: componentType });
         
         // Dispatch action to add the component
         store.dispatch({

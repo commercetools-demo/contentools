@@ -15,9 +15,6 @@ export class PageForm extends connect(store)(LitElement) {
 
   @property({ type: String })
   businessUnitKey: string = '';
-  
-  @property({ type: String })
-  locale: string = '';
 
   @property({ type: Object })
   page?: Page;
@@ -26,7 +23,6 @@ export class PageForm extends connect(store)(LitElement) {
   private formData = {
     name: '',
     route: '',
-    locale: ''
   };
 
   @state()
@@ -108,13 +104,6 @@ export class PageForm extends connect(store)(LitElement) {
       this.formData = {
         name: this.page.name,
         route: this.page.route,
-        locale: this.page.locale || ''
-      };
-    } else {
-      // Set the locale from the prop if available
-      this.formData = {
-        ...this.formData,
-        locale: this.locale || ''
       };
     }
   }
@@ -145,18 +134,6 @@ export class PageForm extends connect(store)(LitElement) {
             required
           />
           <div class="hint">Example: /products/category</div>
-        </div>
-        
-        <div class="form-group">
-          <label for="page-locale">Locale (optional)</label>
-          <input 
-            type="text" 
-            id="page-locale" 
-            .value=${this.formData.locale} 
-            @input=${this._handleLocaleInput}
-            placeholder="en-US, fr-FR, etc."
-          />
-          <div class="hint">Leave empty for default locale</div>
         </div>
         
         <div class="actions">
@@ -191,13 +168,6 @@ export class PageForm extends connect(store)(LitElement) {
       route,
     };
   }
-  
-  private _handleLocaleInput(e: InputEvent) {
-    this.formData = {
-      ...this.formData,
-      locale: (e.target as HTMLInputElement).value,
-    };
-  }
 
   private _isFormValid() {
     return this.formData.name.trim() !== '' && this.formData.route.trim() !== '';
@@ -214,7 +184,6 @@ export class PageForm extends connect(store)(LitElement) {
           ...this.page,
           name: this.formData.name,
           route: this.formData.route,
-          locale: this.formData.locale || undefined
         };
         
         await store.dispatch(updatePage({baseUrl: `${this.baseURL}/${this.businessUnitKey}`, page: updatedPage})).unwrap();
@@ -231,7 +200,6 @@ export class PageForm extends connect(store)(LitElement) {
           name: this.formData.name,
           route: this.formData.route,
           businessUnitKey: this.businessUnitKey,
-          locale: this.formData.locale || undefined
         }));
         
         // Save to API
