@@ -31,6 +31,9 @@ export class CmsWrapper extends LitElement {
   private cmsView: 'list' | 'editor' | 'new' = 'list';
 
   @state()
+  private contentTypeView: 'list' | 'editor' | 'new' = 'list';
+
+  @state()
   private showSidebar = false;
 
   @state()
@@ -165,10 +168,18 @@ export class CmsWrapper extends LitElement {
     .hover-title {
       display: none;
     }
+
+    .toggle-sidebar-button {
+      margin-left: auto;
+    }
+
+    ui-breadcrumbs {
+      margin: 0 auto;
+    }
   `;
 
   updated(changedProperties: Map<string, any>) {
-    if (changedProperties.has('activeApp')) {
+    if (changedProperties.has('cmsView') || changedProperties.has('contentTypeView')) {
       this._updateBreadcrumbItems();
     }
   }
@@ -197,6 +208,7 @@ export class CmsWrapper extends LitElement {
           
           <content-type-app 
             .baseURL=${this.baseURL}
+            @edit-content-type=${this._handleEditContentType}
           ></content-type-app>
         `;
         
@@ -240,6 +252,10 @@ export class CmsWrapper extends LitElement {
     this.cmsView = e.detail.view;
   }
 
+  private _handleEditContentType(e: CustomEvent) {
+    this.contentTypeView = e.detail.view;
+  }
+
   private _handleSidebarToggled(e: CustomEvent) {
     this.showSidebar = e.detail.visible;
   }
@@ -275,6 +291,11 @@ export class CmsWrapper extends LitElement {
       this.breadcrumbItems = [
         { text: 'Content Types', path: 'list' }
       ];
+      if (this.contentTypeView === 'editor') {
+        this.breadcrumbItems.push({ text: 'Content Type Editor' });
+      } else if (this.contentTypeView === 'new') {
+        this.breadcrumbItems.push({ text: 'New Content Type' });
+      }
     } else {
       this.breadcrumbItems = [];
     }
@@ -293,7 +314,7 @@ export class CmsWrapper extends LitElement {
               @breadcrumb-click=${(e: CustomEvent) => this._handleBreadcrumbClick(e.detail.item.path as any)}
             ></ui-breadcrumbs>
             
-            <div>
+            <div class="toggle-sidebar-button">
               ${this.cmsView === 'editor' 
                 ? html`
                   <ui-toggle-button

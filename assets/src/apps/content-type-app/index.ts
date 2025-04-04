@@ -99,6 +99,11 @@ export class ContentTypeApp extends connect(store)(LitElement) {
   private _toggleAddContentType() {
     this.isAddingContentType = !this.isAddingContentType;
     this.selectedContentType = null;
+    this.dispatchEvent(new CustomEvent('edit-content-type', {
+      detail: { view: 'new' },
+      bubbles: true,
+      composed: true
+    }));
     
     // Reset form
     if (this.isAddingContentType) {
@@ -129,6 +134,11 @@ export class ContentTypeApp extends connect(store)(LitElement) {
     const { contentType } = e.detail;
     this.selectedContentType = JSON.parse(JSON.stringify(contentType)); // Clone to avoid direct mutation
     this.isAddingContentType = false;
+    this.dispatchEvent(new CustomEvent('edit-content-type', {
+      detail: { view: 'editor' },
+      bubbles: true,
+      composed: true
+    }));
   }
 
   private _handleRemoveContentType(e: CustomEvent) {
