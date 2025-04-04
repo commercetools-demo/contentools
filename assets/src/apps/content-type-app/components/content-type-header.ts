@@ -1,5 +1,6 @@
 import { LitElement, html, css } from 'lit';
 import { customElement } from 'lit/decorators.js';
+import '../../../components/atoms/button';
 
 @customElement('content-type-header')
 export class ContentTypeHeader extends LitElement {
@@ -23,36 +24,18 @@ export class ContentTypeHeader extends LitElement {
       font-weight: 600;
       margin: 0;
     }
-    
-    .registry-button {
-      padding: 8px 15px;
-      border: none;
-      border-radius: 4px;
-      font-size: 14px;
-      cursor: pointer;
-      transition: background-color 0.2s;
-    }
-    
-    .primary-button {
-      background-color: #3498db;
-      color: white;
-    }
-    
-    .primary-button:hover {
-      background-color: #2980b9;
-    }
   `;
 
   render() {
     return html`
       <header class="registry-header">
         <h1 class="registry-title">Content Type Registry</h1>
-        <button 
-          class="registry-button primary-button" 
+        <ui-button 
+          variant="primary"
           @click=${this._addContentType}
         >
           + Add Content Type
-        </button>
+        </ui-button>
       </header>
     `;
   }

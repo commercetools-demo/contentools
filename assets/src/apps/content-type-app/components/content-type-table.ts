@@ -1,6 +1,8 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { ContentTypeData } from '../../../types';
+import '../../../components/atoms/button';
+import '../../../components/atoms/loading-spinner';
 
 @customElement('content-type-table')
 export class ContentTypeTable extends LitElement {
@@ -42,33 +44,6 @@ export class ContentTypeTable extends LitElement {
       gap: 8px;
     }
     
-    .registry-button {
-      padding: 8px 15px;
-      border: none;
-      border-radius: 4px;
-      font-size: 14px;
-      cursor: pointer;
-      transition: background-color 0.2s;
-    }
-    
-    .secondary-button {
-      background-color: #ecf0f1;
-      color: #7f8c8d;
-    }
-    
-    .secondary-button:hover {
-      background-color: #dfe6e9;
-    }
-    
-    .danger-button {
-      background-color: #e74c3c;
-      color: white;
-    }
-    
-    .danger-button:hover {
-      background-color: #c0392b;
-    }
-    
     .loading {
       display: flex;
       align-items: center;
@@ -85,7 +60,11 @@ export class ContentTypeTable extends LitElement {
 
   render() {
     if (this.loading) {
-      return html`<div class="loading">Loading content types...</div>`;
+      return html`
+        <div class="loading">
+          <ui-loading-spinner></ui-loading-spinner>
+        </div>
+      `;
     }
 
     if (this.contentTypes.length === 0) {
@@ -114,18 +93,20 @@ export class ContentTypeTable extends LitElement {
               <td>${contentType.deployedUrl}</td>
               <td>
                 <div class="action-buttons">
-                  <button 
-                    class="registry-button secondary-button" 
+                  <ui-button 
+                    variant="secondary"
+                    size="small"
                     @click=${() => this._editContentType(contentType)}
                   >
                     Edit
-                  </button>
-                  <button 
-                    class="registry-button danger-button" 
+                  </ui-button>
+                  <ui-button 
+                    variant="critical"
+                    size="small"
                     @click=${() => this._removeContentType(contentType.metadata.type)}
                   >
                     Delete
-                  </button>
+                  </ui-button>
                 </div>
               </td>
             </tr>

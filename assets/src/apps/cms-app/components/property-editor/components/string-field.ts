@@ -1,5 +1,6 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import '../../../../../components/atoms/labeled-input';
 
 @customElement('cms-string-field')
 export class StringField extends LitElement {
@@ -16,47 +17,27 @@ export class StringField extends LitElement {
   fieldKey: string = '';
 
   static styles = css`
-    .form-group {
-      margin-bottom: 15px;
-    }
-    
-    label {
+    :host {
       display: block;
-      margin-bottom: 5px;
-      font-weight: 500;
-      font-size: 14px;
-    }
-    
-    input {
-      width: 100%;
-      padding: 8px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      font-size: 14px;
     }
   `;
 
   render() {
     return html`
-      <div class="form-group">
-        <label for="${this.fieldKey}">${this.label}</label>
-        <input 
-          type="text" 
-          id="${this.fieldKey}" 
-          .value=${this.value} 
-          @input=${(e: InputEvent) => this.handleInput(e)}
-          ?required=${this.required}
-        />
-      </div>
+      <ui-labeled-input
+        label=${this.label}
+        .value=${this.value}
+        ?required=${this.required}
+        @input-change=${this.handleInput}
+      ></ui-labeled-input>
     `;
   }
 
-  private handleInput(e: InputEvent) {
-    const input = e.target as HTMLInputElement;
+  private handleInput(e: CustomEvent) {
     this.dispatchEvent(new CustomEvent('field-change', {
       detail: {
         key: this.fieldKey,
-        value: input.value
+        value: e.detail.value
       },
       bubbles: true,
       composed: true

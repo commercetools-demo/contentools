@@ -1,6 +1,8 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { ContentTypeData } from '../../../types';
+import '../../../components/atoms/labeled-input';
+import '../../../components/atoms/button';
 
 @customElement('content-type-form')
 export class ContentTypeForm extends LitElement {
@@ -52,33 +54,6 @@ export class ContentTypeForm extends LitElement {
       gap: 10px;
       margin-top: 20px;
     }
-    
-    .registry-button {
-      padding: 8px 15px;
-      border: none;
-      border-radius: 4px;
-      font-size: 14px;
-      cursor: pointer;
-      transition: background-color 0.2s;
-    }
-    
-    .primary-button {
-      background-color: #3498db;
-      color: white;
-    }
-    
-    .primary-button:hover {
-      background-color: #2980b9;
-    }
-    
-    .secondary-button {
-      background-color: #ecf0f1;
-      color: #7f8c8d;
-    }
-    
-    .secondary-button:hover {
-      background-color: #dfe6e9;
-    }
   `;
 
   render() {
@@ -86,46 +61,30 @@ export class ContentTypeForm extends LitElement {
       <div class="component-form">
         <h2>${this.isEdit ? 'Edit Content Type' : 'Add New Content Type'}</h2>
         
-        <div class="form-row">
-          <label class="form-label">Content Type</label>
-          <input 
-            class="form-input" 
-            type="text" 
-            .value=${this.contentType.metadata.type}
-            @input=${(e: InputEvent) => this._updateFormField('type', (e.target as HTMLInputElement).value)}
-            ?disabled=${this.isEdit}
-          >
-        </div>
+        <ui-labeled-input
+          label="Content Type"
+          .value=${this.contentType.metadata.type}
+          @input-change=${(e: CustomEvent) => this._updateFormField('type', e.detail.value)}
+          ?disabled=${this.isEdit}
+        ></ui-labeled-input>
         
-        <div class="form-row">
-          <label class="form-label">Content Type Name</label>
-          <input 
-            class="form-input" 
-            type="text" 
-            .value=${this.contentType.metadata.name}
-            @input=${(e: InputEvent) => this._updateFormField('name', (e.target as HTMLInputElement).value)}
-          >
-        </div>
+        <ui-labeled-input
+          label="Content Type Name"
+          .value=${this.contentType.metadata.name}
+          @input-change=${(e: CustomEvent) => this._updateFormField('name', e.detail.value)}
+        ></ui-labeled-input>
         
-        <div class="form-row">
-          <label class="form-label">Icon (emoji)</label>
-          <input 
-            class="form-input" 
-            type="text" 
-            .value=${this.contentType.metadata.icon || ''}
-            @input=${(e: InputEvent) => this._updateFormField('icon', (e.target as HTMLInputElement).value)}
-          >
-        </div>
+        <ui-labeled-input
+          label="Icon (emoji)"
+          .value=${this.contentType.metadata.icon || ''}
+          @input-change=${(e: CustomEvent) => this._updateFormField('icon', e.detail.value)}
+        ></ui-labeled-input>
         
-        <div class="form-row">
-          <label class="form-label">Deployed URL</label>
-          <input 
-            class="form-input" 
-            type="text" 
-            .value=${this.contentType.deployedUrl}
-            @input=${(e: InputEvent) => this._updateFormField('deployedUrl', (e.target as HTMLInputElement).value)}
-          >
-        </div>
+        <ui-labeled-input
+          label="Deployed URL"
+          .value=${this.contentType.deployedUrl}
+          @input-change=${(e: CustomEvent) => this._updateFormField('deployedUrl', e.detail.value)}
+        ></ui-labeled-input>
         
         <div class="form-row">
           <label class="form-label">Default Properties (JSON)</label>
@@ -148,18 +107,18 @@ export class ContentTypeForm extends LitElement {
         </div>
         
         <div class="form-buttons">
-          <button 
-            class="registry-button secondary-button" 
+          <ui-button 
+            variant="secondary"
             @click=${this._cancelForm}
           >
             Cancel
-          </button>
-          <button 
-            class="registry-button primary-button" 
+          </ui-button>
+          <ui-button 
+            variant="primary"
             @click=${this._saveContentType}
           >
             ${this.isEdit ? 'Update' : 'Add'} Content Type
-          </button>
+          </ui-button>
         </div>
       </div>
     `;

@@ -4,6 +4,7 @@ import { connect } from 'lit-redux-watch';
 import { store } from '../../../store';
 import { createEmptyPage, updatePage, createPage } from '../../../store/pages.slice';
 import { Page } from '../../../types';
+import '../../../components/atoms/labeled-input';
 
 @customElement('cms-page-form')
 export class PageForm extends connect(store)(LitElement) {
@@ -113,28 +114,20 @@ export class PageForm extends connect(store)(LitElement) {
       <div class="page-form">
         <h2>${this.isEdit ? 'Edit Page' : 'Create New Page'}</h2>
         
-        <div class="form-group">
-          <label for="page-name">Page Name</label>
-          <input 
-            type="text" 
-            id="page-name" 
-            .value=${this.formData.name} 
-            @input=${this._handleNameInput}
-            required
-          />
-        </div>
+        <ui-labeled-input
+          label="Page Name"
+          .value=${this.formData.name}
+          @input-change=${this._handleNameInput}
+          required
+        ></ui-labeled-input>
         
-        <div class="form-group">
-          <label for="page-route">Page Route</label>
-          <input 
-            type="text" 
-            id="page-route" 
-            .value=${this.formData.route} 
-            @input=${this._handleRouteInput}
-            required
-          />
-          <div class="hint">Example: /products/category</div>
-        </div>
+        <ui-labeled-input
+          label="Page Route"
+          .value=${this.formData.route}
+          @input-change=${this._handleRouteInput}
+          required
+        ></ui-labeled-input>
+        <div class="hint">Example: /products/category</div>
         
         <div class="actions">
           <button 
@@ -148,15 +141,15 @@ export class PageForm extends connect(store)(LitElement) {
     `;
   }
 
-  private _handleNameInput(e: InputEvent) {
+  private _handleNameInput(e: CustomEvent) {
     this.formData = {
       ...this.formData,
-      name: (e.target as HTMLInputElement).value,
+      name: e.detail.value,
     };
   }
 
-  private _handleRouteInput(e: InputEvent) {
-    let route = (e.target as HTMLInputElement).value;
+  private _handleRouteInput(e: CustomEvent) {
+    let route = e.detail.value;
     
     // Ensure route starts with a slash
     if (route && !route.startsWith('/')) {
