@@ -1,10 +1,10 @@
 import { LitElement, css, html } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import { BreadcrumbItem } from '../../components/atoms/breadcrumbs';
+import { BreadcrumbItem } from '../../components/atoms/breadcrumbs.js';
 
 // Import atomic components
-import '../../components/atoms/breadcrumbs';
-import '../../components/atoms/toggle-button';
+import '../../components/atoms/breadcrumbs.js';
+import '../../components/atoms/toggle-button.js';
 
 // Import the cms-app component
 import '../pages-app/index.js';
@@ -134,7 +134,6 @@ export class CmsWrapper extends LitElement {
     .cms-header {
       display: flex;
       align-items: center;
-      justify-content: space-between;
       padding: 15px 20px;
       border-bottom: 1px solid #ddd;
       background-color: white;
@@ -144,6 +143,27 @@ export class CmsWrapper extends LitElement {
       font-size: 20px;
       font-weight: 600;
       margin: 0;
+      width: 350px;
+      cursor: pointer;
+      transition: color 0.2s;
+      position: relative;
+    }
+    
+    .cms-title:hover {
+      color: #2980b9;
+      text-decoration: underline;
+    }
+    
+    .cms-title:hover .original-title {
+      display: none;
+    }
+    
+    .cms-title:hover .hover-title {
+      display: inline;
+    }
+    
+    .hover-title {
+      display: none;
     }
   `;
 
@@ -264,7 +284,8 @@ export class CmsWrapper extends LitElement {
     return html`      
           <header class="cms-header">
             <h1 class="cms-title" @click=${() => this._setActiveApp('welcome')}>
-            ${this.cmsTitle}
+              <span class="original-title">${this.cmsTitle}</span>
+              <span class="hover-title">Back to Welcome</span>
             </h1>
             
             <ui-breadcrumbs 
