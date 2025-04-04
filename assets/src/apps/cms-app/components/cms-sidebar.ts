@@ -2,6 +2,9 @@ import { LitElement, css, html } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { Page } from '../../../types';
 
+// Import UI components
+import '../../../components/atoms/button';
+
 @customElement('cms-sidebar')
 export class CmsSidebar extends LitElement {
   @property({ type: Object })
@@ -60,34 +63,24 @@ export class CmsSidebar extends LitElement {
       margin: 0;
     }
     
-    .sidebar-close {
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-size: 20px;
-      color: #777;
-    }
-    
     .sidebar-tabs {
       display: flex;
       margin-bottom: 20px;
       border-bottom: 1px solid #eee;
+      gap: 5px;
     }
     
-    .sidebar-tab {
-      padding: 8px 15px;
-      background: none;
-      border: none;
-      border-bottom: 2px solid transparent;
-      cursor: pointer;
-      font-size: 14px;
-      color: #777;
-      transition: all 0.2s;
+    .tab-container {
+      position: relative;
     }
     
-    .sidebar-tab.active {
-      border-bottom-color: #3498db;
-      color: #3498db;
+    .active-indicator {
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background-color: #3498db;
     }
     
     .sidebar-content-body {
@@ -174,30 +167,36 @@ export class CmsSidebar extends LitElement {
             ${this.sidebarView === 'component-editor' ? 'Component Properties' : 
               this.sidebarView === 'component-library' ? 'Component Library' : 'Page Settings'}
           </h2>
-          <button class="sidebar-close" @click=${this._handleCloseClick}>×</button>
+          <ui-button variant="icon" @click=${this._handleCloseClick}>×</ui-button>
         </div>
         
         <div class="sidebar-tabs">
           ${this.selectedComponentId ? html`
-            <button 
-              class="sidebar-tab ${this.sidebarView === 'component-editor' ? 'active' : ''}"
-              @click=${() => this._switchView('component-editor')}
-            >
-              Properties
-            </button>
+            <div class="tab-container">
+              <ui-button 
+                variant=${this.sidebarView === 'component-editor' ? 'primary' : 'text'} 
+                size="small"
+                @click=${() => this._switchView('component-editor')}
+              >Properties</ui-button>
+              ${this.sidebarView === 'component-editor' ? html`<div class="active-indicator"></div>` : ''}
+            </div>
           ` : ''}
-          <button 
-            class="sidebar-tab ${this.sidebarView === 'page-settings' ? 'active' : ''}"
-            @click=${() => this._switchView('page-settings')}
-          >
-            Page Settings
-          </button>
-          <button 
-            class="sidebar-tab ${this.sidebarView === 'component-library' ? 'active' : ''}"
-            @click=${() => this._switchView('component-library')}
-          >
-            Components
-          </button>
+          <div class="tab-container">
+            <ui-button 
+              variant=${this.sidebarView === 'page-settings' ? 'primary' : 'text'} 
+              size="small"
+              @click=${() => this._switchView('page-settings')}
+            >Page Settings</ui-button>
+            ${this.sidebarView === 'page-settings' ? html`<div class="active-indicator"></div>` : ''}
+          </div>
+          <div class="tab-container">
+            <ui-button 
+              variant=${this.sidebarView === 'component-library' ? 'primary' : 'text'} 
+              size="small"
+              @click=${() => this._switchView('component-library')}
+            >Components</ui-button>
+            ${this.sidebarView === 'component-library' ? html`<div class="active-indicator"></div>` : ''}
+          </div>
         </div>
         
         <div class="sidebar-content-body">

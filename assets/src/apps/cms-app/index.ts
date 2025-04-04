@@ -5,6 +5,7 @@ import { store } from '../../store';
 import { selectComponent, setSidebarVisibility } from '../../store/editor.slice';
 import { fetchPages, syncPagesWithApi, updatePage, saveCurrentPage } from '../../store/pages.slice';
 import { Page } from '../../types';
+import { BreadcrumbItem } from '../../components/atoms/breadcrumbs';
 
 import './components/component-library';
 import './components/layout-grid';
@@ -13,7 +14,14 @@ import './components/page-list';
 import './components/property-editor';
 import './components/cms-sidebar';
 
+// Import atomic components
 import '../../components/atoms/back-button';
+import '../../components/atoms/button';
+import '../../components/atoms/breadcrumbs';
+import '../../components/atoms/error-message';
+import '../../components/atoms/loading-spinner';
+import '../../components/atoms/toggle-button';
+import '../../components/molecules/save-bar';
 
 @customElement('cms-app')
 export class CmsApp extends connect(store)(LitElement) {
@@ -91,21 +99,6 @@ export class CmsApp extends connect(store)(LitElement) {
       margin: 0;
     }
     
-    .cms-breadcrumbs {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-      font-size: 14px;
-    }
-    
-    .cms-breadcrumbs span {
-      color: #777;
-    }
-    
-    .cms-breadcrumbs .separator {
-      color: #ccc;
-    }
-    
     .cms-main {
       flex: 1;
       display: flex;
@@ -146,125 +139,8 @@ export class CmsApp extends connect(store)(LitElement) {
       text-decoration: none;
     }
     
-    .cms-settings-btn {
-      background: none;
-      border: none;
-      font-size: 18px;
-      cursor: pointer;
-      color: #555;
-      padding: 5px;
-      border-radius: 4px;
-      transition: background-color 0.2s;
-    }
-    
-    .cms-settings-btn:hover {
-      background-color: #eee;
-    }
-    
-    .cms-components-btn {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      background-color: #f5f5f5;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      padding: 6px 12px;
-      font-size: 14px;
-      cursor: pointer;
-      color: #555;
-      transition: all 0.2s;
-    }
-    
-    .cms-components-btn:hover {
-      background-color: #eee;
-    }
-    
-    .cms-components-btn .icon {
+    .icon {
       font-size: 16px;
-    }
-    
-    .cms-loading {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100px;
-    }
-    
-    .cms-error {
-      padding: 15px;
-      background-color: #ffebee;
-      border-radius: 4px;
-      color: #e53935;
-      margin-bottom: 20px;
-    }
-    
-    .cms-save-bar {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      padding: 10px 20px;
-      background-color: #2c3e50;
-      color: white;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      transform: translateY(100%);
-      transition: transform 0.3s;
-      z-index: 999;
-    }
-    
-    .cms-save-bar.visible {
-      transform: translateY(0);
-    }
-    
-    .cms-save-message {
-      font-size: 14px;
-    }
-    
-    .cms-save-actions {
-      display: flex;
-      gap: 10px;
-    }
-    
-    .cms-save-btn {
-      background-color: #2ecc71;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      padding: 8px 15px;
-      font-size: 14px;
-      cursor: pointer;
-    }
-    
-    .cms-discard-btn {
-      background-color: transparent;
-      color: white;
-      border: 1px solid white;
-      border-radius: 4px;
-      padding: 8px 15px;
-      font-size: 14px;
-      cursor: pointer;
-    }
-    
-    .cms-action-btn {
-      background-color: #3498db;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      padding: 8px 15px;
-      font-size: 14px;
-      cursor: pointer;
-      margin-left: 10px;
-    }
-    
-    .cms-toggle-sidebar {
-      background: none;
-      border: none;
-      font-size: 20px;
-      cursor: pointer;
-      color: #777;
-      margin-left: 10px;
     }
   `;
 
@@ -305,44 +181,39 @@ export class CmsApp extends connect(store)(LitElement) {
   private _syncPagesWithApi() {
     store.dispatch(syncPagesWithApi({
       baseUrl: `${this.baseURL}/${this.businessUnitKey}`,
-
     }));
   }
 
   render() {
+    // Create breadcrumb items based on current view
+    const breadcrumbItems: BreadcrumbItem[] = [
+      { text: 'Pages', path: 'list' }
+    ];
+    
+    if (this.currentPage && this.view === 'editor') {
+      breadcrumbItems.push({ text: this.currentPage.name });
+    } else if (this.view === 'new') {
+      breadcrumbItems.push({ text: 'New Page' });
+    }
+    
     return html`
       <div class="cms-container">
         <header class="cms-header">
           <h1 class="cms-title">CMS</h1>
           
-          <div class="cms-breadcrumbs">
-            <span @click=${() => this._setView('list')} style="cursor: pointer;">Pages</span>
-            ${this.currentPage && (this.view === 'editor') 
-              ? html`
-                <span class="separator">/</span>
-                <span>${this.currentPage.name}</span>
-              ` 
-              : ''
-            }
-            ${this.view === 'new' 
-              ? html`
-                <span class="separator">/</span>
-                <span>New Page</span>
-              ` 
-              : ''
-            }
-          </div>
+          <ui-breadcrumbs 
+            .items=${breadcrumbItems}
+            @breadcrumb-click=${(e: CustomEvent) => this._setView(e.detail.item.path as any)}
+          ></ui-breadcrumbs>
           
           <div>
             ${this.view === 'editor' && this.currentPage 
               ? html`
-                <button 
-                  class="cms-toggle-sidebar" 
-                  @click=${this._toggleSidebar}
-                  title=${this.showSidebar ? 'Hide Sidebar' : 'Show Sidebar'}
-                >
-                  ${this.showSidebar ? '⇢' : '⇠'}
-                </button>
+                <ui-toggle-button
+                  .active=${this.showSidebar}
+                  .title=${this.showSidebar ? 'Hide Sidebar' : 'Show Sidebar'}
+                  @toggle=${this._toggleSidebar}
+                ></ui-toggle-button>
               ` 
               : ''
             }
@@ -351,13 +222,18 @@ export class CmsApp extends connect(store)(LitElement) {
         
         <div class="cms-main">
           <div class="cms-content ${this.showSidebar && this.view === 'editor' ? 'with-sidebar' : ''}">
-            ${this.error ? html`<div class="cms-error">${this.error}</div>` : ''}
+            ${this.error 
+              ? html`<ui-error-message message=${this.error}></ui-error-message>` 
+              : ''
+            }
             
             ${this.loading && !this.pages.length 
               ? html`
-                <div class="cms-loading">
-                  <div class="cms-spinner"></div>
-                </div>
+                <ui-loading-spinner 
+                  size="large" 
+                  label="Loading..." 
+                  centered
+                ></ui-loading-spinner>
               ` 
               : this._renderCurrentView()
             }
@@ -381,13 +257,19 @@ export class CmsApp extends connect(store)(LitElement) {
           }
         </div>
         
-        <div class="cms-save-bar ${this.unsavedChanges ? 'visible' : ''}">
-          <div class="cms-save-message">You have unsaved changes</div>
-          <div class="cms-save-actions">
-            <button class="cms-discard-btn" @click=${this._handleDiscardChanges}>Discard</button>
-            <button class="cms-save-btn" @click=${this._handleSaveChanges}>Save Changes</button>
+        <ui-save-bar .visible=${this.unsavedChanges}>
+          <span slot="message">You have unsaved changes</span>
+          <div slot="actions">
+            <ui-button 
+              variant="outline" 
+              @click=${this._handleDiscardChanges}
+            >Discard</ui-button>
+            <ui-button 
+              variant="success" 
+              @click=${this._handleSaveChanges}
+            >Save Changes</ui-button>
           </div>
-        </div>
+        </ui-save-bar>
       </div>
     `;
   }
@@ -413,14 +295,20 @@ export class CmsApp extends connect(store)(LitElement) {
         
         return html`
           <div class="cms-editor-actions">
-            <back-button @click=${() => this._setView('list')}></back-button>
+            <ui-back-button @click=${() => this._setView('list')}></ui-back-button>
             <div class="cms-editor-buttons">
-              <button class="cms-components-btn" @click=${this._openComponentLibrary} title="Component Library">
+              <ui-button 
+                variant="secondary" 
+                @click=${this._openComponentLibrary} 
+                title="Component Library"
+              >
                 <span class="icon">📦</span> Components
-              </button>
-              <button class="cms-settings-btn" @click=${this._openPageSettings} title="Page Settings">
-                ⚙️
-              </button>
+              </ui-button>
+              <ui-button 
+                variant="icon" 
+                @click=${this._openPageSettings} 
+                title="Page Settings"
+              >⚙️</ui-button>
             </div>
           </div>
           
@@ -438,7 +326,7 @@ export class CmsApp extends connect(store)(LitElement) {
         
       case 'new':
         return html`
-          <a class="cms-back" @click=${() => this._setView('list')}>← Back to Pages</a>
+          <ui-back-button text="Back to Pages" @click=${() => this._setView('list')}></ui-back-button>
           
           <cms-page-form
             .baseURL=${this.baseURL}
@@ -463,8 +351,8 @@ export class CmsApp extends connect(store)(LitElement) {
     }
   }
 
-  private _toggleSidebar() {
-    store.dispatch(setSidebarVisibility(!this.showSidebar));
+  private _toggleSidebar(e: CustomEvent) {
+    store.dispatch(setSidebarVisibility(e.detail.active));
   }
 
   private _handleComponentUpdated() {

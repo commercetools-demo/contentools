@@ -1,7 +1,7 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 
-@customElement('back-button')
+@customElement('ui-back-button')
 export class BackButton extends LitElement {
   static styles = css`
     :host {
@@ -45,6 +45,6 @@ export class BackButton extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'back-button': BackButton;
+    'ui-back-button': BackButton;
   }
 }

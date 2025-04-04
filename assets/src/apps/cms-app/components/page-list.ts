@@ -5,6 +5,10 @@ import { store } from '../../../store';
 import { Page } from '../../../types';
 import { setCurrentPage, deletePage } from '../../../store/pages.slice';
 
+// Import UI components
+import '../../../components/atoms/button';
+import '../../../components/atoms/error-message';
+
 @customElement('cms-page-list')
 export class PageList extends connect(store)(LitElement) {
   @property({ type: String })
@@ -22,6 +26,8 @@ export class PageList extends connect(store)(LitElement) {
   @state()
   private showDeleteConfirm: string | null = null;
 
+  @state()
+  private error: string | null = null;
 
   static styles = css`
     .page-list {
@@ -38,21 +44,6 @@ export class PageList extends connect(store)(LitElement) {
     .page-list-header h2 {
       font-size: 1.2rem;
       margin: 0;
-    }
-    
-    .create-page-btn {
-      background-color: #3498db;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      padding: 8px 15px;
-      font-size: 14px;
-      cursor: pointer;
-      transition: background-color 0.2s;
-    }
-    
-    .create-page-btn:hover {
-      background-color: #2980b9;
     }
     
     table {
@@ -83,28 +74,7 @@ export class PageList extends connect(store)(LitElement) {
     .page-actions {
       display: flex;
       gap: 10px;
-    }
-    
-    .page-actions button {
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-size: 14px;
-      padding: 5px;
-      border-radius: 4px;
-      transition: background-color 0.2s;
-    }
-    
-    .page-actions button:hover {
-      background-color: rgba(0,0,0,0.05);
-    }
-    
-    .page-actions .edit-btn {
-      color: #3498db;
-    }
-    
-    .page-actions .delete-btn {
-      color: #e74c3c;
+      position: relative;
     }
     
     .no-pages {
@@ -126,6 +96,7 @@ export class PageList extends connect(store)(LitElement) {
       flex-direction: column;
       gap: 5px;
       box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      z-index: 10;
     }
     
     .delete-confirm-message {
@@ -137,23 +108,6 @@ export class PageList extends connect(store)(LitElement) {
       display: flex;
       gap: 10px;
       justify-content: flex-end;
-    }
-    
-    .delete-confirm-actions button {
-      padding: 5px 10px;
-      border-radius: 4px;
-      font-size: 12px;
-      border: none;
-      cursor: pointer;
-    }
-    
-    .delete-confirm-actions .confirm-btn {
-      background-color: #e74c3c;
-      color: white;
-    }
-    
-    .delete-confirm-actions .cancel-btn {
-      background-color: #eee;
     }
     
     .locale-badge {
@@ -170,14 +124,29 @@ export class PageList extends connect(store)(LitElement) {
       background-color: #e8f5e9;
       color: #388e3c;
     }
+
+    .clickable {
+      cursor: pointer;
+    }
   `;
 
   render() {
     return html`
       <div class="page-list">
+        ${this.error ? html`
+          <ui-error-message 
+            message=${this.error} 
+            dismissible
+            @dismiss=${() => this.error = null}
+          ></ui-error-message>
+        ` : ''}
+        
         <div class="page-list-header">
           <h2>Pages</h2>
-          <button class="create-page-btn" @click=${this._handleCreatePage}>+ Create Page</button>
+          <ui-button 
+            variant="primary" 
+            @click=${this._handleCreatePage}
+          >+ Create Page</ui-button>
         </div>
         
         ${this.pages.length === 0 
@@ -195,21 +164,37 @@ export class PageList extends connect(store)(LitElement) {
               <tbody>
                 ${this.pages.map(page => html`
                   <tr class=${this.selectedPageKey === page.key ? 'selected' : ''}>
-                    <td @click=${() => this._handleSelectPage(page.key)}>${page.name}</td>
-                    <td @click=${() => this._handleSelectPage(page.key)}>${page.route}</td>
-                      <td @click=${() => this._handleSelectPage(page.key)}>${page.components.length}</td>
+                    <td class="clickable" @click=${() => this._handleSelectPage(page.key)}>${page.name}</td>
+                    <td class="clickable" @click=${() => this._handleSelectPage(page.key)}>${page.route}</td>
+                    <td class="clickable" @click=${() => this._handleSelectPage(page.key)}>${page.components.length}</td>
                     <td>
                       <div class="page-actions">
-                        <button class="edit-btn" @click=${() => this._handleEditPage(page.key)}>Edit</button>
-                        <button class="delete-btn" @click=${(e: Event) => this._handleOpenDeleteConfirm(e, page.key)}>Delete</button>
+                        <ui-button 
+                          variant="text" 
+                          size="small" 
+                          @click=${() => this._handleEditPage(page.key)}
+                        >Edit</ui-button>
+                        <ui-button 
+                          variant="text" 
+                          size="small"
+                          @click=${(e: Event) => this._handleOpenDeleteConfirm(e, page.key)}
+                        >Delete</ui-button>
                         
                         ${this.showDeleteConfirm === page.key 
                           ? html`
                             <div class="delete-confirm">
                               <div class="delete-confirm-message">Are you sure you want to delete this page?</div>
                               <div class="delete-confirm-actions">
-                                <button class="cancel-btn" @click=${this._handleCancelDelete}>Cancel</button>
-                                <button class="confirm-btn" @click=${() => this._handleConfirmDelete(page.key)}>Delete</button>
+                                <ui-button 
+                                  variant="secondary" 
+                                  size="small"
+                                  @click=${this._handleCancelDelete}
+                                >Cancel</ui-button>
+                                <ui-button 
+                                  variant="critical" 
+                                  size="small"
+                                  @click=${() => this._handleConfirmDelete(page.key)}
+                                >Delete</ui-button>
                               </div>
                             </div>
                           ` 
@@ -266,7 +251,10 @@ export class PageList extends connect(store)(LitElement) {
 
   private async _handleConfirmDelete(key: string) {
     try {
-      await store.dispatch(deletePage({baseUrl: `${this.baseURL}/${this.businessUnitKey}`, key})).unwrap();
+      await store.dispatch(deletePage({
+        baseUrl: `${this.baseURL}/${this.businessUnitKey}`,
+        key
+      })).unwrap();
       this.showDeleteConfirm = null;
       
       if (this.selectedPageKey === key) {
@@ -278,9 +266,9 @@ export class PageList extends connect(store)(LitElement) {
         bubbles: true,
         composed: true
       }));
-    } catch (error) {
-      console.error('Error deleting page:', error);
-      this.showDeleteConfirm = null;
+    } catch (err) {
+      this.error = `Failed to delete page: ${err instanceof Error ? err.message : String(err)}`;
+      console.error('Error deleting page:', err);
     }
   }
 }
