@@ -6,6 +6,8 @@ import './components/schema-tab';
 import './components/renderer-tab';
 import { ContentTypeData } from '../../../../types';
 import { TabItem } from '../../../../components/molecules/tabs';
+import '../../../../components/molecules/tabs';
+import '../../../../components/molecules/tabs/tab-content';
 type TabKey = 'general' | 'schema' | 'renderer';
 
 @customElement('content-type-form')
@@ -27,6 +29,9 @@ export default class ContentTypeForm extends LitElement {
 
   @state()
   private _selectedTab: TabKey = 'general';
+
+  @state()
+  private _originalContentType: ContentTypeData | null = null;
 
   private _tabs: TabItem[] = [
     { key: 'general', label: 'General' },
@@ -80,7 +85,14 @@ export default class ContentTypeForm extends LitElement {
     }
   `;
 
+  firstUpdated() {
+    // Store the original content type when component is first initialized
+    this._originalContentType = JSON.parse(JSON.stringify(this.contentType));
+  }
+
   render() {
+    const isButtonEnabled = this._isFormValid() && this._hasContentTypeChanged();
+    
     return html`
       <div class="component-form">
         <div class="tab-header">
@@ -101,8 +113,8 @@ export default class ContentTypeForm extends LitElement {
           <ui-button 
             variant="primary"
             size="small"
+            ?disabled=${!isButtonEnabled}
             @click=${this._saveContentType}
-            ?disabled=${!this._isFormValid()}
           >
             ${this.isEdit ? 'Update' : 'Add'} Content Type
           </ui-button>
@@ -160,18 +172,9 @@ export default class ContentTypeForm extends LitElement {
   }
 
    private _handleSchemaChange(e: CustomEvent) {
-    const { field, jsonString } = e.detail;
-    try {
-      const parsedJson = jsonString.trim() === '' ? {} : JSON.parse(jsonString);
-      const updatedMetadata = { ...this.contentType.metadata, [field]: parsedJson };
-      this._dispatchContentTypeChange({ ...this.contentType, metadata: updatedMetadata });
-      // TODO: Add visual feedback for invalid JSON instead of just console error
-    } catch (error) {
-      console.error(`Invalid JSON in ${field}:`, error);
-      // Optionally dispatch an event or set state to show an error message
-      // For now, we don't update the content type if JSON is invalid
-       this.requestUpdate(); // Re-render to show the invalid JSON in textarea
-    }
+    const { field, value } = e.detail;
+    const updatedMetadata = { ...this.contentType.metadata, [field]: value };
+    this._dispatchContentTypeChange({ ...this.contentType, metadata: updatedMetadata });
   }
 
   private _handleRendererChange(e: CustomEvent) {
@@ -191,10 +194,20 @@ export default class ContentTypeForm extends LitElement {
     }));
   }
   
-   private _isFormValid(): boolean {
+  private _isFormValid(): boolean {
     // Basic validation: type and name are required
     // We could add JSON validation state here later
     return !!this.contentType.metadata.type && !!this.contentType.metadata.name;
+  }
+
+  private _hasContentTypeChanged(): boolean {
+    if (!this._originalContentType) return true;
+    
+    // Convert both objects to strings for deep comparison
+    const currentStr = JSON.stringify(this.contentType);
+    const originalStr = JSON.stringify(this._originalContentType);
+    
+    return currentStr !== originalStr;
   }
 
   private _cancelForm() {
@@ -211,18 +224,6 @@ export default class ContentTypeForm extends LitElement {
         return;
     }
     
-    // Potentially add validation for JSON fields before saving
-    try {
-       // Test parsing just to be sure, although state should be valid if button is enabled
-       JSON.stringify(this.contentType.metadata.defaultProperties);
-       JSON.stringify(this.contentType.metadata.propertySchema);
-    } catch (e) {
-        alert('Invalid JSON in Default Properties or Property Schema. Please correct before saving.');
-        // Focus the schema tab if invalid?
-        this._selectedTab = 'schema'; 
-        return;
-    }
-
     this.dispatchEvent(new CustomEvent('save', {
       detail: { contentType: this.contentType },
       bubbles: true,
@@ -236,6 +237,3 @@ declare global {
     'content-type-form': ContentTypeForm;
   }
 }
-
-// Remove default export if this file is not the primary module export
-// export default ContentTypeForm; 

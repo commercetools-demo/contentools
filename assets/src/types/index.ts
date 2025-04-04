@@ -52,6 +52,7 @@ export interface PropertySchema {
   required?: boolean;
   options?: { value: any; label: string }[];
   extensions?: string[];
+  order?: number;
 }
 
 export interface ContentTypeMetaData {
