@@ -2,14 +2,13 @@ import { LitElement, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { store } from './store';
 import { connect } from 'lit-redux-watch';
-import './apps/cms-app';
+import './apps/cms-wrapper';
 import './apps/cms-renderer';
-import './apps/content-type-app';
 import './styles/cms.css';
 
 // Export the CMS App component
-@customElement('layout-cms')
-class LayoutCMS extends connect(store)(LitElement) {
+@customElement('cms-app')
+class CMSWrapper extends connect(store)(LitElement) {
   @property({ type: String, attribute: 'baseurl' })
   baseURL = ''; 
   
@@ -51,7 +50,7 @@ class LayoutCMS extends connect(store)(LitElement) {
     
     
     return html`
-      <cms-app .baseURL=${this.baseURL} .businessUnitKey=${this.businessUnitKey} .locale=${this.locale} .availableLocales=${JSON.parse(this.availableLocales)}></cms-app>
+      <cms-wrapper .baseURL=${this.baseURL} .businessUnitKey=${this.businessUnitKey} .locale=${this.locale} .availableLocales=${JSON.parse(this.availableLocales)}></cms-wrapper>
     `;
   }
 }
@@ -101,52 +100,25 @@ class CmsRendererElement extends LitElement {
   }
 }
 
-// Export the ContentType App component
-@customElement('content-type-app-element')
-class ContentTypeAppElement extends LitElement {
-  @property({ type: String, attribute: 'baseurl' })
-  baseURL = '';
-
-  static styles = css`
-    :host {
-      display: block;
-      width: 100%;
-      height: 100%;
-    }
-  `;
-
-  render() {
-    return html`
-      <content-type-app baseurl=${this.baseURL}></content-type-app>
-    `;
-  }
-}
-
 
 
 // Define custom elements
-if (!customElements.get('layout-cms')) {
-  customElements.define('layout-cms', LayoutCMS);
+if (!customElements.get('cms-app')) {
+  customElements.define('cms-app', CMSWrapper);
 }
 
 if (!customElements.get('cms-renderer-element')) {
   customElements.define('cms-renderer-element', CmsRendererElement);
 }
 
-if (!customElements.get('content-type-app-element')) {
-  customElements.define('content-type-app-element', ContentTypeAppElement);
-}
-
 
 // Export for bundling
 export { 
-  LayoutCMS, 
+  CMSWrapper, 
   CmsRendererElement, 
-  ContentTypeAppElement, 
 };
 
 export default {
-  LayoutCMS,
+  CMSWrapper,
   CmsRendererElement,
-  ContentTypeAppElement,
 };

@@ -5,7 +5,6 @@ import { store } from '../../store';
 import { selectComponent, setSidebarVisibility } from '../../store/editor.slice';
 import { fetchPages, syncPagesWithApi, updatePage, saveCurrentPage } from '../../store/pages.slice';
 import { Page } from '../../types';
-import { BreadcrumbItem } from '../../components/atoms/breadcrumbs';
 
 import './components/component-library';
 import './components/layout-grid';
@@ -17,14 +16,12 @@ import './components/cms-sidebar';
 // Import atomic components
 import '../../components/atoms/back-button';
 import '../../components/atoms/button';
-import '../../components/atoms/breadcrumbs';
 import '../../components/atoms/error-message';
 import '../../components/atoms/loading-spinner';
-import '../../components/atoms/toggle-button';
 import '../../components/molecules/save-bar';
 
-@customElement('cms-app')
-export class CmsApp extends connect(store)(LitElement) {
+@customElement('pages-app')
+export class PagesApp extends connect(store)(LitElement) {
   
   @property({ type: String })
   baseURL: string = '';
@@ -37,6 +34,9 @@ export class CmsApp extends connect(store)(LitElement) {
 
   @property({ type: String })
   businessUnitKey: string = '';
+  
+  @property({ type: Boolean })
+  headerInWrapper: boolean = false;
 
   @watch('pages.pages')
   pages: Page[] = [];
@@ -82,21 +82,6 @@ export class CmsApp extends connect(store)(LitElement) {
       display: flex;
       flex-direction: column;
       height: 100%;
-    }
-    
-    .cms-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 15px 20px;
-      border-bottom: 1px solid #ddd;
-      background-color: white;
-    }
-    
-    .cms-title {
-      font-size: 20px;
-      font-weight: 600;
-      margin: 0;
     }
     
     .cms-main {
@@ -184,42 +169,31 @@ export class CmsApp extends connect(store)(LitElement) {
     }));
   }
 
-  render() {
-    // Create breadcrumb items based on current view
-    const breadcrumbItems: BreadcrumbItem[] = [
-      { text: 'Pages', path: 'list' }
-    ];
+  updated(changedProperties: Map<string, any>) {
+    super.updated(changedProperties);
     
-    if (this.currentPage && this.view === 'editor') {
-      breadcrumbItems.push({ text: this.currentPage.name });
-    } else if (this.view === 'new') {
-      breadcrumbItems.push({ text: 'New Page' });
+    // Notify wrapper when view changes
+    if (changedProperties.has('view') && this.headerInWrapper) {
+      this.dispatchEvent(new CustomEvent('view-changed', {
+        detail: { view: this.view },
+        bubbles: true,
+        composed: true
+      }));
     }
     
+    // Notify wrapper when sidebar visibility changes
+    if (changedProperties.has('showSidebar') && this.headerInWrapper) {
+      this.dispatchEvent(new CustomEvent('sidebar-toggled', {
+        detail: { visible: this.showSidebar },
+        bubbles: true,
+        composed: true
+      }));
+    }
+  }
+
+  render() {
     return html`
       <div class="cms-container">
-        <header class="cms-header">
-          <h1 class="cms-title">CMS</h1>
-          
-          <ui-breadcrumbs 
-            .items=${breadcrumbItems}
-            @breadcrumb-click=${(e: CustomEvent) => this._setView(e.detail.item.path as any)}
-          ></ui-breadcrumbs>
-          
-          <div>
-            ${this.view === 'editor' && this.currentPage 
-              ? html`
-                <ui-toggle-button
-                  .active=${this.showSidebar}
-                  .title=${this.showSidebar ? 'Hide Sidebar' : 'Show Sidebar'}
-                  @toggle=${this._toggleSidebar}
-                ></ui-toggle-button>
-              ` 
-              : ''
-            }
-          </div>
-        </header>
-        
         <div class="cms-main">
           <div class="cms-content ${this.showSidebar && this.view === 'editor' ? 'with-sidebar' : ''}">
             ${this.error 
@@ -283,8 +257,8 @@ export class CmsApp extends connect(store)(LitElement) {
             .selectedPageKey=${this.currentPage?.key || null}
             .baseURL=${this.baseURL}
             .businessUnitKey=${this.businessUnitKey}
-            @create-page=${() => this._setView('new')}
-            @select-page=${() => this._setView('editor')}
+            @create-page=${() => this.setView('new')}
+            @select-page=${() => this.setView('editor')}
           ></cms-page-list>
         `;
         
@@ -295,7 +269,7 @@ export class CmsApp extends connect(store)(LitElement) {
         
         return html`
           <div class="cms-editor-actions">
-            <ui-back-button @click=${() => this._setView('list')}></ui-back-button>
+            <ui-back-button @click=${() => this.setView('list')}></ui-back-button>
             <div class="cms-editor-buttons">
               <ui-button 
                 variant="secondary" 
@@ -326,13 +300,13 @@ export class CmsApp extends connect(store)(LitElement) {
         
       case 'new':
         return html`
-          <ui-back-button text="Back to Pages" @click=${() => this._setView('list')}></ui-back-button>
+          <ui-back-button text="Back to Pages" @click=${() => this.setView('list')}></ui-back-button>
           
           <cms-page-form
             .baseURL=${this.baseURL}
             .businessUnitKey=${this.businessUnitKey}
             .locale=${this.locale}
-            @page-created=${() => this._setView('editor')}
+            @page-created=${() => this.setView('editor')}
           ></cms-page-form>
         `;
         
@@ -341,7 +315,7 @@ export class CmsApp extends connect(store)(LitElement) {
     }
   }
 
-  private _setView(view: 'list' | 'editor' | 'new') {
+  setView(view: 'list' | 'editor' | 'new') {
     this.view = view;
     
     if (view !== 'editor') {
@@ -351,8 +325,8 @@ export class CmsApp extends connect(store)(LitElement) {
     }
   }
 
-  private _toggleSidebar(e: CustomEvent) {
-    store.dispatch(setSidebarVisibility(e.detail.active));
+  toggleSidebar(visible: boolean) {
+    store.dispatch(setSidebarVisibility(visible));
   }
 
   private _handleComponentUpdated() {

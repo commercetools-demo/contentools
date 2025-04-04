@@ -29,7 +29,7 @@ export class ContentTypeHeader extends LitElement {
   render() {
     return html`
       <header class="registry-header">
-        <h1 class="registry-title">Content Type Registry</h1>
+        <h1 class="registry-title">Content Type Manager</h1>
         <ui-button 
           variant="primary"
           @click=${this._addContentType}
