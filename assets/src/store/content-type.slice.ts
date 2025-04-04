@@ -1,5 +1,10 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { fetchContentTypesEndpoint, createContentTypeEndpoint, updateContentTypeEndpoint, deleteContentTypeEndpoint } from '../utils/api';
+import {
+  fetchContentTypesEndpoint,
+  createContentTypeEndpoint,
+  updateContentTypeEndpoint,
+  deleteContentTypeEndpoint,
+} from '../utils/api';
 import { ContentTypeState, ContentTypeData } from '../types';
 
 const initialState: ContentTypeState = {
@@ -23,9 +28,16 @@ export const fetchContentTypesThunk = createAsyncThunk(
 
 export const addContentTypeThunk = createAsyncThunk(
   'content-type/addContentType',
-  async ({ baseURL, contentType }: { baseURL: string, contentType: ContentTypeData }, { rejectWithValue }) => {
+  async (
+    { baseURL, contentType }: { baseURL: string; contentType: ContentTypeData },
+    { rejectWithValue }
+  ) => {
     try {
-      const response = await createContentTypeEndpoint<ContentTypeData>(baseURL, contentType.metadata.type, contentType);
+      const response = await createContentTypeEndpoint<ContentTypeData>(
+        baseURL,
+        contentType.metadata.type,
+        contentType
+      );
       return response.value;
     } catch (error) {
       return rejectWithValue((error as Error).message);
@@ -35,7 +47,10 @@ export const addContentTypeThunk = createAsyncThunk(
 
 export const updateContentTypeThunk = createAsyncThunk(
   'content-type/updateContentType',
-  async ({ baseURL, key, contentType }: { baseURL: string, key: string, contentType: ContentTypeData }, { rejectWithValue }) => {
+  async (
+    { baseURL, key, contentType }: { baseURL: string; key: string; contentType: ContentTypeData },
+    { rejectWithValue }
+  ) => {
     try {
       const response = await updateContentTypeEndpoint<ContentTypeData>(baseURL, key, contentType);
       return response.value;
@@ -47,7 +62,7 @@ export const updateContentTypeThunk = createAsyncThunk(
 
 export const removeContentTypeThunk = createAsyncThunk(
   'content-type/removeContentType',
-  async ({ baseURL, key }: { baseURL: string, key: string }, { rejectWithValue }) => {
+  async ({ baseURL, key }: { baseURL: string; key: string }, { rejectWithValue }) => {
     try {
       await deleteContentTypeEndpoint(baseURL, key);
       return key;
@@ -62,10 +77,10 @@ const contentTypeSlice = createSlice({
   name: 'contentType',
   initialState,
   reducers: {},
-  extraReducers: (builder) => {
+  extraReducers: builder => {
     builder
       // Fetch components
-      .addCase(fetchContentTypesThunk.pending, (state) => {
+      .addCase(fetchContentTypesThunk.pending, state => {
         state.loading = true;
         state.error = null;
       })
@@ -77,9 +92,9 @@ const contentTypeSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       })
-      
+
       // Add component
-      .addCase(addContentTypeThunk.pending, (state) => {
+      .addCase(addContentTypeThunk.pending, state => {
         state.loading = true;
         state.error = null;
       })
@@ -91,9 +106,9 @@ const contentTypeSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       })
-      
+
       // Update component
-      .addCase(updateContentTypeThunk.pending, (state) => {
+      .addCase(updateContentTypeThunk.pending, state => {
         state.loading = true;
         state.error = null;
       })
@@ -110,9 +125,9 @@ const contentTypeSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       })
-      
+
       // Remove component
-      .addCase(removeContentTypeThunk.pending, (state) => {
+      .addCase(removeContentTypeThunk.pending, state => {
         state.loading = true;
         state.error = null;
       })

@@ -27,7 +27,7 @@ export class HeroBanner extends LitElement {
       overflow: hidden;
       border-radius: 8px;
     }
-    
+
     .hero-container {
       position: relative;
       width: 100%;
@@ -41,7 +41,7 @@ export class HeroBanner extends LitElement {
       padding: 20px;
       box-sizing: border-box;
     }
-    
+
     .hero-background {
       position: absolute;
       top: 0;
@@ -51,7 +51,7 @@ export class HeroBanner extends LitElement {
       object-fit: cover;
       z-index: -1;
     }
-    
+
     .hero-overlay {
       position: absolute;
       top: 0;
@@ -61,21 +61,21 @@ export class HeroBanner extends LitElement {
       background-color: rgba(0, 0, 0, 0.5);
       z-index: -1;
     }
-    
+
     .hero-title {
       font-size: 48px;
       font-weight: bold;
       margin-bottom: 16px;
       text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
     }
-    
+
     .hero-subtitle {
       font-size: 24px;
       margin-bottom: 32px;
       max-width: 600px;
       text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
     }
-    
+
     .hero-cta {
       display: inline-block;
       padding: 12px 24px;
@@ -87,11 +87,11 @@ export class HeroBanner extends LitElement {
       text-transform: uppercase;
       transition: background-color 0.3s;
     }
-    
+
     .hero-cta:hover {
       background-color: #2980b9;
     }
-    
+
     .hero-placeholder {
       background-color: #f5f5f5;
       color: #333;
@@ -106,23 +106,23 @@ export class HeroBanner extends LitElement {
 
   render() {
     return html`
-      ${this.imageUrl 
+      ${this.imageUrl
         ? html`
-          <div class="hero-container">
-            <img src="${this.imageUrl}" alt="${this.title}" class="hero-background">
-            <div class="hero-overlay"></div>
-            <h1 class="hero-title">${this.title}</h1>
-            <p class="hero-subtitle">${this.subtitle}</p>
-            <a href="${this.ctaUrl}" class="hero-cta">${this.ctaText}</a>
-          </div>
-        ` 
+            <div class="hero-container">
+              <img src="${this.imageUrl}" alt="${this.title}" class="hero-background" />
+              <div class="hero-overlay"></div>
+              <h1 class="hero-title">${this.title}</h1>
+              <p class="hero-subtitle">${this.subtitle}</p>
+              <a href="${this.ctaUrl}" class="hero-cta">${this.ctaText}</a>
+            </div>
+          `
         : html`
-          <div class="hero-placeholder">
-            <h1 class="hero-title" style="color: #333;">${this.title}</h1>
-            <p class="hero-subtitle" style="color: #555;">${this.subtitle}</p>
-            <a href="${this.ctaUrl}" class="hero-cta">${this.ctaText}</a>
-          </div>
-        `}
+            <div class="hero-placeholder">
+              <h1 class="hero-title" style="color: #333;">${this.title}</h1>
+              <p class="hero-subtitle" style="color: #555;">${this.subtitle}</p>
+              <a href="${this.ctaUrl}" class="hero-cta">${this.ctaText}</a>
+            </div>
+          `}
     `;
   }
 }

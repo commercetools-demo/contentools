@@ -17,7 +17,7 @@ const editorSlice = createSlice({
     setDraggingComponentType: (state, action: PayloadAction<string | null>) => {
       state.draggingComponentType = action.payload;
     },
-    toggleSidebar: (state) => {
+    toggleSidebar: state => {
       state.showSidebar = !state.showSidebar;
     },
     setSidebarVisibility: (state, action: PayloadAction<boolean>) => {
@@ -26,11 +26,7 @@ const editorSlice = createSlice({
   },
 });
 
-export const { 
-  selectComponent,
-  setDraggingComponentType,
-  toggleSidebar,
-  setSidebarVisibility
-} = editorSlice.actions;
+export const { selectComponent, setDraggingComponentType, toggleSidebar, setSidebarVisibility } =
+  editorSlice.actions;
 
 export default editorSlice.reducer;

@@ -10,7 +10,7 @@ export class ToggleButton extends LitElement {
     :host {
       display: inline-block;
     }
-    
+
     .toggle-button {
       background: none;
       border: none;
@@ -19,26 +19,28 @@ export class ToggleButton extends LitElement {
       color: #777;
       padding: 5px 10px;
       border-radius: 4px;
-      transition: background-color 0.2s, color 0.2s;
+      transition:
+        background-color 0.2s,
+        color 0.2s;
       display: flex;
       align-items: center;
       justify-content: center;
     }
-    
+
     .toggle-button:hover {
       background-color: #f5f5f5;
       color: #333;
     }
-    
+
     .toggle-button.active {
       color: #3498db;
     }
-    
+
     .toggle-button.small {
       font-size: 16px;
       padding: 3px 8px;
     }
-    
+
     .toggle-button.large {
       font-size: 24px;
       padding: 8px 12px;
@@ -62,7 +64,7 @@ export class ToggleButton extends LitElement {
 
   render() {
     return html`
-      <button 
+      <button
         class="toggle-button ${this.active ? 'active' : ''} ${this.size}"
         title=${this.title || (this.active ? 'Hide' : 'Show')}
         @click=${this._handleClick}
@@ -74,12 +76,14 @@ export class ToggleButton extends LitElement {
 
   private _handleClick() {
     this.active = !this.active;
-    
-    this.dispatchEvent(new CustomEvent('toggle', {
-      detail: { active: this.active },
-      bubbles: true,
-      composed: true
-    }));
+
+    this.dispatchEvent(
+      new CustomEvent('toggle', {
+        detail: { active: this.active },
+        bubbles: true,
+        composed: true,
+      })
+    );
   }
 }
 
@@ -87,4 +91,4 @@ declare global {
   interface HTMLElementTagNameMap {
     'ui-toggle-button': ToggleButton;
   }
-} 
+}

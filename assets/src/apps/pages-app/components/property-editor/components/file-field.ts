@@ -32,14 +32,14 @@ export class FileField extends LitElement {
     .form-group {
       margin-bottom: 15px;
     }
-    
+
     label {
       display: block;
       margin-bottom: 5px;
       font-weight: 500;
       font-size: 14px;
     }
-    
+
     .file-upload {
       display: flex;
       flex-direction: column;
@@ -57,7 +57,7 @@ export class FileField extends LitElement {
     }
 
     .browse-button {
-      background: #4CAF50;
+      background: #4caf50;
       color: white;
       border: none;
       border-radius: 4px;
@@ -67,7 +67,7 @@ export class FileField extends LitElement {
     }
 
     .upload-button {
-      background: #2196F3;
+      background: #2196f3;
       color: white;
       border: none;
       border-radius: 4px;
@@ -90,7 +90,7 @@ export class FileField extends LitElement {
   `;
 
   render() {
-    const isImage = this.extensions?.some(ext => 
+    const isImage = this.extensions?.some(ext =>
       ['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext.toLowerCase())
     );
 
@@ -116,25 +116,31 @@ export class FileField extends LitElement {
             <button class="browse-button" @click=${() => this.inputRef.value?.click()}>
               Browse
             </button>
-            ${this.selectedFile ? html`
-              <button 
-                class="upload-button" 
-                ?disabled=${this.uploading}
-                @click=${() => this.handleFileUpload()}
-              >
-                ${this.uploading ? 'Uploading...' : 'Upload'}
-              </button>
-            ` : ''}
+            ${this.selectedFile
+              ? html`
+                  <button
+                    class="upload-button"
+                    ?disabled=${this.uploading}
+                    @click=${() => this.handleFileUpload()}
+                  >
+                    ${this.uploading ? 'Uploading...' : 'Upload'}
+                  </button>
+                `
+              : ''}
           </div>
-          ${this.value ? html`
-            <div class="file-url">
-              ${isImage ? html`
-                <img src=${this.value} alt="Preview" class="file-preview" />
-              ` : html`
-                <a href=${this.value} target="_blank" rel="noopener noreferrer">${this.value}</a>
-              `}
-            </div>
-          ` : ''}
+          ${this.value
+            ? html`
+                <div class="file-url">
+                  ${isImage
+                    ? html` <img src=${this.value} alt="Preview" class="file-preview" /> `
+                    : html`
+                        <a href=${this.value} target="_blank" rel="noopener noreferrer"
+                          >${this.value}</a
+                        >
+                      `}
+                </div>
+              `
+            : ''}
         </div>
       </div>
     `;
@@ -159,19 +165,21 @@ export class FileField extends LitElement {
       }
 
       const { url } = await response.json();
-      
-      this.dispatchEvent(new CustomEvent('field-change', {
-        detail: {
-          key: this.fieldKey,
-          value: url
-        },
-        bubbles: true,
-        composed: true
-      }));
+
+      this.dispatchEvent(
+        new CustomEvent('field-change', {
+          detail: {
+            key: this.fieldKey,
+            value: url,
+          },
+          bubbles: true,
+          composed: true,
+        })
+      );
     } catch (error) {
       console.error('Error uploading file:', error);
     } finally {
       this.uploading = false;
     }
   }
-} 
+}

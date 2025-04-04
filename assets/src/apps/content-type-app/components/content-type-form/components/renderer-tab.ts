@@ -8,12 +8,12 @@ export class RendererTab extends LitElement {
 
   static styles = css`
     :host {
-        display: block;
-        padding: 20px;
+      display: block;
+      padding: 20px;
     }
-     ui-labeled-input {
-        margin-bottom: 15px;
-        display: block;
+    ui-labeled-input {
+      margin-bottom: 15px;
+      display: block;
     }
   `;
 
@@ -28,11 +28,13 @@ export class RendererTab extends LitElement {
   }
 
   private _dispatchChange(value: string) {
-    this.dispatchEvent(new CustomEvent('renderer-change', {
-      detail: { value },
-      bubbles: true,
-      composed: true
-    }));
+    this.dispatchEvent(
+      new CustomEvent('renderer-change', {
+        detail: { value },
+        bubbles: true,
+        composed: true,
+      })
+    );
   }
 }
 

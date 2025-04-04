@@ -41,15 +41,15 @@ export class PropertyEditor extends connect(store)(LitElement) {
       if (key === 'name') {
         this.component = {
           ...this.component,
-          name: value
+          name: value,
         };
       } else {
         this.component = {
           ...this.component,
           properties: {
             ...this.component.properties,
-            [key]: value
-          }
+            [key]: value,
+          },
         };
       }
       this.requestUpdate();
@@ -60,7 +60,7 @@ export class PropertyEditor extends connect(store)(LitElement) {
     .property-editor {
       padding: 20px 0;
     }
-    
+
     h2 {
       font-size: 18px;
       margin-top: 0;
@@ -68,15 +68,15 @@ export class PropertyEditor extends connect(store)(LitElement) {
       padding-bottom: 10px;
       border-bottom: 1px solid #ddd;
     }
-    
+
     .actions {
       margin-top: 20px;
       display: flex;
       justify-content: space-between;
     }
-    
+
     .save-button {
-      background: #2196F3;
+      background: #2196f3;
       color: white;
       border: none;
       border-radius: 4px;
@@ -84,7 +84,7 @@ export class PropertyEditor extends connect(store)(LitElement) {
       cursor: pointer;
       font-size: 14px;
     }
-    
+
     .delete-button {
       background: #f44336;
       color: white;
@@ -94,7 +94,7 @@ export class PropertyEditor extends connect(store)(LitElement) {
       cursor: pointer;
       font-size: 14px;
     }
-    
+
     .delete-confirm-dialog {
       position: fixed;
       top: 0;
@@ -107,7 +107,7 @@ export class PropertyEditor extends connect(store)(LitElement) {
       justify-content: center;
       z-index: 1000;
     }
-    
+
     .dialog-content {
       background: white;
       padding: 20px;
@@ -115,19 +115,19 @@ export class PropertyEditor extends connect(store)(LitElement) {
       max-width: 400px;
       width: 100%;
     }
-    
+
     .dialog-title {
       font-size: 18px;
       margin-top: 0;
       margin-bottom: 15px;
     }
-    
+
     .dialog-buttons {
       display: flex;
       justify-content: flex-end;
       margin-top: 20px;
     }
-    
+
     .dialog-buttons button {
       margin-left: 10px;
       padding: 8px 15px;
@@ -135,18 +135,18 @@ export class PropertyEditor extends connect(store)(LitElement) {
       border-radius: 4px;
       cursor: pointer;
     }
-    
+
     .cancel-button {
       background: #9e9e9e;
       color: white;
     }
-    
+
     .confirm-button {
       background: #f44336;
       color: white;
     }
   `;
-  
+
   updated(changedProperties: Map<string, any>) {
     if (changedProperties.has('component') && this.component) {
       this.fetchMetadata();
@@ -155,12 +155,15 @@ export class PropertyEditor extends connect(store)(LitElement) {
 
   async fetchMetadata() {
     if (!this.component) return;
-    
+
     this.loading = true;
     this.error = undefined;
-    
+
     try {
-      this.metadata = await getContentTypeMetaData({baseURL: this.baseURL, type: this.component.type as any});
+      this.metadata = await getContentTypeMetaData({
+        baseURL: this.baseURL,
+        type: this.component.type as any,
+      });
       this.requestUpdate();
     } catch (err) {
       this.error = `Failed to load component metadata: ${err instanceof Error ? err.message : String(err)}`;
@@ -169,12 +172,12 @@ export class PropertyEditor extends connect(store)(LitElement) {
       this.loading = false;
     }
   }
-  
+
   render() {
     if (!this.component) {
       return html`<div>No component selected</div>`;
     }
-    
+
     if (this.loading) {
       return html`<div>Loading component properties...</div>`;
     }
@@ -186,16 +189,16 @@ export class PropertyEditor extends connect(store)(LitElement) {
     if (!this.metadata) {
       return html`<div>No metadata available for this component</div>`;
     }
-    
+
     const schema = this.metadata.propertySchema;
-    
+
     return html`
       <div class="property-editor">
         <h2>${this.component.name}</h2>
-        
+
         ${Object.entries(schema).map(([key, field]: [string, any]) => {
           const value = this.component!.properties[key];
-          
+
           switch (field.type) {
             case 'string':
               if (this.component && this.component.type === 'richText' && key === 'content') {
@@ -261,69 +264,80 @@ export class PropertyEditor extends connect(store)(LitElement) {
               return html`<div>Unsupported field type: ${field.type}</div>`;
           }
         })}
-        
+
         <div class="actions">
-          <button class="delete-button" @click=${this.showDeleteConfirmation}>Delete Component</button>
+          <button class="delete-button" @click=${this.showDeleteConfirmation}>
+            Delete Component
+          </button>
           <button class="save-button" @click=${this.saveChanges}>Save Changes</button>
         </div>
       </div>
-      
+
       ${this.renderDeleteConfirmDialog()}
     `;
   }
-  
+
   renderDeleteConfirmDialog() {
     if (!this.showDeleteConfirm) return '';
-    
+
     return html`
       <div class="delete-confirm-dialog">
         <div class="dialog-content">
           <h3 class="dialog-title">Delete Component</h3>
-          <p>Are you sure you want to delete the component "${this.component?.name}"? This action cannot be undone.</p>
+          <p>
+            Are you sure you want to delete the component "${this.component?.name}"? This action
+            cannot be undone.
+          </p>
           <div class="dialog-buttons">
-            <button class="cancel-button" @click=${() => this.showDeleteConfirm = false}>Cancel</button>
+            <button class="cancel-button" @click=${() => (this.showDeleteConfirm = false)}>
+              Cancel
+            </button>
             <button class="confirm-button" @click=${this.deleteComponent}>Delete</button>
           </div>
         </div>
       </div>
     `;
   }
-  
+
   showDeleteConfirmation() {
     this.showDeleteConfirm = true;
   }
-  
+
   deleteComponent() {
     if (this.component) {
       store.dispatch(removeComponent(this.component.id));
-      
+
       // Close the dialog
       this.showDeleteConfirm = false;
-      
+
       // Dispatch a custom event to notify parent components
-      this.dispatchEvent(new CustomEvent('component-deleted', {
-        detail: { componentId: this.component.id },
-        bubbles: true,
-        composed: true
-      }));
+      this.dispatchEvent(
+        new CustomEvent('component-deleted', {
+          detail: { componentId: this.component.id },
+          bubbles: true,
+          composed: true,
+        })
+      );
     }
   }
-  
+
   handleFieldChange(e: CustomEvent) {
     const { key, value } = e.detail;
     this._debouncedHandleFieldChange(key, value);
   }
-  
+
   saveChanges() {
     if (this.component) {
       store.dispatch(updateComponent(this.component));
-      
+
       // Dispatch a custom event to notify parent components
-      this.dispatchEvent(new CustomEvent('component-updated', {
-        detail: { component: this.component },
-        bubbles: true,
-        composed: true
-      }));
+      this.dispatchEvent(
+        new CustomEvent('component-updated', {
+          detail: { component: this.component },
+          bubbles: true,
+          composed: true,
+        })
+      );
     }
   }
 }

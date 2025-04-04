@@ -9,7 +9,7 @@ export class ContentTypeHeader extends LitElement {
       display: block;
       width: 100%;
     }
-    
+
     .registry-header {
       display: flex;
       align-items: center;
@@ -18,7 +18,7 @@ export class ContentTypeHeader extends LitElement {
       border-bottom: 1px solid #ddd;
       background-color: white;
     }
-    
+
     .registry-title {
       font-size: 20px;
       font-weight: 600;
@@ -30,22 +30,19 @@ export class ContentTypeHeader extends LitElement {
     return html`
       <header class="registry-header">
         <h1 class="registry-title">Content Type Manager</h1>
-        <ui-button 
-          variant="primary"
-          @click=${this._addContentType}
-        >
-          + Add Content Type
-        </ui-button>
+        <ui-button variant="primary" @click=${this._addContentType}> + Add Content Type </ui-button>
       </header>
     `;
   }
 
   private _addContentType() {
-    this.dispatchEvent(new CustomEvent('add-content-type', {
-      bubbles: true,
-      composed: true
-    }));
+    this.dispatchEvent(
+      new CustomEvent('add-content-type', {
+        bubbles: true,
+        composed: true,
+      })
+    );
   }
 }
 
-export default ContentTypeHeader; 
+export default ContentTypeHeader;

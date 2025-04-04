@@ -14,7 +14,7 @@ import '../content-type-app/index.js';
 export class CmsWrapper extends LitElement {
   @property({ type: String })
   baseURL: string = '';
-  
+
   @property({ type: String })
   locale: string = '';
 
@@ -23,7 +23,7 @@ export class CmsWrapper extends LitElement {
 
   @property({ type: String })
   businessUnitKey: string = '';
-  
+
   @state()
   private activeApp: 'welcome' | 'cms' | 'content-type' = 'welcome';
 
@@ -48,37 +48,37 @@ export class CmsWrapper extends LitElement {
       height: 100%;
       font-family: system-ui, sans-serif;
     }
-    
+
     .wrapper-container {
       display: flex;
       flex-direction: column;
       height: 100%;
       padding: 2rem;
     }
-    
+
     .welcome-header {
       margin-bottom: 2rem;
       text-align: center;
     }
-    
+
     .welcome-title {
       font-size: 2rem;
       font-weight: 600;
       margin-bottom: 1rem;
     }
-    
+
     .welcome-subtitle {
       font-size: 1.2rem;
       color: #666;
     }
-    
+
     .card-container {
       display: flex;
       gap: 2rem;
       justify-content: center;
       margin-top: 2rem;
     }
-    
+
     .app-card {
       width: 300px;
       height: 200px;
@@ -90,35 +90,35 @@ export class CmsWrapper extends LitElement {
       display: flex;
       flex-direction: column;
     }
-    
+
     .app-card:hover {
       transform: translateY(-5px);
       box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
       border-color: #3498db;
     }
-    
+
     .card-header {
       padding: 1rem;
       background-color: #f5f5f5;
       border-bottom: 1px solid #ddd;
     }
-    
+
     .card-title {
       font-size: 1.2rem;
       font-weight: 600;
       margin: 0;
     }
-    
+
     .card-body {
       padding: 1rem;
       flex: 1;
     }
-    
+
     .card-description {
       margin: 0;
       color: #666;
     }
-    
+
     .back-button {
       background-color: #3498db;
       color: white;
@@ -129,7 +129,7 @@ export class CmsWrapper extends LitElement {
       margin-bottom: 1rem;
       font-size: 0.9rem;
     }
-    
+
     .back-button:hover {
       background-color: #2980b9;
     }
@@ -141,7 +141,7 @@ export class CmsWrapper extends LitElement {
       border-bottom: 1px solid #ddd;
       background-color: white;
     }
-    
+
     .cms-title {
       font-size: 20px;
       font-weight: 600;
@@ -151,20 +151,20 @@ export class CmsWrapper extends LitElement {
       transition: color 0.2s;
       position: relative;
     }
-    
+
     .cms-title:hover {
       color: #2980b9;
       text-decoration: underline;
     }
-    
+
     .cms-title:hover .original-title {
       display: none;
     }
-    
+
     .cms-title:hover .hover-title {
       display: inline;
     }
-    
+
     .hover-title {
       display: none;
     }
@@ -185,12 +185,11 @@ export class CmsWrapper extends LitElement {
   }
 
   render() {
-    
     switch (this.activeApp) {
       case 'cms':
         return html`
           ${this._renderHeader()}
-          
+
           <pages-app
             .baseURL=${this.baseURL}
             .locale=${this.locale}
@@ -201,17 +200,17 @@ export class CmsWrapper extends LitElement {
             @sidebar-toggled=${this._handleSidebarToggled}
           ></pages-app>
         `;
-        
+
       case 'content-type':
         return html`
           ${this._renderHeader()}
-          
-          <content-type-app 
+
+          <content-type-app
             .baseURL=${this.baseURL}
             @edit-content-type=${this._handleEditContentType}
           ></content-type-app>
         `;
-        
+
       default: // welcome view
         return html`
           <div class="wrapper-container">
@@ -219,23 +218,28 @@ export class CmsWrapper extends LitElement {
               <h1 class="welcome-title">Welcome to the CMS Platform</h1>
               <p class="welcome-subtitle">Choose an application to get started</p>
             </div>
-            
+
             <div class="card-container">
               <div class="app-card" @click=${() => this._setActiveApp('cms')}>
                 <div class="card-header">
                   <h3 class="card-title">Page Builder</h3>
                 </div>
                 <div class="card-body">
-                  <p class="card-description">Create and manage pages with a flexible layout system. Add components and customize content.</p>
+                  <p class="card-description">
+                    Create and manage pages with a flexible layout system. Add components and
+                    customize content.
+                  </p>
                 </div>
               </div>
-              
+
               <div class="app-card" @click=${() => this._setActiveApp('content-type')}>
                 <div class="card-header">
                   <h3 class="card-title">Content Type Manager</h3>
                 </div>
                 <div class="card-body">
-                  <p class="card-description">Define and manage content types. Create structured content models for your site.</p>
+                  <p class="card-description">
+                    Define and manage content types. Create structured content models for your site.
+                  </p>
                 </div>
               </div>
             </div>
@@ -278,19 +282,15 @@ export class CmsWrapper extends LitElement {
 
   private _updateBreadcrumbItems() {
     if (this.activeApp === 'cms') {
-    this.breadcrumbItems = [
-      { text: 'Pages', path: 'list' }
-    ];
-    
-    if (this.cmsView === 'editor') {
-      this.breadcrumbItems.push({ text: 'Page Editor' });
-    } else if (this.cmsView === 'new') {
+      this.breadcrumbItems = [{ text: 'Pages', path: 'list' }];
+
+      if (this.cmsView === 'editor') {
+        this.breadcrumbItems.push({ text: 'Page Editor' });
+      } else if (this.cmsView === 'new') {
         this.breadcrumbItems.push({ text: 'New Page' });
       }
     } else if (this.activeApp === 'content-type') {
-      this.breadcrumbItems = [
-        { text: 'Content Types', path: 'list' }
-      ];
+      this.breadcrumbItems = [{ text: 'Content Types', path: 'list' }];
       if (this.contentTypeView === 'editor') {
         this.breadcrumbItems.push({ text: 'Content Type Editor' });
       } else if (this.contentTypeView === 'new') {
@@ -302,31 +302,31 @@ export class CmsWrapper extends LitElement {
   }
 
   private _renderHeader() {
-    return html`      
-          <header class="cms-header">
-            <h1 class="cms-title" @click=${() => this._setActiveApp('welcome')}>
-              <span class="original-title">${this.cmsTitle}</span>
-              <span class="hover-title">Back to Welcome</span>
-            </h1>
-            
-            <ui-breadcrumbs 
-              .items=${this.breadcrumbItems}
-              @breadcrumb-click=${(e: CustomEvent) => this._handleBreadcrumbClick(e.detail.item.path as any)}
-            ></ui-breadcrumbs>
-            
-            <div class="toggle-sidebar-button">
-              ${this.cmsView === 'editor' 
-                ? html`
-                  <ui-toggle-button
-                    .active=${this.showSidebar}
-                    .title=${this.showSidebar ? 'Hide Sidebar' : 'Show Sidebar'}
-                    @toggle=${this._handleToggleSidebar}
-                  ></ui-toggle-button>
-                ` 
-                : ''
-              }
-            </div>
-          </header>
+    return html`
+      <header class="cms-header">
+        <h1 class="cms-title" @click=${() => this._setActiveApp('welcome')}>
+          <span class="original-title">${this.cmsTitle}</span>
+          <span class="hover-title">Back to Welcome</span>
+        </h1>
+
+        <ui-breadcrumbs
+          .items=${this.breadcrumbItems}
+          @breadcrumb-click=${(e: CustomEvent) =>
+            this._handleBreadcrumbClick(e.detail.item.path as any)}
+        ></ui-breadcrumbs>
+
+        <div class="toggle-sidebar-button">
+          ${this.cmsView === 'editor'
+            ? html`
+                <ui-toggle-button
+                  .active=${this.showSidebar}
+                  .title=${this.showSidebar ? 'Hide Sidebar' : 'Show Sidebar'}
+                  @toggle=${this._handleToggleSidebar}
+                ></ui-toggle-button>
+              `
+            : ''}
+        </div>
+      </header>
     `;
   }
-} 
+}

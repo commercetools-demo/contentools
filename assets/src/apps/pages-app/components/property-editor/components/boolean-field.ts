@@ -16,16 +16,16 @@ export class BooleanField extends LitElement {
     .form-group {
       margin-bottom: 15px;
     }
-    
+
     .checkbox-group {
       display: flex;
       align-items: center;
     }
-    
-    input[type="checkbox"] {
+
+    input[type='checkbox'] {
       margin-right: 8px;
     }
-    
+
     label {
       font-weight: 500;
       font-size: 14px;
@@ -35,10 +35,10 @@ export class BooleanField extends LitElement {
   render() {
     return html`
       <div class="form-group checkbox-group">
-        <input 
-          type="checkbox" 
-          id="${this.fieldKey}" 
-          .checked=${this.value} 
+        <input
+          type="checkbox"
+          id="${this.fieldKey}"
+          .checked=${this.value}
           @change=${(e: InputEvent) => this.handleChange(e)}
         />
         <label for="${this.fieldKey}">${this.label}</label>
@@ -48,13 +48,15 @@ export class BooleanField extends LitElement {
 
   private handleChange(e: InputEvent) {
     const input = e.target as HTMLInputElement;
-    this.dispatchEvent(new CustomEvent('field-change', {
-      detail: {
-        key: this.fieldKey,
-        value: input.checked
-      },
-      bubbles: true,
-      composed: true
-    }));
+    this.dispatchEvent(
+      new CustomEvent('field-change', {
+        detail: {
+          key: this.fieldKey,
+          value: input.checked,
+        },
+        bubbles: true,
+        composed: true,
+      })
+    );
   }
-} 
+}

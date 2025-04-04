@@ -35,13 +35,15 @@ export class NumberField extends LitElement {
   }
 
   private handleInput(e: CustomEvent) {
-    this.dispatchEvent(new CustomEvent('field-change', {
-      detail: {
-        key: this.fieldKey,
-        value: Number(e.detail.value)
-      },
-      bubbles: true,
-      composed: true
-    }));
+    this.dispatchEvent(
+      new CustomEvent('field-change', {
+        detail: {
+          key: this.fieldKey,
+          value: Number(e.detail.value),
+        },
+        bubbles: true,
+        composed: true,
+      })
+    );
   }
-} 
+}

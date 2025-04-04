@@ -1,7 +1,7 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import '../../../../components/atoms/button';
-import './components/general-tab'; 
+import './components/general-tab';
 import './components/schema-tab';
 import './components/renderer-tab';
 import { ContentTypeData } from '../../../../types';
@@ -19,9 +19,9 @@ export default class ContentTypeForm extends LitElement {
       name: '',
       icon: '',
       defaultProperties: {},
-      propertySchema: {}
+      propertySchema: {},
     },
-    deployedUrl: ''
+    deployedUrl: '',
   };
 
   @property({ type: Boolean })
@@ -36,7 +36,7 @@ export default class ContentTypeForm extends LitElement {
   private _tabs: TabItem[] = [
     { key: 'general', label: 'General' },
     { key: 'schema', label: 'Schema' },
-    { key: 'renderer', label: 'Renderer' }
+    { key: 'renderer', label: 'Renderer' },
   ];
 
   static styles = css`
@@ -70,10 +70,10 @@ export default class ContentTypeForm extends LitElement {
       border-bottom-color: #007bff;
       font-weight: 600;
     }
-    
+
     .tab-content {
-       /* Padding moved from .component-form to here */
-       /* The specific tab components also have padding, review if needed */
+      /* Padding moved from .component-form to here */
+      /* The specific tab components also have padding, review if needed */
     }
 
     .form-buttons {
@@ -92,71 +92,63 @@ export default class ContentTypeForm extends LitElement {
 
   render() {
     const isButtonEnabled = this._isFormValid() && this._hasContentTypeChanged();
-    
+
     return html`
       <div class="component-form">
         <div class="tab-header">
-        <ui-tabs
-          .tabs=${this._tabs}
-          .selectedTab=${this._selectedTab}
-          @tab-change=${this._selectTab}
-          fullWidth
-        >
-          <div class="form-buttons" slot="actions">
-          <ui-button 
-            variant="secondary"
-            size="small"
-            @click=${this._cancelForm}
+          <ui-tabs
+            .tabs=${this._tabs}
+            .selectedTab=${this._selectedTab}
+            @tab-change=${this._selectTab}
+            fullWidth
           >
-            Cancel
-          </ui-button>
-          <ui-button 
-            variant="primary"
-            size="small"
-            ?disabled=${!isButtonEnabled}
-            @click=${this._saveContentType}
+            <div class="form-buttons" slot="actions">
+              <ui-button variant="secondary" size="small" @click=${this._cancelForm}>
+                Cancel
+              </ui-button>
+              <ui-button
+                variant="primary"
+                size="small"
+                ?disabled=${!isButtonEnabled}
+                @click=${this._saveContentType}
+              >
+                ${this.isEdit ? 'Update' : 'Add'} Content Type
+              </ui-button>
+            </div></ui-tabs
           >
-            ${this.isEdit ? 'Update' : 'Add'} Content Type
-          </ui-button>
-        </div></ui-tabs>
-        
         </div>
 
-        <div class="tab-content">
-          ${this._renderTabContent()}
-        </div>
-        
-        
+        <div class="tab-content">${this._renderTabContent()}</div>
       </div>
     `;
   }
 
   private _renderTabContent() {
     return html`
-       <ui-tab-content ?active=${this._selectedTab === 'general'}>
-          <general-tab
-            .type=${this.contentType.metadata.type}
-            .name=${this.contentType.metadata.name}
-            .icon=${this.contentType.metadata.icon}
-            ?isEdit=${this.isEdit}
-            @general-change=${this._handleGeneralChange}
-          ></general-tab>
-        </ui-tab-content>
-        
-        <ui-tab-content ?active=${this._selectedTab === 'schema'}>
-          <schema-tab
-            .propertySchema=${this.contentType.metadata.propertySchema}
-            .defaultProperties=${this.contentType.metadata.defaultProperties}
-            @schema-change=${this._handleSchemaChange}
-          ></schema-tab>
-        </ui-tab-content>
-        
-        <ui-tab-content ?active=${this._selectedTab === 'renderer'}>
-          <renderer-tab
-            .deployedUrl=${this.contentType.deployedUrl}
-            @renderer-change=${this._handleRendererChange}
-          ></renderer-tab>
-        </ui-tab-content>
+      <ui-tab-content ?active=${this._selectedTab === 'general'}>
+        <general-tab
+          .type=${this.contentType.metadata.type}
+          .name=${this.contentType.metadata.name}
+          .icon=${this.contentType.metadata.icon}
+          ?isEdit=${this.isEdit}
+          @general-change=${this._handleGeneralChange}
+        ></general-tab>
+      </ui-tab-content>
+
+      <ui-tab-content ?active=${this._selectedTab === 'schema'}>
+        <schema-tab
+          .propertySchema=${this.contentType.metadata.propertySchema}
+          .defaultProperties=${this.contentType.metadata.defaultProperties}
+          @schema-change=${this._handleSchemaChange}
+        ></schema-tab>
+      </ui-tab-content>
+
+      <ui-tab-content ?active=${this._selectedTab === 'renderer'}>
+        <renderer-tab
+          .deployedUrl=${this.contentType.deployedUrl}
+          @renderer-change=${this._handleRendererChange}
+        ></renderer-tab>
+      </ui-tab-content>
     `;
   }
 
@@ -171,7 +163,7 @@ export default class ContentTypeForm extends LitElement {
     this._dispatchContentTypeChange({ ...this.contentType, metadata: updatedMetadata });
   }
 
-   private _handleSchemaChange(e: CustomEvent) {
+  private _handleSchemaChange(e: CustomEvent) {
     const { field, value } = e.detail;
     const updatedMetadata = { ...this.contentType.metadata, [field]: value };
     this._dispatchContentTypeChange({ ...this.contentType, metadata: updatedMetadata });
@@ -184,16 +176,18 @@ export default class ContentTypeForm extends LitElement {
 
   private _dispatchContentTypeChange(contentType: ContentTypeData) {
     // Update internal state first
-    this.contentType = contentType; 
-    
+    this.contentType = contentType;
+
     // Then dispatch the event
-    this.dispatchEvent(new CustomEvent('content-type-change', {
-      detail: { contentType },
-      bubbles: true,
-      composed: true
-    }));
+    this.dispatchEvent(
+      new CustomEvent('content-type-change', {
+        detail: { contentType },
+        bubbles: true,
+        composed: true,
+      })
+    );
   }
-  
+
   private _isFormValid(): boolean {
     // Basic validation: type and name are required
     // We could add JSON validation state here later
@@ -202,33 +196,37 @@ export default class ContentTypeForm extends LitElement {
 
   private _hasContentTypeChanged(): boolean {
     if (!this._originalContentType) return true;
-    
+
     // Convert both objects to strings for deep comparison
     const currentStr = JSON.stringify(this.contentType);
     const originalStr = JSON.stringify(this._originalContentType);
-    
+
     return currentStr !== originalStr;
   }
 
   private _cancelForm() {
-    this.dispatchEvent(new CustomEvent('cancel', {
-      bubbles: true,
-      composed: true
-    }));
+    this.dispatchEvent(
+      new CustomEvent('cancel', {
+        bubbles: true,
+        composed: true,
+      })
+    );
   }
 
   private _saveContentType() {
     if (!this._isFormValid()) {
-         // This check might be redundant if button is disabled, but good practice
-        alert('Type and name are required fields');
-        return;
+      // This check might be redundant if button is disabled, but good practice
+      alert('Type and name are required fields');
+      return;
     }
-    
-    this.dispatchEvent(new CustomEvent('save', {
-      detail: { contentType: this.contentType },
-      bubbles: true,
-      composed: true
-    }));
+
+    this.dispatchEvent(
+      new CustomEvent('save', {
+        detail: { contentType: this.contentType },
+        bubbles: true,
+        composed: true,
+      })
+    );
   }
 }
 

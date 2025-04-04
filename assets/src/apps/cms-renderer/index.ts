@@ -20,7 +20,7 @@ export class CmsRenderer extends LitElement {
 
   @property({ type: String, attribute: 'key' })
   key = '';
-  
+
   @property({ type: String, attribute: 'locale' })
   locale = '';
 
@@ -39,7 +39,6 @@ export class CmsRenderer extends LitElement {
   @state()
   private registryLoaded = false;
 
-
   static styles = css`
     :host {
       display: block;
@@ -47,14 +46,14 @@ export class CmsRenderer extends LitElement {
       height: 100%;
       font-family: system-ui, sans-serif;
     }
-    
+
     .loading {
       display: flex;
       align-items: center;
       justify-content: center;
       height: 100px;
     }
-    
+
     .error {
       padding: 15px;
       background-color: #ffebee;
@@ -62,7 +61,7 @@ export class CmsRenderer extends LitElement {
       color: #e53935;
       margin-bottom: 20px;
     }
-    
+
     .warning {
       padding: 15px;
       background-color: #fff3cd;
@@ -75,17 +74,18 @@ export class CmsRenderer extends LitElement {
 
   connectedCallback() {
     super.connectedCallback();
-    
+
     if (!this.businessUnitKey) {
-      this.error = 'The "business-unit-key" attribute is required for the CMS renderer to function properly.';
+      this.error =
+        'The "business-unit-key" attribute is required for the CMS renderer to function properly.';
       return;
     }
-    
+
     if (!this.key && !this.route) {
       this.error = 'Either "key" or "route" attribute must be provided to render content.';
       return;
     }
-    
+
     // Load registry components first
     this.loadRegistryComponents();
   }
@@ -98,7 +98,7 @@ export class CmsRenderer extends LitElement {
 
       // Hydrate the baseURL with businessUnitKey
       const hydratedBaseUrl = `${this.baseURL}/${this.businessUnitKey}`;
-      
+
       // After registry is loaded, load the page
       this.loadPage(hydratedBaseUrl);
     } catch (error) {
@@ -110,19 +110,18 @@ export class CmsRenderer extends LitElement {
   private async loadPage(baseUrl: string) {
     this.loading = true;
     this.error = null;
-    
+
     try {
       if (this.key) {
         // Load by key
         const response = await fetchPageEndpoint<Page>(baseUrl, this.key);
         this.page = response.value;
-        
       } else if (this.route) {
         // Load all pages
         const responses = await fetchPagesEdnpoint<Page>(baseUrl);
         const pages = responses.map(res => res.value);
         this.page = pages.find(page => page.route === this.route) || null;
-        
+
         if (!this.page) {
           console.warn(`No page found for route: ${this.route}`);
         }
@@ -140,15 +139,15 @@ export class CmsRenderer extends LitElement {
       console.error(this.error);
       return null;
     }
-    
+
     if (this.loading || !this.registryLoaded) {
       return null;
     }
-    
+
     if (!this.page) {
       return null;
     }
-    
+
     return html`
       <grid-renderer
         .rows=${this.page.layout.rows}

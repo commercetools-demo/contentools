@@ -33,4 +33,4 @@ declare global {
   interface HTMLElementTagNameMap {
     'ui-tab-content': TabContent;
   }
-} 
+}

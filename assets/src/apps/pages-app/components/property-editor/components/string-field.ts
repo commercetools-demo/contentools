@@ -34,13 +34,15 @@ export class StringField extends LitElement {
   }
 
   private handleInput(e: CustomEvent) {
-    this.dispatchEvent(new CustomEvent('field-change', {
-      detail: {
-        key: this.fieldKey,
-        value: e.detail.value
-      },
-      bubbles: true,
-      composed: true
-    }));
+    this.dispatchEvent(
+      new CustomEvent('field-change', {
+        detail: {
+          key: this.fieldKey,
+          value: e.detail.value,
+        },
+        bubbles: true,
+        composed: true,
+      })
+    );
   }
-} 
+}

@@ -15,8 +15,8 @@ export class GeneralTab extends LitElement {
       padding: 20px;
     }
     ui-labeled-input {
-        margin-bottom: 15px;
-        display: block;
+      margin-bottom: 15px;
+      display: block;
     }
   `;
 
@@ -28,13 +28,13 @@ export class GeneralTab extends LitElement {
         @input-change=${(e: CustomEvent) => this._dispatchChange('type', e.detail.value)}
         ?disabled=${this.isEdit}
       ></ui-labeled-input>
-      
+
       <ui-labeled-input
         label="Content Type Name"
         .value=${this.name}
         @input-change=${(e: CustomEvent) => this._dispatchChange('name', e.detail.value)}
       ></ui-labeled-input>
-      
+
       <ui-labeled-input
         label="Icon (emoji)"
         .value=${this.icon || ''}
@@ -44,11 +44,13 @@ export class GeneralTab extends LitElement {
   }
 
   private _dispatchChange(field: string, value: string) {
-    this.dispatchEvent(new CustomEvent('general-change', {
-      detail: { field, value },
-      bubbles: true,
-      composed: true
-    }));
+    this.dispatchEvent(
+      new CustomEvent('general-change', {
+        detail: { field, value },
+        bubbles: true,
+        composed: true,
+      })
+    );
   }
 }
 

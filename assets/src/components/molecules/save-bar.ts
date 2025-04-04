@@ -10,7 +10,7 @@ export class SaveBar extends LitElement {
     :host {
       display: block;
     }
-    
+
     .save-bar {
       position: fixed;
       bottom: 0;
@@ -27,20 +27,20 @@ export class SaveBar extends LitElement {
       z-index: 999;
       box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
     }
-    
+
     .save-bar.visible {
       transform: translateY(0);
     }
-    
+
     .save-message {
       font-size: 14px;
     }
-    
+
     .save-actions {
       display: flex;
       gap: 10px;
     }
-    
+
     ::slotted(button) {
       /* Default styling for slotted buttons if no styling is provided */
       border-radius: 4px;
@@ -74,4 +74,4 @@ declare global {
   interface HTMLElementTagNameMap {
     'ui-save-bar': SaveBar;
   }
-} 
+}

@@ -5,14 +5,14 @@ const __dirname = dirname(__filename);
 
 export default defineConfig({
   define: {
-    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development')
+    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
   },
   build: {
     lib: {
       entry: {
         'layout-cms': resolve(__dirname, 'src/main.ts'),
       },
-      formats: ['es']
+      formats: ['es'],
     },
     outDir: resolve(__dirname, 'public'),
     rollupOptions: {
@@ -20,8 +20,8 @@ export default defineConfig({
         assetFileNames: 'assets/[name][extname]',
         entryFileNames: 'assets/[name].js',
         chunkFileNames: 'assets/[name]-[hash].js',
-      }
-    }
+      },
+    },
   },
   publicDir: resolve(__dirname, 'static'),
   envPrefix: 'CTP_',
@@ -30,7 +30,7 @@ export default defineConfig({
       '/service': {
         target: 'http://localhost:8085',
         changeOrigin: true,
-      }
-    }
-  }
+      },
+    },
+  },
 });

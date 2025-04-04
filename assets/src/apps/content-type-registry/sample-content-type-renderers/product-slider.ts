@@ -26,45 +26,45 @@ export class ProductSlider extends LitElement {
       display: block;
       margin: 30px 0;
     }
-    
+
     .slider-container {
       width: 100%;
     }
-    
+
     .slider-title {
       font-size: 24px;
       font-weight: bold;
       margin-bottom: 20px;
       color: #333;
     }
-    
+
     .slider-wrapper {
       position: relative;
       overflow: hidden;
     }
-    
+
     .slider-track {
       display: flex;
       transition: transform 0.5s ease;
     }
-    
+
     .slider-slide {
       flex: 0 0 calc(100% / var(--slides-to-show, 4));
       padding: 0 10px;
       box-sizing: border-box;
     }
-    
+
     .product-card {
       border: 1px solid #ddd;
       border-radius: 8px;
       overflow: hidden;
       background-color: white;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
       height: 100%;
       display: flex;
       flex-direction: column;
     }
-    
+
     .product-image {
       width: 100%;
       aspect-ratio: 1;
@@ -75,38 +75,38 @@ export class ProductSlider extends LitElement {
       justify-content: center;
       color: #999;
     }
-    
+
     .product-details {
       padding: 15px;
       flex-grow: 1;
       display: flex;
       flex-direction: column;
     }
-    
+
     .product-name {
       font-weight: bold;
       margin-bottom: 8px;
       color: #333;
     }
-    
+
     .product-sku {
       font-size: 12px;
       color: #777;
       margin-bottom: 15px;
     }
-    
+
     .product-price {
       font-weight: bold;
       color: #3498db;
       margin-top: auto;
     }
-    
+
     .slider-controls {
       display: flex;
       justify-content: center;
       margin-top: 20px;
     }
-    
+
     .slider-arrow {
       background: #3498db;
       color: white;
@@ -121,12 +121,12 @@ export class ProductSlider extends LitElement {
       align-items: center;
       justify-content: center;
     }
-    
+
     .slider-arrow:disabled {
       background: #ccc;
       cursor: not-allowed;
     }
-    
+
     .empty-slider {
       padding: 40px;
       text-align: center;
@@ -138,7 +138,7 @@ export class ProductSlider extends LitElement {
 
   connectedCallback() {
     super.connectedCallback();
-    
+
     if (this.autoplay) {
       this.startAutoplay();
     }
@@ -151,11 +151,11 @@ export class ProductSlider extends LitElement {
 
   updated(changedProperties: Map<string, any>) {
     super.updated(changedProperties);
-    
+
     if (changedProperties.has('slidesToShow')) {
       this.style.setProperty('--slides-to-show', this.slidesToShow.toString());
     }
-    
+
     if (changedProperties.has('autoplay')) {
       if (this.autoplay) {
         this.startAutoplay();
@@ -200,48 +200,54 @@ export class ProductSlider extends LitElement {
     return html`
       <div class="slider-container">
         <h2 class="slider-title">${this.title}</h2>
-        
-        ${this.skus && this.skus?.length 
+
+        ${this.skus && this.skus?.length
           ? html`
-            <div class="slider-wrapper">
-              <div 
-                class="slider-track" 
-                style="transform: translateX(-${this.currentSlide * (100 / this.slidesToShow)}%)"
-              >
-                ${this.skus.map(sku => html`
-                  <div class="slider-slide">
-                    <div class="product-card">
-                      <div class="product-image">Product Image</div>
-                      <div class="product-details">
-                        <div class="product-name">Product Name</div>
-                        <div class="product-sku">SKU: ${sku}</div>
-                        <div class="product-price">$99.99</div>
+              <div class="slider-wrapper">
+                <div
+                  class="slider-track"
+                  style="transform: translateX(-${this.currentSlide * (100 / this.slidesToShow)}%)"
+                >
+                  ${this.skus.map(
+                    sku => html`
+                      <div class="slider-slide">
+                        <div class="product-card">
+                          <div class="product-image">Product Image</div>
+                          <div class="product-details">
+                            <div class="product-name">Product Name</div>
+                            <div class="product-sku">SKU: ${sku}</div>
+                            <div class="product-price">$99.99</div>
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  </div>
-                `)}
+                    `
+                  )}
+                </div>
               </div>
-            </div>
-            
-            <div class="slider-controls">
-              <button 
-                class="slider-arrow" 
-                @click=${this.prevSlide} 
-                ?disabled=${this.currentSlide === 0}
-              >←</button>
-              <button 
-                class="slider-arrow" 
-                @click=${this.nextSlide}
-                ?disabled=${this.currentSlide >= Math.max(0, this.skus?.length - this.slidesToShow)}
-              >→</button>
-            </div>
-          `
+
+              <div class="slider-controls">
+                <button
+                  class="slider-arrow"
+                  @click=${this.prevSlide}
+                  ?disabled=${this.currentSlide === 0}
+                >
+                  ←
+                </button>
+                <button
+                  class="slider-arrow"
+                  @click=${this.nextSlide}
+                  ?disabled=${this.currentSlide >=
+                  Math.max(0, this.skus?.length - this.slidesToShow)}
+                >
+                  →
+                </button>
+              </div>
+            `
           : html`
-            <div class="empty-slider">
-              No products to display. Please add product SKUs in the properties.
-            </div>
-          `
-        }
+              <div class="empty-slider">
+                No products to display. Please add product SKUs in the properties.
+              </div>
+            `}
       </div>
     `;
   }

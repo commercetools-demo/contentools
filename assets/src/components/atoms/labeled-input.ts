@@ -10,17 +10,17 @@ export class LabeledInput extends LitElement {
     :host {
       display: block;
     }
-    
+
     .input-container {
       margin-bottom: 15px;
     }
-    
+
     .form-label {
       display: block;
       font-weight: 600;
       margin-bottom: 5px;
     }
-    
+
     .form-input {
       width: 100%;
       padding: 8px 12px;
@@ -28,7 +28,7 @@ export class LabeledInput extends LitElement {
       border-radius: 4px;
       font-size: 14px;
     }
-    
+
     .form-input:focus {
       outline: none;
       border-color: #3498db;
@@ -63,15 +63,15 @@ export class LabeledInput extends LitElement {
     return html`
       <div class="input-container">
         <label class="form-label">${this.label}${this.required ? ' *' : ''}</label>
-        <input 
-          class="form-input" 
-          type="${this.type}" 
+        <input
+          class="form-input"
+          type="${this.type}"
           .value="${this.value}"
           placeholder="${this.placeholder}"
           ?disabled="${this.disabled}"
           ?required="${this.required}"
           @input="${this._handleInput}"
-        >
+        />
       </div>
     `;
   }
@@ -79,12 +79,14 @@ export class LabeledInput extends LitElement {
   private _handleInput(e: InputEvent) {
     const value = (e.target as HTMLInputElement).value;
     this.value = value;
-    
-    this.dispatchEvent(new CustomEvent('input-change', {
-      detail: { value },
-      bubbles: true,
-      composed: true
-    }));
+
+    this.dispatchEvent(
+      new CustomEvent('input-change', {
+        detail: { value },
+        bubbles: true,
+        composed: true,
+      })
+    );
   }
 }
 
@@ -92,4 +94,4 @@ declare global {
   interface HTMLElementTagNameMap {
     'ui-labeled-input': LabeledInput;
   }
-} 
+}

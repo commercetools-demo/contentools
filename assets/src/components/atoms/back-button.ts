@@ -7,7 +7,7 @@ export class BackButton extends LitElement {
     :host {
       display: inline-block;
     }
-    
+
     .back-button {
       display: flex;
       align-items: center;
@@ -20,11 +20,11 @@ export class BackButton extends LitElement {
       text-decoration: none;
       transition: color 0.2s ease;
     }
-    
+
     .back-button:hover {
       color: #3498db;
     }
-    
+
     .back-icon {
       margin-right: 6px;
     }

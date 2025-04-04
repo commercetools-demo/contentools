@@ -39,17 +39,13 @@ export class SchemaTab extends LitElement {
   render() {
     return html`
       <div class="form-row">
-      <div class="form-row">
-        <h3 class="section-header">Property Schema</h3>
-        <schema-builder
-          .schemaObject=${this.propertySchema}
-        ></schema-builder>
+        <div class="form-row">
+          <h3 class="section-header">Property Schema</h3>
+          <schema-builder .schemaObject=${this.propertySchema}></schema-builder>
+        </div>
       </div>
     `;
   }
-
-
-
 }
 
 declare global {

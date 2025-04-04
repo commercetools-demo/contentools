@@ -3,7 +3,12 @@ import { customElement, state, property } from 'lit/decorators.js';
 import { connect, watch } from 'lit-redux-watch';
 import { store } from '../../store';
 import { ContentTypeData } from '../../types';
-import { fetchContentTypesThunk, addContentTypeThunk, updateContentTypeThunk, removeContentTypeThunk } from '../../store/content-type.slice';
+import {
+  fetchContentTypesThunk,
+  addContentTypeThunk,
+  updateContentTypeThunk,
+  removeContentTypeThunk,
+} from '../../store/content-type.slice';
 import '../content-type-registry/sample-content-type-renderers';
 import './components/content-type-form';
 import './components/content-type-table';
@@ -37,9 +42,9 @@ export class ContentTypeApp extends connect(store)(LitElement) {
       name: '',
       icon: '',
       defaultProperties: {},
-      propertySchema: {}
+      propertySchema: {},
     },
-    deployedUrl: ''
+    deployedUrl: '',
   };
 
   static styles = css`
@@ -49,7 +54,7 @@ export class ContentTypeApp extends connect(store)(LitElement) {
       width: 100%;
       height: 100%;
     }
-    
+
     .content-type-container {
       display: flex;
       flex-direction: column;
@@ -65,33 +70,28 @@ export class ContentTypeApp extends connect(store)(LitElement) {
   render() {
     return html`
       <div class="content-type-container">
-        <content-type-header
-          @add-content-type=${this._toggleAddContentType}
-        ></content-type-header>
-        
-        <error-message
-          .message=${this.error}
-        ></error-message>
-        
-        ${this.isAddingContentType || this.selectedContentType 
+        <content-type-header @add-content-type=${this._toggleAddContentType}></content-type-header>
+
+        <error-message .message=${this.error}></error-message>
+
+        ${this.isAddingContentType || this.selectedContentType
           ? html`
-            <content-type-form
-              .contentType=${this.selectedContentType || this.newContentType}
-              .isEdit=${!!this.selectedContentType}
-              @content-type-change=${this._handleContentTypeChange}
-              @cancel=${this._cancelForm}
-              @save=${this._saveContentType}  
-            ></content-type-form>
-          `
+              <content-type-form
+                .contentType=${this.selectedContentType || this.newContentType}
+                .isEdit=${!!this.selectedContentType}
+                @content-type-change=${this._handleContentTypeChange}
+                @cancel=${this._cancelForm}
+                @save=${this._saveContentType}
+              ></content-type-form>
+            `
           : html`
-            <content-type-table
-              .contentTypes=${this.contentTypes}
-              .loading=${this.loading}
-              @edit=${this._handleEditContentType}
-              @remove=${this._handleRemoveContentType}
-            ></content-type-table>
-          `
-        }
+              <content-type-table
+                .contentTypes=${this.contentTypes}
+                .loading=${this.loading}
+                @edit=${this._handleEditContentType}
+                @remove=${this._handleRemoveContentType}
+              ></content-type-table>
+            `}
       </div>
     `;
   }
@@ -99,12 +99,14 @@ export class ContentTypeApp extends connect(store)(LitElement) {
   private _toggleAddContentType() {
     this.isAddingContentType = !this.isAddingContentType;
     this.selectedContentType = null;
-    this.dispatchEvent(new CustomEvent('edit-content-type', {
-      detail: { view: 'new' },
-      bubbles: true,
-      composed: true
-    }));
-    
+    this.dispatchEvent(
+      new CustomEvent('edit-content-type', {
+        detail: { view: 'new' },
+        bubbles: true,
+        composed: true,
+      })
+    );
+
     // Reset form
     if (this.isAddingContentType) {
       this.newContentType = {
@@ -113,16 +115,16 @@ export class ContentTypeApp extends connect(store)(LitElement) {
           name: '',
           icon: '',
           defaultProperties: {},
-          propertySchema: {}
+          propertySchema: {},
         },
-        deployedUrl: ''
+        deployedUrl: '',
       };
     }
   }
 
   private _handleContentTypeChange(e: CustomEvent) {
     const { contentType } = e.detail;
-    
+
     if (this.selectedContentType) {
       this.selectedContentType = contentType;
     } else {
@@ -134,11 +136,13 @@ export class ContentTypeApp extends connect(store)(LitElement) {
     const { contentType } = e.detail;
     this.selectedContentType = JSON.parse(JSON.stringify(contentType)); // Clone to avoid direct mutation
     this.isAddingContentType = false;
-    this.dispatchEvent(new CustomEvent('edit-content-type', {
-      detail: { view: 'editor' },
-      bubbles: true,
-      composed: true
-    }));
+    this.dispatchEvent(
+      new CustomEvent('edit-content-type', {
+        detail: { view: 'editor' },
+        bubbles: true,
+        composed: true,
+      })
+    );
   }
 
   private _handleRemoveContentType(e: CustomEvent) {
@@ -153,19 +157,21 @@ export class ContentTypeApp extends connect(store)(LitElement) {
 
   private _saveContentType(e: CustomEvent) {
     const { contentType } = e.detail;
-    
+
     if (this.selectedContentType) {
       // Update existing contentType
-      store.dispatch(updateContentTypeThunk({
-        baseURL: this.baseURL,
-        key: contentType.metadata.type,
-        contentType
-      }));
+      store.dispatch(
+        updateContentTypeThunk({
+          baseURL: this.baseURL,
+          key: contentType.metadata.type,
+          contentType,
+        })
+      );
     } else {
       // Add new contentType
       store.dispatch(addContentTypeThunk({ baseURL: this.baseURL, contentType }));
     }
-    
+
     this.isAddingContentType = false;
     this.selectedContentType = null;
   }

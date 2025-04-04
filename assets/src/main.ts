@@ -10,8 +10,8 @@ import './styles/cms.css';
 @customElement('cms-app')
 class CMSWrapper extends connect(store)(LitElement) {
   @property({ type: String, attribute: 'baseurl' })
-  baseURL = ''; 
-  
+  baseURL = '';
+
   @property({ type: String, attribute: 'business-unit-key' })
   businessUnitKey = '';
 
@@ -27,7 +27,7 @@ class CMSWrapper extends connect(store)(LitElement) {
       width: 100%;
       height: 100%;
     }
-    
+
     .warning {
       background-color: #fff3cd;
       color: #856404;
@@ -43,14 +43,19 @@ class CMSWrapper extends connect(store)(LitElement) {
     if (!this.businessUnitKey) {
       return html`
         <div class="warning">
-          <strong>Warning:</strong> The "business-unit-key" attribute is required for the CMS to function properly.
+          <strong>Warning:</strong> The "business-unit-key" attribute is required for the CMS to
+          function properly.
         </div>
       `;
     }
-    
-    
+
     return html`
-      <cms-wrapper .baseURL=${this.baseURL} .businessUnitKey=${this.businessUnitKey} .locale=${this.locale} .availableLocales=${JSON.parse(this.availableLocales)}></cms-wrapper>
+      <cms-wrapper
+        .baseURL=${this.baseURL}
+        .businessUnitKey=${this.businessUnitKey}
+        .locale=${this.locale}
+        .availableLocales=${JSON.parse(this.availableLocales)}
+      ></cms-wrapper>
     `;
   }
 }
@@ -59,14 +64,14 @@ class CMSWrapper extends connect(store)(LitElement) {
 @customElement('cms-renderer-element')
 class CmsRendererElement extends LitElement {
   @property({ type: String, attribute: 'baseurl' })
-  baseURL = '/service'; 
-  
+  baseURL = '/service';
+
   @property({ type: String, attribute: 'business-unit-key' })
   businessUnitKey = '';
-  
+
   @property({ type: String, attribute: 'route' })
   route = '';
-  
+
   @property({ type: String, attribute: 'key' })
   key = '';
 
@@ -75,7 +80,7 @@ class CmsRendererElement extends LitElement {
       display: block;
       width: 100%;
     }
-    
+
     .warning {
       background-color: #fff3cd;
       color: #856404;
@@ -88,9 +93,8 @@ class CmsRendererElement extends LitElement {
   `;
 
   render() {
-   
     return html`
-      <cms-renderer 
+      <cms-renderer
         baseurl=${this.baseURL}
         business-unit-key=${this.businessUnitKey}
         route=${this.route}
@@ -99,8 +103,6 @@ class CmsRendererElement extends LitElement {
     `;
   }
 }
-
-
 
 // Define custom elements
 if (!customElements.get('cms-app')) {
@@ -111,12 +113,8 @@ if (!customElements.get('cms-renderer-element')) {
   customElements.define('cms-renderer-element', CmsRendererElement);
 }
 
-
 // Export for bundling
-export { 
-  CMSWrapper, 
-  CmsRendererElement, 
-};
+export { CMSWrapper, CmsRendererElement };
 
 export default {
   CMSWrapper,

@@ -19,10 +19,10 @@ export class WysiwygField extends LitElement {
   // Internal state to track editor content
   @state()
   private editorContent: string = '';
-  
+
   // Track if initial content has been set
   private initialized = false;
-  
+
   private debouncedHandleInput: (...args: any[]) => void;
 
   constructor() {
@@ -37,14 +37,14 @@ export class WysiwygField extends LitElement {
     .form-group {
       margin-bottom: 15px;
     }
-    
+
     label {
       display: block;
       margin-bottom: 5px;
       font-weight: 500;
       font-size: 14px;
     }
-    
+
     .editor-toolbar {
       display: flex;
       background-color: #f5f5f5;
@@ -53,7 +53,7 @@ export class WysiwygField extends LitElement {
       border-bottom: none;
       border-radius: 4px 4px 0 0;
     }
-    
+
     .toolbar-button {
       background: none;
       border: none;
@@ -62,11 +62,11 @@ export class WysiwygField extends LitElement {
       cursor: pointer;
       border-radius: 3px;
     }
-    
+
     .toolbar-button:hover {
       background-color: #e0e0e0;
     }
-    
+
     .editor-content {
       height: 200px;
       padding: 10px;
@@ -75,15 +75,15 @@ export class WysiwygField extends LitElement {
       overflow-y: auto;
       background-color: white;
     }
-    
+
     [contenteditable]:focus {
       outline: none;
     }
-    
+
     .save-button {
       margin-top: 2px;
       padding: 8px 16px;
-      background-color: #4CAF50;
+      background-color: #4caf50;
       width: 100%;
       color: white;
       border: none;
@@ -92,11 +92,11 @@ export class WysiwygField extends LitElement {
       font-weight: 500;
       transition: background-color 0.2s;
     }
-    
+
     .save-button:hover {
       background-color: #45a049;
     }
-    
+
     .save-button:disabled {
       background-color: #cccccc;
       color: #666666;
@@ -129,7 +129,7 @@ export class WysiwygField extends LitElement {
     const editor = this.shadowRoot?.querySelector('.editor-content');
     if (editor) {
       const newContent = editor.innerHTML;
-      
+
       // Only update if content actually changed
       if (this.editorContent !== newContent) {
         this.editorContent = newContent;
@@ -139,14 +139,16 @@ export class WysiwygField extends LitElement {
 
   // Notify parent of changes
   private notifyChange() {
-    this.dispatchEvent(new CustomEvent('field-change', {
-      detail: {
-        key: this.fieldKey,
-        value: this.editorContent
-      },
-      bubbles: true,
-      composed: true
-    }));
+    this.dispatchEvent(
+      new CustomEvent('field-change', {
+        detail: {
+          key: this.fieldKey,
+          value: this.editorContent,
+        },
+        bubbles: true,
+        composed: true,
+      })
+    );
   }
 
   handleInput() {
@@ -160,7 +162,7 @@ export class WysiwygField extends LitElement {
 
   render() {
     const contentChanged = this.hasContentChanged();
-    
+
     return html`
       <div class="form-group">
         <label for="${this.fieldKey}">${this.label}</label>
@@ -171,28 +173,38 @@ export class WysiwygField extends LitElement {
           <button class="toolbar-button" @click=${() => this.execCommand('italic')} title="Italic">
             <em>I</em>
           </button>
-          <button class="toolbar-button" @click=${() => this.execCommand('underline')} title="Underline">
+          <button
+            class="toolbar-button"
+            @click=${() => this.execCommand('underline')}
+            title="Underline"
+          >
             <u>U</u>
           </button>
-          <button class="toolbar-button" @click=${() => this.execCommand('formatBlock', 'h2')} title="Heading">
+          <button
+            class="toolbar-button"
+            @click=${() => this.execCommand('formatBlock', 'h2')}
+            title="Heading"
+          >
             H
           </button>
-          <button class="toolbar-button" @click=${() => this.execCommand('insertUnorderedList')} title="Bullet List">
+          <button
+            class="toolbar-button"
+            @click=${() => this.execCommand('insertUnorderedList')}
+            title="Bullet List"
+          >
             •
           </button>
-          <button class="toolbar-button" @click=${this.insertLink} title="Insert Link">
-            🔗
-          </button>
+          <button class="toolbar-button" @click=${this.insertLink} title="Insert Link">🔗</button>
         </div>
-        <div 
-          class="editor-content" 
+        <div
+          class="editor-content"
           contenteditable="true"
           @input=${() => this.debouncedHandleInput()}
           @blur=${() => this.handleInput()}
         ></div>
-        <button 
-          class="save-button" 
-          @click=${() => this.notifyChange()} 
+        <button
+          class="save-button"
+          @click=${() => this.notifyChange()}
           ?disabled=${!contentChanged}
         >
           Save Content
@@ -215,4 +227,4 @@ export class WysiwygField extends LitElement {
       this.initializeContent();
     }
   }
-} 
+}

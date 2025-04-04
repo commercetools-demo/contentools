@@ -3,7 +3,7 @@ export function debounce<T extends (...args: any[]) => any>(
   wait: number
 ): (...args: Parameters<T>) => void {
   let timeout: ReturnType<typeof setTimeout> | null = null;
-  
+
   return (...args: Parameters<T>) => {
     // Create a snapshot of the arguments at the time of call
     // This prevents issues with the objects being modified or revoked later
@@ -19,11 +19,11 @@ export function debounce<T extends (...args: any[]) => any>(
       }
       return arg;
     });
-    
+
     if (timeout) {
       clearTimeout(timeout);
     }
-    
+
     timeout = setTimeout(() => {
       try {
         func(...safeArgs);

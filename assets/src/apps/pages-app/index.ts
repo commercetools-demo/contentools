@@ -22,10 +22,9 @@ import '../../components/molecules/save-bar';
 
 @customElement('pages-app')
 export class PagesApp extends connect(store)(LitElement) {
-  
   @property({ type: String })
   baseURL: string = '';
-  
+
   @property({ type: String })
   locale: string = '';
 
@@ -34,7 +33,7 @@ export class PagesApp extends connect(store)(LitElement) {
 
   @property({ type: String })
   businessUnitKey: string = '';
-  
+
   @property({ type: Boolean })
   headerInWrapper: boolean = false;
 
@@ -58,16 +57,16 @@ export class PagesApp extends connect(store)(LitElement) {
 
   @watch('editor.showSidebar')
   showSidebar = false;
-    
+
   @state()
   private view: 'list' | 'editor' | 'new' = 'list';
-  
+
   @state()
   private _activeComponentType: string | null = null;
 
   // Track the interval ID for auto-refresh
   private _refreshInterval: number | null = null;
-  
+
   // Auto-refresh interval in milliseconds (5 minutes)
   private _refreshIntervalTime = 5 * 60 * 1000;
 
@@ -77,43 +76,43 @@ export class PagesApp extends connect(store)(LitElement) {
       height: 100%;
       font-family: system-ui, sans-serif;
     }
-    
+
     .cms-container {
       display: flex;
       flex-direction: column;
       height: 100%;
     }
-    
+
     .cms-main {
       flex: 1;
       display: flex;
       overflow: hidden;
     }
-    
+
     .cms-content {
       flex: 1;
       overflow-y: auto;
       padding: 20px;
       transition: all 0.3s;
     }
-    
+
     .cms-content.with-sidebar {
       width: calc(100% - 350px);
     }
-    
+
     .cms-editor-actions {
       display: flex;
       align-items: center;
       justify-content: space-between;
       margin-bottom: 20px;
     }
-    
+
     .cms-editor-buttons {
       display: flex;
       gap: 10px;
       align-items: center;
     }
-    
+
     .cms-back {
       display: inline-flex;
       align-items: center;
@@ -123,7 +122,7 @@ export class PagesApp extends connect(store)(LitElement) {
       font-size: 14px;
       text-decoration: none;
     }
-    
+
     .icon {
       font-size: 16px;
     }
@@ -131,18 +130,20 @@ export class PagesApp extends connect(store)(LitElement) {
 
   connectedCallback() {
     super.connectedCallback();
-    
+
     // First load pages from session storage for immediate display
-    store.dispatch(fetchPages({
-      baseUrl: `${this.baseURL}/${this.businessUnitKey}`, 
-      businessUnitKey: this.businessUnitKey
-    }));
-    
+    store.dispatch(
+      fetchPages({
+        baseUrl: `${this.baseURL}/${this.businessUnitKey}`,
+        businessUnitKey: this.businessUnitKey,
+      })
+    );
+
     // Then fetch pages from API in the background and sync with session storage
     setTimeout(() => {
       this._syncPagesWithApi();
     }, 100); // Small delay to ensure UI renders first
-    
+
     // Set up auto-refresh for pages
     this._refreshInterval = window.setInterval(() => {
       // Only sync if there are no unsaved changes
@@ -154,40 +155,46 @@ export class PagesApp extends connect(store)(LitElement) {
 
   disconnectedCallback() {
     super.disconnectedCallback();
-    
+
     // Clear the auto-refresh interval when the component is disconnected
     if (this._refreshInterval !== null) {
       window.clearInterval(this._refreshInterval);
       this._refreshInterval = null;
     }
   }
-  
+
   // Helper method to sync pages with API
   private _syncPagesWithApi() {
-    store.dispatch(syncPagesWithApi({
-      baseUrl: `${this.baseURL}/${this.businessUnitKey}`,
-    }));
+    store.dispatch(
+      syncPagesWithApi({
+        baseUrl: `${this.baseURL}/${this.businessUnitKey}`,
+      })
+    );
   }
 
   updated(changedProperties: Map<string, any>) {
     super.updated(changedProperties);
-    
+
     // Notify wrapper when view changes
     if (changedProperties.has('view') && this.headerInWrapper) {
-      this.dispatchEvent(new CustomEvent('view-changed', {
-        detail: { view: this.view },
-        bubbles: true,
-        composed: true
-      }));
+      this.dispatchEvent(
+        new CustomEvent('view-changed', {
+          detail: { view: this.view },
+          bubbles: true,
+          composed: true,
+        })
+      );
     }
-    
+
     // Notify wrapper when sidebar visibility changes
     if (changedProperties.has('showSidebar') && this.headerInWrapper) {
-      this.dispatchEvent(new CustomEvent('sidebar-toggled', {
-        detail: { visible: this.showSidebar },
-        bubbles: true,
-        composed: true
-      }));
+      this.dispatchEvent(
+        new CustomEvent('sidebar-toggled', {
+          detail: { visible: this.showSidebar },
+          bubbles: true,
+          composed: true,
+        })
+      );
     }
   }
 
@@ -195,53 +202,39 @@ export class PagesApp extends connect(store)(LitElement) {
     return html`
       <div class="cms-container">
         <div class="cms-main">
-          <div class="cms-content ${this.showSidebar && this.view === 'editor' ? 'with-sidebar' : ''}">
-            ${this.error 
-              ? html`<ui-error-message message=${this.error}></ui-error-message>` 
-              : ''
-            }
-            
-            ${this.loading && !this.pages.length 
+          <div
+            class="cms-content ${this.showSidebar && this.view === 'editor' ? 'with-sidebar' : ''}"
+          >
+            ${this.error ? html`<ui-error-message message=${this.error}></ui-error-message>` : ''}
+            ${this.loading && !this.pages.length
               ? html`
-                <ui-loading-spinner 
-                  size="large" 
-                  label="Loading..." 
-                  centered
-                ></ui-loading-spinner>
-              ` 
-              : this._renderCurrentView()
-            }
+                  <ui-loading-spinner size="large" label="Loading..." centered></ui-loading-spinner>
+                `
+              : this._renderCurrentView()}
           </div>
-          
+
           ${this.view === 'editor'
             ? html`
-              <cms-sidebar
-                .currentPage=${this.currentPage}
-                .selectedComponentId=${this.selectedComponentId}
-                .showSidebar=${this.showSidebar}
-                .baseURL=${this.baseURL}
-                .businessUnitKey=${this.businessUnitKey}
-                @component-updated=${this._handleComponentUpdated}
-                @page-updated=${this._handlePageUpdated}
-                @close-sidebar=${this._handleCloseSidebar}
-                @component-drag-start=${this._handleComponentDragStart}
-              ></cms-sidebar>
-            ` 
-            : ''
-          }
+                <cms-sidebar
+                  .currentPage=${this.currentPage}
+                  .selectedComponentId=${this.selectedComponentId}
+                  .showSidebar=${this.showSidebar}
+                  .baseURL=${this.baseURL}
+                  .businessUnitKey=${this.businessUnitKey}
+                  @component-updated=${this._handleComponentUpdated}
+                  @page-updated=${this._handlePageUpdated}
+                  @close-sidebar=${this._handleCloseSidebar}
+                  @component-drag-start=${this._handleComponentDragStart}
+                ></cms-sidebar>
+              `
+            : ''}
         </div>
-        
+
         <ui-save-bar .visible=${this.unsavedChanges}>
           <span slot="message">You have unsaved changes</span>
           <div slot="actions">
-            <ui-button 
-              variant="outline" 
-              @click=${this._handleDiscardChanges}
-            >Discard</ui-button>
-            <ui-button 
-              variant="success" 
-              @click=${this._handleSaveChanges}
-            >Save Changes</ui-button>
+            <ui-button variant="outline" @click=${this._handleDiscardChanges}>Discard</ui-button>
+            <ui-button variant="success" @click=${this._handleSaveChanges}>Save Changes</ui-button>
           </div>
         </ui-save-bar>
       </div>
@@ -252,7 +245,7 @@ export class PagesApp extends connect(store)(LitElement) {
     switch (this.view) {
       case 'list':
         return html`
-          <cms-page-list 
+          <cms-page-list
             .pages=${this.pages}
             .selectedPageKey=${this.currentPage?.key || null}
             .baseURL=${this.baseURL}
@@ -261,31 +254,29 @@ export class PagesApp extends connect(store)(LitElement) {
             @select-page=${() => this.setView('editor')}
           ></cms-page-list>
         `;
-        
+
       case 'editor':
         if (!this.currentPage) {
           return html`<div>No page selected</div>`;
         }
-        
+
         return html`
           <div class="cms-editor-actions">
             <ui-back-button @click=${() => this.setView('list')}></ui-back-button>
             <div class="cms-editor-buttons">
-              <ui-button 
-                variant="secondary" 
-                @click=${this._openComponentLibrary} 
+              <ui-button
+                variant="secondary"
+                @click=${this._openComponentLibrary}
                 title="Component Library"
               >
                 <span class="icon">📦</span> Components
               </ui-button>
-              <ui-button 
-                variant="icon" 
-                @click=${this._openPageSettings} 
-                title="Page Settings"
-              >⚙️</ui-button>
+              <ui-button variant="icon" @click=${this._openPageSettings} title="Page Settings"
+                >⚙️</ui-button
+              >
             </div>
           </div>
-          
+
           <cms-layout-grid
             .baseURL=${this.baseURL}
             .businessUnitKey=${this.businessUnitKey}
@@ -297,11 +288,14 @@ export class PagesApp extends connect(store)(LitElement) {
             @component-dropped=${this._handleComponentDropped}
           ></cms-layout-grid>
         `;
-        
+
       case 'new':
         return html`
-          <ui-back-button text="Back to Pages" @click=${() => this.setView('list')}></ui-back-button>
-          
+          <ui-back-button
+            text="Back to Pages"
+            @click=${() => this.setView('list')}
+          ></ui-back-button>
+
           <cms-page-form
             .baseURL=${this.baseURL}
             .businessUnitKey=${this.businessUnitKey}
@@ -309,7 +303,7 @@ export class PagesApp extends connect(store)(LitElement) {
             @page-created=${() => this.setView('editor')}
           ></cms-page-form>
         `;
-        
+
       default:
         return html`<div>Unknown view</div>`;
     }
@@ -317,7 +311,7 @@ export class PagesApp extends connect(store)(LitElement) {
 
   setView(view: 'list' | 'editor' | 'new') {
     this.view = view;
-    
+
     if (view !== 'editor') {
       store.dispatch(selectComponent(null));
     } else {
@@ -340,7 +334,14 @@ export class PagesApp extends connect(store)(LitElement) {
   private async _handleSaveChanges() {
     if (this.currentPage) {
       try {
-        await store.dispatch(updatePage({baseUrl: `${this.baseURL}/${this.businessUnitKey}`, page: this.currentPage})).unwrap();
+        await store
+          .dispatch(
+            updatePage({
+              baseUrl: `${this.baseURL}/${this.businessUnitKey}`,
+              page: this.currentPage,
+            })
+          )
+          .unwrap();
       } catch (error) {
         console.error('Failed to save changes:', error);
       }
@@ -350,23 +351,23 @@ export class PagesApp extends connect(store)(LitElement) {
   private _handleDiscardChanges() {
     // Fetch the latest data from API to replace current state
     this._syncPagesWithApi();
-    
+
     // Explicitly set unsavedChanges to false in the store
     store.dispatch(saveCurrentPage());
   }
-  
+
   private _handleComponentDragStart(e: CustomEvent) {
     this._activeComponentType = e.detail.componentType;
-    
+
     // Add a global dragend listener to reset activeComponentType when drag ends without a drop
     const handleDragEnd = () => {
       this._activeComponentType = null;
       document.removeEventListener('dragend', handleDragEnd);
     };
-    
+
     document.addEventListener('dragend', handleDragEnd);
   }
-  
+
   private _handleComponentDropped() {
     this._activeComponentType = null;
   }
@@ -376,7 +377,7 @@ export class PagesApp extends connect(store)(LitElement) {
     if (this.view === 'editor' && this.currentPage) {
       // Clear selected component to show page settings in sidebar
       store.dispatch(selectComponent(null));
-      
+
       // Open the sidebar with the page settings view
       const sidebarEl = this.shadowRoot?.querySelector('cms-sidebar') as any;
       if (sidebarEl) {
@@ -385,7 +386,7 @@ export class PagesApp extends connect(store)(LitElement) {
           sidebarEl.switchView('page-settings');
         }
       }
-      
+
       // Show the sidebar
       store.dispatch(setSidebarVisibility(true));
     }

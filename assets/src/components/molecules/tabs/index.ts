@@ -93,21 +93,23 @@ export class Tabs extends LitElement {
 
   render() {
     return html`
-    <div class="tabs-container-wrapper">
-      <div class="tabs-container ${this.fullWidth ? 'full-width' : ''}">
-        ${this.tabs.map(tab => html`
-          <button 
-            class="tab-button" 
-            ?active=${this._effectiveSelectedTab === tab.key}
-            ?disabled=${tab.disabled}
-            @click=${() => this._selectTab(tab.key)}
-          >
-            ${tab.label}
-          </button>
-        `)}
+      <div class="tabs-container-wrapper">
+        <div class="tabs-container ${this.fullWidth ? 'full-width' : ''}">
+          ${this.tabs.map(
+            tab => html`
+              <button
+                class="tab-button"
+                ?active=${this._effectiveSelectedTab === tab.key}
+                ?disabled=${tab.disabled}
+                @click=${() => this._selectTab(tab.key)}
+              >
+                ${tab.label}
+              </button>
+            `
+          )}
         </div>
         <slot name="actions"></slot>
-    </div>
+      </div>
     `;
   }
 
@@ -115,11 +117,13 @@ export class Tabs extends LitElement {
     const tab = this.tabs.find(t => t.key === key);
     if (tab && !tab.disabled) {
       this._effectiveSelectedTab = key;
-      this.dispatchEvent(new CustomEvent('tab-change', {
-        detail: { selectedTab: key },
-        bubbles: true,
-        composed: true
-      }));
+      this.dispatchEvent(
+        new CustomEvent('tab-change', {
+          detail: { selectedTab: key },
+          bubbles: true,
+          composed: true,
+        })
+      );
     }
   }
 }
@@ -128,4 +132,4 @@ declare global {
   interface HTMLElementTagNameMap {
     'ui-tabs': Tabs;
   }
-} 
+}

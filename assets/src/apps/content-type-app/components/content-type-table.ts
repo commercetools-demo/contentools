@@ -17,40 +17,40 @@ export class ContentTypeTable extends LitElement {
       display: block;
       width: 100%;
     }
-    
+
     .registry-list {
       width: 100%;
       border-collapse: collapse;
     }
-    
+
     .registry-list th {
       text-align: left;
       padding: 12px 15px;
       background-color: #f8f9fa;
       border-bottom: 2px solid #ddd;
     }
-    
+
     .registry-list td {
       padding: 10px 15px;
       border-bottom: 1px solid #ddd;
     }
-    
+
     .registry-list tr:hover {
       background-color: #f5f5f5;
     }
-    
+
     .action-buttons {
       display: flex;
       gap: 8px;
     }
-    
+
     .loading {
       display: flex;
       align-items: center;
       justify-content: center;
       height: 100px;
     }
-    
+
     .empty-state {
       padding: 40px;
       text-align: center;
@@ -70,7 +70,10 @@ export class ContentTypeTable extends LitElement {
     if (this.contentTypes.length === 0) {
       return html`
         <div class="empty-state">
-          <p>No content types registered yet. Click "Add Content Type" to create your first content type.</p>
+          <p>
+            No content types registered yet. Click "Add Content Type" to create your first content
+            type.
+          </p>
         </div>
       `;
     }
@@ -86,53 +89,59 @@ export class ContentTypeTable extends LitElement {
           </tr>
         </thead>
         <tbody>
-          ${this.contentTypes.map(contentType => html`
-            <tr>
-              <td>${contentType.metadata.type}</td>
-              <td>${contentType.metadata.name}</td>
-              <td>${contentType.deployedUrl}</td>
-              <td>
-                <div class="action-buttons">
-                  <ui-button 
-                    variant="secondary"
-                    size="small"
-                    @click=${() => this._editContentType(contentType)}
-                  >
-                    Edit
-                  </ui-button>
-                  <ui-button 
-                    variant="critical"
-                    size="small"
-                    @click=${() => this._removeContentType(contentType.metadata.type)}
-                  >
-                    Delete
-                  </ui-button>
-                </div>
-              </td>
-            </tr>
-          `)}
+          ${this.contentTypes.map(
+            contentType => html`
+              <tr>
+                <td>${contentType.metadata.type}</td>
+                <td>${contentType.metadata.name}</td>
+                <td>${contentType.deployedUrl}</td>
+                <td>
+                  <div class="action-buttons">
+                    <ui-button
+                      variant="secondary"
+                      size="small"
+                      @click=${() => this._editContentType(contentType)}
+                    >
+                      Edit
+                    </ui-button>
+                    <ui-button
+                      variant="critical"
+                      size="small"
+                      @click=${() => this._removeContentType(contentType.metadata.type)}
+                    >
+                      Delete
+                    </ui-button>
+                  </div>
+                </td>
+              </tr>
+            `
+          )}
         </tbody>
       </table>
     `;
   }
 
   private _editContentType(contentType: ContentTypeData) {
-    this.dispatchEvent(new CustomEvent('edit', {
-      detail: { contentType },
-      bubbles: true,
-      composed: true
-    }));
+    this.dispatchEvent(
+      new CustomEvent('edit', {
+        detail: { contentType },
+        bubbles: true,
+        composed: true,
+      })
+    );
   }
 
   private _removeContentType(type: string) {
     if (confirm(`Are you sure you want to delete the "${type}" content type?`)) {
-      this.dispatchEvent(new CustomEvent('remove', {
-        detail: { type },
-        bubbles: true,
-        composed: true
-      }));
+      this.dispatchEvent(
+        new CustomEvent('remove', {
+          detail: { type },
+          bubbles: true,
+          composed: true,
+        })
+      );
     }
   }
 }
 
-export default ContentTypeTable; 
+export default ContentTypeTable;

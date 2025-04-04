@@ -36,15 +36,15 @@ export class GridRenderer extends LitElement {
       min-height: 100px;
     }
 
-    .grid-cell[data-columns="2"] {
+    .grid-cell[data-columns='2'] {
       flex: 2;
     }
 
-    .grid-cell[data-columns="3"] {
+    .grid-cell[data-columns='3'] {
       flex: 3;
     }
 
-    .grid-cell[data-columns="4"] {
+    .grid-cell[data-columns='4'] {
       flex: 4;
     }
   `;
@@ -57,29 +57,33 @@ export class GridRenderer extends LitElement {
   render() {
     return html`
       <div class="grid-container">
-        ${this.rows.map(row => html`
-          <div class="grid-row">
-            ${row.cells.map(cell => html`
-              <div class="grid-cell" data-columns=${cell.colSpan}>
-                ${(() => {
-                  const component = this.getComponentForCell(cell.componentId);
-                  if (component) {
-                    return html`
-                      <component-renderer
-                        .component=${component}
-                        .baseURL=${this.baseURL}
-                      ></component-renderer>
-                    `;
-                  }
-                  return null;
-                })()}
-              </div>
-            `)}
-          </div>
-        `)}
+        ${this.rows.map(
+          row => html`
+            <div class="grid-row">
+              ${row.cells.map(
+                cell => html`
+                  <div class="grid-cell" data-columns=${cell.colSpan}>
+                    ${(() => {
+                      const component = this.getComponentForCell(cell.componentId);
+                      if (component) {
+                        return html`
+                          <component-renderer
+                            .component=${component}
+                            .baseURL=${this.baseURL}
+                          ></component-renderer>
+                        `;
+                      }
+                      return null;
+                    })()}
+                  </div>
+                `
+              )}
+            </div>
+          `
+        )}
       </div>
     `;
   }
 }
 
-export default GridRenderer; 
+export default GridRenderer;

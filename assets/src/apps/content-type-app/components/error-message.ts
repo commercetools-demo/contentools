@@ -9,11 +9,9 @@ export class ErrorMessage extends LitElement {
 
   render() {
     if (!this.message) return html``;
-    
-    return html`
-      <ui-error-message type="error">${this.message}</ui-error-message>
-    `;
+
+    return html` <ui-error-message type="error">${this.message}</ui-error-message> `;
   }
 }
 
-export default ErrorMessage; 
+export default ErrorMessage;

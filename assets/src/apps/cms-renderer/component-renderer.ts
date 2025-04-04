@@ -28,14 +28,14 @@ export class ComponentRenderer extends LitElement {
       display: block;
       width: 100%;
     }
-    
+
     .loading {
       display: flex;
       align-items: center;
       justify-content: center;
       height: 100px;
     }
-    
+
     .error {
       padding: 15px;
       background-color: #ffebee;
@@ -43,7 +43,7 @@ export class ComponentRenderer extends LitElement {
       color: #e53935;
       margin-bottom: 20px;
     }
-    
+
     .warning {
       padding: 15px;
       background-color: #fff3cd;
@@ -71,22 +71,22 @@ export class ComponentRenderer extends LitElement {
     if (ComponentRenderer.loadedScripts.has(url)) {
       return true; // Script already loaded
     }
-    
-    return new Promise((resolve) => {
+
+    return new Promise(resolve => {
       const script = document.createElement('script');
       script.type = 'module';
       script.src = url;
-      
+
       script.onload = () => {
         ComponentRenderer.loadedScripts.add(url);
         resolve(true);
       };
-      
+
       script.onerror = () => {
         console.error(`Failed to load component script: ${url}`);
         resolve(false);
       };
-      
+
       document.head.appendChild(script);
     });
   }
@@ -96,7 +96,7 @@ export class ComponentRenderer extends LitElement {
    */
   private createComponentElement(tagName: string, properties: Record<string, any>): HTMLElement {
     const element = document.createElement(tagName);
-    
+
     // Set properties on the element
     Object.entries(properties).forEach(([key, value]) => {
       // Use property setter if available, otherwise set attribute
@@ -105,14 +105,12 @@ export class ComponentRenderer extends LitElement {
         element[key] = value;
       } else {
         // Convert non-string values to JSON string
-        const attrValue = typeof value === 'string' 
-          ? value 
-          : JSON.stringify(value);
-          
+        const attrValue = typeof value === 'string' ? value : JSON.stringify(value);
+
         element.setAttribute(key, attrValue);
       }
     });
-    
+
     return element;
   }
 
@@ -126,45 +124,45 @@ export class ComponentRenderer extends LitElement {
 
     this.loading = true;
     this.error = null;
-    
+
     try {
       const { type, properties } = this.component;
 
       console.log('properties', properties, type);
-      
+
       // Get component metadata from registry
-      const metadata = await getContentTypeMetaData({ 
-        baseURL: this.baseURL, 
-        type 
+      const metadata = await getContentTypeMetaData({
+        baseURL: this.baseURL,
+        type,
       });
-      
+
       if (!metadata) {
         throw new Error(`Component type "${type}" not found in registry`);
       }
-      
+
       // Convert camelCase to kebab-case for tag name
       const tagName = type.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
-      
+
       // Check if the component is built-in or external
       if (!metadata.isBuiltIn) {
         // For external components, load the script first
         const registryModule = await import('../../utils/content-type-utility');
-        const components = await registryModule.getAllContentTypes({ 
-          baseURL: this.baseURL 
+        const components = await registryModule.getAllContentTypes({
+          baseURL: this.baseURL,
         });
         const deployedUrl = components.find(c => c.metadata.type === type)?.deployedUrl || '';
-        
+
         if (!deployedUrl) {
           throw new Error(`No deployed URL found for component type: ${type}`);
         }
-        
+
         // Load the script now
         await this.loadComponentScript(deployedUrl);
       }
-      
+
       // Create and configure the component element
       this.element = this.createComponentElement(tagName, properties);
-      
+
       // Mark loading as complete
       this.loading = false;
     } catch (error) {
@@ -178,18 +176,14 @@ export class ComponentRenderer extends LitElement {
     if (this.loading) {
       return html`<div class="loading">Loading component...</div>`;
     }
-    
+
     if (this.error) {
-      return html`
-        <div class="error">
-          Failed to render component: ${this.error}
-        </div>
-      `;
+      return html` <div class="error">Failed to render component: ${this.error}</div> `;
     }
-    
+
     // Render the component element
     return html`${this.element}`;
   }
 }
 
-export default ComponentRenderer; 
+export default ComponentRenderer;
