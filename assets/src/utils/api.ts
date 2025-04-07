@@ -142,3 +142,67 @@ export async function deleteContentTypeEndpoint(baseURL: string, key: string): P
     throw new Error(`API request failed: ${response.status} ${response.statusText}`);
   }
 }
+
+/**
+ * Fetch all content items
+ */
+export async function fetchContentItemsEndpoint<T>(baseURL: string): Promise<ApiResponse<T>[]> {
+  const response = await fetch(`${baseURL}/content-items`);
+
+  if (!response.ok) {
+    throw new Error(`API request failed: ${response.status} ${response.statusText}`);
+  }
+
+  const data = await response.json();
+  return data;
+}
+
+/**
+ * Fetch a single content item
+ */
+export async function fetchContentItemEndpoint<T>(baseURL: string, key: string): Promise<T> {
+  const response = await fetchApi<T>(`${baseURL}/content-items/${key}`);
+  return response.value;
+}
+
+/**
+ * Create a content item
+ */
+export async function createContentItemEndpoint<T extends { key: string }>(
+  baseURL: string,
+  data: T
+): Promise<T> {
+  const response = await fetchApi<T>(`${baseURL}/content-items/${data.key}`, {
+    method: 'POST',
+    body: JSON.stringify({ value: data }),
+  });
+  return response.value;
+}
+
+/**
+ * Update a content item
+ */
+export async function updateContentItemEndpoint<T>(
+  baseURL: string,
+  key: string,
+  data: T
+): Promise<T> {
+  const response = await fetchApi<T>(`${baseURL}/content-items/${key}`, {
+    method: 'PUT',
+    body: JSON.stringify({ value: data }),
+  });
+  return response.value;
+}
+
+/**
+ * Delete a content item
+ */
+export async function deleteContentItemEndpoint(baseURL: string, key: string): Promise<void> {
+  const response = await fetch(`${baseURL}/content-items/${key}`, {
+    method: 'DELETE',
+  });
+
+  if (!response.ok) {
+    throw new Error(`API request failed: ${response.status} ${response.statusText}`);
+  }
+}

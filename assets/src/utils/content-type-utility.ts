@@ -64,10 +64,12 @@ export const createContentItem = async ({
   baseURL,
   type,
   name,
+  businessUnitKey,
 }: {
   baseURL: string;
   type: string;
   name?: string;
+  businessUnitKey: string;
 }): Promise<ContentItem> => {
   const metadata = await getContentTypeMetaData({ baseURL, type });
 
@@ -77,6 +79,8 @@ export const createContentItem = async ({
 
   return {
     id: uuidv4(),
+    key: uuidv4(),
+    businessUnitKey,
     type: metadata.type,
     name: name || metadata.name,
     properties: { ...metadata.defaultProperties },

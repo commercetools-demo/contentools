@@ -6,11 +6,11 @@ import { selectComponent, setSidebarVisibility } from '../../store/editor.slice'
 import { fetchPages, syncPagesWithApi, updatePage, saveCurrentPage } from '../../store/pages.slice';
 import { Page } from '../../types';
 
+import '../../apps/shared/components/property-editor';
 import './components/component-library';
 import './components/layout-grid';
 import './components/page-form';
 import './components/page-list';
-import './components/property-editor';
 import './components/cms-sidebar';
 
 // Import atomic components

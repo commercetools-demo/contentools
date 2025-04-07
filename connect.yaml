@@ -17,6 +17,10 @@ deployAs:
           description: The container to use for the content type
           required: false
           default: content-type
+        - key: CONTENT_ITEM_CONTAINER
+          description: The container to use for the content item
+          required: false
+          default: content-item
         - key: AWS_ACCESS_KEY_ID
           description: AWS Access Key ID (only used if STORAGE_TYPE is aws)
           required: false

@@ -12,7 +12,8 @@ import './components/boolean-field';
 import './components/array-field';
 import './components/file-field';
 import './components/wysiwyg-field';
-
+import '../../../../components/atoms/button';
+import '../../../../components/atoms/labeled-input';
 @customElement('cms-property-editor')
 export class PropertyEditor extends connect(store)(LitElement) {
   @property({ type: Object })
@@ -195,7 +196,15 @@ export class PropertyEditor extends connect(store)(LitElement) {
     return html`
       <div class="property-editor">
         <h2>${this.component.name}</h2>
+        <slot name="before-fields"></slot>
 
+        <cms-string-field
+          label="Name"
+          .value="${this.component.name || ''}"
+          fieldKey="name"
+          ?required="${true}"
+          @field-change="${this.handleFieldChange}"
+        ></cms-string-field>
         ${Object.entries(schema).map(([key, field]: [string, any]) => {
           const value = this.component!.properties[key];
 
@@ -265,11 +274,13 @@ export class PropertyEditor extends connect(store)(LitElement) {
           }
         })}
 
+        <slot name="after-fields"></slot>
+
         <div class="actions">
-          <button class="delete-button" @click="${this.showDeleteConfirmation}">
+          <ui-button variant="critical" @click="${this.showDeleteConfirmation}">
             Delete Component
-          </button>
-          <button class="save-button" @click="${this.saveChanges}">Save Changes</button>
+          </ui-button>
+          <ui-button @click="${this.saveChanges}">Save Changes</ui-button>
         </div>
       </div>
 

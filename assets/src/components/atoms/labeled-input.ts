@@ -27,6 +27,7 @@ export class LabeledInput extends LitElement {
       border: 1px solid #ddd;
       border-radius: 4px;
       font-size: 14px;
+      box-sizing: border-box;
     }
 
     .form-input:focus {

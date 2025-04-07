@@ -10,6 +10,7 @@ import '../../components/atoms/card.js';
 // Import the cms-app component
 import '../pages-app/index.js';
 import '../content-type-app/index.js';
+import '../content-item-app/index.js';
 
 @customElement('cms-wrapper')
 export class CmsWrapper extends LitElement {
@@ -26,13 +27,16 @@ export class CmsWrapper extends LitElement {
   businessUnitKey: string = '';
 
   @state()
-  private activeApp: 'welcome' | 'cms' | 'content-type' = 'welcome';
+  private activeApp: 'welcome' | 'cms' | 'content-type' | 'content-item' = 'welcome';
 
   @state()
   private cmsView: 'list' | 'editor' | 'new' = 'list';
 
   @state()
   private contentTypeView: 'list' | 'editor' | 'new' = 'list';
+
+  @state()
+  private contentItemView: 'list' | 'editor' | 'new' = 'list';
 
   @state()
   private showSidebar = false;
@@ -172,6 +176,17 @@ export class CmsWrapper extends LitElement {
           ></content-type-app>
         `;
 
+      case 'content-item':
+        return html`
+          ${this._renderHeader()}
+
+          <content-item-app
+            .baseURL="${this.baseURL}"
+            .businessUnitKey="${this.businessUnitKey}"
+            @view-changed="${this._handleContentItemViewChanged}"
+          ></content-item-app>
+        `;
+
       default: // welcome view
         return html`
           <div class="wrapper-container">
@@ -199,13 +214,21 @@ export class CmsWrapper extends LitElement {
                   </p>
                 </div>
               </ui-card>
+              <ui-card header="Content Items" @click="${() => this._setActiveApp('content-item')}">
+                <div class="card-body">
+                  <p class="card-description">
+                    Create and manage content items. Use predefined content types to structure your
+                    content.
+                  </p>
+                </div>
+              </ui-card>
             </div>
           </div>
         `;
     }
   }
 
-  private _setActiveApp(app: 'welcome' | 'cms' | 'content-type') {
+  private _setActiveApp(app: 'welcome' | 'cms' | 'content-type' | 'content-item') {
     this.activeApp = app;
   }
 
@@ -219,6 +242,10 @@ export class CmsWrapper extends LitElement {
 
   private _handleSidebarToggled(e: CustomEvent) {
     this.showSidebar = e.detail.visible;
+  }
+
+  private _handleContentItemViewChanged(e: CustomEvent) {
+    this.contentItemView = e.detail.view;
   }
 
   private _handleBreadcrumbClick(view: 'list' | 'editor' | 'new') {
@@ -252,6 +279,13 @@ export class CmsWrapper extends LitElement {
         this.breadcrumbItems.push({ text: 'Content Type Editor' });
       } else if (this.contentTypeView === 'new') {
         this.breadcrumbItems.push({ text: 'New Content Type' });
+      }
+    } else if (this.activeApp === 'content-item') {
+      this.breadcrumbItems = [{ text: 'Content Items', path: 'list' }];
+      if (this.contentItemView === 'editor') {
+        this.breadcrumbItems.push({ text: 'Content Item Editor' });
+      } else if (this.contentItemView === 'new') {
+        this.breadcrumbItems.push({ text: 'New Content Item' });
       }
     } else {
       this.breadcrumbItems = [];

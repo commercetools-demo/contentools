@@ -13,6 +13,9 @@ export class LayoutGrid extends connect(store)(LitElement) {
   @property({ type: String })
   baseURL: string = '';
 
+  @property({ type: String })
+  businessUnitKey: string = '';
+
   @property({ type: Array })
   rows: GridRow[] = [];
 
@@ -164,6 +167,7 @@ export class LayoutGrid extends connect(store)(LitElement) {
         const newComponent = await createContentItem({
           baseURL: this.baseURL,
           type: componentType,
+          businessUnitKey: this.businessUnitKey,
         });
 
         // Dispatch action to add the component

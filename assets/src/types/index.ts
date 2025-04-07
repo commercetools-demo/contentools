@@ -1,6 +1,8 @@
 export interface ContentItem {
   id: string;
   type: string;
+  key: string;
+  businessUnitKey: string;
   name: string;
   properties: Record<string, any>;
 }
