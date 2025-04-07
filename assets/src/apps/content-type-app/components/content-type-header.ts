@@ -15,8 +15,6 @@ export class ContentTypeHeader extends LitElement {
       align-items: center;
       justify-content: space-between;
       padding: 15px 20px;
-      border-bottom: 1px solid #ddd;
-      background-color: white;
     }
 
     .registry-title {
