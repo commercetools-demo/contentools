@@ -94,7 +94,7 @@ export class LayoutGrid extends connect(store)(LitElement) {
                 <div class="grid-header-left">
                   <h2>Layout Grid</h2>
                 </div>
-                <button class="add-row-btn" @click=${this._handleAddRow}>+ Add Row</button>
+                <button class="add-row-btn" @click="${this._handleAddRow}">+ Add Row</button>
               </div>
 
               <div class="grid-info">
@@ -108,15 +108,15 @@ export class LayoutGrid extends connect(store)(LitElement) {
           ${this.rows.map(
             (row, index) => html`
               <cms-grid-row
-                .row=${row}
-                .rowIndex=${index}
-                .components=${this.components}
-                .selectedCell=${this.selectedCell}
-                .activeComponentType=${this.activeComponentType}
-                .readonly=${this.readonly}
-                @cell-selected=${this._handleCellSelected}
-                @remove-row=${this._handleRemoveRowEvent}
-                @component-dropped=${this._handleComponentDropped}
+                .row="${row}"
+                .rowIndex="${index}"
+                .components="${this.components}"
+                .selectedCell="${this.selectedCell}"
+                .activeComponentType="${this.activeComponentType}"
+                .readonly="${this.readonly}"
+                @cell-selected="${this._handleCellSelected}"
+                @remove-row="${this._handleRemoveRowEvent}"
+                @component-dropped="${this._handleComponentDropped}"
               ></cms-grid-row>
             `
           )}

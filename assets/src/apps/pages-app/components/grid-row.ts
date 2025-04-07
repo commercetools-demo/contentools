@@ -169,11 +169,11 @@ export class GridRowComponent extends LitElement {
 
   render() {
     return html`
-      <div class="grid-row" data-row-id=${this.row.id}>
+      <div class="grid-row" data-row-id="${this.row.id}">
         ${!this.readonly
           ? html`
               <div class="row-header">
-                <button class="row-delete" @click=${this._handleRemoveRow} title="Remove row">
+                <button class="row-delete" @click="${this._handleRemoveRow}" title="Remove row">
                   ✕
                 </button>
               </div>
@@ -195,13 +195,13 @@ export class GridRowComponent extends LitElement {
                 ${this.isSelected(cell.id) ? 'selected' : ''} 
                 ${this.readonly ? 'readonly' : ''}"
                 style="flex: 0 1 ${colWidth}%;"
-                data-row-id=${this.row.id}
-                data-cell-id=${cell.id}
-                data-component-id=${component?.id || ''}
-                @click=${() => !this.readonly && this._handleCellClick(cell.id, component?.id)}
-                @dragover=${!this.readonly ? this._handleDragOver : null}
-                @dragleave=${!this.readonly ? this._handleDragLeave : null}
-                @drop=${!this.readonly ? (e: DragEvent) => this._handleDrop(e, cell.id) : null}
+                data-row-id="${this.row.id}"
+                data-cell-id="${cell.id}"
+                data-component-id="${component?.id || ''}"
+                @click="${() => !this.readonly && this._handleCellClick(cell.id, component?.id)}"
+                @dragover="${!this.readonly ? this._handleDragOver : null}"
+                @dragleave="${!this.readonly ? this._handleDragLeave : null}"
+                @drop="${!this.readonly ? (e: DragEvent) => this._handleDrop(e, cell.id) : null}"
               >
                 ${component
                   ? component.name
@@ -212,15 +212,15 @@ export class GridRowComponent extends LitElement {
                   ? html`
                       <div class="cell-resize">
                         <button
-                          @click=${(e: Event) => this._handleDecreaseWidth(e, cell.id)}
-                          ?disabled=${cell.colSpan <= 1}
+                          @click="${(e: Event) => this._handleDecreaseWidth(e, cell.id)}"
+                          ?disabled="${cell.colSpan <= 1}"
                           title="Decrease width"
                         >
                           -
                         </button>
                         <button
-                          @click=${(e: Event) => this._handleIncreaseWidth(e, cell.id)}
-                          ?disabled=${this._isIncreaseDisabled(cell.id)}
+                          @click="${(e: Event) => this._handleIncreaseWidth(e, cell.id)}"
+                          ?disabled="${this._isIncreaseDisabled(cell.id)}"
                           title="Increase width"
                         >
                           +

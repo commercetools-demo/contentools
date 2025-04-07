@@ -205,10 +205,14 @@ export class PagesApp extends connect(store)(LitElement) {
           <div
             class="cms-content ${this.showSidebar && this.view === 'editor' ? 'with-sidebar' : ''}"
           >
-            ${this.error ? html`<ui-error-message message=${this.error}></ui-error-message>` : ''}
+            ${this.error ? html`<ui-error-message message="${this.error}"></ui-error-message>` : ''}
             ${this.loading && !this.pages.length
               ? html`
-                  <ui-loading-spinner size="large" label="Loading..." centered></ui-loading-spinner>
+                  <ui-loading-spinner
+                    size="large"
+                    label="Loading..."
+                    centered
+                  ></ui-loading-spinner>
                 `
               : this._renderCurrentView()}
           </div>
@@ -216,25 +220,27 @@ export class PagesApp extends connect(store)(LitElement) {
           ${this.view === 'editor'
             ? html`
                 <cms-sidebar
-                  .currentPage=${this.currentPage}
-                  .selectedComponentId=${this.selectedComponentId}
-                  .showSidebar=${this.showSidebar}
-                  .baseURL=${this.baseURL}
-                  .businessUnitKey=${this.businessUnitKey}
-                  @component-updated=${this._handleComponentUpdated}
-                  @page-updated=${this._handlePageUpdated}
-                  @close-sidebar=${this._handleCloseSidebar}
-                  @component-drag-start=${this._handleComponentDragStart}
+                  .currentPage="${this.currentPage}"
+                  .selectedComponentId="${this.selectedComponentId}"
+                  .showSidebar="${this.showSidebar}"
+                  .baseURL="${this.baseURL}"
+                  .businessUnitKey="${this.businessUnitKey}"
+                  @component-updated="${this._handleComponentUpdated}"
+                  @page-updated="${this._handlePageUpdated}"
+                  @close-sidebar="${this._handleCloseSidebar}"
+                  @component-drag-start="${this._handleComponentDragStart}"
                 ></cms-sidebar>
               `
             : ''}
         </div>
 
-        <ui-save-bar .visible=${this.unsavedChanges}>
+        <ui-save-bar .visible="${this.unsavedChanges}">
           <span slot="message">You have unsaved changes</span>
           <div slot="actions">
-            <ui-button variant="outline" @click=${this._handleDiscardChanges}>Discard</ui-button>
-            <ui-button variant="success" @click=${this._handleSaveChanges}>Save Changes</ui-button>
+            <ui-button variant="outline" @click="${this._handleDiscardChanges}">Discard</ui-button>
+            <ui-button variant="success" @click="${this._handleSaveChanges}"
+              >Save Changes</ui-button
+            >
           </div>
         </ui-save-bar>
       </div>
@@ -246,12 +252,12 @@ export class PagesApp extends connect(store)(LitElement) {
       case 'list':
         return html`
           <cms-page-list
-            .pages=${this.pages}
-            .selectedPageKey=${this.currentPage?.key || null}
-            .baseURL=${this.baseURL}
-            .businessUnitKey=${this.businessUnitKey}
-            @create-page=${() => this.setView('new')}
-            @select-page=${() => this.setView('editor')}
+            .pages="${this.pages}"
+            .selectedPageKey="${this.currentPage?.key || null}"
+            .baseURL="${this.baseURL}"
+            .businessUnitKey="${this.businessUnitKey}"
+            @create-page="${() => this.setView('new')}"
+            @select-page="${() => this.setView('editor')}"
           ></cms-page-list>
         `;
 
@@ -262,30 +268,30 @@ export class PagesApp extends connect(store)(LitElement) {
 
         return html`
           <div class="cms-editor-actions">
-            <ui-back-button @click=${() => this.setView('list')}></ui-back-button>
+            <ui-back-button @click="${() => this.setView('list')}"></ui-back-button>
             <div class="cms-editor-buttons">
               <ui-button
                 variant="secondary"
-                @click=${this._openComponentLibrary}
+                @click="${this._openComponentLibrary}"
                 title="Component Library"
               >
                 <span class="icon">📦</span> Components
               </ui-button>
-              <ui-button variant="icon" @click=${this._openPageSettings} title="Page Settings"
+              <ui-button variant="icon" @click="${this._openPageSettings}" title="Page Settings"
                 >⚙️</ui-button
               >
             </div>
           </div>
 
           <cms-layout-grid
-            .baseURL=${this.baseURL}
-            .businessUnitKey=${this.businessUnitKey}
-            .rows=${this.currentPage.layout.rows}
-            .components=${this.currentPage.components}
-            .availableLocales=${this.availableLocales}
-            .locale=${this.locale}
-            .activeComponentType=${this._activeComponentType}
-            @component-dropped=${this._handleComponentDropped}
+            .baseURL="${this.baseURL}"
+            .businessUnitKey="${this.businessUnitKey}"
+            .rows="${this.currentPage.layout.rows}"
+            .components="${this.currentPage.components}"
+            .availableLocales="${this.availableLocales}"
+            .locale="${this.locale}"
+            .activeComponentType="${this._activeComponentType}"
+            @component-dropped="${this._handleComponentDropped}"
           ></cms-layout-grid>
         `;
 
@@ -293,14 +299,14 @@ export class PagesApp extends connect(store)(LitElement) {
         return html`
           <ui-back-button
             text="Back to Pages"
-            @click=${() => this.setView('list')}
+            @click="${() => this.setView('list')}"
           ></ui-back-button>
 
           <cms-page-form
-            .baseURL=${this.baseURL}
-            .businessUnitKey=${this.businessUnitKey}
-            .locale=${this.locale}
-            @page-created=${() => this.setView('editor')}
+            .baseURL="${this.baseURL}"
+            .businessUnitKey="${this.businessUnitKey}"
+            .locale="${this.locale}"
+            @page-created="${() => this.setView('editor')}"
           ></cms-page-form>
         `;
 

@@ -100,14 +100,14 @@ export class ContentTypeTable extends LitElement {
                     <ui-button
                       variant="secondary"
                       size="small"
-                      @click=${() => this._editContentType(contentType)}
+                      @click="${() => this._editContentType(contentType)}"
                     >
                       Edit
                     </ui-button>
                     <ui-button
                       variant="critical"
                       size="small"
-                      @click=${() => this._removeContentType(contentType.metadata.type)}
+                      @click="${() => this._removeContentType(contentType.metadata.type)}"
                     >
                       Delete
                     </ui-button>

@@ -1,9 +1,12 @@
 import { LitElement, html, css } from 'lit';
-import { customElement } from 'lit/decorators.js';
+import { customElement, property } from 'lit/decorators.js';
 import '../../../components/atoms/button';
 
 @customElement('content-type-header')
 export class ContentTypeHeader extends LitElement {
+  @property({ type: Boolean })
+  hideAddButton = false;
+
   static styles = css`
     :host {
       display: block;
@@ -28,7 +31,13 @@ export class ContentTypeHeader extends LitElement {
     return html`
       <header class="registry-header">
         <h1 class="registry-title">Content Type Manager</h1>
-        <ui-button variant="primary" @click=${this._addContentType}> + Add Content Type </ui-button>
+        ${this.hideAddButton
+          ? ''
+          : html`
+              <ui-button variant="primary" @click="${this._addContentType}">
+                + Add Content Type
+              </ui-button>
+            `}
       </header>
     `;
   }

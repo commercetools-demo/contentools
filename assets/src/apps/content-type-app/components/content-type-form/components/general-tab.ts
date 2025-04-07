@@ -24,21 +24,21 @@ export class GeneralTab extends LitElement {
     return html`
       <ui-labeled-input
         label="Content Type"
-        .value=${this.type}
-        @input-change=${(e: CustomEvent) => this._dispatchChange('type', e.detail.value)}
-        ?disabled=${this.isEdit}
+        .value="${this.type}"
+        @input-change="${(e: CustomEvent) => this._dispatchChange('type', e.detail.value)}"
+        ?disabled="${this.isEdit}"
       ></ui-labeled-input>
 
       <ui-labeled-input
         label="Content Type Name"
-        .value=${this.name}
-        @input-change=${(e: CustomEvent) => this._dispatchChange('name', e.detail.value)}
+        .value="${this.name}"
+        @input-change="${(e: CustomEvent) => this._dispatchChange('name', e.detail.value)}"
       ></ui-labeled-input>
 
       <ui-labeled-input
         label="Icon (emoji)"
-        .value=${this.icon || ''}
-        @input-change=${(e: CustomEvent) => this._dispatchChange('icon', e.detail.value)}
+        .value="${this.icon || ''}"
+        @input-change="${(e: CustomEvent) => this._dispatchChange('icon', e.detail.value)}"
       ></ui-labeled-input>
     `;
   }

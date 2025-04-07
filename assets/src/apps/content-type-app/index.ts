@@ -70,26 +70,29 @@ export class ContentTypeApp extends connect(store)(LitElement) {
   render() {
     return html`
       <div class="content-type-container">
-        <content-type-header @add-content-type=${this._toggleAddContentType}></content-type-header>
+        <content-type-header
+          .hideAddButton="${this.isAddingContentType || this.selectedContentType}"
+          @add-content-type="${this._toggleAddContentType}"
+        ></content-type-header>
 
-        <error-message .message=${this.error}></error-message>
+        <error-message .message="${this.error}"></error-message>
 
         ${this.isAddingContentType || this.selectedContentType
           ? html`
               <content-type-form
-                .contentType=${this.selectedContentType || this.newContentType}
-                .isEdit=${!!this.selectedContentType}
-                @content-type-change=${this._handleContentTypeChange}
-                @cancel=${this._cancelForm}
-                @save=${this._saveContentType}
+                .contentType="${this.selectedContentType || this.newContentType}"
+                .isEdit="${!!this.selectedContentType}"
+                @content-type-change="${this._handleContentTypeChange}"
+                @cancel="${this._cancelForm}"
+                @save="${this._saveContentType}"
               ></content-type-form>
             `
           : html`
               <content-type-table
-                .contentTypes=${this.contentTypes}
-                .loading=${this.loading}
-                @edit=${this._handleEditContentType}
-                @remove=${this._handleRemoveContentType}
+                .contentTypes="${this.contentTypes}"
+                .loading="${this.loading}"
+                @edit="${this._handleEditContentType}"
+                @remove="${this._handleRemoveContentType}"
               ></content-type-table>
             `}
       </div>

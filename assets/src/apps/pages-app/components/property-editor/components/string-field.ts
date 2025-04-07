@@ -25,10 +25,10 @@ export class StringField extends LitElement {
   render() {
     return html`
       <ui-labeled-input
-        label=${this.label}
-        .value=${this.value}
-        ?required=${this.required}
-        @input-change=${this.handleInput}
+        label="${this.label}"
+        .value="${this.value}"
+        ?required="${this.required}"
+        @input-change="${this.handleInput}"
       ></ui-labeled-input>
     `;
   }

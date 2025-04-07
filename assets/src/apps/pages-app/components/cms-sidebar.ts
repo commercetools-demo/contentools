@@ -174,7 +174,7 @@ export class CmsSidebar extends LitElement {
                 ? 'Component Library'
                 : 'Page Settings'}
           </h2>
-          <ui-button variant="icon" @click=${this._handleCloseClick}>×</ui-button>
+          <ui-button variant="icon" @click="${this._handleCloseClick}">×</ui-button>
         </div>
 
         <div class="sidebar-tabs">
@@ -182,9 +182,9 @@ export class CmsSidebar extends LitElement {
             ? html`
                 <div class="tab-container">
                   <ui-button
-                    variant=${this.sidebarView === 'component-editor' ? 'primary' : 'text'}
+                    variant="${this.sidebarView === 'component-editor' ? 'primary' : 'text'}"
                     size="small"
-                    @click=${() => this._switchView('component-editor')}
+                    @click="${() => this._switchView('component-editor')}"
                     >Properties</ui-button
                   >
                   ${this.sidebarView === 'component-editor'
@@ -195,9 +195,9 @@ export class CmsSidebar extends LitElement {
             : ''}
           <div class="tab-container">
             <ui-button
-              variant=${this.sidebarView === 'page-settings' ? 'primary' : 'text'}
+              variant="${this.sidebarView === 'page-settings' ? 'primary' : 'text'}"
               size="small"
-              @click=${() => this._switchView('page-settings')}
+              @click="${() => this._switchView('page-settings')}"
               >Page Settings</ui-button
             >
             ${this.sidebarView === 'page-settings'
@@ -206,9 +206,9 @@ export class CmsSidebar extends LitElement {
           </div>
           <div class="tab-container">
             <ui-button
-              variant=${this.sidebarView === 'component-library' ? 'primary' : 'text'}
+              variant="${this.sidebarView === 'component-library' ? 'primary' : 'text'}"
               size="small"
-              @click=${() => this._switchView('component-library')}
+              @click="${() => this._switchView('component-library')}"
               >Components</ui-button
             >
             ${this.sidebarView === 'component-library'
@@ -242,9 +242,9 @@ export class CmsSidebar extends LitElement {
     if (component) {
       return html`
         <cms-property-editor
-          .component=${component}
-          .baseURL=${this.baseURL}
-          .businessUnitKey=${this.businessUnitKey}
+          .component="${component}"
+          .baseURL="${this.baseURL}"
+          .businessUnitKey="${this.businessUnitKey}"
         ></cms-property-editor>
       `;
     }
@@ -255,9 +255,9 @@ export class CmsSidebar extends LitElement {
   private _renderComponentLibrary() {
     return html`
       <cms-component-library
-        @component-drag-start=${this._handleComponentDragStart}
-        .baseURL=${this.baseURL}
-        .businessUnitKey=${this.businessUnitKey}
+        @component-drag-start="${this._handleComponentDragStart}"
+        .baseURL="${this.baseURL}"
+        .businessUnitKey="${this.businessUnitKey}"
       ></cms-component-library>
     `;
   }
@@ -266,11 +266,11 @@ export class CmsSidebar extends LitElement {
     return html`
       <h2>Page Settings</h2>
       <cms-page-form
-        .isEdit=${true}
-        .page=${this.currentPage}
-        .baseURL=${this.baseURL}
-        .businessUnitKey=${this.businessUnitKey}
-        @page-updated=${this._handlePageUpdated}
+        .isEdit="${true}"
+        .page="${this.currentPage}"
+        .baseURL="${this.baseURL}"
+        .businessUnitKey="${this.businessUnitKey}"
+        @page-updated="${this._handlePageUpdated}"
       ></cms-page-form>
     `;
   }

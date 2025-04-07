@@ -73,7 +73,7 @@ export class ErrorMessage extends LitElement {
       <div class="error-message ${this.type}">
         <slot>${this.message}</slot>
         ${this.dismissible
-          ? html`<button class="close-button" @click=${this._handleDismiss}>×</button>`
+          ? html`<button class="close-button" @click="${this._handleDismiss}">×</button>`
           : ''}
       </div>
     `;

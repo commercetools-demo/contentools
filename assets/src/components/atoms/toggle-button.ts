@@ -66,8 +66,8 @@ export class ToggleButton extends LitElement {
     return html`
       <button
         class="toggle-button ${this.active ? 'active' : ''} ${this.size}"
-        title=${this.title || (this.active ? 'Hide' : 'Show')}
-        @click=${this._handleClick}
+        title="${this.title || (this.active ? 'Hide' : 'Show')}"
+        @click="${this._handleClick}"
       >
         ${this.active ? this.activeIcon : this.inactiveIcon}
       </button>

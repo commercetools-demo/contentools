@@ -204,60 +204,60 @@ export class PropertyEditor extends connect(store)(LitElement) {
               if (this.component && this.component.type === 'richText' && key === 'content') {
                 return html`
                   <cms-wysiwyg-field
-                    label=${field.label}
-                    .value=${value || ''}
-                    fieldKey=${key}
-                    ?required=${field.required}
-                    @field-change=${this.handleFieldChange}
+                    label="${field.label}"
+                    .value="${value || ''}"
+                    fieldKey="${key}"
+                    ?required="${field.required}"
+                    @field-change="${this.handleFieldChange}"
                   />
                 `;
               }
               return html`
                 <cms-string-field
-                  label=${field.label}
-                  .value=${value || ''}
-                  fieldKey=${key}
-                  ?required=${field.required}
-                  @field-change=${this.handleFieldChange}
+                  label="${field.label}"
+                  .value="${value || ''}"
+                  fieldKey="${key}"
+                  ?required="${field.required}"
+                  @field-change="${this.handleFieldChange}"
                 />
               `;
             case 'number':
               return html`
                 <cms-number-field
-                  label=${field.label}
-                  .value=${value}
-                  fieldKey=${key}
-                  ?required=${field.required}
-                  @field-change=${this.handleFieldChange}
+                  label="${field.label}"
+                  .value="${value}"
+                  fieldKey="${key}"
+                  ?required="${field.required}"
+                  @field-change="${this.handleFieldChange}"
                 />
               `;
             case 'boolean':
               return html`
                 <cms-boolean-field
-                  label=${field.label}
-                  .value=${value}
-                  fieldKey=${key}
-                  @field-change=${this.handleFieldChange}
+                  label="${field.label}"
+                  .value="${value}"
+                  fieldKey="${key}"
+                  @field-change="${this.handleFieldChange}"
                 />
               `;
             case 'array':
               return html`
                 <cms-array-field
-                  label=${field.label}
-                  .value=${value || []}
-                  fieldKey=${key}
-                  @field-change=${this.handleFieldChange}
+                  label="${field.label}"
+                  .value="${value || []}"
+                  fieldKey="${key}"
+                  @field-change="${this.handleFieldChange}"
                 />
               `;
             case 'file':
               return html`
                 <cms-file-field
-                  label=${field.label}
-                  .value=${value}
-                  fieldKey=${key}
-                  .baseURL=${this.baseURL}
-                  .extensions=${field.extensions || []}
-                  @field-change=${this.handleFieldChange}
+                  label="${field.label}"
+                  .value="${value}"
+                  fieldKey="${key}"
+                  .baseURL="${this.baseURL}"
+                  .extensions="${field.extensions || []}"
+                  @field-change="${this.handleFieldChange}"
                 />
               `;
             default:
@@ -266,10 +266,10 @@ export class PropertyEditor extends connect(store)(LitElement) {
         })}
 
         <div class="actions">
-          <button class="delete-button" @click=${this.showDeleteConfirmation}>
+          <button class="delete-button" @click="${this.showDeleteConfirmation}">
             Delete Component
           </button>
-          <button class="save-button" @click=${this.saveChanges}>Save Changes</button>
+          <button class="save-button" @click="${this.saveChanges}">Save Changes</button>
         </div>
       </div>
 
@@ -289,10 +289,10 @@ export class PropertyEditor extends connect(store)(LitElement) {
             cannot be undone.
           </p>
           <div class="dialog-buttons">
-            <button class="cancel-button" @click=${() => (this.showDeleteConfirm = false)}>
+            <button class="cancel-button" @click="${() => (this.showDeleteConfirm = false)}">
               Cancel
             </button>
-            <button class="confirm-button" @click=${this.deleteComponent}>Delete</button>
+            <button class="confirm-button" @click="${this.deleteComponent}">Delete</button>
           </div>
         </div>
       </div>

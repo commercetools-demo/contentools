@@ -5,6 +5,7 @@ import { BreadcrumbItem } from '../../components/atoms/breadcrumbs.js';
 // Import atomic components
 import '../../components/atoms/breadcrumbs.js';
 import '../../components/atoms/toggle-button.js';
+import '../../components/atoms/card.js';
 
 // Import the cms-app component
 import '../pages-app/index.js';
@@ -79,46 +80,6 @@ export class CmsWrapper extends LitElement {
       margin-top: 2rem;
     }
 
-    .app-card {
-      width: 300px;
-      height: 200px;
-      border-radius: 8px;
-      border: 1px solid #ddd;
-      overflow: hidden;
-      transition: all 0.3s;
-      cursor: pointer;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .app-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-      border-color: #3498db;
-    }
-
-    .card-header {
-      padding: 1rem;
-      background-color: #f5f5f5;
-      border-bottom: 1px solid #ddd;
-    }
-
-    .card-title {
-      font-size: 1.2rem;
-      font-weight: 600;
-      margin: 0;
-    }
-
-    .card-body {
-      padding: 1rem;
-      flex: 1;
-    }
-
-    .card-description {
-      margin: 0;
-      color: #666;
-    }
-
     .back-button {
       background-color: #3498db;
       color: white;
@@ -191,13 +152,13 @@ export class CmsWrapper extends LitElement {
           ${this._renderHeader()}
 
           <pages-app
-            .baseURL=${this.baseURL}
-            .locale=${this.locale}
-            .availableLocales=${this.availableLocales}
-            .businessUnitKey=${this.businessUnitKey}
-            .headerInWrapper=${true}
-            @view-changed=${this._handleViewChanged}
-            @sidebar-toggled=${this._handleSidebarToggled}
+            .baseURL="${this.baseURL}"
+            .locale="${this.locale}"
+            .availableLocales="${this.availableLocales}"
+            .businessUnitKey="${this.businessUnitKey}"
+            .headerInWrapper="${true}"
+            @view-changed="${this._handleViewChanged}"
+            @sidebar-toggled="${this._handleSidebarToggled}"
           ></pages-app>
         `;
 
@@ -206,8 +167,8 @@ export class CmsWrapper extends LitElement {
           ${this._renderHeader()}
 
           <content-type-app
-            .baseURL=${this.baseURL}
-            @edit-content-type=${this._handleEditContentType}
+            .baseURL="${this.baseURL}"
+            @edit-content-type="${this._handleEditContentType}"
           ></content-type-app>
         `;
 
@@ -220,28 +181,24 @@ export class CmsWrapper extends LitElement {
             </div>
 
             <div class="card-container">
-              <div class="app-card" @click=${() => this._setActiveApp('cms')}>
-                <div class="card-header">
-                  <h3 class="card-title">Page Builder</h3>
-                </div>
+              <ui-card header="Page Builder" @click="${() => this._setActiveApp('cms')}">
                 <div class="card-body">
                   <p class="card-description">
                     Create and manage pages with a flexible layout system. Add components and
                     customize content.
                   </p>
                 </div>
-              </div>
-
-              <div class="app-card" @click=${() => this._setActiveApp('content-type')}>
-                <div class="card-header">
-                  <h3 class="card-title">Content Type Manager</h3>
-                </div>
+              </ui-card>
+              <ui-card
+                header="Content Type Manager"
+                @click="${() => this._setActiveApp('content-type')}"
+              >
                 <div class="card-body">
                   <p class="card-description">
                     Define and manage content types. Create structured content models for your site.
                   </p>
                 </div>
-              </div>
+              </ui-card>
             </div>
           </div>
         `;
@@ -304,24 +261,24 @@ export class CmsWrapper extends LitElement {
   private _renderHeader() {
     return html`
       <header class="cms-header">
-        <h1 class="cms-title" @click=${() => this._setActiveApp('welcome')}>
+        <h1 class="cms-title" @click="${() => this._setActiveApp('welcome')}">
           <span class="original-title">${this.cmsTitle}</span>
           <span class="hover-title">Back to Welcome</span>
         </h1>
 
         <ui-breadcrumbs
-          .items=${this.breadcrumbItems}
-          @breadcrumb-click=${(e: CustomEvent) =>
-            this._handleBreadcrumbClick(e.detail.item.path as any)}
+          .items="${this.breadcrumbItems}"
+          @breadcrumb-click="${(e: CustomEvent) =>
+            this._handleBreadcrumbClick(e.detail.item.path as any)}"
         ></ui-breadcrumbs>
 
         <div class="toggle-sidebar-button">
           ${this.cmsView === 'editor'
             ? html`
                 <ui-toggle-button
-                  .active=${this.showSidebar}
-                  .title=${this.showSidebar ? 'Hide Sidebar' : 'Show Sidebar'}
-                  @toggle=${this._handleToggleSidebar}
+                  .active="${this.showSidebar}"
+                  .title="${this.showSidebar ? 'Hide Sidebar' : 'Show Sidebar'}"
+                  @toggle="${this._handleToggleSidebar}"
                 ></ui-toggle-button>
               `
             : ''}

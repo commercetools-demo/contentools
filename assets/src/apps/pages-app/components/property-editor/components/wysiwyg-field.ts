@@ -167,45 +167,49 @@ export class WysiwygField extends LitElement {
       <div class="form-group">
         <label for="${this.fieldKey}">${this.label}</label>
         <div class="editor-toolbar">
-          <button class="toolbar-button" @click=${() => this.execCommand('bold')} title="Bold">
+          <button class="toolbar-button" @click="${() => this.execCommand('bold')}" title="Bold">
             <strong>B</strong>
           </button>
-          <button class="toolbar-button" @click=${() => this.execCommand('italic')} title="Italic">
+          <button
+            class="toolbar-button"
+            @click="${() => this.execCommand('italic')}"
+            title="Italic"
+          >
             <em>I</em>
           </button>
           <button
             class="toolbar-button"
-            @click=${() => this.execCommand('underline')}
+            @click="${() => this.execCommand('underline')}"
             title="Underline"
           >
             <u>U</u>
           </button>
           <button
             class="toolbar-button"
-            @click=${() => this.execCommand('formatBlock', 'h2')}
+            @click="${() => this.execCommand('formatBlock', 'h2')}"
             title="Heading"
           >
             H
           </button>
           <button
             class="toolbar-button"
-            @click=${() => this.execCommand('insertUnorderedList')}
+            @click="${() => this.execCommand('insertUnorderedList')}"
             title="Bullet List"
           >
             •
           </button>
-          <button class="toolbar-button" @click=${this.insertLink} title="Insert Link">🔗</button>
+          <button class="toolbar-button" @click="${this.insertLink}" title="Insert Link">🔗</button>
         </div>
         <div
           class="editor-content"
           contenteditable="true"
-          @input=${() => this.debouncedHandleInput()}
-          @blur=${() => this.handleInput()}
+          @input="${() => this.debouncedHandleInput()}"
+          @blur="${() => this.handleInput()}"
         ></div>
         <button
           class="save-button"
-          @click=${() => this.notifyChange()}
-          ?disabled=${!contentChanged}
+          @click="${() => this.notifyChange()}"
+          ?disabled="${!contentChanged}"
         >
           Save Content
         </button>

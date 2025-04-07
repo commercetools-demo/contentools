@@ -38,8 +38,8 @@ export class BooleanField extends LitElement {
         <input
           type="checkbox"
           id="${this.fieldKey}"
-          .checked=${this.value}
-          @change=${(e: InputEvent) => this.handleChange(e)}
+          .checked="${this.value}"
+          @change="${(e: InputEvent) => this.handleChange(e)}"
         />
         <label for="${this.fieldKey}">${this.label}</label>
       </div>

@@ -62,14 +62,17 @@ export class GridRenderer extends LitElement {
             <div class="grid-row">
               ${row.cells.map(
                 cell => html`
-                  <div class="grid-cell" data-columns=${cell.colSpan}>
+                  <div
+                    class="grid-cell"
+                    data-columns="${cell.colSpan}"
+                  >
                     ${(() => {
                       const component = this.getComponentForCell(cell.componentId);
                       if (component) {
                         return html`
                           <component-renderer
-                            .component=${component}
-                            .baseURL=${this.baseURL}
+                            .component="${component}"
+                            .baseURL="${this.baseURL}"
                           ></component-renderer>
                         `;
                       }

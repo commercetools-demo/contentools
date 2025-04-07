@@ -97,20 +97,20 @@ export default class ContentTypeForm extends LitElement {
       <div class="component-form">
         <div class="tab-header">
           <ui-tabs
-            .tabs=${this._tabs}
-            .selectedTab=${this._selectedTab}
-            @tab-change=${this._selectTab}
+            .tabs="${this._tabs}"
+            .selectedTab="${this._selectedTab}"
+            @tab-change="${this._selectTab}"
             fullWidth
           >
             <div class="form-buttons" slot="actions">
-              <ui-button variant="secondary" size="small" @click=${this._cancelForm}>
+              <ui-button variant="secondary" size="small" @click="${this._cancelForm}">
                 Cancel
               </ui-button>
               <ui-button
                 variant="primary"
                 size="small"
-                ?disabled=${!isButtonEnabled}
-                @click=${this._saveContentType}
+                ?disabled="${!isButtonEnabled}"
+                @click="${this._saveContentType}"
               >
                 ${this.isEdit ? 'Update' : 'Add'} Content Type
               </ui-button>
@@ -125,28 +125,28 @@ export default class ContentTypeForm extends LitElement {
 
   private _renderTabContent() {
     return html`
-      <ui-tab-content ?active=${this._selectedTab === 'general'}>
+      <ui-tab-content ?active="${this._selectedTab === 'general'}">
         <general-tab
-          .type=${this.contentType.metadata.type}
-          .name=${this.contentType.metadata.name}
-          .icon=${this.contentType.metadata.icon}
-          ?isEdit=${this.isEdit}
-          @general-change=${this._handleGeneralChange}
+          .type="${this.contentType.metadata.type}"
+          .name="${this.contentType.metadata.name}"
+          .icon="${this.contentType.metadata.icon}"
+          ?isEdit="${this.isEdit}"
+          @general-change="${this._handleGeneralChange}"
         ></general-tab>
       </ui-tab-content>
 
-      <ui-tab-content ?active=${this._selectedTab === 'schema'}>
+      <ui-tab-content ?active="${this._selectedTab === 'schema'}">
         <schema-tab
-          .propertySchema=${this.contentType.metadata.propertySchema}
-          .defaultProperties=${this.contentType.metadata.defaultProperties}
-          @schema-change=${this._handleSchemaChange}
+          .propertySchema="${this.contentType.metadata.propertySchema}"
+          .defaultProperties="${this.contentType.metadata.defaultProperties}"
+          @schema-change="${this._handleSchemaChange}"
         ></schema-tab>
       </ui-tab-content>
 
-      <ui-tab-content ?active=${this._selectedTab === 'renderer'}>
+      <ui-tab-content ?active="${this._selectedTab === 'renderer'}">
         <renderer-tab
-          .deployedUrl=${this.contentType.deployedUrl}
-          @renderer-change=${this._handleRendererChange}
+          .deployedUrl="${this.contentType.deployedUrl}"
+          @renderer-change="${this._handleRendererChange}"
         ></renderer-tab>
       </ui-tab-content>
     `;

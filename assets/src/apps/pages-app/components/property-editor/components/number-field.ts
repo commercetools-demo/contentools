@@ -25,11 +25,11 @@ export class NumberField extends LitElement {
   render() {
     return html`
       <ui-labeled-input
-        label=${this.label}
-        .value=${String(this.value)}
-        ?required=${this.required}
+        label="${this.label}"
+        .value="${String(this.value)}"
+        ?required="${this.required}"
         type="number"
-        @input-change=${this.handleInput}
+        @input-change="${this.handleInput}"
       ></ui-labeled-input>
     `;
   }

@@ -116,23 +116,23 @@ export class PageForm extends connect(store)(LitElement) {
 
         <ui-labeled-input
           label="Page Name"
-          .value=${this.formData.name}
-          @input-change=${this._handleNameInput}
+          .value="${this.formData.name}"
+          @input-change="${this._handleNameInput}"
           required
         ></ui-labeled-input>
 
         <ui-labeled-input
           label="Page Route"
-          .value=${this.formData.route}
-          @input-change=${this._handleRouteInput}
+          .value="${this.formData.route}"
+          @input-change="${this._handleRouteInput}"
           required
         ></ui-labeled-input>
         <div class="hint">Example: /products/category</div>
 
         <div class="actions">
           <button
-            @click=${this._handleSubmit}
-            ?disabled=${this.isSubmitting || !this._isFormValid()}
+            @click="${this._handleSubmit}"
+            ?disabled="${this.isSubmitting || !this._isFormValid()}"
           >
             ${this.isSubmitting ? 'Saving...' : this.isEdit ? 'Update Page' : 'Create Page'}
           </button>

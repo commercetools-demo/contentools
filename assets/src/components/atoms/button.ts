@@ -153,8 +153,8 @@ export class Button extends LitElement {
     return html`
       <button
         class="button ${this.variant} ${this.size}"
-        ?disabled=${this.disabled}
-        type=${this.type}
+        ?disabled="${this.disabled}"
+        type="${this.type}"
       >
         <slot></slot>
       </button>

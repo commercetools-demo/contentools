@@ -126,16 +126,16 @@ export class ComponentLibrary extends LitElement {
   render() {
     if (this.loading) {
       return html`<div class="component-library">
-        <h2>Component Library</h2>
-        <div>Loading components...</div>
-      </div>`;
+          <h2>Component Library</h2>
+          <div>Loading components...</div>
+        </div>`;
     }
 
     if (this.error) {
       return html`<div class="component-library">
-        <h2>Component Library</h2>
-        <div class="error">${this.error}</div>
-      </div>`;
+          <h2>Component Library</h2>
+          <div class="error">${this.error}</div>
+        </div>`;
     }
 
     return html`
@@ -146,7 +146,7 @@ export class ComponentLibrary extends LitElement {
             type => html`
               <div
                 class="component-item cms-component-item"
-                data-component-type=${type.type}
+                data-component-type="${type.type}"
                 draggable="true"
               >
                 <div class="component-icon">${type.icon}</div>

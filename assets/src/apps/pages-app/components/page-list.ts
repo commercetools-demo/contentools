@@ -137,22 +137,22 @@ export class PageList extends connect(store)(LitElement) {
         ${this.error
           ? html`
               <ui-error-message
-                message=${this.error}
+                message="${this.error}"
                 dismissible
-                @dismiss=${() => (this.error = null)}
+                @dismiss="${() => (this.error = null)}"
               ></ui-error-message>
             `
           : ''}
 
         <div class="page-list-header">
           <h2>Pages</h2>
-          <ui-button variant="primary" @click=${this._handleCreatePage}>+ Create Page</ui-button>
+          <ui-button variant="primary" @click="${this._handleCreatePage}">+ Create Page</ui-button>
         </div>
 
         ${this.pages.length === 0
           ? html`<div class="no-pages">
-              No pages created yet. Click "Create Page" to get started.
-            </div>`
+                No pages created yet. Click "Create Page" to get started.
+              </div>`
           : html`
               <table>
                 <thead>
@@ -166,14 +166,16 @@ export class PageList extends connect(store)(LitElement) {
                 <tbody>
                   ${this.pages.map(
                     page => html`
-                      <tr class=${this.selectedPageKey === page.key ? 'selected' : ''}>
-                        <td class="clickable" @click=${() => this._handleSelectPage(page.key)}>
+                      <tr
+                        class="${this.selectedPageKey === page.key ? 'selected' : ''}"
+                      >
+                        <td class="clickable" @click="${() => this._handleSelectPage(page.key)}">
                           ${page.name}
                         </td>
-                        <td class="clickable" @click=${() => this._handleSelectPage(page.key)}>
+                        <td class="clickable" @click="${() => this._handleSelectPage(page.key)}">
                           ${page.route}
                         </td>
-                        <td class="clickable" @click=${() => this._handleSelectPage(page.key)}>
+                        <td class="clickable" @click="${() => this._handleSelectPage(page.key)}">
                           ${page.components.length}
                         </td>
                         <td>
@@ -181,13 +183,13 @@ export class PageList extends connect(store)(LitElement) {
                             <ui-button
                               variant="text"
                               size="small"
-                              @click=${() => this._handleEditPage(page.key)}
+                              @click="${() => this._handleEditPage(page.key)}"
                               >Edit</ui-button
                             >
                             <ui-button
                               variant="text"
                               size="small"
-                              @click=${(e: Event) => this._handleOpenDeleteConfirm(e, page.key)}
+                              @click="${(e: Event) => this._handleOpenDeleteConfirm(e, page.key)}"
                               >Delete</ui-button
                             >
 
@@ -201,13 +203,13 @@ export class PageList extends connect(store)(LitElement) {
                                       <ui-button
                                         variant="secondary"
                                         size="small"
-                                        @click=${this._handleCancelDelete}
+                                        @click="${this._handleCancelDelete}"
                                         >Cancel</ui-button
                                       >
                                       <ui-button
                                         variant="critical"
                                         size="small"
-                                        @click=${() => this._handleConfirmDelete(page.key)}
+                                        @click="${() => this._handleConfirmDelete(page.key)}"
                                         >Delete</ui-button
                                       >
                                     </div>

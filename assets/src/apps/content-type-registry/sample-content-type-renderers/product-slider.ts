@@ -228,16 +228,16 @@ export class ProductSlider extends LitElement {
               <div class="slider-controls">
                 <button
                   class="slider-arrow"
-                  @click=${this.prevSlide}
-                  ?disabled=${this.currentSlide === 0}
+                  @click="${this.prevSlide}"
+                  ?disabled="${this.currentSlide === 0}"
                 >
                   ←
                 </button>
                 <button
                   class="slider-arrow"
-                  @click=${this.nextSlide}
-                  ?disabled=${this.currentSlide >=
-                  Math.max(0, this.skus?.length - this.slidesToShow)}
+                  @click="${this.nextSlide}"
+                  ?disabled="${this.currentSlide >=
+                  Math.max(0, this.skus?.length - this.slidesToShow)}"
                 >
                   →
                 </button>

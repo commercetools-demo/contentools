@@ -150,9 +150,9 @@ export class CmsRenderer extends LitElement {
 
     return html`
       <grid-renderer
-        .rows=${this.page.layout.rows}
-        .components=${this.page.components}
-        .baseURL=${this.baseURL}
+        .rows="${this.page.layout.rows}"
+        .components="${this.page.components}"
+        .baseURL="${this.baseURL}"
       ></grid-renderer>
     `;
   }

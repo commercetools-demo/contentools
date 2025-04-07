@@ -21,8 +21,8 @@ export class RendererTab extends LitElement {
     return html`
       <ui-labeled-input
         label="Deployed URL"
-        .value=${this.deployedUrl}
-        @input-change=${(e: CustomEvent) => this._dispatchChange(e.detail.value)}
+        .value="${this.deployedUrl}"
+        @input-change="${(e: CustomEvent) => this._dispatchChange(e.detail.value)}"
       ></ui-labeled-input>
     `;
   }

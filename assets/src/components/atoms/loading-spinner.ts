@@ -77,7 +77,10 @@ export class LoadingSpinner extends LitElement {
 
   render() {
     return html`
-      <div class="spinner-container" style="${this.centered ? 'height: 100%; width: 100%;' : ''}">
+      <div
+        class="spinner-container"
+        style="${this.centered ? 'height: 100%; width: 100%;' : ''}"
+      >
         <div class="spinner ${this.size}" style="--spinner-color: ${this.color};"></div>
         ${this.label ? html`<span class="label">${this.label}</span>` : ''}
       </div>

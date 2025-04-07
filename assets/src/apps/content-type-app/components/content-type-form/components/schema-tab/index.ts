@@ -41,7 +41,7 @@ export class SchemaTab extends LitElement {
       <div class="form-row">
         <div class="form-row">
           <h3 class="section-header">Property Schema</h3>
-          <schema-builder .schemaObject=${this.propertySchema}></schema-builder>
+          <schema-builder .schemaObject="${this.propertySchema}"></schema-builder>
         </div>
       </div>
     `;

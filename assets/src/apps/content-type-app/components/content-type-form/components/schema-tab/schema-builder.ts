@@ -174,17 +174,17 @@ export class SchemaBuilder extends LitElement {
     return html`
       <div class="schema-builder">
         <div class="add-property">
-          <ui-button size="small" @click=${this._toggleTypeSelector}>Add Property</ui-button>
+          <ui-button size="small" @click="${this._toggleTypeSelector}">Add Property</ui-button>
         </div>
-        <ul class="schema-list" @dragover=${this._handleDragOver}>
+        <ul class="schema-list" @dragover="${this._handleDragOver}">
           ${propertyEntries.map(
             ([key, schema]) => html`
               <li
                 class="schema-item ${this._draggedItem === key ? 'dragging' : ''}"
                 draggable="true"
-                @dragstart=${(e: DragEvent) => this._handleDragStart(e, key)}
-                @dragend=${this._handleDragEnd}
-                @drop=${(e: DragEvent) => this._handleDrop(e, key)}
+                @dragstart="${(e: DragEvent) => this._handleDragStart(e, key)}"
+                @dragend="${this._handleDragEnd}"
+                @drop="${(e: DragEvent) => this._handleDrop(e, key)}"
               >
                 <div class="drag-handle">⋮⋮</div>
                 <div class="item-label">
@@ -192,8 +192,8 @@ export class SchemaBuilder extends LitElement {
                   <span class="type-badge">${schema.type}</span>
                 </div>
                 <div class="actions">
-                  <button class="edit-btn" @click=${() => this._editProperty(key)}>Edit</button>
-                  <button class="delete-btn" @click=${() => this._deleteProperty(key)}>
+                  <button class="edit-btn" @click="${() => this._editProperty(key)}">Edit</button>
+                  <button class="delete-btn" @click="${() => this._deleteProperty(key)}">
                     Delete
                   </button>
                 </div>
@@ -207,10 +207,10 @@ export class SchemaBuilder extends LitElement {
         ? html`
             <div class="edit-dialog">
               <schema-builder-item
-                .propertyKey=${this._editingProperty}
-                .propertySchema=${this.schemaObject[this._editingProperty]}
-                @save=${this._handlePropertySave}
-                @cancel=${this._closeEditDialog}
+                .propertyKey="${this._editingProperty}"
+                .propertySchema="${this.schemaObject[this._editingProperty]}"
+                @save="${this._handlePropertySave}"
+                @cancel="${this._closeEditDialog}"
               ></schema-builder-item>
             </div>
           `
@@ -221,7 +221,9 @@ export class SchemaBuilder extends LitElement {
               <div class="property-types">
                 ${this._propertyTypeOptions.map(
                   type => html`
-                    <ui-button @click=${() => this._addNewProperty(type.value)}>
+                    <ui-button
+                      @click="${() => this._addNewProperty(type.value)}"
+                    >
                       ${type.label}
                     </ui-button>
                   `

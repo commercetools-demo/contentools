@@ -61,10 +61,15 @@ export class Breadcrumbs extends LitElement {
       <div class="breadcrumbs">
         ${this.items.map(
           (item, index) => html`
-            ${index > 0 ? html`<span class="separator">${this.separator}</span>` : ''}
+            ${index > 0
+              ? html`<span class="separator">${this.separator}</span>`
+              : ''}
             ${item.path
               ? html`
-                  <span class="breadcrumb-item" @click=${() => this._handleItemClick(item)}>
+                  <span
+                    class="breadcrumb-item"
+                    @click="${() => this._handleItemClick(item)}"
+                  >
                     ${item.text}
                   </span>
                 `

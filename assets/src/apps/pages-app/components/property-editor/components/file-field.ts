@@ -104,24 +104,24 @@ export class FileField extends LitElement {
               id="${this.fieldKey}"
               class="file-input"
               ${ref(this.inputRef)}
-              accept=${this.extensions?.map(ext => `.${ext}`).join(',')}
-              @change=${(e: Event) => {
+              accept="${this.extensions?.map(ext => `.${ext}`).join(',')}"
+              @change="${(e: Event) => {
                 const input = e.target as HTMLInputElement;
                 if (input.files?.[0]) {
                   this.selectedFile = input.files[0];
                   this.requestUpdate();
                 }
-              }}
+              }}"
             />
-            <button class="browse-button" @click=${() => this.inputRef.value?.click()}>
+            <button class="browse-button" @click="${() => this.inputRef.value?.click()}">
               Browse
             </button>
             ${this.selectedFile
               ? html`
                   <button
                     class="upload-button"
-                    ?disabled=${this.uploading}
-                    @click=${() => this.handleFileUpload()}
+                    ?disabled="${this.uploading}"
+                    @click="${() => this.handleFileUpload()}"
                   >
                     ${this.uploading ? 'Uploading...' : 'Upload'}
                   </button>
@@ -132,9 +132,12 @@ export class FileField extends LitElement {
             ? html`
                 <div class="file-url">
                   ${isImage
-                    ? html` <img src=${this.value} alt="Preview" class="file-preview" /> `
+                    ? html` <img src="${this.value}" alt="Preview" class="file-preview" /> `
                     : html`
-                        <a href=${this.value} target="_blank" rel="noopener noreferrer"
+                        <a
+                          href="${this.value}"
+                          target="_blank"
+                          rel="noopener noreferrer"
                           >${this.value}</a
                         >
                       `}

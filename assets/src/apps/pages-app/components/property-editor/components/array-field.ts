@@ -76,14 +76,14 @@ export class ArrayField extends LitElement {
               <div class="array-item">
                 <input
                   type="text"
-                  .value=${item}
-                  @input=${(e: InputEvent) => this.handleItemChange(e, index)}
+                  .value="${item}"
+                  @input="${(e: InputEvent) => this.handleItemChange(e, index)}"
                 />
-                <button @click=${() => this.removeItem(index)}>✕</button>
+                <button @click="${() => this.removeItem(index)}">✕</button>
               </div>
             `
           )}
-          <button class="add-item" @click=${this.addItem}>+ Add Item</button>
+          <button class="add-item" @click="${this.addItem}">+ Add Item</button>
         </div>
       </div>
     `;

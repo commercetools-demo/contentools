@@ -51,10 +51,10 @@ class CMSWrapper extends connect(store)(LitElement) {
 
     return html`
       <cms-wrapper
-        .baseURL=${this.baseURL}
-        .businessUnitKey=${this.businessUnitKey}
-        .locale=${this.locale}
-        .availableLocales=${JSON.parse(this.availableLocales)}
+        .baseURL="${this.baseURL}"
+        .businessUnitKey="${this.businessUnitKey}"
+        .locale="${this.locale}"
+        .availableLocales="${JSON.parse(this.availableLocales)}"
       ></cms-wrapper>
     `;
   }
@@ -95,10 +95,10 @@ class CmsRendererElement extends LitElement {
   render() {
     return html`
       <cms-renderer
-        baseurl=${this.baseURL}
-        business-unit-key=${this.businessUnitKey}
-        route=${this.route}
-        key=${this.key}
+        baseurl="${this.baseURL}"
+        business-unit-key="${this.businessUnitKey}"
+        route="${this.route}"
+        key="${this.key}"
       ></cms-renderer>
     `;
   }

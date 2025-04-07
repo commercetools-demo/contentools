@@ -186,8 +186,8 @@ export class SchemaBuilderItem extends LitElement {
           <input
             type="text"
             class="form-input"
-            .value=${this._editedKey}
-            @input=${(e: InputEvent) => (this._editedKey = (e.target as HTMLInputElement).value)}
+            .value="${this._editedKey}"
+            @input="${(e: InputEvent) => (this._editedKey = (e.target as HTMLInputElement).value)}"
           />
           <div class="form-description">The unique identifier for this property</div>
         </div>
@@ -196,9 +196,9 @@ export class SchemaBuilderItem extends LitElement {
           <label class="form-label">Type</label>
           <select
             class="form-select"
-            .value=${this._editedSchema.type}
-            @change=${(e: Event) =>
-              this._handleTypeChange((e.target as HTMLSelectElement).value as any)}
+            .value="${this._editedSchema.type}"
+            @change="${(e: Event) =>
+              this._handleTypeChange((e.target as HTMLSelectElement).value as any)}"
           >
             <option value="string">Text</option>
             <option value="number">Number</option>
@@ -214,9 +214,9 @@ export class SchemaBuilderItem extends LitElement {
           <input
             type="text"
             class="form-input"
-            .value=${this._editedSchema.label}
-            @input=${(e: InputEvent) =>
-              this._updateSchemaProperty('label', (e.target as HTMLInputElement).value)}
+            .value="${this._editedSchema.label}"
+            @input="${(e: InputEvent) =>
+              this._updateSchemaProperty('label', (e.target as HTMLInputElement).value)}"
           />
           <div class="form-description">Display name for this property</div>
         </div>
@@ -226,9 +226,9 @@ export class SchemaBuilderItem extends LitElement {
             <input
               type="checkbox"
               class="form-checkbox"
-              ?checked=${!!this._editedSchema.required}
-              @change=${(e: Event) =>
-                this._updateSchemaProperty('required', (e.target as HTMLInputElement).checked)}
+              ?checked="${!!this._editedSchema.required}"
+              @change="${(e: Event) =>
+                this._updateSchemaProperty('required', (e.target as HTMLInputElement).checked)}"
             />
             Required
           </label>
@@ -245,8 +245,8 @@ export class SchemaBuilderItem extends LitElement {
         ${this._editedSchema.type === 'file' ? this._renderFileExtensions() : ''}
 
         <div class="button-row">
-          <button class="cancel-btn" @click=${this._cancel}>Cancel</button>
-          <button class="save-btn" @click=${this._save}>Save</button>
+          <button class="cancel-btn" @click="${this._cancel}">Cancel</button>
+          <button class="save-btn" @click="${this._save}">Save</button>
         </div>
       </div>
     `;
@@ -261,9 +261,9 @@ export class SchemaBuilderItem extends LitElement {
           <input
             type="text"
             class="form-input"
-            .value=${this._editedSchema.defaultValue || ''}
-            @input=${(e: InputEvent) =>
-              this._updateSchemaProperty('defaultValue', (e.target as HTMLInputElement).value)}
+            .value="${this._editedSchema.defaultValue || ''}"
+            @input="${(e: InputEvent) =>
+              this._updateSchemaProperty('defaultValue', (e.target as HTMLInputElement).value)}"
           />
         `;
 
@@ -272,12 +272,12 @@ export class SchemaBuilderItem extends LitElement {
           <input
             type="number"
             class="form-input"
-            .value=${this._editedSchema.defaultValue || 0}
-            @input=${(e: InputEvent) =>
+            .value="${this._editedSchema.defaultValue || 0}"
+            @input="${(e: InputEvent) =>
               this._updateSchemaProperty(
                 'defaultValue',
                 Number((e.target as HTMLInputElement).value)
-              )}
+              )}"
           />
         `;
 
@@ -285,12 +285,12 @@ export class SchemaBuilderItem extends LitElement {
         return html`
           <select
             class="form-select"
-            .value=${String(!!this._editedSchema.defaultValue)}
-            @change=${(e: Event) =>
+            .value="${String(!!this._editedSchema.defaultValue)}"
+            @change="${(e: Event) =>
               this._updateSchemaProperty(
                 'defaultValue',
                 (e.target as HTMLSelectElement).value === 'true'
-              )}
+              )}"
           >
             <option value="false">False</option>
             <option value="true">True</option>
@@ -303,12 +303,12 @@ export class SchemaBuilderItem extends LitElement {
           <textarea
             class="form-input"
             rows="3"
-            .value=${JSON.stringify(
+            .value="${JSON.stringify(
               this._editedSchema.defaultValue || (type === 'array' ? [] : {}),
               null,
               2
-            )}
-            @input=${(e: InputEvent) => this._handleJsonInput(e, 'defaultValue')}
+            )}"
+            @input="${(e: InputEvent) => this._handleJsonInput(e, 'defaultValue')}"
           ></textarea>
         `;
 
@@ -336,25 +336,25 @@ export class SchemaBuilderItem extends LitElement {
                   type="text"
                   class="option-input"
                   placeholder="Value"
-                  .value=${option.value}
-                  @input=${(e: InputEvent) =>
-                    this._updateOption(index, 'value', (e.target as HTMLInputElement).value)}
+                  .value="${option.value}"
+                  @input="${(e: InputEvent) =>
+                    this._updateOption(index, 'value', (e.target as HTMLInputElement).value)}"
                 />
                 <input
                   type="text"
                   class="option-input"
                   placeholder="Label"
-                  .value=${option.label}
-                  @input=${(e: InputEvent) =>
-                    this._updateOption(index, 'label', (e.target as HTMLInputElement).value)}
+                  .value="${option.label}"
+                  @input="${(e: InputEvent) =>
+                    this._updateOption(index, 'label', (e.target as HTMLInputElement).value)}"
                 />
-                <button class="option-remove" @click=${() => this._removeOption(index)}>✕</button>
+                <button class="option-remove" @click="${() => this._removeOption(index)}">✕</button>
               </div>
             `
           )}
         </div>
 
-        <button class="add-option" @click=${this._addOption}>+ Add Option</button>
+        <button class="add-option" @click="${this._addOption}">+ Add Option</button>
       </div>
     `;
   }
@@ -367,8 +367,8 @@ export class SchemaBuilderItem extends LitElement {
           type="text"
           class="form-input"
           placeholder="e.g. jpg, png, pdf (comma separated)"
-          .value=${(this._editedSchema.extensions || []).join(', ')}
-          @input=${this._handleExtensionsInput}
+          .value="${(this._editedSchema.extensions || []).join(', ')}"
+          @input="${this._handleExtensionsInput}"
         />
         <div class="form-description">Comma-separated list of allowed file extensions</div>
       </div>

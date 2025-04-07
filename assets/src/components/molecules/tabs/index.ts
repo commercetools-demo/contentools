@@ -99,9 +99,9 @@ export class Tabs extends LitElement {
             tab => html`
               <button
                 class="tab-button"
-                ?active=${this._effectiveSelectedTab === tab.key}
-                ?disabled=${tab.disabled}
-                @click=${() => this._selectTab(tab.key)}
+                ?active="${this._effectiveSelectedTab === tab.key}"
+                ?disabled="${tab.disabled}"
+                @click="${() => this._selectTab(tab.key)}"
               >
                 ${tab.label}
               </button>
