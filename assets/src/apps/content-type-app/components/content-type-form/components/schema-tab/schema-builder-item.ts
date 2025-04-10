@@ -1,9 +1,11 @@
 import { LitElement, html, css } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
-import { PropertySchema } from '../../../../../../types';
+import { customElement, property, state } from 'lit/decorators.js';
+import { connect, watch } from 'lit-redux-watch';
+import { store } from '../../../../../../store';
+import { PropertySchema, RootState, DatasourceInfo } from '../../../../../../types';
 
 @customElement('schema-builder-item')
-export class SchemaBuilderItem extends LitElement {
+export class SchemaBuilderItem extends connect(store)(LitElement) {
   @property({ type: String }) propertyKey = '';
   @property({ type: Object }) propertySchema: PropertySchema = {
     type: 'string',
@@ -16,6 +18,12 @@ export class SchemaBuilderItem extends LitElement {
     type: 'string',
     label: '',
   };
+
+  @state()
+  private loading = false;
+
+  @watch('contentType')
+  private contentType: any;
 
   static styles = css`
     :host {
@@ -160,6 +168,12 @@ export class SchemaBuilderItem extends LitElement {
     .save-btn:hover {
       background-color: #0055aa;
     }
+
+    .loading {
+      font-style: italic;
+      color: #666;
+      margin: 10px 0;
+    }
   `;
 
   connectedCallback() {
@@ -206,8 +220,11 @@ export class SchemaBuilderItem extends LitElement {
             <option value="array">Array</option>
             <option value="object">Object</option>
             <option value="file">File</option>
+            <option value="datasource">Datasource</option>
           </select>
         </div>
+
+        ${this._editedSchema.type === 'datasource' ? this._renderDatasourceTypeSection() : ''}
 
         <div class="form-row">
           <label class="form-label">Label</label>
@@ -248,6 +265,30 @@ export class SchemaBuilderItem extends LitElement {
           <button class="cancel-btn" @click="${this._cancel}">Cancel</button>
           <button class="save-btn" @click="${this._save}">Save</button>
         </div>
+      </div>
+    `;
+  }
+
+  private _renderDatasourceTypeSection() {
+    if (this.loading) {
+      return html`<div class="loading">Loading available datasources...</div>`;
+    }
+
+    return html`
+      <div class="form-row">
+        <label class="form-label">Datasource Type</label>
+        <select
+          class="form-select"
+          .value="${this._editedSchema.datasourceType || ''}"
+          @change="${(e: Event) =>
+            this._updateSchemaProperty('datasourceType', (e.target as HTMLSelectElement).value)}"
+        >
+          <option value="">Select a datasource...</option>
+          ${this.contentType.availableDatasources.map(
+            (ds: DatasourceInfo) => html`<option value="${ds.key}">${ds.name}</option>`
+          )}
+        </select>
+        <div class="form-description">Select the datasource to use</div>
       </div>
     `;
   }
@@ -313,7 +354,8 @@ export class SchemaBuilderItem extends LitElement {
         `;
 
       case 'file':
-        return html`<div>File properties do not support default values</div>`;
+      case 'datasource':
+        return html`<div>This property type does not support default values</div>`;
 
       default:
         return html`<input type="text" class="form-input" disabled />`;
@@ -409,6 +451,13 @@ export class SchemaBuilderItem extends LitElement {
       delete updatedSchema.options;
     }
 
+    // Handle datasource type
+    if (newType === 'datasource') {
+      updatedSchema.datasourceType = '';
+    } else {
+      delete updatedSchema.datasourceType;
+    }
+
     // Update the schema
     this._editedSchema = updatedSchema;
     this.requestUpdate();
@@ -427,6 +476,7 @@ export class SchemaBuilderItem extends LitElement {
       case 'object':
         return {};
       case 'file':
+      case 'datasource':
         return null;
       default:
         return null;
@@ -489,6 +539,12 @@ export class SchemaBuilderItem extends LitElement {
     // Validate that label is not empty
     if (!this._editedSchema.label.trim()) {
       alert('Property label cannot be empty');
+      return;
+    }
+
+    // Validate that a datasource type is selected if the type is datasource
+    if (this._editedSchema.type === 'datasource' && !this._editedSchema.datasourceType) {
+      alert('Please select a datasource type');
       return;
     }
 

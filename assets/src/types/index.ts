@@ -48,13 +48,14 @@ export interface EditorState {
 }
 
 export interface PropertySchema {
-  type: 'string' | 'number' | 'boolean' | 'array' | 'object' | 'file';
+  type: 'string' | 'number' | 'boolean' | 'array' | 'object' | 'file' | 'datasource';
   label: string;
   defaultValue?: any;
   required?: boolean;
   options?: { value: any; label: string }[];
   extensions?: string[];
   order?: number;
+  datasourceType?: string;
 }
 
 export interface ContentTypeMetaData {
@@ -75,6 +76,7 @@ export interface ContentTypeState {
   contentTypes: ContentTypeData[];
   loading: boolean;
   error: string | null;
+  availableDatasources: DatasourceInfo[];
 }
 
 export interface RootState {
@@ -88,4 +90,17 @@ export interface ApiResponse<T> {
   key: string;
   value: T;
   version: number;
+}
+
+export interface DatasourceInfo {
+  name: string;
+  key: string;
+  params: DatasourceParam[];
+  deployedUrl: string;
+}
+
+export interface DatasourceParam {
+  key: string;
+  type: string;
+  required: boolean;
 }

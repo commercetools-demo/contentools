@@ -9,6 +9,12 @@ export class ContentItemList extends LitElement {
   @property({ type: Array })
   items: ContentItem[] = [];
 
+  @property({ type: String })
+  baseURL: string = '';
+
+  @property({ type: String })
+  businessUnitKey: string = '';
+
   @property({ type: Boolean })
   loading = false;
 
@@ -96,6 +102,9 @@ export class ContentItemList extends LitElement {
                     <ui-button variant="icon" size="small" @click="${() => this.handleCopy(item)}">
                       <span style="font-size: 8px;">📋</span>
                     </ui-button>
+                    <ui-button variant="icon" size="small" @click="${() => this.handleJson(item)}">
+                      <span style="font-size: 8px;">↗︎</span>
+                    </ui-button>
                   </div>
                 `,
               ],
@@ -110,5 +119,10 @@ export class ContentItemList extends LitElement {
   handleCopy(item: ContentItem) {
     navigator.clipboard.writeText(item.key);
     alert('Item ID copied to clipboard');
+  }
+
+  handleJson(item: ContentItem) {
+    // open new tab
+    window.open(`${this.baseURL}/${this.businessUnitKey}/content-items/${item.key}`, '_blank');
   }
 }

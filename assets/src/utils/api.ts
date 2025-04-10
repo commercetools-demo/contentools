@@ -206,3 +206,28 @@ export async function deleteContentItemEndpoint(baseURL: string, key: string): P
     throw new Error(`API request failed: ${response.status} ${response.statusText}`);
   }
 }
+
+/**
+ * Fetch available datasources
+ */
+export async function getAvailableDatasourcesEndpoint<T>(
+  baseURL: string
+): Promise<ApiResponse<T>[]> {
+  const response = await fetch(`${baseURL}/datasource`);
+
+  if (!response.ok) {
+    throw new Error(`API request failed: ${response.status} ${response.statusText}`);
+  }
+
+  return response.json();
+}
+
+/**
+ * Fetch a specific datasource by key
+ */
+export async function getDatasourceByKeyEndpoint<T>(
+  baseURL: string,
+  key: string
+): Promise<ApiResponse<T>> {
+  return fetchApi<T>(`${baseURL}/datasource/${key}`);
+}

@@ -12,6 +12,7 @@ import './components/boolean-field';
 import './components/array-field';
 import './components/file-field';
 import './components/wysiwyg-field';
+import './components/datasource-field';
 import '../../../../components/atoms/button';
 import '../../../../components/atoms/labeled-input';
 @customElement('cms-property-editor')
@@ -266,6 +267,17 @@ export class PropertyEditor extends connect(store)(LitElement) {
                   fieldKey="${key}"
                   .baseURL="${this.baseURL}"
                   .extensions="${field.extensions || []}"
+                  @field-change="${this.handleFieldChange}"
+                />
+              `;
+            case 'datasource':
+              return html`
+                <cms-datasource-field
+                  label="${field.label}"
+                  .value="${value || {}}"
+                  fieldKey="${key}"
+                  datasourceType="${field.datasourceType}"
+                  .baseURL="${this.baseURL}"
                   @field-change="${this.handleFieldChange}"
                 />
               `;

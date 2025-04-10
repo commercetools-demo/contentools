@@ -139,14 +139,13 @@ export class ContentItemApp extends connect(store)(LitElement) {
             })
           );
 
-        this.view = 'list';
+          this.view = 'list';
         } else {
           await store.dispatch(
             updateContentItem({ baseURL: this.hydratedUrl, key: component.key, item: component })
           );
         }
         store.dispatch(fetchContentItems(this.hydratedUrl));
-        
       }
     } else {
       console.error('No item to save');
@@ -201,6 +200,8 @@ export class ContentItemApp extends connect(store)(LitElement) {
       <div>
         <content-item-list
           .items="${this.items}"
+          .baseURL="${this.baseURL}"
+          .businessUnitKey="${this.businessUnitKey}"
           .loading="${this.loading}"
           .error="${this.error}"
           @create-new="${() => {

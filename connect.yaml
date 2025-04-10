@@ -21,6 +21,10 @@ deployAs:
           description: The container to use for the content item
           required: false
           default: content-item
+        - key: DATASOURCE_CONTAINER
+          description: The container to use for the datasource
+          required: false
+          default: datasource
         - key: AWS_ACCESS_KEY_ID
           description: AWS Access Key ID (only used if STORAGE_TYPE is aws)
           required: false

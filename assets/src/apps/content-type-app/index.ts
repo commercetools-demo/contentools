@@ -82,6 +82,7 @@ export class ContentTypeApp extends connect(store)(LitElement) {
               <content-type-form
                 .contentType="${this.selectedContentType || this.newContentType}"
                 .isEdit="${!!this.selectedContentType}"
+                .baseURL="${this.baseURL}"
                 @content-type-change="${this._handleContentTypeChange}"
                 @cancel="${this._cancelForm}"
                 @save="${this._saveContentType}"

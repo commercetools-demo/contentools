@@ -159,6 +159,7 @@ export class SchemaBuilder extends LitElement {
     { value: 'array', label: 'Array' },
     { value: 'object', label: 'Object' },
     { value: 'file', label: 'File' },
+    { value: 'datasource', label: 'Datasource' },
   ];
 
   private _editingProperty: string | null = null;

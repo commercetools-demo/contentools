@@ -1,5 +1,7 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
+import { connect } from 'lit-redux-watch';
+import { store } from '../../../../store';
 import '../../../../components/atoms/button';
 import './components/general-tab';
 import './components/schema-tab';
@@ -8,10 +10,12 @@ import { ContentTypeData } from '../../../../types';
 import { TabItem } from '../../../../components/molecules/tabs';
 import '../../../../components/molecules/tabs';
 import '../../../../components/molecules/tabs/tab-content';
+import { fetchAvailableDatasourcesThunk } from '../../../../store/content-type.slice';
+
 type TabKey = 'general' | 'schema' | 'renderer';
 
 @customElement('content-type-form')
-export default class ContentTypeForm extends LitElement {
+export default class ContentTypeForm extends connect(store)(LitElement) {
   @property({ type: Object })
   contentType: ContentTypeData = {
     metadata: {
@@ -26,6 +30,9 @@ export default class ContentTypeForm extends LitElement {
 
   @property({ type: Boolean })
   isEdit = false;
+
+  @property({ type: String })
+  baseURL = '';
 
   @state()
   private _selectedTab: TabKey = 'general';
@@ -84,6 +91,18 @@ export default class ContentTypeForm extends LitElement {
       padding: 0 10px;
     }
   `;
+
+  connectedCallback() {
+    super.connectedCallback();
+    // Fetch available datasources for schema building
+    if (this.baseURL) {
+      store.dispatch(
+        fetchAvailableDatasourcesThunk({
+          baseURL: this.baseURL,
+        })
+      );
+    }
+  }
 
   firstUpdated() {
     // Store the original content type when component is first initialized

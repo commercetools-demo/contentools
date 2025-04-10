@@ -30,7 +30,7 @@ export class ContentItemEditor extends LitElement {
       flex-direction: row;
       gap: 10px;
     }
-    
+
     .content-item-edit-editor {
       flex-basis: 50%;
     }

@@ -4,13 +4,16 @@ import {
   createContentTypeEndpoint,
   updateContentTypeEndpoint,
   deleteContentTypeEndpoint,
+  getAvailableDatasourcesEndpoint,
+  getDatasourceByKeyEndpoint,
 } from '../utils/api';
-import { ContentTypeState, ContentTypeData } from '../types';
+import { ContentTypeState, ContentTypeData, DatasourceInfo } from '../types';
 
 const initialState: ContentTypeState = {
   contentTypes: [],
   loading: false,
   error: null,
+  availableDatasources: [],
 };
 
 // Thunks
@@ -20,6 +23,30 @@ export const fetchContentTypesThunk = createAsyncThunk(
     try {
       const response = await fetchContentTypesEndpoint<ContentTypeData>(baseURL);
       return response.map(item => item.value);
+    } catch (error) {
+      return rejectWithValue((error as Error).message);
+    }
+  }
+);
+
+export const fetchAvailableDatasourcesThunk = createAsyncThunk(
+  'content-type/fetchAvailableDatasources',
+  async ({ baseURL }: { baseURL: string }, { rejectWithValue }) => {
+    try {
+      const response = await getAvailableDatasourcesEndpoint<DatasourceInfo>(baseURL);
+      return response.map(item => item.value as DatasourceInfo);
+    } catch (error) {
+      return rejectWithValue((error as Error).message);
+    }
+  }
+);
+
+export const fetchDatasourceByKeyThunk = createAsyncThunk(
+  'content-type/fetchDatasourceByKey',
+  async ({ baseURL, key }: { baseURL: string; key: string }, { rejectWithValue }) => {
+    try {
+      const response = await getDatasourceByKeyEndpoint<DatasourceInfo>(baseURL, key);
+      return response.value;
     } catch (error) {
       return rejectWithValue((error as Error).message);
     }
@@ -89,6 +116,20 @@ const contentTypeSlice = createSlice({
         state.loading = false;
       })
       .addCase(fetchContentTypesThunk.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+
+      // Fetch available datasources
+      .addCase(fetchAvailableDatasourcesThunk.pending, state => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchAvailableDatasourcesThunk.fulfilled, (state, action) => {
+        state.availableDatasources = action.payload;
+        state.loading = false;
+      })
+      .addCase(fetchAvailableDatasourcesThunk.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })
