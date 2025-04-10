@@ -45,7 +45,12 @@ contentTypeRouter.post('/content-type/:key', async (req, res, next) => {
           .status(400)
           .json({ error: 'content-type object with key already exists' });
       }
-    } catch (error) {}
+    } catch (error) {
+      logger.error(
+        `Failed to get content-type object with key ${req.params.key}:`,
+        error
+      );
+    }
     const { value } = req.body;
     const object = await contentTypeController.createCustomObject(key, value);
     res.status(201).json(object);

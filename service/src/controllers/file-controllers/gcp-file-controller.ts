@@ -17,7 +17,7 @@ export class GCPFileController implements FileController {
     });
   }
 
-  async uploadFile(file: Express.Multer.File): Promise<string> {
+  async uploadFile(file: any): Promise<string> {
     try {
       const bucket = this.storage.bucket(this.bucket);
       const blob = bucket.file(`uploads/${Date.now()}-${file.originalname}`);

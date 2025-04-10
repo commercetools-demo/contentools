@@ -8,8 +8,7 @@ export const resolveDatasource = async (
   try {
     switch (datasourceKey) {
       case 'product-by-sku':
-        const product = await getProductBySkuController(params.sku as string);
-        return product;
+        return getProductBySkuController(params.sku);
     }
   } catch (error) {
     logger.error('Failed to resolve datasource:', error);

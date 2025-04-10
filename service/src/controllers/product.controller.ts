@@ -20,7 +20,7 @@ export const getProductBySkuController = async (sku: string) => {
     });
     return product.results?.[0]?.productProjection;
   } catch (error) {
-    console.error('Controller error fetching product by SKU:', error);
+    logger.error('Controller error fetching product by SKU:', error);
     throw error;
   }
 };

@@ -22,7 +22,7 @@ export const searchProducts = async (
 
     return response.body;
   } catch (error) {
-    console.error('Error searching products:', error);
+    logger.error('Error searching products:', error);
     throw error;
   }
 };

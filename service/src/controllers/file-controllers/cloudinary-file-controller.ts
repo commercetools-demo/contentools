@@ -11,7 +11,7 @@ export class CloudinaryFileController implements FileController {
     });
   }
 
-  async uploadFile(file: Express.Multer.File): Promise<string> {
+  async uploadFile(file: any): Promise<string> {
     try {
       // Convert buffer to base64
       const base64File = file.buffer.toString('base64');

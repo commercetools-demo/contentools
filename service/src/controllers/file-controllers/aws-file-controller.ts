@@ -17,7 +17,7 @@ export class AWSFileController implements FileController {
     });
   }
 
-  async uploadFile(file: Express.Multer.File): Promise<string> {
+  async uploadFile(file: any): Promise<string> {
     try {
       const key = `uploads/${Date.now()}-${file.originalname}`;
 
