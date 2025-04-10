@@ -21,7 +21,7 @@ export class GCPFileController implements FileController {
     try {
       const bucket = this.storage.bucket(this.bucket);
       const blob = bucket.file(`uploads/${Date.now()}-${file.originalname}`);
-      
+
       await blob.save(file.buffer, {
         contentType: file.mimetype,
         public: true,

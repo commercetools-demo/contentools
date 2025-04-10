@@ -20,7 +20,7 @@ export class AWSFileController implements FileController {
   async uploadFile(file: Express.Multer.File): Promise<string> {
     try {
       const key = `uploads/${Date.now()}-${file.originalname}`;
-      
+
       const command = new PutObjectCommand({
         Bucket: this.bucket,
         Key: key,
@@ -29,7 +29,7 @@ export class AWSFileController implements FileController {
       });
 
       await this.s3Client.send(command);
-      
+
       // Return the public URL of the uploaded file
       return `https://${this.bucket}.s3.${process.env.AWS_REGION}.amazonaws.com/${key}`;
     } catch (error) {

@@ -23,7 +23,10 @@ datasourceRouter.get('/datasource/:key', async (req, res, next) => {
     const object = await datasourceController.getCustomObject(key);
     res.json(object);
   } catch (error) {
-    logger.error(`Failed to get datasource object with key ${req.params.key}:`, error);
+    logger.error(
+      `Failed to get datasource object with key ${req.params.key}:`,
+      error
+    );
     next(error);
   }
 });
@@ -35,7 +38,9 @@ datasourceRouter.post('/datasource/:key', async (req, res, next) => {
     try {
       const objectExists = await datasourceController.getCustomObject(key);
       if (objectExists) {
-        return res.status(400).json({ error: 'datasource object with key already exists' });
+        return res
+          .status(400)
+          .json({ error: 'datasource object with key already exists' });
       }
     } catch (error) {
       // Key doesn't exist, continue with creation
@@ -44,7 +49,10 @@ datasourceRouter.post('/datasource/:key', async (req, res, next) => {
     const object = await datasourceController.createCustomObject(key, value);
     res.status(201).json(object);
   } catch (error) {
-    logger.error(`Failed to create datasource object with key ${req.params.key}:`, error);
+    logger.error(
+      `Failed to create datasource object with key ${req.params.key}:`,
+      error
+    );
     next(error);
   }
 });
@@ -56,7 +64,10 @@ datasourceRouter.put('/datasource/:key', async (req, res, next) => {
     const object = await datasourceController.updateCustomObject(key, value);
     res.json(object);
   } catch (error) {
-    logger.error(`Failed to update datasource object with key ${req.params.key}:`, error);
+    logger.error(
+      `Failed to update datasource object with key ${req.params.key}:`,
+      error
+    );
     next(error);
   }
 });
@@ -67,9 +78,12 @@ datasourceRouter.delete('/datasource/:key', async (req, res, next) => {
     await datasourceController.deleteCustomObject(key);
     res.status(204).send();
   } catch (error) {
-    logger.error(`Failed to delete datasource object with key ${req.params.key}:`, error);
+    logger.error(
+      `Failed to delete datasource object with key ${req.params.key}:`,
+      error
+    );
     next(error);
   }
 });
 
-export default datasourceRouter; 
+export default datasourceRouter;
