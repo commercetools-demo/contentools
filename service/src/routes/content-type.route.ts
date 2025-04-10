@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { logger } from '../utils/logger.utils';
 import { CustomObjectController } from '../controllers/custom-object.controller';
 
-const CONTENT_TYPE_CONTAINER =
+export const CONTENT_TYPE_CONTAINER =
   process.env.CONTENT_TYPE_CONTAINER || 'content-type';
 
 const contentTypeController = new CustomObjectController(
