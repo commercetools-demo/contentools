@@ -72,13 +72,20 @@ export class ComponentRenderer extends LitElement {
       return true; // Script already loaded
     }
 
+    // Create a proxy URL for external scripts to avoid CORS issues
+    const proxyUrl = url.startsWith('http') 
+      ? `${this.baseURL}/proxy-script?url=${encodeURIComponent(url)}`
+      : url;
+
+    console.log('proxyUrl', proxyUrl);
+
     return new Promise(resolve => {
       const script = document.createElement('script');
       script.type = 'module';
-      script.src = url;
+      script.src = proxyUrl;
 
       script.onload = () => {
-        ComponentRenderer.loadedScripts.add(url);
+        // ComponentRenderer.loadedScripts.add(url); // Store original URL in the Set
         resolve(true);
       };
 

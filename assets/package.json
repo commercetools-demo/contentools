@@ -18,11 +18,14 @@
     "vite": "^6.2.0"
   },
   "dependencies": {
+    "@codemirror/lang-javascript": "^6.2.3",
+    "@codemirror/theme-one-dark": "^6.1.2",
     "@commercetools/platform-sdk": "^4.0.0",
     "@commercetools/sdk-client-v2": "^2.0.0",
     "@reduxjs/toolkit": "^2.6.0",
     "@types/sortablejs": "^1.15.8",
     "@types/uuid": "^10.0.0",
+    "codemirror": "^6.0.1",
     "dotenv": "^16.0.3",
     "lit": "^3.2.1",
     "lit-redux-watch": "^0.3.8",

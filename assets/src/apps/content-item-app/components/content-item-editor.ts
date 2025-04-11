@@ -6,6 +6,8 @@ import { customElement, property } from 'lit/decorators.js';
 import '../../../components/atoms/button';
 import { ContentItem } from '../../../types';
 import '../../../apps/cms-renderer/component-renderer';
+import '../content-item-preview';
+
 @customElement('content-item-editor')
 export class ContentItemEditor extends LitElement {
   @property({ type: Object })
@@ -81,12 +83,11 @@ export class ContentItemEditor extends LitElement {
                 >
                 </cms-property-editor>
                 <div class="content-item-edit-preview">
-                  <h3>Preview</h3>
-                  <component-renderer
+                  <content-item-preview
+                    .contentItemKey="${this.item.key}"
                     .baseURL="${this.baseURL}"
                     .businessUnitKey="${this.businessUnitKey}"
-                    .component="${this.item}"
-                  ></component-renderer>
+                  ></content-item-preview>
                 </div>
               </div>
           `}

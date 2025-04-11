@@ -4,7 +4,7 @@ import { GCPFileController } from './file-controllers/gcp-file-controller';
 import { CloudinaryFileController } from './file-controllers/cloudinary-file-controller';
 
 export interface FileController {
-  uploadFile(file: Express.Multer.File): Promise<string>;
+  uploadFile(file: Express.Multer.File, path?: string): Promise<string>;
 }
 
 export class FileControllerFactory {
