@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Router, RequestHandler } from 'express';
 import { logger } from '../utils/logger.utils';
 import { CustomObjectController } from '../controllers/custom-object.controller';
 
@@ -33,7 +33,7 @@ pagesRouter.get('/:businessUnitKey/pages/:key', async (req, res, next) => {
   }
 });
 
-pagesRouter.post('/:businessUnitKey/pages/:key', async (req, res, next) => {
+pagesRouter.post('/:businessUnitKey/pages/:key', (async (req, res, next) => {
   try {
     const { businessUnitKey, key } = req.params;
     const { value } = req.body;
@@ -56,9 +56,9 @@ pagesRouter.post('/:businessUnitKey/pages/:key', async (req, res, next) => {
     );
     next(error);
   }
-});
+}) as RequestHandler);
 
-pagesRouter.put('/:businessUnitKey/pages/:key', async (req, res, next) => {
+pagesRouter.put('/:businessUnitKey/pages/:key', (async (req, res, next) => {
   try {
     const { businessUnitKey, key } = req.params;
     const { value } = req.body;
@@ -81,7 +81,7 @@ pagesRouter.put('/:businessUnitKey/pages/:key', async (req, res, next) => {
     );
     next(error);
   }
-});
+}) as RequestHandler);
 
 pagesRouter.delete('/:businessUnitKey/pages/:key', async (req, res, next) => {
   try {

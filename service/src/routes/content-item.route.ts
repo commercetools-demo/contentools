@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Router, Request, Response, NextFunction, RequestHandler } from 'express';
 import { logger } from '../utils/logger.utils';
 import { CustomObjectController } from '../controllers/custom-object.controller';
 import { ContentItemController } from '../controllers/content-item.controller';
@@ -12,7 +12,7 @@ const businessUnitController = new CustomObjectController(
 
 contentItemRouter.get(
   '/:businessUnitKey/content-items',
-  async (req, res, next) => {
+  async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { businessUnitKey } = req.params;
       const objects = await businessUnitController.getCustomObjects(
@@ -48,7 +48,7 @@ contentItemRouter.get(
 
 contentItemRouter.post(
   '/:businessUnitKey/content-items/:key',
-  async (req, res, next) => {
+  (async (req, res, next) => {
     try {
       const { businessUnitKey, key } = req.params;
       const { value } = req.body;
@@ -71,12 +71,12 @@ contentItemRouter.post(
       );
       next(error);
     }
-  }
+  }) as RequestHandler
 );
 
 contentItemRouter.put(
   '/:businessUnitKey/content-items/:key',
-  async (req, res, next) => {
+  (async (req, res, next) => {
     try {
       const { businessUnitKey, key } = req.params;
       const { value } = req.body;
@@ -99,7 +99,7 @@ contentItemRouter.put(
       );
       next(error);
     }
-  }
+  }) as RequestHandler
 );
 
 contentItemRouter.delete(

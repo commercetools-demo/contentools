@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Router, RequestHandler } from 'express';
 import { logger } from '../utils/logger.utils';
 import { CustomObjectController } from '../controllers/custom-object.controller';
 
@@ -34,7 +34,7 @@ contentTypeRouter.get('/content-type/:key', async (req, res, next) => {
   }
 });
 
-contentTypeRouter.post('/content-type/:key', async (req, res, next) => {
+contentTypeRouter.post('/content-type/:key', (async (req, res, next) => {
   try {
     // return error if key exists
     const { key } = req.params;
@@ -61,7 +61,7 @@ contentTypeRouter.post('/content-type/:key', async (req, res, next) => {
     );
     next(error);
   }
-});
+}) as RequestHandler);
 
 contentTypeRouter.put('/content-type/:key', async (req, res, next) => {
   try {

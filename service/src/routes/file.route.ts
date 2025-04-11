@@ -1,7 +1,7 @@
 import { logger } from '../utils/logger.utils';
 import multer from 'multer';
 import { FileControllerFactory } from '../controllers/file-controller';
-import { Router } from 'express';
+import { Router, RequestHandler } from 'express';
 
 const fileRouter = Router();
 
@@ -11,7 +11,7 @@ const fileController = FileControllerFactory.createFileController();
 fileRouter.post(
   '/upload-image',
   upload.single('file') as any,
-  async (req, res, next) => {
+  (async (req, res, next) => {
     try {
       if (!req.file) {
         return res.status(400).json({ error: 'No file uploaded' });
@@ -23,7 +23,7 @@ fileRouter.post(
       logger.error('Failed to upload file:', error);
       next(error);
     }
-  }
+  }) as RequestHandler
 );
 
 export default fileRouter;

@@ -2,7 +2,8 @@ import { LitElement, html, css } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { connect, watch } from 'lit-redux-watch';
 import { store } from '../../../../../../store';
-import { PropertySchema, RootState, DatasourceInfo } from '../../../../../../types';
+import { PropertySchema, DatasourceInfo } from '../../../../../../types';
+import '../../../../../../components/atoms/select';
 
 @customElement('schema-builder-item')
 export class SchemaBuilderItem extends connect(store)(LitElement) {
@@ -274,20 +275,23 @@ export class SchemaBuilderItem extends connect(store)(LitElement) {
       return html`<div class="loading">Loading available datasources...</div>`;
     }
 
+    const options = [
+      { value: '', label: 'Select a datasource...' },
+      ...(this.contentType?.availableDatasources?.map((ds: DatasourceInfo) => ({
+        value: ds.key,
+        label: ds.name,
+      })) || []),
+    ];
+
     return html`
       <div class="form-row">
-        <label class="form-label">Datasource Type</label>
-        <select
-          class="form-select"
+        <ui-select
+          label="Datasource Type"
           .value="${this._editedSchema.datasourceType || ''}"
-          @change="${(e: Event) =>
-            this._updateSchemaProperty('datasourceType', (e.target as HTMLSelectElement).value)}"
-        >
-          <option value="">Select a datasource...</option>
-          ${this.contentType.availableDatasources.map(
-            (ds: DatasourceInfo) => html`<option value="${ds.key}">${ds.name}</option>`
-          )}
-        </select>
+          .options="${options}"
+          @change="${(e: CustomEvent) =>
+            this._updateSchemaProperty('datasourceType', e.detail.value)}"
+        ></ui-select>
         <div class="form-description">Select the datasource to use</div>
       </div>
     `;
@@ -522,7 +526,7 @@ export class SchemaBuilderItem extends connect(store)(LitElement) {
 
   private _cancel() {
     this.dispatchEvent(
-      new CustomEvent('cancel', {
+      new CustomEvent('cancel-schema-builder-item', {
         bubbles: true,
         composed: true,
       })
@@ -549,7 +553,7 @@ export class SchemaBuilderItem extends connect(store)(LitElement) {
     }
 
     this.dispatchEvent(
-      new CustomEvent('save', {
+      new CustomEvent('save-schema-builder-item', {
         detail: {
           key: this._editedKey,
           schema: this._editedSchema,

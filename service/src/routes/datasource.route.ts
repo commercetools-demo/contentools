@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Router, RequestHandler } from 'express';
 import { logger } from '../utils/logger.utils';
 import { CustomObjectController } from '../controllers/custom-object.controller';
 
@@ -31,7 +31,7 @@ datasourceRouter.get('/datasource/:key', async (req, res, next) => {
   }
 });
 
-datasourceRouter.post('/datasource/:key', async (req, res, next) => {
+datasourceRouter.post('/datasource/:key', (async (req, res, next) => {
   try {
     // return error if key exists
     const { key } = req.params;
@@ -55,7 +55,7 @@ datasourceRouter.post('/datasource/:key', async (req, res, next) => {
     );
     next(error);
   }
-});
+}) as RequestHandler);
 
 datasourceRouter.put('/datasource/:key', async (req, res, next) => {
   try {

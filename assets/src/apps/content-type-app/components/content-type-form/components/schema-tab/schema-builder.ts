@@ -210,8 +210,8 @@ export class SchemaBuilder extends LitElement {
               <schema-builder-item
                 .propertyKey="${this._editingProperty}"
                 .propertySchema="${this.schemaObject[this._editingProperty]}"
-                @save="${this._handlePropertySave}"
-                @cancel="${this._closeEditDialog}"
+                @save-schema-builder-item="${this._handlePropertySave}"
+                @cancel-schema-builder-item="${this._closeEditDialog}"
               ></schema-builder-item>
             </div>
           `
