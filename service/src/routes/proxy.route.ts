@@ -16,7 +16,6 @@ proxyRouter.get('/proxy-script', (async (req: Request, res: Response) => {
     // Set appropriate headers for JavaScript content
     res.setHeader('Content-Type', 'application/javascript');
     const text = await response.text();
-    console.log('text', text);
     res.send(text);
   } catch (error) {
     logger.error('Error proxying script:', error);

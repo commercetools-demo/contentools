@@ -2,12 +2,10 @@ import { rollup } from 'rollup';
 import resolve from '@rollup/plugin-node-resolve';
 import typescript from '@rollup/plugin-typescript';
 import commonjs from '@rollup/plugin-commonjs';
-
-// @ts-ignore
 import { string as rollupString } from 'rollup-plugin-string';
 import { writeFile, mkdir, mkdtemp } from 'fs/promises';
 import path from 'path';
-import os from 'os';
+import { logger } from './logger.utils';
 
 interface CodeFile {
   filename: string;
@@ -87,7 +85,7 @@ export async function bundleCode(
     // Return the bundled code as string
     return output[0].code;
   } catch (error) {
-    console.error('Bundling error:', error);
+    logger.error('Bundling error:', error);
     throw error;
   }
 } 
