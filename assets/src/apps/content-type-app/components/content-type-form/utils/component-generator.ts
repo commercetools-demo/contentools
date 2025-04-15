@@ -165,7 +165,7 @@ function convertToClassName(componentName: string): string {
 /**
  * Converts a kebab-case component name to a PascalCase class name
  */
-function convertToWebComponentName(componentName: string): string {
+export function convertToWebComponentName(componentName: string): string {
   const name = componentName.includes('-') ? componentName : `custom-${componentName}`;
   return name.toLocaleLowerCase();
 }

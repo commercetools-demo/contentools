@@ -4,6 +4,7 @@ import { FileControllerFactory } from '../controllers/file-controller';
 import { Router, RequestHandler } from 'express';
 import { CustomObjectController } from '../controllers/custom-object.controller';
 import { CONTENT_TYPE_CONTAINER } from './content-type.route';
+import { bundleCode } from '../utils/bundler.utils';
 
 const fileRouter = Router();
 
@@ -32,14 +33,14 @@ fileRouter.post('/compile-upload', (async (req, res, next) => {
   try {
     const { files, key } = req.body;
 
-    const codeFiles = Object.keys(files)
-      .map((key) => {
-        return {
-          filename: key,
-          ...files[key],
-        };
-      })
-      .filter((file) => file.filename.endsWith('.ts'));
+    const allFiles = Object.keys(files).map((key) => {
+      return {
+        filename: key,
+        content: files[key].content,
+      };
+    });
+
+    const codeFiles = allFiles.filter((file) => file.filename.endsWith('.ts'));
 
     if (!codeFiles?.length) {
       return res.status(400).json({ error: 'No code provided' });
@@ -52,8 +53,10 @@ fileRouter.post('/compile-upload', (async (req, res, next) => {
     // Create a JS file in memory
     const fileName = `${key}.js`;
 
-    // TODO: Compile the code
-    const code = 'balh';
+    // Compile the code using our bundler utility
+    const code = await bundleCode(allFiles, key);
+    logger.info('code');
+    logger.info(code);
 
     // Use Buffer to create a file-like object that matches Express.Multer.File
     const jsFile: any = {

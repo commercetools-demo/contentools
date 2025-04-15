@@ -2,7 +2,7 @@ import { LitElement, html, css } from 'lit';
 import { customElement, property, state, query } from 'lit/decorators.js';
 import { unsafeHTML } from 'lit/directives/unsafe-html.js';
 import '../../../../../components/atoms/labeled-input';
-import { generateDefaultComponentCode, generateComponentCode } from '../utils/component-generator';
+import {  generateComponentCode } from '../utils/component-generator';
 import { ContentTypeData } from '../../../../../types';
 import { compileAndUploadEndpoint } from '../../../../../utils/api';
 

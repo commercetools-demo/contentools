@@ -1,6 +1,7 @@
 {
   "extends": "@tsconfig/recommended/tsconfig.json",
-  "exclude": ["node_modules", "**/*.spec.ts", "src/temp-compile/**.*"],
+  "exclude": ["node_modules", "**/*.spec.ts", "temp/**.*"],
+  "include": ["src/**/*", "!temp/**/*"],
   "compilerOptions": {
     "resolveJsonModule": true,
     "outDir": "./build",
