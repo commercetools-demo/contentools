@@ -1,17 +1,15 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, property, state, query } from 'lit/decorators.js';
+import { unsafeHTML } from 'lit/directives/unsafe-html.js';
 import '../../../../../components/atoms/labeled-input';
-import { generateDefaultComponentCode } from '../utils/component-generator';
+import { generateDefaultComponentCode, generateComponentCode } from '../utils/component-generator';
 import { ContentTypeData } from '../../../../../types';
-import { EditorView, basicSetup } from 'codemirror';
-import { javascript } from '@codemirror/lang-javascript';
-import { oneDark } from '@codemirror/theme-one-dark';
-import { ViewUpdate } from '@codemirror/view';
+import { compileAndUploadEndpoint } from '../../../../../utils/api';
 
 @customElement('renderer-tab')
 export class RendererTab extends LitElement {
   @property({ type: String }) baseURL = '';
-  @property({ type: Object }) contentTypeData: ContentTypeData | null = null;
+  @property({ type: Object }) contentTypeData: ContentTypeData | undefined = undefined;
   @property({ type: Boolean }) isCompiling = false;
   @property({ type: Array }) compilationErrors: string[] = [];
 
@@ -22,9 +20,7 @@ export class RendererTab extends LitElement {
   private _deployedUrl: string = '';
 
   @query('#editor-container')
-  private _editorContainer!: HTMLElement;
-
-  private _editor?: EditorView;
+  private editorContainer!: any; // Using any to avoid importing playground types
 
   static styles = css`
     :host {
@@ -35,14 +31,7 @@ export class RendererTab extends LitElement {
       margin-bottom: 15px;
       display: block;
     }
-    #editor-container {
-      width: 100%;
-      height: 400px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      margin-bottom: 15px;
-      overflow: hidden;
-    }
+
     .cm-editor {
       height: 100%;
     }
@@ -75,67 +64,36 @@ export class RendererTab extends LitElement {
     }
   `;
 
+  protected firstUpdated() {
+    this.loadComponentScript();
+  }
+
+  private async loadComponentScript(): Promise<boolean> {
+    return new Promise(resolve => {
+      const script = document.createElement('script');
+      script.type = 'module';
+      script.src = '/node_modules/playground-elements/playground-ide.js';
+
+      script.onload = () => {
+        // ComponentRenderer.loadedScripts.add(url); // Store original URL in the Set
+        resolve(true);
+      };
+
+      script.onerror = () => {
+        console.error(`Failed to load component script`);
+        resolve(false);
+      };
+
+      document.head.appendChild(script);
+    });
+  }
   connectedCallback() {
     super.connectedCallback();
     if (this.contentTypeData) {
       // If code exists in contentTypeData, use it
-      if (this.contentTypeData.code) {
-        this._code = this.contentTypeData.code;
-      } else {
-        // Generate default code based on content type properties
-        this._code = generateDefaultComponentCode(this.contentTypeData);
-      }
+      this._code = generateComponentCode(this.contentTypeData);
       this._deployedUrl = this.contentTypeData.deployedUrl || '';
     }
-  }
-
-  firstUpdated() {
-    this._initCodeEditor();
-  }
-
-  updated(changedProperties: Map<string, any>) {
-    if (changedProperties.has('contentTypeData') && this.contentTypeData) {
-      if (this._editor) {
-        this._editor.dispatch({
-          changes: {
-            from: 0,
-            to: this._editor.state.doc.length,
-            insert: this._code
-          }
-        });
-      } else {
-        this._initCodeEditor();
-      }
-    }
-  }
-
-  disconnectedCallback() {
-    super.disconnectedCallback();
-    this._editor?.destroy();
-  }
-
-  private _initCodeEditor() {
-    if (!this._editorContainer) return;
-    
-    // Destroy previous instance if it exists
-    this._editor?.destroy();
-    
-    // Create a new editor
-    this._editor = new EditorView({
-      doc: this._code,
-      extensions: [
-        basicSetup,
-        javascript({ typescript: true }),
-        oneDark,
-        EditorView.updateListener.of((update: ViewUpdate) => {
-          if (update.docChanged) {
-            this._code = update.state.doc.toString();
-            this._dispatchCodeChange(this._code);
-          }
-        })
-      ],
-      parent: this._editorContainer
-    });
   }
 
   render() {
@@ -147,24 +105,26 @@ export class RendererTab extends LitElement {
       ></ui-labeled-input>
 
       <label for="editor-container">Component Code</label>
-      <div id="editor-container"></div>
 
-      <button 
-        ?disabled="${this.isCompiling}" 
-        @click="${this._compileAndUpload}"
-      >
+      <playground-ide id="editor-container" editable-file-system line-numbers resizable>
+        ${unsafeHTML(this._code)}
+      </playground-ide>
+
+      <button ?disabled="${this.isCompiling}" @click="${this._compileAndUpload}">
         ${this.isCompiling ? 'Compiling...' : 'Compile & Upload'}
       </button>
 
-      ${this.compilationErrors.length > 0 
+      ${this.compilationErrors.length > 0
         ? html`
           <div class="error-container">
-            <h3>Compilation Errors:</h3>
-            ${this.compilationErrors.map(error => html`
+              <h3>Compilation Errors:</h3>
+              ${this.compilationErrors.map(
+                error => html`
               <div class="error-item">${error}</div>
-            `)}
-          </div>
-        ` 
+            `
+              )}
+            </div>
+        `
         : ''}
     `;
   }
@@ -179,51 +139,20 @@ export class RendererTab extends LitElement {
     );
   }
 
-  private _dispatchCodeChange(code: string) {
-    this.dispatchEvent(
-      new CustomEvent('code-change', {
-        detail: { code },
-        bubbles: true,
-        composed: true,
-      })
-    );
-  }
-
   private async _compileAndUpload() {
-    if (!this._code.trim()) return;
-    
     try {
       this.isCompiling = true;
-      this.compilationErrors = [];
-      
-      const response = await fetch(`${this.baseURL}/compile-upload`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          code: this._code,
-          key: this.contentTypeData?.metadata?.type || 'unknown-component'
-        }),
-      });
-      
-      const result = await response.json();
-      
-      if (!response.ok) {
-        this.compilationErrors = Array.isArray(result.errors) 
-          ? result.errors 
-          : [result.error || 'Compilation failed'];
-        return;
-      }
-      
-      // Update the deployed URL if successful
-      if (result.url) {
-        this._deployedUrl = result.url;
-        this._dispatchDeployedUrlChange(result.url);
-      }
-      
+      const config = this.editorContainer?.config;
+
+      return compileAndUploadEndpoint(
+        this.baseURL,
+        this.contentTypeData?.metadata?.type,
+        config.files
+      );
     } catch (error: unknown) {
-      this.compilationErrors = [`Request failed: ${error instanceof Error ? error.message : 'Unknown error'}`];
+      this.compilationErrors = [
+        `Request failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      ];
     } finally {
       this.isCompiling = false;
     }

@@ -26,7 +26,6 @@ export default class ContentTypeForm extends connect(store)(LitElement) {
       propertySchema: {},
     },
     deployedUrl: '',
-    code: '',
   };
 
   @property({ type: Boolean })

@@ -1,4 +1,10 @@
-import { Router, Request, Response, NextFunction, RequestHandler } from 'express';
+import {
+  Router,
+  Request,
+  Response,
+  NextFunction,
+  RequestHandler,
+} from 'express';
 import { logger } from '../utils/logger.utils';
 import { CustomObjectController } from '../controllers/custom-object.controller';
 import { ContentItemController } from '../controllers/content-item.controller';
@@ -46,61 +52,63 @@ contentItemRouter.get(
   }
 );
 
-contentItemRouter.post(
-  '/:businessUnitKey/content-items/:key',
-  (async (req, res, next) => {
-    try {
-      const { businessUnitKey, key } = req.params;
-      const { value } = req.body;
+contentItemRouter.post('/:businessUnitKey/content-items/:key', (async (
+  req,
+  res,
+  next
+) => {
+  try {
+    const { businessUnitKey, key } = req.params;
+    const { value } = req.body;
 
-      if (!value) {
-        return res
-          .status(400)
-          .json({ error: 'Value is required in the request body' });
-      }
-
-      const object = await businessUnitController.createCustomObject(key, {
-        ...value,
-        businessUnitKey,
-      });
-      res.status(201).json(object);
-    } catch (error) {
-      logger.error(
-        `Failed to create custom object with key ${req.params.key}:`,
-        error
-      );
-      next(error);
+    if (!value) {
+      return res
+        .status(400)
+        .json({ error: 'Value is required in the request body' });
     }
-  }) as RequestHandler
-);
 
-contentItemRouter.put(
-  '/:businessUnitKey/content-items/:key',
-  (async (req, res, next) => {
-    try {
-      const { businessUnitKey, key } = req.params;
-      const { value } = req.body;
+    const object = await businessUnitController.createCustomObject(key, {
+      ...value,
+      businessUnitKey,
+    });
+    res.status(201).json(object);
+  } catch (error) {
+    logger.error(
+      `Failed to create custom object with key ${req.params.key}:`,
+      error
+    );
+    next(error);
+  }
+}) as RequestHandler);
 
-      if (!value) {
-        return res
-          .status(400)
-          .json({ error: 'Value is required in the request body' });
-      }
+contentItemRouter.put('/:businessUnitKey/content-items/:key', (async (
+  req,
+  res,
+  next
+) => {
+  try {
+    const { businessUnitKey, key } = req.params;
+    const { value } = req.body;
 
-      const object = await businessUnitController.updateCustomObject(key, {
-        ...value,
-        businessUnitKey,
-      });
-      res.json(object);
-    } catch (error) {
-      logger.error(
-        `Failed to update custom object with key ${req.params.key}:`,
-        error
-      );
-      next(error);
+    if (!value) {
+      return res
+        .status(400)
+        .json({ error: 'Value is required in the request body' });
     }
-  }) as RequestHandler
-);
+
+    const object = await businessUnitController.updateCustomObject(key, {
+      ...value,
+      businessUnitKey,
+    });
+    res.json(object);
+  } catch (error) {
+    logger.error(
+      `Failed to update custom object with key ${req.params.key}:`,
+      error
+    );
+    next(error);
+  }
+}) as RequestHandler);
 
 contentItemRouter.delete(
   '/:businessUnitKey/content-items/:key',

@@ -12,7 +12,7 @@ proxyRouter.get('/proxy-script', (async (req: Request, res: Response) => {
     }
 
     const response = await fetch(url);
-    
+
     // Set appropriate headers for JavaScript content
     res.setHeader('Content-Type', 'application/javascript');
     const text = await response.text();

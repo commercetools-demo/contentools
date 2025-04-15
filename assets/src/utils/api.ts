@@ -231,3 +231,14 @@ export async function getDatasourceByKeyEndpoint<T>(
 ): Promise<ApiResponse<T>> {
   return fetchApi<T>(`${baseURL}/datasource/${key}`);
 }
+
+export async function compileAndUploadEndpoint<T>(
+  baseURL: string,
+  key?: string,
+  files?: Record<string, string>
+): Promise<ApiResponse<T>> {
+  return fetchApi<T>(`${baseURL}/compile-upload`, {
+    method: 'POST',
+    body: JSON.stringify({ key, files }),
+  });
+}

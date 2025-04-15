@@ -59,7 +59,7 @@ export class ContentItemPreview extends LitElement {
 
   protected async updated(changedProperties: Map<string, any>) {
     if (
-      changedProperties.has('contentItemKey') || 
+      changedProperties.has('contentItemKey') ||
       changedProperties.has('baseURL') ||
       changedProperties.has('businessUnitKey')
     ) {

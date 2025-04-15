@@ -8,7 +8,6 @@ export class ABC extends LitElement {
   @property({ type: String }) property3 = '';
   @property({ type: Object }) property4 = '';
 
-
   static styles = css`
     :host {
       display: block;
@@ -17,9 +16,7 @@ export class ABC extends LitElement {
   `;
 
   render() {
-    return html`
-      <!-- Add your template here -->
-    `;
+    return html` <!-- Add your template here --> `;
   }
 }
 

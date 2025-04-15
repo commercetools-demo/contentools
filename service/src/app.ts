@@ -1,18 +1,18 @@
 import * as dotenv from 'dotenv';
 dotenv.config();
 
-import express, { Express, Request, Response } from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
+import express, { Express } from 'express';
 
 // Import routes
 import ServiceRoutes from './routes/service.route';
 
-import { readConfiguration } from './utils/config.utils';
-import { errorMiddleware } from './middleware/error.middleware';
 import CustomError from './errors/custom.error';
-import { logger } from './utils/logger.utils';
+import { errorMiddleware } from './middleware/error.middleware';
+import { readConfiguration } from './utils/config.utils';
 import { extractMainDomain } from './utils/domain';
+import { logger } from './utils/logger.utils';
 
 // Read env variables
 readConfiguration();
