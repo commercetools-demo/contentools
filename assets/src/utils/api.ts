@@ -231,3 +231,22 @@ export async function getDatasourceByKeyEndpoint<T>(
 ): Promise<ApiResponse<T>> {
   return fetchApi<T>(`${baseURL}/datasource/${key}`);
 }
+
+/**
+ * Compile and upload TypeScript files to create a bundled JavaScript file
+ * 
+ * @param baseURL Base URL for the API
+ * @param key Component key
+ * @param files Object containing file names as keys and file content as values
+ * @returns Promise with the API response
+ */
+export async function compileAndUploadEndpoint<T>(
+  baseURL: string,
+  key?: string,
+  files?: Record<string, { content: string }>
+): Promise<ApiResponse<T>> {
+  return fetchApi<T>(`${baseURL}/compile-upload`, {
+    method: 'POST',
+    body: JSON.stringify({ key, files }),
+  });
+}

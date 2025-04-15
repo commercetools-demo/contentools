@@ -17,10 +17,12 @@ export class GCPFileController implements FileController {
     });
   }
 
-  async uploadFile(file: any): Promise<string> {
+  async uploadFile(file: any, path?: string): Promise<string> {
     try {
       const bucket = this.storage.bucket(this.bucket);
-      const blob = bucket.file(`uploads/${Date.now()}-${file.originalname}`);
+      const blob = bucket.file(
+        `${path || 'uploads'}/${Date.now()}-${file.originalname}`
+      );
 
       await blob.save(file.buffer, {
         contentType: file.mimetype,

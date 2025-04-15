@@ -70,6 +70,10 @@ export interface ContentTypeMetaData {
 export interface ContentTypeData {
   metadata: ContentTypeMetaData;
   deployedUrl: string;
+  code?: {
+    filename: string;
+    content: string;
+  }[];
 }
 
 export interface ContentTypeState {

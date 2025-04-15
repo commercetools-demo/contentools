@@ -2,6 +2,7 @@ import { LitElement, html, css, PropertyValues } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { ContentItem } from '../../types';
 import { getContentTypeMetaData } from '../../utils/content-type-utility';
+import { convertToWebComponentName } from '../content-type-app/components/content-type-form/utils/component-generator';
 
 @customElement('component-renderer')
 export class ComponentRenderer extends LitElement {
@@ -72,13 +73,19 @@ export class ComponentRenderer extends LitElement {
       return true; // Script already loaded
     }
 
+    // Create a proxy URL for external scripts to avoid CORS issues
+    const proxyUrl = url.startsWith('http')
+      ? `${this.baseURL}/proxy-script?url=${encodeURIComponent(url)}`
+      : url;
+
+
     return new Promise(resolve => {
       const script = document.createElement('script');
       script.type = 'module';
-      script.src = url;
+      script.src = proxyUrl;
 
       script.onload = () => {
-        ComponentRenderer.loadedScripts.add(url);
+        // ComponentRenderer.loadedScripts.add(url); // Store original URL in the Set
         resolve(true);
       };
 
@@ -95,7 +102,10 @@ export class ComponentRenderer extends LitElement {
    * Create and configure the component element
    */
   private createComponentElement(tagName: string, properties: Record<string, any>): HTMLElement {
-    const element = document.createElement(tagName);
+
+    const elementName = convertToWebComponentName(tagName);
+
+    const element = document.createElement(elementName);
 
     // Set properties on the element
     Object.entries(properties).forEach(([key, value]) => {

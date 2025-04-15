@@ -164,7 +164,8 @@ export default class ContentTypeForm extends connect(store)(LitElement) {
 
       <ui-tab-content ?active="${this._selectedTab === 'renderer'}">
         <renderer-tab
-          .deployedUrl="${this.contentType.deployedUrl}"
+          .contentTypeData="${this.contentType}"
+          .baseURL="${this.baseURL}"
           @renderer-change="${this._handleRendererChange}"
         ></renderer-tab>
       </ui-tab-content>
