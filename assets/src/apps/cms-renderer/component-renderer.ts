@@ -78,14 +78,12 @@ export class ComponentRenderer extends LitElement {
       ? `${this.baseURL}/proxy-script?url=${encodeURIComponent(url)}`
       : url;
 
-
     return new Promise(resolve => {
       const script = document.createElement('script');
       script.type = 'module';
       script.src = proxyUrl;
 
       script.onload = () => {
-        // ComponentRenderer.loadedScripts.add(url); // Store original URL in the Set
         resolve(true);
       };
 
@@ -102,7 +100,6 @@ export class ComponentRenderer extends LitElement {
    * Create and configure the component element
    */
   private createComponentElement(tagName: string, properties: Record<string, any>): HTMLElement {
-
     const elementName = convertToWebComponentName(tagName);
 
     const element = document.createElement(elementName);
@@ -137,8 +134,6 @@ export class ComponentRenderer extends LitElement {
 
     try {
       const { type, properties } = this.component;
-
-      console.log('properties', properties, type);
 
       // Get component metadata from registry
       const metadata = await getContentTypeMetaData({

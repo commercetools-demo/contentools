@@ -2,11 +2,12 @@
 // with the following content:
 
 import { LitElement, html, css } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { customElement, property, state } from 'lit/decorators.js';
 import '../../../components/atoms/button';
 import { ContentItem } from '../../../types';
 import '../../../apps/cms-renderer/component-renderer';
 import '../content-item-preview';
+import { fetchContentItemsEndpoint } from '../../../utils/api';
 
 @customElement('content-item-editor')
 export class ContentItemEditor extends LitElement {
@@ -21,6 +22,9 @@ export class ContentItemEditor extends LitElement {
 
   @property({ type: String })
   businessUnitKey: string = '';
+
+  @state()
+  private fetchedItem: ContentItem | null = null;
 
   static styles = css`
     :host {
@@ -44,6 +48,28 @@ export class ContentItemEditor extends LitElement {
       gap: 10px;
     }
   `;
+
+  connectedCallback() {
+    super.connectedCallback();
+    if (this.item?.key && this.baseURL) {
+      this.fetchContentItem();
+    }
+  }
+
+  private async fetchContentItem() {
+    if (!this.item?.key || !this.baseURL || this.isNew) {
+      return;
+    }
+
+    try {
+      const response = await fetchContentItemsEndpoint<ContentItem>(
+        `${this.baseURL}/${this.businessUnitKey}`
+      );
+      this.fetchedItem = response.find(item => item.key === this.item?.key)?.value || null;
+    } catch (err) {
+      console.error('Error fetching content item:', err);
+    }
+  }
 
   render() {
     if (!this.item) {
@@ -74,7 +100,7 @@ export class ContentItemEditor extends LitElement {
           : html`<div class="content-item-edit">
                 <cms-property-editor
                   class="content-item-edit-editor"
-                  .component="${this.item}"
+                  .component="${this.fetchedItem}"
                   .baseURL="${this.baseURL}"
                   .businessUnitKey="${this.businessUnitKey}"
                   @component-updated="${(e: CustomEvent) => {

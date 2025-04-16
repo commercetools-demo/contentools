@@ -4,7 +4,7 @@ import { connect } from 'lit-redux-watch';
 import { store } from '../../../../store';
 import { ContentItem, ContentTypeMetaData } from '../../../../types';
 import { getContentTypeMetaData } from '../../../../utils/content-type-utility';
-import { updateComponent, removeComponent } from '../../../../store/pages.slice';
+import { removeComponent } from '../../../../store/pages.slice';
 import { debounce } from '../../../../utils/debounce';
 import './components/string-field';
 import './components/number-field';
@@ -27,6 +27,9 @@ export class PropertyEditor extends connect(store)(LitElement) {
   businessUnitKey: string = '';
 
   @state()
+  private _component?: ContentItem;
+
+  @state()
   private metadata?: ContentTypeMetaData | null;
 
   @state()
@@ -39,17 +42,17 @@ export class PropertyEditor extends connect(store)(LitElement) {
   private showDeleteConfirm = false;
 
   private _debouncedHandleFieldChange = debounce((key: string, value: any) => {
-    if (this.component) {
+    if (this._component) {
       if (key === 'name') {
-        this.component = {
-          ...this.component,
+        this._component = {
+          ...this._component,
           name: value,
         };
       } else {
-        this.component = {
-          ...this.component,
+        this._component = {
+          ...this._component,
           properties: {
-            ...this.component.properties,
+            ...this._component.properties,
             [key]: value,
           },
         };
@@ -149,14 +152,22 @@ export class PropertyEditor extends connect(store)(LitElement) {
     }
   `;
 
+  firstUpdated(changedProperties: Map<string, any>) {
+    if (changedProperties.has('component') && this.component) {
+      // Copy component to _component when component changes
+    }
+  }
+
   updated(changedProperties: Map<string, any>) {
     if (changedProperties.has('component') && this.component) {
+      // Copy component to _component when component changes
+      this._component = JSON.parse(JSON.stringify(this.component));
       this.fetchMetadata();
     }
   }
 
   async fetchMetadata() {
-    if (!this.component) return;
+    if (!this._component) return;
 
     this.loading = true;
     this.error = undefined;
@@ -164,7 +175,7 @@ export class PropertyEditor extends connect(store)(LitElement) {
     try {
       this.metadata = await getContentTypeMetaData({
         baseURL: this.baseURL,
-        type: this.component.type as any,
+        type: this._component.type as any,
       });
       this.requestUpdate();
     } catch (err) {
@@ -176,7 +187,7 @@ export class PropertyEditor extends connect(store)(LitElement) {
   }
 
   render() {
-    if (!this.component) {
+    if (!this._component) {
       return html`<div>No component selected</div>`;
     }
 
@@ -196,22 +207,22 @@ export class PropertyEditor extends connect(store)(LitElement) {
 
     return html`
       <div class="property-editor">
-        <h2>${this.component.name}</h2>
+        <h2>${this._component.name}</h2>
         <slot name="before-fields"></slot>
 
         <cms-string-field
           label="Name"
-          .value="${this.component.name || ''}"
+          .value="${this._component.name || ''}"
           fieldKey="name"
           ?required="${true}"
           @field-change="${this.handleFieldChange}"
         ></cms-string-field>
         ${Object.entries(schema).map(([key, field]: [string, any]) => {
-          const value = this.component!.properties[key];
+          const value = this._component!.properties[key];
 
           switch (field.type) {
             case 'string':
-              if (this.component && this.component.type === 'richText' && key === 'content') {
+              if (this._component && this._component.type === 'richText' && key === 'content') {
                 return html`
                   <cms-wysiwyg-field
                     label="${field.label}"
@@ -308,7 +319,7 @@ export class PropertyEditor extends connect(store)(LitElement) {
         <div class="dialog-content">
           <h3 class="dialog-title">Delete Component</h3>
           <p>
-            Are you sure you want to delete the component "${this.component?.name}"? This action
+            Are you sure you want to delete the component "${this._component?.name}"? This action
             cannot be undone.
           </p>
           <div class="dialog-buttons">
@@ -327,8 +338,8 @@ export class PropertyEditor extends connect(store)(LitElement) {
   }
 
   deleteComponent() {
-    if (this.component) {
-      store.dispatch(removeComponent(this.component.id));
+    if (this._component) {
+      store.dispatch(removeComponent(this._component.id));
 
       // Close the dialog
       this.showDeleteConfirm = false;
@@ -336,7 +347,7 @@ export class PropertyEditor extends connect(store)(LitElement) {
       // Dispatch a custom event to notify parent components
       this.dispatchEvent(
         new CustomEvent('component-deleted', {
-          detail: { componentId: this.component.id },
+          detail: { componentId: this._component.id },
           bubbles: true,
           composed: true,
         })
@@ -349,14 +360,12 @@ export class PropertyEditor extends connect(store)(LitElement) {
     this._debouncedHandleFieldChange(key, value);
   }
 
-  saveChanges() {
-    if (this.component) {
-      store.dispatch(updateComponent(this.component));
-
+  async saveChanges() {
+    if (this._component) {
       // Dispatch a custom event to notify parent components
       this.dispatchEvent(
         new CustomEvent('component-updated', {
-          detail: { component: this.component },
+          detail: { component: this._component },
           bubbles: true,
           composed: true,
         })

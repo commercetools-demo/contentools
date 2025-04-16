@@ -234,7 +234,7 @@ export async function getDatasourceByKeyEndpoint<T>(
 
 /**
  * Compile and upload TypeScript files to create a bundled JavaScript file
- * 
+ *
  * @param baseURL Base URL for the API
  * @param key Component key
  * @param files Object containing file names as keys and file content as values
