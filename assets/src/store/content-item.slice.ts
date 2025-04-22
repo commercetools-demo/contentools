@@ -1,8 +1,8 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { ContentItem } from '../types';
+import { ContentItem, StateInfo } from '../types';
 import {
   fetchContentItemsEndpoint,
-  fetchContentItemEndpoint,
+  fetchPreviewContentItemEndpoint,
   createContentItemEndpoint,
   updateContentItemEndpoint,
   deleteContentItemEndpoint,
@@ -11,12 +11,14 @@ import { v4 as uuidv4 } from 'uuid';
 
 interface ContentItemState {
   items: ContentItem[];
+  states: Record<string, StateInfo>;
   loading: boolean;
   error: string | null;
 }
 
 const initialState: ContentItemState = {
   items: [],
+  states: {},
   loading: false,
   error: null,
 };
@@ -27,7 +29,16 @@ export const fetchContentItems = createAsyncThunk(
   async (baseURL: string, { rejectWithValue }) => {
     try {
       const result = await fetchContentItemsEndpoint<ContentItem>(baseURL);
-      return result.map(item => item.value);
+      return {
+        items: result.map(item => item.value),
+        states: result.reduce(
+          (acc, item) => {
+            acc[item.key] = item.states;
+            return acc;
+          },
+          {} as Record<string, StateInfo>
+        ),
+      };
     } catch (error) {
       return rejectWithValue(error instanceof Error ? error.message : String(error));
     }
@@ -38,7 +49,7 @@ export const fetchContentItem = createAsyncThunk(
   'contentItem/fetchContentItem',
   async ({ baseURL, key }: { baseURL: string; key: string }, { rejectWithValue }) => {
     try {
-      return await fetchContentItemEndpoint<ContentItem>(baseURL, key);
+      return await fetchPreviewContentItemEndpoint<ContentItem>(baseURL, key);
     } catch (error) {
       return rejectWithValue(error instanceof Error ? error.message : String(error));
     }
@@ -112,7 +123,8 @@ const contentItemSlice = createSlice({
       })
       .addCase(fetchContentItems.fulfilled, (state, action) => {
         state.loading = false;
-        state.items = action.payload;
+        state.items = action.payload.items;
+        state.states = action.payload.states;
       })
       .addCase(fetchContentItems.rejected, (state, action) => {
         state.loading = false;

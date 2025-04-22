@@ -7,6 +7,43 @@ export interface ContentItem {
   properties: Record<string, any>;
 }
 
+export type VersionInfo = (Page | ContentItem) & {
+  timestamp: string;
+};
+
+export interface StateInfo {
+  draft?: ContentItem;
+  published?: ContentItem;
+}
+
+export interface ContentItemVersions {
+  key: string; // Same as ContentItem key
+  businessUnitKey: string;
+  versions: VersionInfo[];
+}
+
+export interface ContentItemStates {
+  key: string; // Same as ContentItem key
+  businessUnitKey: string;
+  states: StateInfo;
+}
+
+// Similar extensions for the Page interface
+export interface PageVersions {
+  key: string; // Same as Page key
+  businessUnitKey: string;
+  versions: VersionInfo[];
+}
+
+export interface PageStates {
+  key: string; // Same as Page key
+  businessUnitKey: string;
+  states: {
+    draft?: Page;
+    published?: Page;
+  };
+}
+
 export interface GridCell {
   id: string;
   componentId: string | null;
@@ -107,4 +144,51 @@ export interface DatasourceParam {
   key: string;
   type: string;
   required: boolean;
+}
+
+export interface FetchVersionsEvent extends CustomEvent {
+  detail: {
+    key: string;
+    contentType: 'pages' | 'content-items';
+  };
+}
+
+export interface SaveVersionEvent extends CustomEvent {
+  detail: {
+    item: any;
+    previousItem: any;
+    key: string;
+    contentType: 'pages' | 'content-items';
+  };
+}
+
+export interface FetchStatesEvent extends CustomEvent {
+  detail: {
+    key: string;
+    contentType: 'pages' | 'content-items';
+  };
+}
+
+export interface SaveDraftEvent extends CustomEvent {
+  detail: {
+    item: any;
+    key: string;
+    contentType: 'pages' | 'content-items';
+  };
+}
+
+export interface PublishEvent extends CustomEvent {
+  detail: {
+    item: any;
+    key: string;
+    contentType: 'pages' | 'content-items';
+    clearDraft?: boolean;
+  };
+}
+
+export interface RevertEvent extends CustomEvent {
+  detail: {
+    key: string;
+    contentType: 'pages' | 'content-items';
+  };
 }

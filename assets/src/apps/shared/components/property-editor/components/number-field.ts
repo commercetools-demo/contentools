@@ -16,9 +16,17 @@ export class NumberField extends LitElement {
   @property({ type: String })
   fieldKey: string = '';
 
+  @property({ type: Boolean })
+  highlight: boolean = false;
+
   static styles = css`
     :host {
       display: block;
+    }
+
+    .highlight {
+      border: 1px solid #ffa600;
+      background-color: #ffa600;
     }
   `;
 
@@ -27,6 +35,7 @@ export class NumberField extends LitElement {
       <ui-labeled-input
         label="${this.label}"
         .value="${String(this.value)}"
+        .highlight="${this.highlight}"
         ?required="${this.required}"
         type="number"
         @input-change="${this.handleInput}"

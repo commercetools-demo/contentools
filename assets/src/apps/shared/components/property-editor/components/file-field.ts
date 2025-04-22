@@ -19,6 +19,9 @@ export class FileField extends LitElement {
   @property({ type: Array })
   extensions: string[] = [];
 
+  @property({ type: Boolean })
+  highlight: boolean = false;
+
   @state()
   private selectedFile: File | null = null;
 
@@ -87,6 +90,11 @@ export class FileField extends LitElement {
       max-height: 200px;
       object-fit: contain;
     }
+
+    .highlight {
+      border: 1px solid #ffa600;
+      background-color: #ffa600;
+    }
   `;
 
   render() {
@@ -95,7 +103,7 @@ export class FileField extends LitElement {
     );
 
     return html`
-      <div class="form-group">
+      <div class="form-group ${this.highlight ? 'highlight' : ''}">
         <label for="${this.fieldKey}">${this.label}</label>
         <div class="file-upload">
           <div class="file-input-wrapper">

@@ -4,7 +4,7 @@ import { connect } from 'lit-redux-watch';
 import { store } from '../../../../store';
 import { ContentItem, ContentTypeMetaData } from '../../../../types';
 import { getContentTypeMetaData } from '../../../../utils/content-type-utility';
-import { updateComponent, removeComponent } from '../../../../store/pages.slice';
+import { removeComponent } from '../../../../store/pages.slice';
 import { debounce } from '../../../../utils/debounce';
 import './components/string-field';
 import './components/number-field';
@@ -26,6 +26,15 @@ export class PropertyEditor extends connect(store)(LitElement) {
   @property({ type: String })
   businessUnitKey: string = '';
 
+  @property({ type: Boolean })
+  isContentVersion: boolean = false;
+
+  @property({ type: Object })
+  versionedContent: ContentItem | null = null;
+
+  @state()
+  private _component?: ContentItem;
+
   @state()
   private metadata?: ContentTypeMetaData | null;
 
@@ -38,18 +47,21 @@ export class PropertyEditor extends connect(store)(LitElement) {
   @state()
   private showDeleteConfirm = false;
 
+  @state()
+  private diff: string[] = [];
+
   private _debouncedHandleFieldChange = debounce((key: string, value: any) => {
-    if (this.component) {
+    if (this._component) {
       if (key === 'name') {
-        this.component = {
-          ...this.component,
+        this._component = {
+          ...this._component,
           name: value,
         };
       } else {
-        this.component = {
-          ...this.component,
+        this._component = {
+          ...this._component,
           properties: {
-            ...this.component.properties,
+            ...this._component.properties,
             [key]: value,
           },
         };
@@ -128,6 +140,7 @@ export class PropertyEditor extends connect(store)(LitElement) {
       display: flex;
       justify-content: flex-end;
       margin-top: 20px;
+      gap: 10px;
     }
 
     .dialog-buttons button {
@@ -150,13 +163,24 @@ export class PropertyEditor extends connect(store)(LitElement) {
   `;
 
   updated(changedProperties: Map<string, any>) {
-    if (changedProperties.has('component') && this.component) {
+    if (
+      (changedProperties.has('component') && this.component) ||
+      changedProperties.has('versionedContent')
+    ) {
+      if (this.versionedContent) {
+        // Copy component to _component when component changes
+        this._component = JSON.parse(JSON.stringify(this.versionedContent));
+      } else {
+        // Copy component to _component when component changes
+        this._component = JSON.parse(JSON.stringify(this.component));
+      }
+      this.diff = this._calculateDiff();
       this.fetchMetadata();
     }
   }
 
   async fetchMetadata() {
-    if (!this.component) return;
+    if (!this._component) return;
 
     this.loading = true;
     this.error = undefined;
@@ -164,7 +188,7 @@ export class PropertyEditor extends connect(store)(LitElement) {
     try {
       this.metadata = await getContentTypeMetaData({
         baseURL: this.baseURL,
-        type: this.component.type as any,
+        type: this._component.type as any,
       });
       this.requestUpdate();
     } catch (err) {
@@ -176,7 +200,7 @@ export class PropertyEditor extends connect(store)(LitElement) {
   }
 
   render() {
-    if (!this.component) {
+    if (!this._component) {
       return html`<div>No component selected</div>`;
     }
 
@@ -196,25 +220,27 @@ export class PropertyEditor extends connect(store)(LitElement) {
 
     return html`
       <div class="property-editor">
-        <h2>${this.component.name}</h2>
+        <h2>${this._component.name}</h2>
         <slot name="before-fields"></slot>
 
         <cms-string-field
           label="Name"
-          .value="${this.component.name || ''}"
+          .value="${this._component.name || ''}"
+          .highlight="${this.diff.includes('name')}"
           fieldKey="name"
           ?required="${true}"
           @field-change="${this.handleFieldChange}"
         ></cms-string-field>
         ${Object.entries(schema).map(([key, field]: [string, any]) => {
-          const value = this.component!.properties[key];
+          const value = this._component!.properties[key];
 
           switch (field.type) {
             case 'string':
-              if (this.component && this.component.type === 'richText' && key === 'content') {
+              if (this._component && this._component.type === 'richText' && key === 'content') {
                 return html`
                   <cms-wysiwyg-field
                     label="${field.label}"
+                    .highlight="${this.diff.includes(key)}"
                     .value="${value || ''}"
                     fieldKey="${key}"
                     ?required="${field.required}"
@@ -226,6 +252,7 @@ export class PropertyEditor extends connect(store)(LitElement) {
                 <cms-string-field
                   label="${field.label}"
                   .value="${value || ''}"
+                  .highlight="${this.diff.includes(key)}"
                   fieldKey="${key}"
                   ?required="${field.required}"
                   @field-change="${this.handleFieldChange}"
@@ -236,6 +263,7 @@ export class PropertyEditor extends connect(store)(LitElement) {
                 <cms-number-field
                   label="${field.label}"
                   .value="${value}"
+                  .highlight="${this.diff.includes(key)}"
                   fieldKey="${key}"
                   ?required="${field.required}"
                   @field-change="${this.handleFieldChange}"
@@ -246,6 +274,7 @@ export class PropertyEditor extends connect(store)(LitElement) {
                 <cms-boolean-field
                   label="${field.label}"
                   .value="${value}"
+                  .highlight="${this.diff.includes(key)}"
                   fieldKey="${key}"
                   @field-change="${this.handleFieldChange}"
                 />
@@ -255,6 +284,7 @@ export class PropertyEditor extends connect(store)(LitElement) {
                 <cms-array-field
                   label="${field.label}"
                   .value="${value || []}"
+                  .highlight="${this.diff.includes(key)}"
                   fieldKey="${key}"
                   @field-change="${this.handleFieldChange}"
                 />
@@ -264,6 +294,7 @@ export class PropertyEditor extends connect(store)(LitElement) {
                 <cms-file-field
                   label="${field.label}"
                   .value="${value}"
+                  .highlight="${this.diff.includes(key)}"
                   fieldKey="${key}"
                   .baseURL="${this.baseURL}"
                   .extensions="${field.extensions || []}"
@@ -275,6 +306,7 @@ export class PropertyEditor extends connect(store)(LitElement) {
                 <cms-datasource-field
                   label="${field.label}"
                   .value="${value || {}}"
+                  .highlight="${this.diff.includes(key)}"
                   fieldKey="${key}"
                   datasourceType="${field.datasourceType}"
                   .baseURL="${this.baseURL}"
@@ -308,18 +340,33 @@ export class PropertyEditor extends connect(store)(LitElement) {
         <div class="dialog-content">
           <h3 class="dialog-title">Delete Component</h3>
           <p>
-            Are you sure you want to delete the component "${this.component?.name}"? This action
+            Are you sure you want to delete the component "${this._component?.name}"? This action
             cannot be undone.
           </p>
           <div class="dialog-buttons">
-            <button class="cancel-button" @click="${() => (this.showDeleteConfirm = false)}">
+            <ui-button variant="outline" @click="${() => (this.showDeleteConfirm = false)}">
               Cancel
-            </button>
-            <button class="confirm-button" @click="${this.deleteComponent}">Delete</button>
+            </ui-button>
+            <ui-button variant="critical" @click="${this.deleteComponent}">Delete</ui-button>
           </div>
         </div>
       </div>
     `;
+  }
+
+  _calculateDiff() {
+    if (!this.versionedContent) return [];
+
+    const nameDiff = this.versionedContent.name !== this.component?.name ? ['name'] : [];
+
+    const diff = Object.keys(this.versionedContent.properties).filter(key => {
+      // deep compare
+      return (
+        JSON.stringify(this.versionedContent?.properties[key]) !==
+        JSON.stringify(this.component?.properties[key])
+      );
+    });
+    return [...nameDiff, ...diff].filter(Boolean);
   }
 
   showDeleteConfirmation() {
@@ -327,8 +374,8 @@ export class PropertyEditor extends connect(store)(LitElement) {
   }
 
   deleteComponent() {
-    if (this.component) {
-      store.dispatch(removeComponent(this.component.id));
+    if (this._component) {
+      store.dispatch(removeComponent(this._component.id));
 
       // Close the dialog
       this.showDeleteConfirm = false;
@@ -336,7 +383,7 @@ export class PropertyEditor extends connect(store)(LitElement) {
       // Dispatch a custom event to notify parent components
       this.dispatchEvent(
         new CustomEvent('component-deleted', {
-          detail: { componentId: this.component.id },
+          detail: { componentId: this._component.id },
           bubbles: true,
           composed: true,
         })
@@ -349,14 +396,12 @@ export class PropertyEditor extends connect(store)(LitElement) {
     this._debouncedHandleFieldChange(key, value);
   }
 
-  saveChanges() {
-    if (this.component) {
-      store.dispatch(updateComponent(this.component));
-
+  async saveChanges() {
+    if (this._component) {
       // Dispatch a custom event to notify parent components
       this.dispatchEvent(
         new CustomEvent('component-updated', {
-          detail: { component: this.component },
+          detail: { component: this._component },
           bubbles: true,
           composed: true,
         })

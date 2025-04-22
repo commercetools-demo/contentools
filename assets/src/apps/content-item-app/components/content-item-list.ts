@@ -2,12 +2,16 @@ import { LitElement, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import '../../../components/atoms/button';
 import '../../../components/atoms/table';
-import { ContentItem } from '../../../types';
+import '../../../components/atoms/status-tag';
+import { ContentItem, StateInfo } from '../../../types';
 
 @customElement('content-item-list')
 export class ContentItemList extends LitElement {
   @property({ type: Array })
   items: ContentItem[] = [];
+
+  @property({ type: Object })
+  states: Record<string, StateInfo> = {};
 
   @property({ type: String })
   baseURL: string = '';
@@ -74,11 +78,16 @@ export class ContentItemList extends LitElement {
 
         <div class="content">
           <ui-table
-            .headers="${['Name', 'Type', 'Actions']}"
+            .headers="${['Name', 'Type', 'Status', 'Actions']}"
             .rows="${this.items.map(item => ({
               cells: [
                 item.name,
                 item.type,
+                html`
+                  <ui-status-tag
+                    status="${this.formatStatusClass(this.states[item.key])}"
+                  ></ui-status-tag>
+                `,
                 html`
                   <div class="action-buttons">
                     <ui-button
@@ -116,6 +125,34 @@ export class ContentItemList extends LitElement {
     `;
   }
 
+  formatStatus(status?: StateInfo): string {
+    if (!status) {
+      return 'Draft';
+    }
+
+    if (status.draft && status.published) {
+      return 'Draft & Published';
+    }
+
+    if (status.draft) {
+      return 'Draft';
+    }
+
+    return 'Published';
+  }
+
+  formatStatusClass(status?: StateInfo): string {
+    if (!status) {
+      return 'draft';
+    }
+
+    if (status.draft && status.published) {
+      return 'both';
+    }
+
+    return status.draft ? 'draft' : 'published';
+  }
+
   handleCopy(item: ContentItem) {
     navigator.clipboard.writeText(item.key);
     alert('Item ID copied to clipboard');
@@ -123,6 +160,9 @@ export class ContentItemList extends LitElement {
 
   handleJson(item: ContentItem) {
     // open new tab
-    window.open(`${this.baseURL}/${this.businessUnitKey}/content-items/${item.key}`, '_blank');
+    window.open(
+      `${this.baseURL}/${this.businessUnitKey}/published/content-items/${item.key}`,
+      '_blank'
+    );
   }
 }

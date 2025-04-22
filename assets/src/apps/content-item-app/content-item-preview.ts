@@ -1,7 +1,7 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { ContentItem } from '../../types';
-import { fetchContentItemEndpoint } from '../../utils/api';
+import { fetchPreviewContentItemEndpoint } from '../../utils/api';
 import '../../apps/cms-renderer/component-renderer';
 
 @customElement('content-item-preview')
@@ -85,10 +85,11 @@ export class ContentItemPreview extends LitElement {
     this.error = null;
 
     try {
-      this.contentItem = await fetchContentItemEndpoint<ContentItem>(
+      this.contentItem = await fetchPreviewContentItemEndpoint<ContentItem>(
         `${this.baseURL}/${this.businessUnitKey}`,
         this.contentItemKey
       );
+      console.log(this.contentItem);
     } catch (err) {
       this.error = `Error fetching content item: ${(err as Error).message}`;
       console.error('Error fetching content item:', err);

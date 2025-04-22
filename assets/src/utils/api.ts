@@ -1,4 +1,13 @@
-import { ApiResponse } from '../types';
+import {
+  ApiResponse,
+  ContentItem,
+  ContentItemStates,
+  ContentItemVersions,
+  Page,
+  PageStates,
+  PageVersions,
+  StateInfo,
+} from '../types';
 
 /**
  * Generic fetch function for making API calls
@@ -146,7 +155,15 @@ export async function deleteContentTypeEndpoint(baseURL: string, key: string): P
 /**
  * Fetch all content items
  */
-export async function fetchContentItemsEndpoint<T>(baseURL: string): Promise<ApiResponse<T>[]> {
+export async function fetchContentItemsEndpoint<T>(baseURL: string): Promise<
+  {
+    container: string;
+    key: string;
+    value: T;
+    version: number;
+    states: StateInfo;
+  }[]
+> {
   const response = await fetch(`${baseURL}/content-items`);
 
   if (!response.ok) {
@@ -160,9 +177,13 @@ export async function fetchContentItemsEndpoint<T>(baseURL: string): Promise<Api
 /**
  * Fetch a single content item
  */
-export async function fetchContentItemEndpoint<T>(baseURL: string, key: string): Promise<T> {
-  const response = await fetchApi<T>(`${baseURL}/content-items/${key}`);
-  return response.value;
+export async function fetchPreviewContentItemEndpoint<T>(baseURL: string, key: string): Promise<T> {
+  const response = await fetch(`${baseURL}/preview/content-items/${key}`, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  }).then(response => response.json());
+  return response;
 }
 
 /**
@@ -234,7 +255,7 @@ export async function getDatasourceByKeyEndpoint<T>(
 
 /**
  * Compile and upload TypeScript files to create a bundled JavaScript file
- * 
+ *
  * @param baseURL Base URL for the API
  * @param key Component key
  * @param files Object containing file names as keys and file content as values
@@ -249,4 +270,132 @@ export async function compileAndUploadEndpoint<T>(
     method: 'POST',
     body: JSON.stringify({ key, files }),
   });
+}
+
+/**
+ * Version management functions
+ */
+
+// Fetch versions for a content type (content-items or pages)
+export async function fetchVersionsEndpoint<T>(
+  baseURL: string,
+  contentType: 'pages' | 'content-items',
+  key: string
+): Promise<T> {
+  return fetch(`${baseURL}/${contentType}/${key}/versions`, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  }).then(response => response.json());
+}
+
+// Save a new version
+export async function saveVersionEndpoint<T>(
+  baseURL: string,
+  contentType: 'pages' | 'content-items',
+  key: string,
+  data: T
+): Promise<ContentItemVersions | PageVersions> {
+  console.log('Saving version:', data);
+  return fetch(`${baseURL}/${contentType}/${key}/versions`, {
+    method: 'POST',
+    body: JSON.stringify({ value: data }),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  }).then(response => response.json());
+}
+
+// Get a specific version
+export async function getVersionEndpoint<T>(
+  baseURL: string,
+  contentType: 'pages' | 'content-items',
+  key: string,
+  versionId: string
+): Promise<T> {
+  return fetch(`${baseURL}/${contentType}/${key}/versions/${versionId}`, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  }).then(response => response.json());
+}
+
+/**
+ * State management functions
+ */
+
+// Get states
+export async function getStatesEndpoint<T>(
+  baseURL: string,
+  contentType: 'pages' | 'content-items',
+  key: string
+): Promise<T> {
+  return fetch(`${baseURL}/${contentType}/${key}/states`, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  }).then(response => response.json());
+}
+
+// Save draft state
+export async function saveDraftEndpoint<T>(
+  baseURL: string,
+  contentType: 'pages' | 'content-items',
+  key: string,
+  data: T
+): Promise<ContentItemStates | PageStates> {
+  console.log('Saving draft:', data);
+  return fetch(`${baseURL}/${contentType}/${key}/states/draft`, {
+    method: 'PUT',
+    body: JSON.stringify({ value: data }),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  }).then(response => response.json());
+}
+
+// Publish state
+export async function publishEndpoint<T extends (Page | ContentItem) & { states?: StateInfo }>(
+  baseURL: string,
+  contentType: 'pages' | 'content-items',
+  key: string,
+  data: T,
+  clearDraft: boolean = false
+): Promise<ContentItemStates | PageStates> {
+  let url = `${baseURL}/${contentType}/${key}/states/published`;
+  if (clearDraft) {
+    url += '?clearDraft=true';
+  }
+
+  if ('states' in data) {
+    delete data.states;
+  }
+
+  return fetch(url, {
+    method: 'PUT',
+    body: JSON.stringify({ value: data }),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  }).then(response => response.json());
+}
+
+// Revert draft state (delete draft)
+export async function revertDraftEndpoint(
+  baseURL: string,
+  contentType: 'pages' | 'content-items',
+  key: string
+): Promise<void> {
+  const response = await fetch(`${baseURL}/${contentType}/${key}/states/draft`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`API request failed: ${response.status} ${response.statusText}`);
+  }
+
+  return;
 }

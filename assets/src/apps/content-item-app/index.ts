@@ -12,12 +12,24 @@ import {
   fetchContentItems,
   updateContentItem,
 } from '../../store/content-item.slice';
-import { ContentItem, ContentTypeData, ContentTypeMetaData } from '../../types';
+import { fetchStates, publish, revertToPublished, saveDraft } from '../../store/state.slice';
+import { fetchVersions, saveVersion } from '../../store/version.slice';
+import {
+  ContentItem,
+  ContentTypeData,
+  ContentTypeMetaData,
+  FetchStatesEvent,
+  FetchVersionsEvent,
+  PublishEvent,
+  RevertEvent,
+  StateInfo,
+} from '../../types';
 import { getAllContentTypesMetaData } from '../../utils/content-type-utility';
 import '../shared/components/property-editor';
-import './components/content-type-modal';
-import './components/content-item-list';
 import './components/content-item-editor';
+import './components/content-item-list';
+import './components/content-type-modal';
+
 @customElement('content-item-app')
 export class ContentItemApp extends connect(store)(LitElement) {
   @property({ type: String })
@@ -40,6 +52,9 @@ export class ContentItemApp extends connect(store)(LitElement) {
 
   @watch('contentItem.items')
   private items: ContentItem[] = [];
+
+  @watch('contentItem.states')
+  private states: Record<string, StateInfo> = {};
 
   @watch('contentItem.loading')
   private loading = false;
@@ -128,8 +143,6 @@ export class ContentItemApp extends connect(store)(LitElement) {
         ...item.component,
       };
       if (component) {
-        console.log('handleSave', component);
-
         if (this.view === 'new') {
           store.dispatch(
             createContentItem({
@@ -138,13 +151,30 @@ export class ContentItemApp extends connect(store)(LitElement) {
               item: component,
             })
           );
-
           this.view = 'list';
         } else {
           await store.dispatch(
             updateContentItem({ baseURL: this.hydratedUrl, key: component.key, item: component })
           );
         }
+        await this.handleSaveVersion();
+        await this.handleSaveDraft(component);
+        // After updating, refresh versions and states
+        store.dispatch(
+          fetchVersions({
+            baseURL: this.hydratedUrl,
+            key: component.key,
+            contentType: 'content-items',
+          })
+        );
+
+        store.dispatch(
+          fetchStates({
+            baseURL: this.hydratedUrl,
+            key: component.key,
+            contentType: 'content-items',
+          })
+        );
         store.dispatch(fetchContentItems(this.hydratedUrl));
       }
     } else {
@@ -171,6 +201,86 @@ export class ContentItemApp extends connect(store)(LitElement) {
     } as ContentItem;
   }
 
+  private handleFetchVersions = (e: FetchVersionsEvent) => {
+    const { key, contentType } = e.detail;
+    if (key && contentType) {
+      store.dispatch(
+        fetchVersions({
+          baseURL: this.hydratedUrl,
+          key,
+          contentType,
+        })
+      );
+    }
+  };
+
+  private handleSaveVersion = () => {
+    if (this.selectedItem) {
+      return store.dispatch(
+        saveVersion({
+          baseURL: this.hydratedUrl,
+          item: this.selectedItem,
+          key: this.selectedItem.key,
+          contentType: 'content-items',
+        })
+      );
+    }
+  };
+
+  private handleFetchStates = (e: FetchStatesEvent) => {
+    const { key, contentType } = e.detail;
+    if (key && contentType) {
+      store.dispatch(
+        fetchStates({
+          baseURL: this.hydratedUrl,
+          key,
+          contentType,
+        })
+      );
+    }
+  };
+
+  private handleSaveDraft = (updatedItem: ContentItem) => {
+    if (this.selectedItem) {
+      return store.dispatch(
+        saveDraft({
+          baseURL: this.hydratedUrl,
+          item: updatedItem,
+          key: this.selectedItem.key,
+          contentType: 'content-items',
+        })
+      );
+    }
+  };
+
+  private handlePublish = (e: PublishEvent) => {
+    const { item, key, contentType, clearDraft } = e.detail;
+    if (item && key && contentType) {
+      store.dispatch(
+        publish({
+          baseURL: this.hydratedUrl,
+          item,
+          key,
+          contentType,
+          clearDraft,
+        })
+      );
+    }
+  };
+
+  private handleRevert = (e: RevertEvent) => {
+    const { key, contentType } = e.detail;
+    if (key && contentType) {
+      store.dispatch(
+        revertToPublished({
+          baseURL: this.hydratedUrl,
+          key,
+          contentType,
+        })
+      );
+    }
+  };
+
   render() {
     if (this.loading) {
       return html`<div class="loading">Loading...</div>`;
@@ -192,6 +302,10 @@ export class ContentItemApp extends connect(store)(LitElement) {
             this.selectedItem = null;
           }}"
           @save="${(e: CustomEvent) => this.handleSave(e.detail)}"
+          @fetch-versions="${this.handleFetchVersions}"
+          @fetch-states="${this.handleFetchStates}"
+          @publish="${this.handlePublish}"
+          @revert="${this.handleRevert}"
         ></content-item-editor>
       `;
     }
@@ -200,6 +314,7 @@ export class ContentItemApp extends connect(store)(LitElement) {
       <div>
         <content-item-list
           .items="${this.items}"
+          .states="${this.states}"
           .baseURL="${this.baseURL}"
           .businessUnitKey="${this.businessUnitKey}"
           .loading="${this.loading}"

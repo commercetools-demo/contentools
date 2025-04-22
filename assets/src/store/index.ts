@@ -3,6 +3,8 @@ import pagesReducer from './pages.slice';
 import editorReducer from './editor.slice';
 import contentTypeReducer from './content-type.slice';
 import contentItemReducer from './content-item.slice';
+import versionReducer from './version.slice';
+import stateReducer from './state.slice';
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +12,8 @@ export const store = configureStore({
     editor: editorReducer,
     contentType: contentTypeReducer,
     contentItem: contentItemReducer,
+    version: versionReducer,
+    state: stateReducer,
   },
 });
 
