@@ -1,7 +1,7 @@
 import { LitElement, html, css, PropertyValues } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { ContentItem } from '../../../../types';
-import { getContentTypeMetaData } from '../../../../utils/content-type-utility';
+import { getContentTypeMetaData, getAllContentTypes } from '../../../../utils/content-type-utility';
 import { convertToWebComponentName } from '../../../content-type-app/components/content-type-form/utils/component-generator';
 
 @customElement('component-renderer')
@@ -151,8 +151,7 @@ export class ComponentRenderer extends LitElement {
       // Check if the component is built-in or external
       if (!metadata.isBuiltIn) {
         // For external components, load the script first
-        const registryModule = await import('../../../../utils/content-type-utility');
-        const components = await registryModule.getAllContentTypes({
+        const components = await getAllContentTypes({
           baseURL: this.baseURL,
         });
         const deployedUrl = components.find(c => c.metadata.type === type)?.deployedUrl || '';
