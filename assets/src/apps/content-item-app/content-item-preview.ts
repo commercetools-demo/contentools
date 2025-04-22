@@ -2,7 +2,7 @@ import { LitElement, html, css } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { ContentItem } from '../../types';
 import { fetchPreviewContentItemEndpoint } from '../../utils/api';
-import '../../apps/cms-renderer/component-renderer';
+import '../shared/components/component-renderer/component-renderer';
 
 @customElement('content-item-preview')
 export class ContentItemPreview extends LitElement {

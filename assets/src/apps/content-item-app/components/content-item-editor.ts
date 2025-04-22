@@ -4,7 +4,6 @@
 import { LitElement, css, html } from 'lit';
 import { connect, watch } from 'lit-redux-watch';
 import { customElement, property, state } from 'lit/decorators.js';
-import '../../../apps/cms-renderer/component-renderer';
 import '../../../components/atoms/button';
 import '../../../components/molecules/publishing-state-controls';
 import '../../../components/molecules/version-history-sidebar';

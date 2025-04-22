@@ -1,7 +1,7 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { GridRow, ContentItem } from '../../types';
-import './component-renderer';
+import '../shared/components/component-renderer/component-renderer';
 
 @customElement('grid-renderer')
 export class GridRenderer extends LitElement {
