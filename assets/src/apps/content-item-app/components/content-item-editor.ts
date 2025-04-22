@@ -179,41 +179,41 @@ export class ContentItemEditor extends connect(store)(LitElement) {
           `
             : html`
             <div class="content-item-edit">
-              <cms-property-editor
-                class="content-item-edit-editor"
-                .versionedContent="${this.contentVersion}"
-                .component="${contentToEdit}"
-                .baseURL="${this.baseURL}"
-                .businessUnitKey="${this.businessUnitKey}"
-                @component-updated="${this._handleComponentUpdated}"
-              >
-                <div slot="before-fields" class="content-item-edit-editor-header">
-                  <ui-button
-                    variant="text"
-                    @click="${() => (this.showVersionHistory = !this.showVersionHistory)}"
-                    >⏲</ui-button
+                  <cms-property-editor
+                    class="content-item-edit-editor"
+                    .versionedContent="${this.contentVersion}"
+                    .component="${contentToEdit}"
+                    .baseURL="${this.baseURL}"
+                    .businessUnitKey="${this.businessUnitKey}"
+                    @component-updated="${this._handleComponentUpdated}"
                   >
-                  ${this.currentState === 'published' || this.currentState === 'both'
-                    ? html`<ui-button variant="text" @click="${() => this.handleJson(false)}">
-                          <span style="font-size: 8px;">published↗︎</span>
-                        </ui-button>`
-                    : ''}
-                  <ui-button variant="text" @click="${() => this.handleJson(true)}">
-                    <span style="font-size: 8px;">draft↗︎</span>
-                  </ui-button>
-                  <div title="${this._getStateDescription()}">
-                    <ui-status-tag status="${this.currentState || 'draft'}"></ui-status-tag>
+                    <div slot="before-fields" class="content-item-edit-editor-header">
+                      <ui-button
+                        variant="text"
+                        @click="${() => (this.showVersionHistory = !this.showVersionHistory)}"
+                        >⏲</ui-button
+                      >
+                      ${this.currentState === 'published' || this.currentState === 'both'
+                        ? html`<ui-button variant="text" @click="${() => this.handleJson(false)}">
+                              <span style="font-size: 8px;">published↗︎</span>
+                            </ui-button>`
+                        : ''}
+                      <ui-button variant="text" @click="${() => this.handleJson(true)}">
+                        <span style="font-size: 8px;">draft↗︎</span>
+                      </ui-button>
+                      <div title="${this._getStateDescription()}">
+                        <ui-status-tag status="${this.currentState || 'draft'}"></ui-status-tag>
+                      </div>
+                    </div>
+                  </cms-property-editor>
+                  <div class="content-item-edit-preview">
+                    <content-item-preview
+                      .contentItemKey="${this.item.key}"
+                      .baseURL="${this.baseURL}"
+                      .businessUnitKey="${this.businessUnitKey}"
+                    ></content-item-preview>
                   </div>
                 </div>
-              </cms-property-editor>
-              <div class="content-item-edit-preview">
-                <content-item-preview
-                  .contentItemKey="${this.item.key}"
-                  .baseURL="${this.baseURL}"
-                  .businessUnitKey="${this.businessUnitKey}"
-                ></content-item-preview>
-              </div>
-            </div>
           `}
           ${this.showVersionHistory && !this.versionsLoading
             ? html`
@@ -308,7 +308,6 @@ export class ContentItemEditor extends connect(store)(LitElement) {
     this.contentVersion = null;
     this.showVersionHistory = false;
   }
-
 
   private _getStateDescription() {
     switch (this.currentState) {

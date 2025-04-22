@@ -187,6 +187,21 @@ export async function fetchPreviewContentItemEndpoint<T>(baseURL: string, key: s
 }
 
 /**
+ * Fetch a single content item
+ */
+export async function fetchPublishedContentItemEndpoint<T>(
+  baseURL: string,
+  key: string
+): Promise<T> {
+  const response = await fetch(`${baseURL}/published/content-items/${key}`, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  }).then(response => response.json());
+  return response;
+}
+
+/**
  * Create a content item
  */
 export async function createContentItemEndpoint<T extends { key: string }>(
