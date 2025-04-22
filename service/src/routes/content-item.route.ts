@@ -61,10 +61,92 @@ contentItemRouter.get(
   async (req, res, next) => {
     try {
       const { key } = req.params;
+
+      const contentItem = await contentController.getCustomObject(key);
+      if (!contentItem) {
+        throw new Error('Content item not found');
+      }
       const contentItemController = new ContentItemController(
         contentController
       );
-      const object = await contentItemController.getContentItem(key);
+      const object = await contentItemController.getContentItem(
+        contentItem.value
+      );
+      res.json(object);
+    } catch (error) {
+      logger.error(
+        `Failed to get custom object with key ${req.params.key}:`,
+        error
+      );
+      next(error);
+    }
+  }
+);
+
+contentItemRouter.get(
+  '/:businessUnitKey/published/content-items/:key',
+  async (req, res, next) => {
+    try {
+      const { key, businessUnitKey } = req.params;
+      const contentStateController = new CustomObjectController(
+        CONTENT_ITEM_STATE_CONTAINER
+      );
+
+      const contentItemStates = await contentStateController.getCustomObjects(
+        `value(key = "${key}" AND businessUnitKey = "${businessUnitKey}")`
+      );
+      if (
+        contentItemStates.length === 0 ||
+        !contentItemStates[0].value.states ||
+        !contentItemStates[0].value.states.published
+      ) {
+        throw new Error('Content item not found');
+      }
+      const contentItemController = new ContentItemController(
+        contentController
+      );
+      const object = await contentItemController.getContentItem(
+        contentItemStates[0].value.states.published
+      );
+      res.json(object);
+    } catch (error) {
+      logger.error(
+        `Failed to get custom object with key ${req.params.key}:`,
+        error
+      );
+      next(error);
+    }
+  }
+);
+
+contentItemRouter.get(
+  '/:businessUnitKey/preview/content-items/:key',
+  async (req, res, next) => {
+    try {
+      const { key, businessUnitKey } = req.params;
+      const contentStateController = new CustomObjectController(
+        CONTENT_ITEM_STATE_CONTAINER
+      );
+
+      const contentItemStates = await contentStateController.getCustomObjects(
+        `value(key = "${key}" AND businessUnitKey = "${businessUnitKey}")`
+      );
+      if (
+        contentItemStates.length === 0 ||
+        !contentItemStates[0].value.states ||
+        (!contentItemStates[0].value.states.draft &&
+          !contentItemStates[0].value.states.published)
+      ) {
+        throw new Error('Content item not found');
+      }
+
+      const contentItemController = new ContentItemController(
+        contentController
+      );
+      const object = await contentItemController.getContentItem(
+        contentItemStates[0].value.states.draft ||
+          contentItemStates[0].value.states.published
+      );
       res.json(object);
     } catch (error) {
       logger.error(

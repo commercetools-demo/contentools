@@ -140,6 +140,7 @@ export class PropertyEditor extends connect(store)(LitElement) {
       display: flex;
       justify-content: flex-end;
       margin-top: 20px;
+      gap: 10px;
     }
 
     .dialog-buttons button {
@@ -343,10 +344,10 @@ export class PropertyEditor extends connect(store)(LitElement) {
             cannot be undone.
           </p>
           <div class="dialog-buttons">
-            <button class="cancel-button" @click="${() => (this.showDeleteConfirm = false)}">
+            <ui-button variant="outline" @click="${() => (this.showDeleteConfirm = false)}">
               Cancel
-            </button>
-            <button class="confirm-button" @click="${this.deleteComponent}">Delete</button>
+            </ui-button>
+            <ui-button variant="critical" @click="${this.deleteComponent}">Delete</ui-button>
           </div>
         </div>
       </div>

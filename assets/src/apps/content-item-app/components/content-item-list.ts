@@ -10,6 +10,9 @@ export class ContentItemList extends LitElement {
   @property({ type: Array })
   items: ContentItem[] = [];
 
+  @property({ type: Object })
+  states: Record<string, StateInfo> = {};
+
   @property({ type: String })
   baseURL: string = '';
 
@@ -82,7 +85,7 @@ export class ContentItemList extends LitElement {
                 item.type,
                 html`
                   <ui-status-tag
-                    status="${this.formatStatusClass(item.states)}"
+                    status="${this.formatStatusClass(this.states[item.key])}"
                   ></ui-status-tag>
                 `,
                 html`
@@ -157,6 +160,9 @@ export class ContentItemList extends LitElement {
 
   handleJson(item: ContentItem) {
     // open new tab
-    window.open(`${this.baseURL}/${this.businessUnitKey}/content-items/${item.key}`, '_blank');
+    window.open(
+      `${this.baseURL}/${this.businessUnitKey}/published/content-items/${item.key}`,
+      '_blank'
+    );
   }
 }

@@ -67,35 +67,25 @@ export class ContentItemController {
    * @param key The content item key
    * @returns The content item with resolved datasource properties
    */
-  async getContentItem(key: string): Promise<ContentItem> {
-    // Get the content item
-    const contentItem = (await this.contentItemController.getCustomObject(
-      key
-    )) as ContentItem;
-
-    if (!contentItem?.value?.type) {
-      return contentItem;
-    }
-
+  async getContentItem(
+    item: ContentItem['value']
+  ): Promise<ContentItem['value']> {
     // Get the content type associated with this content item
     try {
       const contentType = (await this.contentTypeController.getCustomObject(
-        contentItem.value.type
+        item.type
       )) as ContentType;
       // If content type exists, resolve any datasource properties
       if (contentType) {
-        return await this.resolveDatasourceProperties(contentItem, contentType);
+        return await this.resolveDatasourceProperties(item, contentType);
       }
     } catch (error) {
-      logger.error(
-        `Failed to get content type for item with key ${key}:`,
-        error
-      );
+      logger.error(`Failed to get content type for item`, error);
       // Continue and return the original content item if content type not found
     }
 
     // Return the original content item if no datasource resolution happened
-    return contentItem;
+    return item;
   }
 
   /**
@@ -105,15 +95,15 @@ export class ContentItemController {
    * @returns The content item with resolved datasource properties
    */
   private async resolveDatasourceProperties(
-    contentItem: ContentItem,
+    contentItem: ContentItem['value'],
     contentType: ContentType
-  ): Promise<ContentItem> {
+  ): Promise<ContentItem['value']> {
     if (!contentType?.value?.metadata?.propertySchema) {
       return contentItem;
     }
 
     const clonedContentItem = JSON.parse(JSON.stringify(contentItem));
-    const properties = clonedContentItem.value.properties || {};
+    const properties = clonedContentItem.properties || {};
     const propertySchema = contentType.value.metadata.propertySchema;
 
     // Find properties with type "datasource"
@@ -144,7 +134,7 @@ export class ContentItemController {
 
         // Replace property value with resolved data
         if (resolvedDatasource) {
-          clonedContentItem.value.properties[propertyKey] = resolvedDatasource;
+          clonedContentItem.properties[propertyKey] = resolvedDatasource;
         }
       } catch (error) {
         logger.error(

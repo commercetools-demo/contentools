@@ -1,7 +1,9 @@
 import {
   ApiResponse,
+  ContentItem,
   ContentItemStates,
   ContentItemVersions,
+  Page,
   PageStates,
   PageVersions,
   StateInfo,
@@ -175,9 +177,13 @@ export async function fetchContentItemsEndpoint<T>(baseURL: string): Promise<
 /**
  * Fetch a single content item
  */
-export async function fetchContentItemEndpoint<T>(baseURL: string, key: string): Promise<T> {
-  const response = await fetchApi<T>(`${baseURL}/content-items/${key}`);
-  return response.value;
+export async function fetchPreviewContentItemEndpoint<T>(baseURL: string, key: string): Promise<T> {
+  const response = await fetch(`${baseURL}/preview/content-items/${key}`, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  }).then(response => response.json());
+  return response;
 }
 
 /**
@@ -349,7 +355,7 @@ export async function saveDraftEndpoint<T>(
 }
 
 // Publish state
-export async function publishEndpoint<T>(
+export async function publishEndpoint<T extends (Page | ContentItem) & { states?: StateInfo }>(
   baseURL: string,
   contentType: 'pages' | 'content-items',
   key: string,
@@ -359,6 +365,10 @@ export async function publishEndpoint<T>(
   let url = `${baseURL}/${contentType}/${key}/states/published`;
   if (clearDraft) {
     url += '?clearDraft=true';
+  }
+
+  if ('states' in data) {
+    delete data.states;
   }
 
   return fetch(url, {

@@ -5,7 +5,6 @@ export interface ContentItem {
   businessUnitKey: string;
   name: string;
   properties: Record<string, any>;
-  states?: StateInfo;
 }
 
 export type VersionInfo = (Page | ContentItem) & {

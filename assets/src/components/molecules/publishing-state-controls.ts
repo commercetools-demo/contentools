@@ -51,28 +51,9 @@ export class PublishingStateControls extends LitElement {
   render() {
     return html`
       <div class="state-controls">
-        <div
-          class="state-indicator ${this.currentState || ''}"
-          title="${this._getStateDescription()}"
-        >
-          <ui-status-tag status="${this.currentState || 'draft'}"></ui-status-tag>
-        </div>
         <div class="state-actions">${this._renderActions()}</div>
       </div>
     `;
-  }
-
-  private _getStateDescription() {
-    switch (this.currentState) {
-      case 'draft':
-        return 'This content is in draft state and has not been published yet';
-      case 'published':
-        return 'This content is published and visible to users';
-      case 'both':
-        return 'This content has unpublished changes (draft) that differ from the published version';
-      default:
-        return 'No state information available';
-    }
   }
 
   private _renderActions() {

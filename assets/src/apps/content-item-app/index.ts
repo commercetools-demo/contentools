@@ -22,6 +22,7 @@ import {
   FetchVersionsEvent,
   PublishEvent,
   RevertEvent,
+  StateInfo,
 } from '../../types';
 import { getAllContentTypesMetaData } from '../../utils/content-type-utility';
 import '../shared/components/property-editor';
@@ -51,6 +52,9 @@ export class ContentItemApp extends connect(store)(LitElement) {
 
   @watch('contentItem.items')
   private items: ContentItem[] = [];
+
+  @watch('contentItem.states')
+  private states: Record<string, StateInfo> = {};
 
   @watch('contentItem.loading')
   private loading = false;
@@ -310,6 +314,7 @@ export class ContentItemApp extends connect(store)(LitElement) {
       <div>
         <content-item-list
           .items="${this.items}"
+          .states="${this.states}"
           .baseURL="${this.baseURL}"
           .businessUnitKey="${this.businessUnitKey}"
           .loading="${this.loading}"

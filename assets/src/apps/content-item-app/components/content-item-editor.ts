@@ -92,6 +92,12 @@ export class ContentItemEditor extends connect(store)(LitElement) {
       grid-template-columns: 1fr 300px;
       gap: 20px;
     }
+    .content-item-edit-editor-header {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 10px;
+    }
   `;
 
   connectedCallback() {
@@ -145,12 +151,7 @@ export class ContentItemEditor extends connect(store)(LitElement) {
           <div class="content-item-controls">
             ${!this.isNew
               ? html`
-              <ui-button
-                    variant="outline"
-                    @click="${() => (this.showVersionHistory = !this.showVersionHistory)}"
-                  >
-                    ${this.showVersionHistory ? 'Hide Version History' : 'Show Version History'}
-                  </ui-button>
+              
 
                   ${!this.stateLoading
                     ? html`
@@ -161,6 +162,7 @@ export class ContentItemEditor extends connect(store)(LitElement) {
                         ></publishing-state-controls>
               `
                     : ''}
+             
             `
               : ''}
           </div>
@@ -178,22 +180,41 @@ export class ContentItemEditor extends connect(store)(LitElement) {
           `
             : html`
             <div class="content-item-edit">
-                  <cms-property-editor
-                    class="content-item-edit-editor"
-                    .versionedContent="${this.contentVersion}"
-                    .component="${contentToEdit}"
-                    .baseURL="${this.baseURL}"
-                    .businessUnitKey="${this.businessUnitKey}"
-                    @component-updated="${this._handleComponentUpdated}"
-                  ></cms-property-editor>
-                  <div class="content-item-edit-preview">
-                    <content-item-preview
-                      .contentItemKey="${this.item.key}"
-                      .baseURL="${this.baseURL}"
-                      .businessUnitKey="${this.businessUnitKey}"
-                    ></content-item-preview>
+              <cms-property-editor
+                class="content-item-edit-editor"
+                .versionedContent="${this.contentVersion}"
+                .component="${contentToEdit}"
+                .baseURL="${this.baseURL}"
+                .businessUnitKey="${this.businessUnitKey}"
+                @component-updated="${this._handleComponentUpdated}"
+              >
+                <div slot="before-fields" class="content-item-edit-editor-header">
+                  <ui-button
+                    variant="text"
+                    @click="${() => (this.showVersionHistory = !this.showVersionHistory)}"
+                    >⏲</ui-button
+                  >
+                  ${this.currentState === 'published' || this.currentState === 'both'
+                    ? html`<ui-button variant="text" @click="${() => this.handleJson(false)}">
+                          <span style="font-size: 8px;">published↗︎</span>
+                        </ui-button>`
+                    : ''}
+                  <ui-button variant="text" @click="${() => this.handleJson(true)}">
+                    <span style="font-size: 8px;">draft↗︎</span>
+                  </ui-button>
+                  <div title="${this._getStateDescription()}">
+                    <ui-status-tag status="${this.currentState || 'draft'}"></ui-status-tag>
                   </div>
                 </div>
+              </cms-property-editor>
+              <div class="content-item-edit-preview">
+                <content-item-preview
+                  .contentItemKey="${this.item.key}"
+                  .baseURL="${this.baseURL}"
+                  .businessUnitKey="${this.businessUnitKey}"
+                ></content-item-preview>
+              </div>
+            </div>
           `}
           ${this.showVersionHistory && !this.versionsLoading
             ? html`
@@ -289,11 +310,33 @@ export class ContentItemEditor extends connect(store)(LitElement) {
     this.showVersionHistory = false;
   }
 
+
+  private _getStateDescription() {
+    switch (this.currentState) {
+      case 'draft':
+        return 'This content is in draft state and has not been published yet';
+      case 'published':
+        return 'This content is published and visible to users';
+      case 'both':
+        return 'This content has unpublished changes (draft) that differ from the published version';
+      default:
+        return 'No state information available';
+    }
+  }
+
   // Map state from store to properties
   mapState(state: any) {
     return {
       versions: state.version.versions,
       currentState: state.state.currentState,
     };
+  }
+
+  handleJson(isPreview: boolean = false) {
+    // open new tab
+    window.open(
+      `${this.baseURL}/${this.businessUnitKey}/${isPreview ? 'preview/' : 'published/'}content-items/${this.item?.key}`,
+      '_blank'
+    );
   }
 }
