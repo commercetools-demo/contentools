@@ -80,7 +80,6 @@ contentItemVersionRouter.post(
       const { businessUnitKey, key } = req.params;
       const versionKey = `${businessUnitKey}_${key}`;
       const { value } = req.body;
-      console.log('Value:', req.body);
       const maxVersions = parseInt(process.env.MAX_VERSIONS || '5', 10);
 
       if (!value) {
@@ -92,7 +91,6 @@ contentItemVersionRouter.post(
         const existingObject =
           await versionController.getCustomObject(versionKey);
         existingVersions = existingObject.value;
-        console.log('Existing versions:', existingVersions);
       } catch (error) {
         // Create if not exists
         if ((error as any).statusCode === 404) {
@@ -112,8 +110,6 @@ contentItemVersionRouter.post(
         id: uuidv4(),
       };
 
-      console.log('New version:', newVersion);
-
       // Add new version at the beginning
       existingVersions.versions.unshift(newVersion);
 
@@ -125,12 +121,11 @@ contentItemVersionRouter.post(
         );
       }
 
-      console.log('Existing versions updated:', existingVersions);
       const response = await versionController.updateCustomObject(
         versionKey,
         existingVersions
       );
-      res.status(201).json(newVersion);
+      res.status(201).json(response.value);
     } catch (error) {
       logger.error('Failed to save version:', (error as Error).message);
       next(error);

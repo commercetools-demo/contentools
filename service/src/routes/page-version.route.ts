@@ -126,7 +126,7 @@ pageVersionRouter.post('/:businessUnitKey/pages/:key/versions', (async (
       versionKey,
       existingVersions
     );
-    res.status(201).json(newVersion);
+    res.status(201).json(response.value);
   } catch (error) {
     logger.error('Failed to save version:', error);
     next(error);
