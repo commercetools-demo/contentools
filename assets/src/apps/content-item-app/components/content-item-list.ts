@@ -2,7 +2,8 @@ import { LitElement, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import '../../../components/atoms/button';
 import '../../../components/atoms/table';
-import { ContentItem } from '../../../types';
+import '../../../components/atoms/status-tag';
+import { ContentItem, StateInfo } from '../../../types';
 
 @customElement('content-item-list')
 export class ContentItemList extends LitElement {
@@ -74,11 +75,16 @@ export class ContentItemList extends LitElement {
 
         <div class="content">
           <ui-table
-            .headers="${['Name', 'Type', 'Actions']}"
+            .headers="${['Name', 'Type', 'Status', 'Actions']}"
             .rows="${this.items.map(item => ({
               cells: [
                 item.name,
                 item.type,
+                html`
+                  <ui-status-tag
+                    status="${this.formatStatusClass(item.states)}"
+                  ></ui-status-tag>
+                `,
                 html`
                   <div class="action-buttons">
                     <ui-button
@@ -114,6 +120,34 @@ export class ContentItemList extends LitElement {
         </div>
       </div>
     `;
+  }
+
+  formatStatus(status?: StateInfo): string {
+    if (!status) {
+      return 'Draft';
+    }
+
+    if (status.draft && status.published) {
+      return 'Draft & Published';
+    }
+
+    if (status.draft) {
+      return 'Draft';
+    }
+
+    return 'Published';
+  }
+
+  formatStatusClass(status?: StateInfo): string {
+    if (!status) {
+      return 'draft';
+    }
+
+    if (status.draft && status.published) {
+      return 'both';
+    }
+
+    return status.draft ? 'draft' : 'published';
   }
 
   handleCopy(item: ContentItem) {

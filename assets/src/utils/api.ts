@@ -4,6 +4,7 @@ import {
   ContentItemVersions,
   PageStates,
   PageVersions,
+  StateInfo,
 } from '../types';
 
 /**
@@ -152,7 +153,15 @@ export async function deleteContentTypeEndpoint(baseURL: string, key: string): P
 /**
  * Fetch all content items
  */
-export async function fetchContentItemsEndpoint<T>(baseURL: string): Promise<ApiResponse<T>[]> {
+export async function fetchContentItemsEndpoint<T>(baseURL: string): Promise<
+  {
+    container: string;
+    key: string;
+    value: T;
+    version: number;
+    states: StateInfo;
+  }[]
+> {
   const response = await fetch(`${baseURL}/content-items`);
 
   if (!response.ok) {

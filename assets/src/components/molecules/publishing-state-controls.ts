@@ -55,24 +55,11 @@ export class PublishingStateControls extends LitElement {
           class="state-indicator ${this.currentState || ''}"
           title="${this._getStateDescription()}"
         >
-          ${this._getStateLabel()}
+          <ui-status-tag status="${this.currentState || 'draft'}"></ui-status-tag>
         </div>
         <div class="state-actions">${this._renderActions()}</div>
       </div>
     `;
-  }
-
-  private _getStateLabel() {
-    switch (this.currentState) {
-      case 'draft':
-        return 'Draft';
-      case 'published':
-        return 'Published';
-      case 'both':
-        return 'Draft (Unpublished Changes)';
-      default:
-        return 'Not Set';
-    }
   }
 
   private _getStateDescription() {

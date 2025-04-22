@@ -8,23 +8,47 @@ import {
 import { logger } from '../utils/logger.utils';
 import { CustomObjectController } from '../controllers/custom-object.controller';
 import { ContentItemController } from '../controllers/content-item.controller';
+import { CONTENT_ITEM_STATE_CONTAINER } from './content-item-state.route';
 
 const contentItemRouter = Router();
 export const CONTENT_ITEM_CONTAINER =
   process.env.CONTENT_ITEM_CONTAINER || 'content-item';
-const businessUnitController = new CustomObjectController(
-  CONTENT_ITEM_CONTAINER
-);
+const contentController = new CustomObjectController(CONTENT_ITEM_CONTAINER);
 
 contentItemRouter.get(
   '/:businessUnitKey/content-items',
   async (req: Request, res: Response, next: NextFunction) => {
     try {
+      const contentStateController = new CustomObjectController(
+        CONTENT_ITEM_STATE_CONTAINER
+      );
       const { businessUnitKey } = req.params;
-      const objects = await businessUnitController.getCustomObjects(
+      const contentItems = await contentController.getCustomObjects(
         `value(businessUnitKey = "${businessUnitKey}")`
       );
-      res.json(objects);
+
+      const whereClause = contentItems
+        .map(
+          (item) =>
+            `(key = "${item.key}" AND businessUnitKey = "${businessUnitKey}")`
+        )
+        .join(' OR ');
+      const contentItemStates = await contentStateController.getCustomObjects(
+        `value(${whereClause})`
+      );
+
+      // Merge content items with their states
+      const contentItemsWithStates = contentItems.map((item) => {
+        const states = contentItemStates.find(
+          (state) => state.value.key === item.key
+        );
+        return {
+          ...item,
+          states: states?.value?.states || {},
+        };
+      });
+
+      res.json(contentItemsWithStates);
     } catch (error) {
       logger.error('Failed to get custom objects:', error);
       next(error);
@@ -38,7 +62,7 @@ contentItemRouter.get(
     try {
       const { key } = req.params;
       const contentItemController = new ContentItemController(
-        businessUnitController
+        contentController
       );
       const object = await contentItemController.getContentItem(key);
       res.json(object);
@@ -67,7 +91,7 @@ contentItemRouter.post('/:businessUnitKey/content-items/:key', (async (
         .json({ error: 'Value is required in the request body' });
     }
 
-    const object = await businessUnitController.createCustomObject(key, {
+    const object = await contentController.createCustomObject(key, {
       ...value,
       businessUnitKey,
     });
@@ -96,7 +120,7 @@ contentItemRouter.put('/:businessUnitKey/content-items/:key', (async (
         .json({ error: 'Value is required in the request body' });
     }
 
-    const object = await businessUnitController.updateCustomObject(key, {
+    const object = await contentController.updateCustomObject(key, {
       ...value,
       businessUnitKey,
     });
@@ -115,7 +139,7 @@ contentItemRouter.delete(
   async (req, res, next) => {
     try {
       const { key } = req.params;
-      await businessUnitController.deleteCustomObject(key);
+      await contentController.deleteCustomObject(key);
       res.status(204).send();
     } catch (error) {
       logger.error(

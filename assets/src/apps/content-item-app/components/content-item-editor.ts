@@ -97,7 +97,6 @@ export class ContentItemEditor extends connect(store)(LitElement) {
   connectedCallback() {
     super.connectedCallback();
     if (this.item?.key && this.baseURL) {
-
       // Fetch versions and states when component connects
       if (!this.isNew) {
         this.dispatchEvent(

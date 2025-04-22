@@ -110,7 +110,8 @@ const versionSlice = createSlice({
       state.error = null;
     },
     selectVersion: (state, action) => {
-      state.selectedVersion = state.versions.find(v => 'id' in v && v.id === action.payload) || null;
+      state.selectedVersion =
+        state.versions.find(v => 'id' in v && v.id === action.payload) || null;
     },
     clearSelectedVersion: state => {
       state.selectedVersion = null;

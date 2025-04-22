@@ -5,7 +5,7 @@ export interface ContentItem {
   businessUnitKey: string;
   name: string;
   properties: Record<string, any>;
-  currentState?: 'draft' | 'published' | 'both';
+  states?: StateInfo;
 }
 
 export type VersionInfo = (Page | ContentItem) & {

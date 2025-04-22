@@ -27,7 +27,10 @@ export const fetchContentItems = createAsyncThunk(
   async (baseURL: string, { rejectWithValue }) => {
     try {
       const result = await fetchContentItemsEndpoint<ContentItem>(baseURL);
-      return result.map(item => item.value);
+      return result.map(item => ({
+        ...item.value,
+        states: item.states,
+      }));
     } catch (error) {
       return rejectWithValue(error instanceof Error ? error.message : String(error));
     }

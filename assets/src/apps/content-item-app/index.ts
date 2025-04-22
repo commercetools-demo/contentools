@@ -21,7 +21,7 @@ import {
   FetchStatesEvent,
   FetchVersionsEvent,
   PublishEvent,
-  RevertEvent
+  RevertEvent,
 } from '../../types';
 import { getAllContentTypesMetaData } from '../../utils/content-type-utility';
 import '../shared/components/property-editor';
