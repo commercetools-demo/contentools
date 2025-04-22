@@ -51,64 +51,57 @@ export class PublishingStateControls extends LitElement {
   render() {
     return html`
       <div class="state-controls">
-        <div 
+        <div
           class="state-indicator ${this.currentState || ''}"
           title="${this._getStateDescription()}"
         >
           ${this._getStateLabel()}
         </div>
-        <div class="state-actions">
-          ${this._renderActions()}
-        </div>
+        <div class="state-actions">${this._renderActions()}</div>
       </div>
     `;
   }
 
   private _getStateLabel() {
-    switch(this.currentState) {
-      case 'draft': return 'Draft';
-      case 'published': return 'Published';
-      case 'both': return 'Draft (Unpublished Changes)';
-      default: return 'Not Set';
+    switch (this.currentState) {
+      case 'draft':
+        return 'Draft';
+      case 'published':
+        return 'Published';
+      case 'both':
+        return 'Draft (Unpublished Changes)';
+      default:
+        return 'Not Set';
     }
   }
 
   private _getStateDescription() {
-    switch(this.currentState) {
-      case 'draft': 
+    switch (this.currentState) {
+      case 'draft':
         return 'This content is in draft state and has not been published yet';
-      case 'published': 
+      case 'published':
         return 'This content is published and visible to users';
-      case 'both': 
+      case 'both':
         return 'This content has unpublished changes (draft) that differ from the published version';
-      default: 
+      default:
         return 'No state information available';
     }
   }
 
   private _renderActions() {
-    switch(this.currentState) {
+    switch (this.currentState) {
       case 'draft':
         return html`
-          <ui-button 
-            variant="success" 
-            @click=${this._publish}
-          >
+          <ui-button variant="success" @click="${this._publish}">
             Publish
           </ui-button>
         `;
       case 'both':
         return html`
-          <ui-button 
-            variant="success" 
-            @click=${this._publish}
-          >
+          <ui-button variant="success" @click="${this._publish}">
             Publish Changes
           </ui-button>
-          <ui-button 
-            variant="outline" 
-            @click=${this._revert}
-          >
+          <ui-button variant="outline" @click="${this._revert}">
             Revert to Published
           </ui-button>
         `;
@@ -122,7 +115,7 @@ export class PublishingStateControls extends LitElement {
     this.dispatchEvent(
       new CustomEvent('publish', {
         bubbles: true,
-        composed: true
+        composed: true,
       })
     );
   }
@@ -131,8 +124,8 @@ export class PublishingStateControls extends LitElement {
     this.dispatchEvent(
       new CustomEvent('revert', {
         bubbles: true,
-        composed: true
+        composed: true,
       })
     );
   }
-} 
+}

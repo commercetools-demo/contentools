@@ -14,7 +14,7 @@ interface CodeFile {
 
 /**
  * Bundles TypeScript files into a single JavaScript file
- * 
+ *
  * @param codeFiles Array of code files with filenames and content
  * @param key Component key for naming
  * @returns A promise that resolves to the bundled JavaScript code
@@ -25,22 +25,22 @@ export async function bundleCode(
 ): Promise<string> {
   // Create project-based temp directory path
   const projectTempPath = path.join(process.cwd(), 'temp');
-  
+
   // Ensure the temp directory exists
   await mkdir(projectTempPath, { recursive: true });
-  
+
   // Create a temporary directory for our files
   const tempDir = await mkdtemp(path.join(projectTempPath, `bundler-${key}-`));
-  
+
   // Set up file paths
-  const entryFile = codeFiles.find(file => 
-    file.filename === 'index.ts' || file.filename.includes('main.ts')
+  const entryFile = codeFiles.find(
+    (file) => file.filename === 'index.ts' || file.filename.includes('main.ts')
   );
-  
+
   if (!entryFile) {
     throw new Error('No entry file found. Expected index.ts or main.ts');
   }
-  
+
   // Write all files to the temporary directory
   await Promise.all(
     codeFiles.map(async (file) => {
@@ -50,7 +50,7 @@ export async function bundleCode(
       await writeFile(filePath, file.content);
     })
   );
-  
+
   try {
     // Configure Rollup
     const bundle = await rollup({
@@ -63,8 +63,8 @@ export async function bundleCode(
             module: 'ESNext',
             target: 'es6',
             moduleResolution: 'node',
-            "experimentalDecorators": true,
-          }
+            experimentalDecorators: true,
+          },
         }),
         rollupString({
           include: '**/*.html',
@@ -72,20 +72,20 @@ export async function bundleCode(
         commonjs(),
       ],
     });
-    
+
     // Generate bundle
     const { output } = await bundle.generate({
       format: 'es',
       esModule: true,
       name: key,
     });
-    
+
     await bundle.close();
-    
+
     // Return the bundled code as string
     return output[0].code;
   } catch (error) {
     logger.error('Bundling error:', error);
     throw error;
   }
-} 
+}

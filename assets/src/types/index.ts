@@ -9,8 +9,8 @@ export interface ContentItem {
 }
 
 export type VersionInfo = (Page | ContentItem) & {
-  timestamp: string
-}
+  timestamp: string;
+};
 
 export interface StateInfo {
   draft?: ContentItem;
@@ -146,7 +146,6 @@ export interface DatasourceParam {
   type: string;
   required: boolean;
 }
-
 
 export interface FetchVersionsEvent extends CustomEvent {
   detail: {

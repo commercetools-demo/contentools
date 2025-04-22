@@ -1,4 +1,10 @@
-import { ApiResponse, ContentItemStates, ContentItemVersions, PageStates, PageVersions } from '../types';
+import {
+  ApiResponse,
+  ContentItemStates,
+  ContentItemVersions,
+  PageStates,
+  PageVersions,
+} from '../types';
 
 /**
  * Generic fetch function for making API calls
@@ -257,8 +263,8 @@ export async function compileAndUploadEndpoint<T>(
 
 // Fetch versions for a content type (content-items or pages)
 export async function fetchVersionsEndpoint<T>(
-  baseURL: string, 
-  contentType: 'pages' | 'content-items', 
+  baseURL: string,
+  contentType: 'pages' | 'content-items',
   key: string
 ): Promise<T> {
   return fetch(`${baseURL}/${contentType}/${key}/versions`, {
@@ -270,9 +276,9 @@ export async function fetchVersionsEndpoint<T>(
 
 // Save a new version
 export async function saveVersionEndpoint<T>(
-  baseURL: string, 
-  contentType: 'pages' | 'content-items', 
-  key: string, 
+  baseURL: string,
+  contentType: 'pages' | 'content-items',
+  key: string,
   data: T
 ): Promise<ContentItemVersions | PageVersions> {
   console.log('Saving version:', data);
@@ -287,8 +293,8 @@ export async function saveVersionEndpoint<T>(
 
 // Get a specific version
 export async function getVersionEndpoint<T>(
-  baseURL: string, 
-  contentType: 'pages' | 'content-items', 
+  baseURL: string,
+  contentType: 'pages' | 'content-items',
   key: string,
   versionId: string
 ): Promise<T> {
@@ -305,8 +311,8 @@ export async function getVersionEndpoint<T>(
 
 // Get states
 export async function getStatesEndpoint<T>(
-  baseURL: string, 
-  contentType: 'pages' | 'content-items', 
+  baseURL: string,
+  contentType: 'pages' | 'content-items',
   key: string
 ): Promise<T> {
   return fetch(`${baseURL}/${contentType}/${key}/states`, {
@@ -318,9 +324,9 @@ export async function getStatesEndpoint<T>(
 
 // Save draft state
 export async function saveDraftEndpoint<T>(
-  baseURL: string, 
-  contentType: 'pages' | 'content-items', 
-  key: string, 
+  baseURL: string,
+  contentType: 'pages' | 'content-items',
+  key: string,
   data: T
 ): Promise<ContentItemStates | PageStates> {
   console.log('Saving draft:', data);
@@ -335,9 +341,9 @@ export async function saveDraftEndpoint<T>(
 
 // Publish state
 export async function publishEndpoint<T>(
-  baseURL: string, 
-  contentType: 'pages' | 'content-items', 
-  key: string, 
+  baseURL: string,
+  contentType: 'pages' | 'content-items',
+  key: string,
   data: T,
   clearDraft: boolean = false
 ): Promise<ContentItemStates | PageStates> {
@@ -345,7 +351,7 @@ export async function publishEndpoint<T>(
   if (clearDraft) {
     url += '?clearDraft=true';
   }
-  
+
   return fetch(url, {
     method: 'PUT',
     body: JSON.stringify({ value: data }),
@@ -357,8 +363,8 @@ export async function publishEndpoint<T>(
 
 // Revert draft state (delete draft)
 export async function revertDraftEndpoint(
-  baseURL: string, 
-  contentType: 'pages' | 'content-items', 
+  baseURL: string,
+  contentType: 'pages' | 'content-items',
   key: string
 ): Promise<void> {
   const response = await fetch(`${baseURL}/${contentType}/${key}/states/draft`, {

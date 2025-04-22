@@ -33,19 +33,19 @@ export class ContentItemEditor extends connect(store)(LitElement) {
   @state()
   private showVersionHistory = false;
 
-  @watch('version.versions', {noInit: true})
+  @watch('version.versions', { noInit: true })
   private versions: VersionInfo[] = [];
 
-  @watch('version.loading', {noInit: true})
+  @watch('version.loading', { noInit: true })
   private versionsLoading: boolean = true;
 
   @state()
   private selectedVersionId: string | null = null;
 
-  @watch('state.currentState', {noInit: true})
+  @watch('state.currentState', { noInit: true })
   private currentState: 'draft' | 'published' | 'both' | null = null;
 
-  @watch('state.loading', {noInit: true}  )
+  @watch('state.loading', { noInit: true })
   private stateLoading: boolean = true;
 
   @state()
@@ -102,26 +102,30 @@ export class ContentItemEditor extends connect(store)(LitElement) {
     super.connectedCallback();
     if (this.item?.key && this.baseURL) {
       this.fetchContentItem();
-      
+
       // Fetch versions and states when component connects
       if (!this.isNew) {
-        this.dispatchEvent(new CustomEvent('fetch-versions', {
-          detail: { 
-            key: this.item.key,
-            contentType: 'content-items'
-          },
-          bubbles: true,
-          composed: true
-        }));
-        
-        this.dispatchEvent(new CustomEvent('fetch-states', {
-          detail: { 
-            key: this.item.key,
-            contentType: 'content-items'
-          },
-          bubbles: true,
-          composed: true
-        }));
+        this.dispatchEvent(
+          new CustomEvent('fetch-versions', {
+            detail: {
+              key: this.item.key,
+              contentType: 'content-items',
+            },
+            bubbles: true,
+            composed: true,
+          })
+        );
+
+        this.dispatchEvent(
+          new CustomEvent('fetch-states', {
+            detail: {
+              key: this.item.key,
+              contentType: 'content-items',
+            },
+            bubbles: true,
+            composed: true,
+          })
+        );
       }
     }
   }
@@ -159,63 +163,70 @@ export class ContentItemEditor extends connect(store)(LitElement) {
           >
             Back to List
           </ui-back-button>
-          
+
           <div class="content-item-controls">
-            ${!this.isNew ? html`
-              <ui-button 
-                variant="outline" 
-                @click=${() => this.showVersionHistory = !this.showVersionHistory}
-              >
-                ${this.showVersionHistory ? 'Hide Version History' : 'Show Version History'}
-              </ui-button>
-              
-              ${ !this.stateLoading ? html`
+            ${!this.isNew
+              ? html`
+              <ui-button
+                    variant="outline"
+                    @click="${() => (this.showVersionHistory = !this.showVersionHistory)}"
+                  >
+                    ${this.showVersionHistory ? 'Hide Version History' : 'Show Version History'}
+                  </ui-button>
+
+                  ${!this.stateLoading
+                    ? html`
                 <publishing-state-controls
-                  .currentState=${this.currentState}
-                  @publish=${this._handlePublish}
-                  @revert=${this._handleRevert}
-                ></publishing-state-controls>
-              ` : ''}
-            ` : ''}
+                          .currentState="${this.currentState}"
+                          @publish="${this._handlePublish}"
+                          @revert="${this._handleRevert}"
+                        ></publishing-state-controls>
+              `
+                    : ''}
+            `
+              : ''}
           </div>
         </div>
-        
+
         <div class="content-item-body ${this.showVersionHistory ? 'with-sidebar' : ''}">
-          ${this.isNew ? html`
+          ${this.isNew
+            ? html`
             <cms-property-editor
-              .component="${this.item}"
-              .baseURL="${this.baseURL}"
-              .businessUnitKey="${this.businessUnitKey}"
-              @component-updated="${this._handleComponentUpdated}"
-            ></cms-property-editor>
-          ` : html`
-            <div class="content-item-edit">
-              <cms-property-editor
-                class="content-item-edit-editor"
-                .component="${contentToEdit}"
-                .baseURL="${this.baseURL}"
-                .businessUnitKey="${this.businessUnitKey}"
-                @component-updated="${this._handleComponentUpdated}"
-              ></cms-property-editor>
-              <div class="content-item-edit-preview">
-                <content-item-preview
-                  .contentItemKey="${this.item.key}"
+                  .component="${this.item}"
                   .baseURL="${this.baseURL}"
                   .businessUnitKey="${this.businessUnitKey}"
-                ></content-item-preview>
-              </div>
-            </div>
+                  @component-updated="${this._handleComponentUpdated}"
+                ></cms-property-editor>
+          `
+            : html`
+            <div class="content-item-edit">
+                  <cms-property-editor
+                    class="content-item-edit-editor"
+                    .component="${contentToEdit}"
+                    .baseURL="${this.baseURL}"
+                    .businessUnitKey="${this.businessUnitKey}"
+                    @component-updated="${this._handleComponentUpdated}"
+                  ></cms-property-editor>
+                  <div class="content-item-edit-preview">
+                    <content-item-preview
+                      .contentItemKey="${this.item.key}"
+                      .baseURL="${this.baseURL}"
+                      .businessUnitKey="${this.businessUnitKey}"
+                    ></content-item-preview>
+                  </div>
+                </div>
           `}
-          
-          ${ this.showVersionHistory && !this.versionsLoading ? html`
+          ${this.showVersionHistory && !this.versionsLoading
+            ? html`
             <version-history-sidebar
-              .versions=${this.versions}
-              .selectedVersionId=${this.selectedVersionId}
-              @version-selected=${this._handleVersionSelected}
-              @apply-version=${this._handleApplyVersion}
-              @selection-cancelled=${this._handleSelectionCancelled}
-            ></version-history-sidebar>
-          ` : ''}
+                  .versions="${this.versions}"
+                  .selectedVersionId="${this.selectedVersionId}"
+                  @version-selected="${this._handleVersionSelected}"
+                  @apply-version="${this._handleApplyVersion}"
+                  @selection-cancelled="${this._handleSelectionCancelled}"
+                ></version-history-sidebar>
+          `
+            : ''}
         </div>
       </div>
     `;
@@ -230,32 +241,36 @@ export class ContentItemEditor extends connect(store)(LitElement) {
   private _handlePublish() {
     // Use the current version of the content (which could be a draft or a selected version)
     const contentToPublish = this.contentVersion || this.fetchedItem;
-    
+
     if (contentToPublish && this.item?.key) {
-      this.dispatchEvent(new CustomEvent('publish', {
-        detail: {
-          item: contentToPublish,
-          key: this.item.key,
-          contentType: 'content-items',
-          clearDraft: true // Optionally clear the draft when publishing
-        },
-        bubbles: true,
-        composed: true
-      }));
+      this.dispatchEvent(
+        new CustomEvent('publish', {
+          detail: {
+            item: contentToPublish,
+            key: this.item.key,
+            contentType: 'content-items',
+            clearDraft: true, // Optionally clear the draft when publishing
+          },
+          bubbles: true,
+          composed: true,
+        })
+      );
     }
   }
 
   private _handleRevert() {
     if (this.item?.key) {
-      this.dispatchEvent(new CustomEvent('revert', {
-        detail: {
-          key: this.item.key,
-          contentType: 'content-items'
-        },
-        bubbles: true,
-        composed: true
-      }));
-      
+      this.dispatchEvent(
+        new CustomEvent('revert', {
+          detail: {
+            key: this.item.key,
+            contentType: 'content-items',
+          },
+          bubbles: true,
+          composed: true,
+        })
+      );
+
       // Clear any selected version after reverting
       this.contentVersion = null;
       this.selectedVersionId = null;
@@ -264,7 +279,7 @@ export class ContentItemEditor extends connect(store)(LitElement) {
 
   private _handleVersionSelected(e: CustomEvent) {
     this.selectedVersionId = e.detail;
-    
+
     // Find the selected version and extract its content item
     const selectedVersion = this.versions.find(v => v.key === this.selectedVersionId);
     if (selectedVersion && selectedVersion.item) {
@@ -274,21 +289,23 @@ export class ContentItemEditor extends connect(store)(LitElement) {
 
   private _handleApplyVersion(e: CustomEvent) {
     const versionId = e.detail;
-    
+
     // Find the selected version
     const selectedVersion = this.versions.find(v => v.id === versionId);
     if (selectedVersion && selectedVersion.item && this.item?.key) {
       // Update as draft
-      this.dispatchEvent(new CustomEvent('save-draft', {
-        detail: {
-          item: selectedVersion.item,
-          key: this.item.key,
-          contentType: 'content-items'
-        },
-        bubbles: true,
-        composed: true
-      }));
-      
+      this.dispatchEvent(
+        new CustomEvent('save-draft', {
+          detail: {
+            item: selectedVersion.item,
+            key: this.item.key,
+            contentType: 'content-items',
+          },
+          bubbles: true,
+          composed: true,
+        })
+      );
+
       // Reset selection
       this.selectedVersionId = null;
       this.contentVersion = null;
@@ -304,7 +321,7 @@ export class ContentItemEditor extends connect(store)(LitElement) {
   mapState(state: any) {
     return {
       versions: state.version.versions,
-      currentState: state.state.currentState
+      currentState: state.state.currentState,
     };
   }
 }

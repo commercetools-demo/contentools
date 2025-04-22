@@ -4,7 +4,7 @@ import {
   getStatesEndpoint,
   saveDraftEndpoint,
   publishEndpoint,
-  revertDraftEndpoint
+  revertDraftEndpoint,
 } from '../utils/api';
 
 interface StateManagementState {
@@ -23,33 +23,33 @@ const initialState: StateManagementState = {
   currentState: null,
   contentType: 'content-items',
   loading: false,
-  error: null
+  error: null,
 };
 
 // Fetch states
 export const fetchStates = createAsyncThunk(
   'state/fetchStates',
   async (
-    { 
-      baseURL, 
-      contentType, 
-      key 
-    }: { 
-      baseURL: string; 
-      contentType: 'content-items' | 'pages'; 
+    {
+      baseURL,
+      contentType,
+      key,
+    }: {
+      baseURL: string;
+      contentType: 'content-items' | 'pages';
       key: string;
     },
     { rejectWithValue }
   ) => {
     try {
       const result = await getStatesEndpoint<ContentItemStates | PageStates>(
-        baseURL, 
-        contentType, 
+        baseURL,
+        contentType,
         key
       );
-      return { 
+      return {
         states: result.states || {},
-        contentType
+        contentType,
       };
     } catch (error) {
       return rejectWithValue(error instanceof Error ? error.message : String(error));
@@ -61,30 +61,25 @@ export const fetchStates = createAsyncThunk(
 export const saveDraft = createAsyncThunk(
   'state/saveDraft',
   async (
-    { 
-      baseURL, 
-      contentType, 
-      key, 
-      item 
-    }: { 
-      baseURL: string; 
-      contentType: 'content-items' | 'pages'; 
-      key: string; 
+    {
+      baseURL,
+      contentType,
+      key,
+      item,
+    }: {
+      baseURL: string;
+      contentType: 'content-items' | 'pages';
+      key: string;
       item: ContentItem | Page;
     },
     { rejectWithValue }
   ) => {
     try {
-      const result = await saveDraftEndpoint<ContentItem | Page>(
-        baseURL, 
-        contentType, 
-        key, 
-        item
-      );
-      
+      const result = await saveDraftEndpoint<ContentItem | Page>(baseURL, contentType, key, item);
+
       return {
         states: result.states,
-        contentType
+        contentType,
       };
     } catch (error) {
       return rejectWithValue(error instanceof Error ? error.message : String(error));
@@ -96,16 +91,16 @@ export const saveDraft = createAsyncThunk(
 export const publish = createAsyncThunk(
   'state/publish',
   async (
-    { 
-      baseURL, 
-      contentType, 
-      key, 
+    {
+      baseURL,
+      contentType,
+      key,
       item,
-      clearDraft = false 
-    }: { 
-      baseURL: string; 
-      contentType: 'content-items' | 'pages'; 
-      key: string; 
+      clearDraft = false,
+    }: {
+      baseURL: string;
+      contentType: 'content-items' | 'pages';
+      key: string;
       item: ContentItem | Page;
       clearDraft?: boolean;
     },
@@ -113,16 +108,16 @@ export const publish = createAsyncThunk(
   ) => {
     try {
       const result = await publishEndpoint<ContentItem | Page>(
-        baseURL, 
-        contentType, 
-        key, 
+        baseURL,
+        contentType,
+        key,
         item,
         clearDraft
       );
-      
+
       return {
         states: result.states,
-        contentType
+        contentType,
       };
     } catch (error) {
       return rejectWithValue(error instanceof Error ? error.message : String(error));
@@ -134,27 +129,23 @@ export const publish = createAsyncThunk(
 export const revertToPublished = createAsyncThunk(
   'state/revertToPublished',
   async (
-    { 
-      baseURL, 
-      contentType, 
-      key 
-    }: { 
-      baseURL: string; 
-      contentType: 'content-items' | 'pages'; 
-      key: string; 
+    {
+      baseURL,
+      contentType,
+      key,
+    }: {
+      baseURL: string;
+      contentType: 'content-items' | 'pages';
+      key: string;
     },
     { rejectWithValue, dispatch }
   ) => {
     try {
-      await revertDraftEndpoint(
-        baseURL, 
-        contentType, 
-        key
-      );
-      
+      await revertDraftEndpoint(baseURL, contentType, key);
+
       // Refresh states after revert
       dispatch(fetchStates({ baseURL, contentType, key }));
-      
+
       return { success: true };
     } catch (error) {
       return rejectWithValue(error instanceof Error ? error.message : String(error));
@@ -163,7 +154,10 @@ export const revertToPublished = createAsyncThunk(
 );
 
 // Update current state based on state data
-function determineCurrentState(states: { draft?: any; published?: any }): 'draft' | 'published' | 'both' | null {
+function determineCurrentState(states: {
+  draft?: any;
+  published?: any;
+}): 'draft' | 'published' | 'both' | null {
   if (states?.draft && states?.published) {
     return 'both';
   } else if (states?.draft) {
@@ -178,17 +172,17 @@ const stateSlice = createSlice({
   name: 'state',
   initialState,
   reducers: {
-    clearError: (state) => {
+    clearError: state => {
       state.error = null;
     },
     setContentType: (state, action) => {
       state.contentType = action.payload;
-    }
+    },
   },
-  extraReducers: (builder) => {
+  extraReducers: builder => {
     // Fetch states
     builder
-      .addCase(fetchStates.pending, (state) => {
+      .addCase(fetchStates.pending, state => {
         state.loading = true;
         state.error = null;
       })
@@ -202,10 +196,10 @@ const stateSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       });
-      
+
     // Save draft
     builder
-      .addCase(saveDraft.pending, (state) => {
+      .addCase(saveDraft.pending, state => {
         state.loading = true;
         state.error = null;
       })
@@ -218,10 +212,10 @@ const stateSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       });
-      
+
     // Publish
     builder
-      .addCase(publish.pending, (state) => {
+      .addCase(publish.pending, state => {
         state.loading = true;
         state.error = null;
       })
@@ -234,14 +228,14 @@ const stateSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       });
-      
+
     // Revert to published
     builder
-      .addCase(revertToPublished.pending, (state) => {
+      .addCase(revertToPublished.pending, state => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(revertToPublished.fulfilled, (state) => {
+      .addCase(revertToPublished.fulfilled, state => {
         state.loading = false;
         // States will be updated by the following fetchStates dispatch
       })
@@ -249,12 +243,9 @@ const stateSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       });
-  }
+  },
 });
 
-export const { 
-  clearError,
-  setContentType
-} = stateSlice.actions;
+export const { clearError, setContentType } = stateSlice.actions;
 
-export default stateSlice.reducer; 
+export default stateSlice.reducer;

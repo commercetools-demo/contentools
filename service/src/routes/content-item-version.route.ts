@@ -23,7 +23,7 @@ contentItemVersionRouter.get(
     try {
       const { businessUnitKey, key } = req.params;
       const versionKey = `${businessUnitKey}_${key}`;
-      
+
       try {
         const object = await versionController.getCustomObject(versionKey);
         res.json(object.value);
@@ -33,7 +33,7 @@ contentItemVersionRouter.get(
           res.json({
             key,
             businessUnitKey,
-            versions: []
+            versions: [],
           });
         } else {
           throw error;
@@ -53,14 +53,16 @@ contentItemVersionRouter.get(
     try {
       const { businessUnitKey, key, versionId } = req.params;
       const versionKey = `${businessUnitKey}_${key}`;
-      
+
       const object = await versionController.getCustomObject(versionKey);
-      const version = object.value.versions.find((v: any) => v.id === versionId);
-      
+      const version = object.value.versions.find(
+        (v: any) => v.id === versionId
+      );
+
       if (!version) {
         return res.status(404).json({ error: 'Version not found' });
       }
-      
+
       res.json(version);
     } catch (error) {
       logger.error('Failed to get version:', error);
@@ -80,14 +82,15 @@ contentItemVersionRouter.post(
       const { value } = req.body;
       console.log('Value:', req.body);
       const maxVersions = parseInt(process.env.MAX_VERSIONS || '5', 10);
-      
+
       if (!value) {
         throw new Error('No value provided');
       }
-      
+
       let existingVersions;
       try {
-        const existingObject = await versionController.getCustomObject(versionKey);
+        const existingObject =
+          await versionController.getCustomObject(versionKey);
         existingVersions = existingObject.value;
         console.log('Existing versions:', existingVersions);
       } catch (error) {
@@ -96,13 +99,13 @@ contentItemVersionRouter.post(
           existingVersions = {
             key,
             businessUnitKey,
-            versions: []
+            versions: [],
           };
         } else {
           throw error;
         }
       }
-      
+
       const newVersion = {
         ...value,
         timestamp: new Date().toISOString(),
@@ -110,17 +113,23 @@ contentItemVersionRouter.post(
       };
 
       console.log('New version:', newVersion);
-      
+
       // Add new version at the beginning
       existingVersions.versions.unshift(newVersion);
-      
+
       // Trim versions to max allowed
       if (existingVersions.versions.length > maxVersions) {
-        existingVersions.versions = existingVersions.versions.slice(0, maxVersions);
+        existingVersions.versions = existingVersions.versions.slice(
+          0,
+          maxVersions
+        );
       }
 
       console.log('Existing versions updated:', existingVersions);
-      const response = await versionController.updateCustomObject(versionKey, existingVersions);
+      const response = await versionController.updateCustomObject(
+        versionKey,
+        existingVersions
+      );
       res.status(201).json(newVersion);
     } catch (error) {
       logger.error('Failed to save version:', (error as Error).message);
@@ -129,4 +138,4 @@ contentItemVersionRouter.post(
   }
 );
 
-export default contentItemVersionRouter; 
+export default contentItemVersionRouter;

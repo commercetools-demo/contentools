@@ -86,10 +86,7 @@ fileRouter.post('/compile-upload', (async (req, res, next) => {
     contentType.value.deployedUrl = fileUrl;
     contentType.value.code = codeFiles;
 
-     await contentTypeController.updateCustomObject(
-      key,
-      contentType.value
-    );
+    await contentTypeController.updateCustomObject(key, contentType.value);
 
     res.json({
       success: true,

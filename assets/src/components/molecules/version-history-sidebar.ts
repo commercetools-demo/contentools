@@ -90,12 +90,12 @@ export class VersionHistorySidebar extends LitElement {
             : this.versions.map(
                 version => html`
                   <div
-                    class="version-item ${this.selectedVersionId === this._getVersionId(version)  ? 'selected' : ''}"
-                    @click=${() => this._selectVersion(this._getVersionId(version))}
+                    class="version-item ${this.selectedVersionId === this._getVersionId(version)
+                      ? 'selected'
+                      : ''}"
+                    @click="${() => this._selectVersion(this._getVersionId(version))}"
                   >
-                    <div class="version-date">
-                      ${new Date(version.timestamp).toLocaleString()}
-                    </div>
+                    <div class="version-date">${new Date(version.timestamp).toLocaleString()}</div>
                   </div>
                 `
               )}
@@ -103,12 +103,10 @@ export class VersionHistorySidebar extends LitElement {
         ${this.selectedVersionId
           ? html`
               <div class="version-actions">
-                <ui-button variant="primary" @click=${this._applyVersion}>
+                <ui-button variant="primary" @click="${this._applyVersion}">
                   Apply This Version
                 </ui-button>
-                <ui-button variant="outline" @click=${this._cancelSelection}>
-                  Cancel
-                </ui-button>
+                <ui-button variant="outline" @click="${this._cancelSelection}"> Cancel </ui-button>
               </div>
             `
           : ''}
@@ -155,4 +153,4 @@ export class VersionHistorySidebar extends LitElement {
     }
     return version.uuid;
   }
-} 
+}
