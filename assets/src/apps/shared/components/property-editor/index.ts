@@ -26,6 +26,12 @@ export class PropertyEditor extends connect(store)(LitElement) {
   @property({ type: String })
   businessUnitKey: string = '';
 
+  @property({ type: Boolean })
+  isContentVersion: boolean = false;
+
+  @property({ type: Object })
+  versionedContent: ContentItem | null = null;
+
   @state()
   private _component?: ContentItem;
 
@@ -40,6 +46,9 @@ export class PropertyEditor extends connect(store)(LitElement) {
 
   @state()
   private showDeleteConfirm = false;
+
+  @state()
+  private diff: string[] = [];
 
   private _debouncedHandleFieldChange = debounce((key: string, value: any) => {
     if (this._component) {
@@ -152,16 +161,19 @@ export class PropertyEditor extends connect(store)(LitElement) {
     }
   `;
 
-  firstUpdated(changedProperties: Map<string, any>) {
-    if (changedProperties.has('component') && this.component) {
-      // Copy component to _component when component changes
-    }
-  }
-
   updated(changedProperties: Map<string, any>) {
-    if (changedProperties.has('component') && this.component) {
-      // Copy component to _component when component changes
-      this._component = JSON.parse(JSON.stringify(this.component));
+    if (
+      (changedProperties.has('component') && this.component) ||
+      changedProperties.has('versionedContent')
+    ) {
+      if (this.versionedContent) {
+        // Copy component to _component when component changes
+        this._component = JSON.parse(JSON.stringify(this.versionedContent));
+      } else {
+        // Copy component to _component when component changes
+        this._component = JSON.parse(JSON.stringify(this.component));
+      }
+      this.diff = this._calculateDiff();
       this.fetchMetadata();
     }
   }
@@ -213,6 +225,7 @@ export class PropertyEditor extends connect(store)(LitElement) {
         <cms-string-field
           label="Name"
           .value="${this._component.name || ''}"
+          .highlight="${this.diff.includes('name')}"
           fieldKey="name"
           ?required="${true}"
           @field-change="${this.handleFieldChange}"
@@ -226,6 +239,7 @@ export class PropertyEditor extends connect(store)(LitElement) {
                 return html`
                   <cms-wysiwyg-field
                     label="${field.label}"
+                    .highlight="${this.diff.includes(key)}"
                     .value="${value || ''}"
                     fieldKey="${key}"
                     ?required="${field.required}"
@@ -237,6 +251,7 @@ export class PropertyEditor extends connect(store)(LitElement) {
                 <cms-string-field
                   label="${field.label}"
                   .value="${value || ''}"
+                  .highlight="${this.diff.includes(key)}"
                   fieldKey="${key}"
                   ?required="${field.required}"
                   @field-change="${this.handleFieldChange}"
@@ -247,6 +262,7 @@ export class PropertyEditor extends connect(store)(LitElement) {
                 <cms-number-field
                   label="${field.label}"
                   .value="${value}"
+                  .highlight="${this.diff.includes(key)}"
                   fieldKey="${key}"
                   ?required="${field.required}"
                   @field-change="${this.handleFieldChange}"
@@ -257,6 +273,7 @@ export class PropertyEditor extends connect(store)(LitElement) {
                 <cms-boolean-field
                   label="${field.label}"
                   .value="${value}"
+                  .highlight="${this.diff.includes(key)}"
                   fieldKey="${key}"
                   @field-change="${this.handleFieldChange}"
                 />
@@ -266,6 +283,7 @@ export class PropertyEditor extends connect(store)(LitElement) {
                 <cms-array-field
                   label="${field.label}"
                   .value="${value || []}"
+                  .highlight="${this.diff.includes(key)}"
                   fieldKey="${key}"
                   @field-change="${this.handleFieldChange}"
                 />
@@ -275,6 +293,7 @@ export class PropertyEditor extends connect(store)(LitElement) {
                 <cms-file-field
                   label="${field.label}"
                   .value="${value}"
+                  .highlight="${this.diff.includes(key)}"
                   fieldKey="${key}"
                   .baseURL="${this.baseURL}"
                   .extensions="${field.extensions || []}"
@@ -286,6 +305,7 @@ export class PropertyEditor extends connect(store)(LitElement) {
                 <cms-datasource-field
                   label="${field.label}"
                   .value="${value || {}}"
+                  .highlight="${this.diff.includes(key)}"
                   fieldKey="${key}"
                   datasourceType="${field.datasourceType}"
                   .baseURL="${this.baseURL}"
@@ -331,6 +351,21 @@ export class PropertyEditor extends connect(store)(LitElement) {
         </div>
       </div>
     `;
+  }
+
+  _calculateDiff() {
+    if (!this.versionedContent) return [];
+
+    const nameDiff = this.versionedContent.name !== this.component?.name ? ['name'] : [];
+
+    const diff = Object.keys(this.versionedContent.properties).filter(key => {
+      // deep compare
+      return (
+        JSON.stringify(this.versionedContent?.properties[key]) !==
+        JSON.stringify(this.component?.properties[key])
+      );
+    });
+    return [...nameDiff, ...diff].filter(Boolean);
   }
 
   showDeleteConfirmation() {

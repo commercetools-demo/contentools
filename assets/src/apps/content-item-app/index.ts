@@ -12,8 +12,8 @@ import {
   fetchContentItems,
   updateContentItem,
 } from '../../store/content-item.slice';
+import { fetchStates, publish, revertToPublished, saveDraft } from '../../store/state.slice';
 import { fetchVersions, saveVersion } from '../../store/version.slice';
-import { fetchStates, saveDraft, publish, revertToPublished } from '../../store/state.slice';
 import {
   ContentItem,
   ContentTypeData,
@@ -21,15 +21,13 @@ import {
   FetchStatesEvent,
   FetchVersionsEvent,
   PublishEvent,
-  RevertEvent,
-  SaveDraftEvent,
-  SaveVersionEvent,
+  RevertEvent
 } from '../../types';
 import { getAllContentTypesMetaData } from '../../utils/content-type-utility';
 import '../shared/components/property-editor';
-import './components/content-type-modal';
-import './components/content-item-list';
 import './components/content-item-editor';
+import './components/content-item-list';
+import './components/content-type-modal';
 
 @customElement('content-item-app')
 export class ContentItemApp extends connect(store)(LitElement) {

@@ -1,17 +1,16 @@
 // Create a new file: assets/src/apps/content-item-app/components/content-item-editor.ts
 // with the following content:
 
-import { LitElement, html, css } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
-import '../../../components/atoms/button';
-import { ContentItem, VersionInfo } from '../../../types';
-import '../../../apps/cms-renderer/component-renderer';
-import '../content-item-preview';
-import { fetchContentItemsEndpoint } from '../../../utils/api';
-import { store } from '../../../store';
-import '../../../components/molecules/version-history-sidebar';
-import '../../../components/molecules/publishing-state-controls';
+import { LitElement, css, html } from 'lit';
 import { connect, watch } from 'lit-redux-watch';
+import { customElement, property, state } from 'lit/decorators.js';
+import '../../../apps/cms-renderer/component-renderer';
+import '../../../components/atoms/button';
+import '../../../components/molecules/publishing-state-controls';
+import '../../../components/molecules/version-history-sidebar';
+import { store } from '../../../store';
+import { ContentItem, VersionInfo } from '../../../types';
+import '../content-item-preview';
 
 @customElement('content-item-editor')
 export class ContentItemEditor extends connect(store)(LitElement) {
@@ -26,9 +25,6 @@ export class ContentItemEditor extends connect(store)(LitElement) {
 
   @property({ type: String })
   businessUnitKey: string = '';
-
-  @state()
-  private fetchedItem: ContentItem | null = null;
 
   @state()
   private showVersionHistory = false;
@@ -101,7 +97,6 @@ export class ContentItemEditor extends connect(store)(LitElement) {
   connectedCallback() {
     super.connectedCallback();
     if (this.item?.key && this.baseURL) {
-      this.fetchContentItem();
 
       // Fetch versions and states when component connects
       if (!this.isNew) {
@@ -130,28 +125,12 @@ export class ContentItemEditor extends connect(store)(LitElement) {
     }
   }
 
-  private async fetchContentItem() {
-    if (!this.item?.key || !this.baseURL || this.isNew) {
-      return;
-    }
-
-    try {
-      const response = await fetchContentItemsEndpoint<ContentItem>(
-        `${this.baseURL}/${this.businessUnitKey}`
-      );
-      this.fetchedItem = response.find(item => item.key === this.item?.key)?.value || null;
-    } catch (err) {
-      console.error('Error fetching content item:', err);
-    }
-  }
-
   render() {
     if (!this.item) {
       return html`<div>No item selected</div>`;
     }
 
-    // Use content version if we have a selected version, otherwise use fetched item
-    const contentToEdit = this.contentVersion || this.fetchedItem || this.item;
+    const contentToEdit = this.item;
 
     return html`
       <div>
@@ -202,6 +181,7 @@ export class ContentItemEditor extends connect(store)(LitElement) {
             <div class="content-item-edit">
                   <cms-property-editor
                     class="content-item-edit-editor"
+                    .versionedContent="${this.contentVersion}"
                     .component="${contentToEdit}"
                     .baseURL="${this.baseURL}"
                     .businessUnitKey="${this.businessUnitKey}"
@@ -239,14 +219,11 @@ export class ContentItemEditor extends connect(store)(LitElement) {
   }
 
   private _handlePublish() {
-    // Use the current version of the content (which could be a draft or a selected version)
-    const contentToPublish = this.contentVersion || this.fetchedItem;
-
-    if (contentToPublish && this.item?.key) {
+    if (this.item?.key) {
       this.dispatchEvent(
         new CustomEvent('publish', {
           detail: {
-            item: contentToPublish,
+            item: this.item,
             key: this.item.key,
             contentType: 'content-items',
             clearDraft: true, // Optionally clear the draft when publishing
@@ -281,9 +258,9 @@ export class ContentItemEditor extends connect(store)(LitElement) {
     this.selectedVersionId = e.detail;
 
     // Find the selected version and extract its content item
-    const selectedVersion = this.versions.find(v => v.key === this.selectedVersionId);
-    if (selectedVersion && selectedVersion.item) {
-      this.contentVersion = selectedVersion.item as ContentItem;
+    const selectedVersion = this.versions.find(v => 'id' in v && v.id === this.selectedVersionId);
+    if (selectedVersion) {
+      this.contentVersion = selectedVersion as ContentItem;
     }
   }
 
@@ -291,18 +268,13 @@ export class ContentItemEditor extends connect(store)(LitElement) {
     const versionId = e.detail;
 
     // Find the selected version
-    const selectedVersion = this.versions.find(v => v.id === versionId);
-    if (selectedVersion && selectedVersion.item && this.item?.key) {
-      // Update as draft
+    const selectedVersion = this.versions.find(v => 'id' in v && v.id === versionId);
+    if (selectedVersion && this.item?.key) {
       this.dispatchEvent(
-        new CustomEvent('save-draft', {
+        new CustomEvent('save', {
           detail: {
-            item: selectedVersion.item,
-            key: this.item.key,
-            contentType: 'content-items',
+            component: selectedVersion,
           },
-          bubbles: true,
-          composed: true,
         })
       );
 
@@ -315,6 +287,7 @@ export class ContentItemEditor extends connect(store)(LitElement) {
   private _handleSelectionCancelled() {
     this.selectedVersionId = null;
     this.contentVersion = null;
+    this.showVersionHistory = false;
   }
 
   // Map state from store to properties

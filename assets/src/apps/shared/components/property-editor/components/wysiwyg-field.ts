@@ -16,6 +16,9 @@ export class WysiwygField extends LitElement {
   @property({ type: String })
   fieldKey: string = '';
 
+  @property({ type: Boolean })
+  highlight: boolean = false;
+
   // Internal state to track editor content
   @state()
   private editorContent: string = '';
@@ -102,6 +105,11 @@ export class WysiwygField extends LitElement {
       color: #666666;
       cursor: not-allowed;
     }
+
+    .highlight {
+      border: 1px solid #ffa600;
+      background-color: #ffa600;
+    }
   `;
 
   firstUpdated() {
@@ -164,7 +172,7 @@ export class WysiwygField extends LitElement {
     const contentChanged = this.hasContentChanged();
 
     return html`
-      <div class="form-group">
+      <div class="form-group ${this.highlight ? 'highlight' : ''}">
         <label for="${this.fieldKey}">${this.label}</label>
         <div class="editor-toolbar">
           <button class="toolbar-button" @click="${() => this.execCommand('bold')}" title="Bold">

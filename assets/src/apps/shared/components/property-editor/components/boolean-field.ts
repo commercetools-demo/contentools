@@ -12,6 +12,9 @@ export class BooleanField extends LitElement {
   @property({ type: String })
   fieldKey: string = '';
 
+  @property({ type: Boolean })
+  highlight: boolean = false;
+
   static styles = css`
     .form-group {
       margin-bottom: 15px;
@@ -30,11 +33,16 @@ export class BooleanField extends LitElement {
       font-weight: 500;
       font-size: 14px;
     }
+
+    .highlight {
+      border: 1px solid #ffa600;
+      background-color: #ffa600;
+    }
   `;
 
   render() {
     return html`
-      <div class="form-group checkbox-group">
+      <div class="form-group checkbox-group ${this.highlight ? 'highlight' : ''}">
         <input
           type="checkbox"
           id="${this.fieldKey}"

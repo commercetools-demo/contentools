@@ -12,6 +12,9 @@ export class ArrayField extends LitElement {
   @property({ type: String })
   fieldKey: string = '';
 
+  @property({ type: Boolean })
+  highlight: boolean = false;
+
   static styles = css`
     .form-group {
       margin-bottom: 15px;
@@ -64,11 +67,16 @@ export class ArrayField extends LitElement {
       cursor: pointer;
       font-size: 12px;
     }
+
+    .highlight {
+      border: 1px solid #ffa600;
+      background-color: #ffa600;
+    }
   `;
 
   render() {
     return html`
-      <div class="form-group">
+      <div class="form-group ${this.highlight ? 'highlight' : ''}">
         <label>${this.label}</label>
         <div class="array-field">
           ${this.value.map(

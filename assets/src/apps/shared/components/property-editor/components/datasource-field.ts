@@ -22,6 +22,9 @@ export class DatasourceField extends connect(store)(LitElement) {
   @property({ type: String })
   baseURL = '';
 
+  @property({ type: Boolean })
+  highlight: boolean = false;
+
   @state()
   private datasource: DatasourceInfo | null = null;
 
@@ -92,6 +95,11 @@ export class DatasourceField extends connect(store)(LitElement) {
       font-size: 14px;
       margin-top: 5px;
     }
+
+    .highlight {
+      border: 1px solid #ffa600;
+      background-color: #ffa600;
+    }
   `;
 
   constructor() {
@@ -137,7 +145,7 @@ export class DatasourceField extends connect(store)(LitElement) {
     return html`
       <div>
         <label class="field-label">${this.label}</label>
-        <div class="field-container">
+        <div class="field-container ${this.highlight ? 'highlight' : ''}">
           ${this.loading
             ? html`<div class="loading">Loading datasource...</div>`
             : this.error

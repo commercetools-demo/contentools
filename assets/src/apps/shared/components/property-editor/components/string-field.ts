@@ -16,15 +16,24 @@ export class StringField extends LitElement {
   @property({ type: String })
   fieldKey: string = '';
 
+  @property({ type: Boolean })
+  highlight: boolean = false;
+
   static styles = css`
     :host {
       display: block;
+    }
+
+    .highlight {
+      border: 1px solid #ffa600;
+      background-color: #ffa600;
     }
   `;
 
   render() {
     return html`
       <ui-labeled-input
+        class="${this.highlight ? 'highlight' : ''}"
         label="${this.label}"
         .value="${this.value}"
         ?required="${this.required}"
