@@ -16,7 +16,7 @@ deployAs:
   - name: service
     applicationType: service
     scripts:
-      postDeploy: node src/connector/post-deploy.ts
+      postDeploy: node build/connector/post-deploy.js
     endpoint: /service
     configuration:
       standardConfiguration:
