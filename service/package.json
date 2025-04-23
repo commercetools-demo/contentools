@@ -12,7 +12,8 @@
     "lint": "eslint . --ext .ts",
     "format": "prettier --write '**/*.{js,ts}'",
     "test": "echo 'No tests for now'",
-    "test:watch": "echo 'No tests for now'"
+    "test:watch": "echo 'No tests for now'",
+    "connector:post-deploy": "node build/connector/post-deploy.js"
   },
   "author": "",
   "license": "MIT",
