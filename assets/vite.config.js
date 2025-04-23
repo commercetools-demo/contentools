@@ -24,13 +24,4 @@ export default defineConfig({
     },
   },
   publicDir: resolve(__dirname, 'static'),
-  envPrefix: 'CTP_',
-  server: {
-    proxy: {
-      '/service': {
-        target: 'http://localhost:8085',
-        changeOrigin: true,
-      },
-    },
-  },
 });

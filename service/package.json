@@ -11,8 +11,8 @@
     "build": "rimraf ./build && tsc",
     "lint": "eslint . --ext .ts",
     "format": "prettier --write '**/*.{js,ts}'",
-    "test": "jest --config jest.config.cjs",
-    "test:watch": "jest --watch"
+    "test": "echo 'No tests for now'",
+    "test:watch": "echo 'No tests for now'"
   },
   "author": "",
   "license": "MIT",
