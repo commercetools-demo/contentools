@@ -23,7 +23,6 @@ deployAs:
           description: The entry point URI path.
         - key: ASSETS_URL
           description: The assets URL.
-      securedConfiguration: []
 inheritAs:
   configuration:
     standardConfiguration:
