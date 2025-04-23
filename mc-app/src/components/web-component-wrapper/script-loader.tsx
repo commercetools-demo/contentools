@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 
-function ScriptLoader({ src, id }: { src: string, id: string }) {
+function ScriptLoader({ src, id }: { src: string; id: string }) {
   useEffect(() => {
     // Check if the script already exists to avoid duplicates
     if (!document.getElementById(id)) {
@@ -9,10 +9,10 @@ function ScriptLoader({ src, id }: { src: string, id: string }) {
       script.src = src;
       script.id = id;
       script.async = true;
-      
+
       // Append to the document head
       document.head.appendChild(script);
-      
+
       // Clean up function to remove the script when component unmounts
       return () => {
         const scriptToRemove = document.getElementById(id);
