@@ -9,7 +9,7 @@
     "package.json",
     "index.html"
   ],
-  "homepage": "https://github.com/commercetools-demo/cms",
+  "homepage": "https://github.com/commercetools-demo/cms/assets",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",

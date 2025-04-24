@@ -9,9 +9,31 @@
   <b>Web Component-based CMS with Layout Builder</b>
 </p>
 
-# Web Component-based CMS with Layout Builder
+
+
+# Web Component-based CMS
 
 A web component-based Content Management System (CMS) that allows users to create and manage pages with a drag-and-drop interface for component placement in a grid layout. Built with Lit and bundled with Vite, using Redux for state management.
+
+## TL;DR (Merchant Center custom application)
+
+1. Create a new commercetools [custom application](https://docs.commercetools.com/merchant-center/managing-custom-applications) and take a note of the application id and use an arbitrary url for the application url.
+1. Create a new commercetools [connector](https://docs.commercetools.com/merchant-center/connect) using this repo
+1. Deploy the connector to your commercetools organization and provide the variables and application id from the custom application. After deployment is complete, you should be able to get the application deployed URL from MC-app
+1. Go to your commercetools custom application again and update the application url with the deployed url.
+1. Activate the application in the custom application and you should be able to see the application in the merchant center.
+
+## TL;DR (Standalone web component)
+1. Create a new commercetools [connector](https://docs.commercetools.com/merchant-center/connect) using this repo
+1. Deploy the connector to your commercetools organization and provide the variables and use arbitrary values for the application id and url.
+1. After deployment is complete, you should be able to get the service deployed URL from service
+1. Go to your application (react)
+    ```
+    yarn add @commercetools-demo/cms-asset
+    ```
+1. Create a wrapper component looking at the [README](./assets/README.md) and replace baseurl with the service deployed URL
+1. Use the wrapper component in your application
+
 
 ## Features
 
@@ -23,6 +45,8 @@ A web component-based Content Management System (CMS) that allows users to creat
 - Two sample components: heroBanner and productSlider
 - API integration with backend service
 - Session storage for page data persistence
+- Merchant Center integration via Custom Application
+
 
 ## Technologies Used
 
@@ -31,6 +55,7 @@ A web component-based Content Management System (CMS) that allows users to creat
 - **State Management**: Redux Toolkit
 - **Drag and Drop**: SortableJS
 - **API Integration**: RESTful endpoints for custom objects
+- **Merchant Center Integration**: Custom Application SDK
 
 ## Project Structure
 
@@ -45,6 +70,11 @@ A web component-based Content Management System (CMS) that allows users to creat
   - `src/`: Source code
     - `controllers/`: API controllers
     - `routes/`: API routes
+- `mc-app/`: Merchant Center Custom Application
+  - `src/`: Source code
+    - `components/`: React components for the MC app
+    - `hooks/`: Custom React hooks
+    - `routes/`: Application routes
 
 ## Getting Started
 
@@ -66,6 +96,10 @@ yarn install
 # Install backend dependencies
 cd ../service
 yarn install
+
+# Install MC app dependencies
+cd ../mc-app
+yarn install
 ```
 
 ### Running the Application
@@ -85,6 +119,27 @@ yarn dev
 ```
 
 3. Open your browser and navigate to `http://localhost:5173`
+
+### Running the MC Application
+
+1. Configure your `.env` file in the `mc-app` directory:
+
+```
+APPLICATION_ID=your-application-id
+APPLICATION_URL=http://localhost:3001
+CLOUD_IDENTIFIER=your-cloud-identifier
+INITIAL_PROJECT_KEY=your-project-key
+PORT=3001
+```
+
+2. Start the MC application:
+
+```bash
+cd mc-app
+yarn start
+```
+
+3. Navigate to your Merchant Center and access the custom application
 
 ## Usage
 
@@ -111,6 +166,25 @@ yarn dev
 
 Click "Save Changes" in the bottom bar when you're done editing a page.
 
+## Merchant Center Application
+
+The MC application allows you to manage your CMS content directly within the commercetools Merchant Center.
+
+### Features
+
+- Seamless integration with Merchant Center
+- Access to all CMS functionality within the MC interface
+- Business unit selection based on current project
+- Customizable permissions based on MC user roles
+- Unified login via MC authentication
+
+### Integration
+
+1. Register your custom application in the Merchant Center
+2. Configure the application URL to point to your deployed MC app
+3. Set up necessary permissions for your application
+4. Add the application to the navigation menu
+
 ## Customization
 
 ### Adding New Component Types
@@ -120,6 +194,177 @@ Click "Save Changes" in the bottom bar when you're done editing a page.
 3. Update the component registry in `registry.ts`
 4. Update the `renderComponent` and `renderComponentPreview` functions in `templates/index.ts`
 
+## Connect Deployment
+
+This CMS can be deployed as a commercetools Connect application for easy integration with your commercetools projects.
+
+### Connect Configuration
+
+The application is configured in `connect.yaml` with two deployable components:
+
+1. **Merchant Center Custom Application**:
+   ```yaml
+   - name: mc-app
+     applicationType: merchant-center-custom-application
+     configuration:
+       standardConfiguration:
+         - key: CUSTOM_APPLICATION_ID
+           description: The ID of the custom application.
+         - key: APPLICATION_URL
+           description: The URL of the custom application.
+         - key: CLOUD_IDENTIFIER
+           description: The cloud identifier.
+         - key: ENTRY_POINT_URI_PATH
+           description: The entry point URI path.
+         - key: ASSETS_URL
+           description: The assets URL.
+   ```
+
+2. **Backend Service**:
+   ```yaml
+   - name: service
+     applicationType: service
+     scripts:
+       postDeploy: node build/connector/post-deploy.js
+     endpoint: /service
+     configuration:
+       standardConfiguration:
+         - key: CORS_ALLOWED_ORIGINS
+           description: Comma separated list of allowed origins
+         - key: MAIN_CONTAINER
+           description: The container to use for the service
+           default: cms_container
+         - key: CONTENT_TYPE_CONTAINER
+           description: The container to use for the content type
+           default: content-type
+         # ... additional configuration options
+   ```
+
+Both components inherit common commercetools configuration:
+```yaml
+inheritAs:
+  configuration:
+    standardConfiguration:
+      - key: CTP_REGION
+        description: commercetools Composable Commerce API region
+        default: us-central1.gcp
+      - key: CTP_PROJECT_KEY
+        description: commercetools Composable Commerce project key
+      # ... additional inherited configuration
+```
+
+### Deploying via Connect
+
+To deploy this application using commercetools Connect:
+
+1. **Create a ConnectorStaged**:
+   ```bash
+   POST https://connect.{region}.commercetools.com/connectors/drafts
+   
+   {
+     "key": "cms-web-component",
+     "name": "Web Component CMS",
+     "description": "A web component-based CMS with layout builder",
+     "repository": {
+       "url": "https://github.com/your-org/cms.git",
+       "tag": "1.0.0"
+     },
+     "supportedRegions": ["europe-west1.gcp", "us-central1.gcp"]
+   }
+   ```
+
+2. **Request Preview Status**:
+   ```bash
+   POST https://connect.{region}.commercetools.com/connectors/drafts/key=cms-web-component
+   
+   {
+     "version": 1,
+     "actions": [
+       {
+         "action": "updatePreviewable"
+       }
+     ]
+   }
+   ```
+
+3. **Deploy to Your Project**:
+   ```bash
+   POST https://connect.{region}.commercetools.com/{projectKey}/deployments
+   
+   {
+     "key": "cms-deployment",
+     "connector": {
+       "key": "cms-web-component",
+       "version": 1,
+       "staged": false
+     },
+     "region": "{your-region}",
+     "configurations": [
+       {
+         "applicationName": "service",
+         "standardConfiguration": [
+           {
+             "key": "CTP_PROJECT_KEY",
+             "value": "{projectKey}"
+           },
+           {
+             "key": "CTP_REGION",
+             "value": "{your-region}"
+           },
+           {
+             "key": "STORAGE_TYPE",
+             "value": "gcp"
+           }
+         ],
+         "securedConfiguration": [
+           {
+             "key": "CTP_CLIENT_ID",
+             "value": "{client-id}"
+           },
+           {
+             "key": "CTP_CLIENT_SECRET",
+             "value": "{client-secret}"
+           },
+           {
+             "key": "CTP_SCOPE",
+             "value": "manage_project:{projectKey}"
+           }
+         ]
+       },
+       {
+         "applicationName": "mc-app",
+         "standardConfiguration": [
+           {
+             "key": "CUSTOM_APPLICATION_ID",
+             "value": "cms-app"
+           },
+           {
+             "key": "APPLICATION_URL",
+             "value": "https://{your-app-url}"
+           },
+           {
+             "key": "CLOUD_IDENTIFIER",
+             "value": "{your-cloud-identifier}"
+           }
+         ]
+       }
+     ]
+   }
+   ```
+
+4. **Monitor Deployment**:
+   Track the progress of your deployment by checking its status. When the status changes to `Deployed`, your CMS is ready to use within your commercetools project.
+
+### Storage Configuration
+
+The CMS supports multiple storage options for media files, which can be configured during deployment:
+
+- **AWS S3**: Set `STORAGE_TYPE=aws` and provide AWS credentials
+- **Google Cloud Storage**: Set `STORAGE_TYPE=gcp` and provide GCP credentials
+- **Cloudinary**: Set `STORAGE_TYPE=cloudinary` and provide Cloudinary credentials
+
+Refer to the `connect.yaml` file for all available configuration options.
+
 ## Original Connect Application Information
 
 This project is built using the `starter-typescript` template for developing [connect applications](https://marketplace.commercetools.com/) in TypeScript.
@@ -127,3 +372,4 @@ This project is built using the `starter-typescript` template for developing [co
 ### Documentation
 
 - [Service API Documentation](./service/README.md) - Documentation for the REST API endpoints including custom objects management
+- [CMS Component API](./assets/README.md) - Documentation for the CMS web components
