@@ -1,0 +1,8 @@
+# Ignore everything
+*
+
+# But include these files/folders
+!dist/
+!package.json
+!README.md
+!index.html

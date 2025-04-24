@@ -8,18 +8,19 @@ export default defineConfig({
     'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
   },
   build: {
+    sourcemap: true,
     lib: {
       entry: {
-        'layout-cms': resolve(__dirname, 'src/main.ts'),
+        'index': resolve(__dirname, 'src/main.ts'),
       },
       formats: ['es'],
     },
-    outDir: resolve(__dirname, 'public'),
+    outDir: resolve(__dirname, 'dist'),
     rollupOptions: {
       output: {
-        assetFileNames: 'assets/[name][extname]',
-        entryFileNames: 'assets/[name].js',
-        chunkFileNames: 'assets/[name]-[hash].js',
+        assetFileNames: '[name][extname]',
+        entryFileNames: '[name].js',
+        chunkFileNames: '[name]-[hash].js',
       },
     },
   },
