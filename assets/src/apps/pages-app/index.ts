@@ -346,8 +346,7 @@ export class PagesApp extends connect(store)(LitElement) {
               baseUrl: `${this.baseURL}/${this.businessUnitKey}`,
               page: this.currentPage,
             })
-          )
-          .unwrap();
+          );
       } catch (error) {
         console.error('Failed to save changes:', error);
       }

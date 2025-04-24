@@ -9,7 +9,7 @@ import {
 } from '../utils/api';
 import { v4 as uuidv4 } from 'uuid';
 
-interface ContentItemState {
+export interface ContentItemState {
   items: ContentItem[];
   states: Record<string, StateInfo>;
   loading: boolean;

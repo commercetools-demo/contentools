@@ -279,8 +279,7 @@ export class PageList extends connect(store)(LitElement) {
             baseUrl: `${this.baseURL}/${this.businessUnitKey}`,
             key,
           })
-        )
-        .unwrap();
+        );
       this.showDeleteConfirm = null;
 
       if (this.selectedPageKey === key) {

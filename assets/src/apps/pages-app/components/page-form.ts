@@ -182,8 +182,7 @@ export class PageForm extends connect(store)(LitElement) {
         await store
           .dispatch(
             updatePage({ baseUrl: `${this.baseURL}/${this.businessUnitKey}`, page: updatedPage })
-          )
-          .unwrap();
+          );
 
         // Dispatch event to notify parent
         this.dispatchEvent(
@@ -212,8 +211,7 @@ export class PageForm extends connect(store)(LitElement) {
                 baseUrl: `${this.baseURL}/${this.businessUnitKey}`,
                 page: currentPage!,
               })
-            )
-            .unwrap();
+            );
         }
 
         // Dispatch event to notify parent

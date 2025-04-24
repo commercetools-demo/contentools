@@ -28,7 +28,7 @@ export const getAllContentTypes = async ({
   const sampleContentTypes = convertSampleContentTypeToContentTypeData();
 
   // Combine components, prioritizing fetched components over default ones with the same type
-  const fetchedTypes = new Set(fetchedContentTypes.map(c => c.metadata.type));
+  const fetchedTypes = new Set(fetchedContentTypes.map((c: ContentTypeData) => c.metadata.type));
 
   const filteredSampleContentTypes = sampleContentTypes.filter(
     comp => !fetchedTypes.has(comp.metadata.type)

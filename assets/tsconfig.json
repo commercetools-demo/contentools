@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES2020",
-    "useDefineForClassFields": false,
+    "useDefineForClassFields": true,
     "module": "ESNext",
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "skipLibCheck": true,
@@ -11,9 +11,12 @@
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
-    "isolatedModules": true,
-    "moduleDetection": "force",
-    "noEmit": true,
+    "isolatedModules": false,
+
+    "declaration": true,
+    "declarationDir": "./dist",
+    "emitDeclarationOnly": true, // Set to true if you only want .d.ts files
+
 
     /* Linting */
     "strict": true,

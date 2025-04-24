@@ -5,7 +5,6 @@ import {
   updateContentTypeEndpoint,
   deleteContentTypeEndpoint,
   getAvailableDatasourcesEndpoint,
-  getDatasourceByKeyEndpoint,
 } from '../utils/api';
 import { ContentTypeState, ContentTypeData, DatasourceInfo } from '../types';
 
@@ -35,18 +34,6 @@ export const fetchAvailableDatasourcesThunk = createAsyncThunk(
     try {
       const response = await getAvailableDatasourcesEndpoint<DatasourceInfo>(baseURL);
       return response.map(item => item.value as DatasourceInfo);
-    } catch (error) {
-      return rejectWithValue((error as Error).message);
-    }
-  }
-);
-
-export const fetchDatasourceByKeyThunk = createAsyncThunk(
-  'content-type/fetchDatasourceByKey',
-  async ({ baseURL, key }: { baseURL: string; key: string }, { rejectWithValue }) => {
-    try {
-      const response = await getDatasourceByKeyEndpoint<DatasourceInfo>(baseURL, key);
-      return response.value;
     } catch (error) {
       return rejectWithValue((error as Error).message);
     }

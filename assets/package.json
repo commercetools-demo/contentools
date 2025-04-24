@@ -11,13 +11,18 @@
   ],
   "homepage": "https://github.com/commercetools-demo/cms",
   "exports": {
-    "./index": {
-      "require": "./dist/index.js"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.js",
+      "import": "./dist/index.js"
     }
   },
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "vite build && tsc && yarn build:types",
+    "build:types": "dts-bundle-generator --out-file dist/index.d.ts dist/main.ts",
     "preview": "vite preview",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
@@ -26,6 +31,7 @@
   },
   "devDependencies": {
     "@types/google.maps": "^3.58.1",
+    "dts-bundle-generator": "^9.5.1",
     "prettier": "^3.5.3",
     "prettier-plugin-embed": "^0.5.0",
     "typescript": "^5.2.2",

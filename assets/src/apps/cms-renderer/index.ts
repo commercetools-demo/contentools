@@ -93,7 +93,7 @@ export class CmsRenderer extends LitElement {
   private async loadRegistryComponents() {
     try {
       // Dispatch the fetch action
-      await store.dispatch(fetchContentTypesThunk({ baseURL: this.baseURL })).unwrap();
+      await store.dispatch(fetchContentTypesThunk({ baseURL: this.baseURL }));
       this.registryLoaded = true;
 
       // Hydrate the baseURL with businessUnitKey

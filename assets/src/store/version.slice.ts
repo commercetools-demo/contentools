@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { ContentItem, Page, VersionInfo, ContentItemVersions, PageVersions } from '../types';
 import { fetchVersionsEndpoint, saveVersionEndpoint, getVersionEndpoint } from '../utils/api';
 
-interface VersionState {
+export interface VersionState {
   versions: VersionInfo[];
   selectedVersion: VersionInfo | null;
   contentType: 'content-items' | 'pages';

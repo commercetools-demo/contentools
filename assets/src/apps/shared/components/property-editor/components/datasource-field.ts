@@ -1,9 +1,9 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import { connect } from 'lit-redux-watch';
+import { connect, watch } from 'lit-redux-watch';
 import { store } from '../../../../../store';
 import { DatasourceInfo, DatasourceParam } from '../../../../../types';
-import { fetchDatasourceByKeyThunk } from '../../../../../store/content-type.slice';
+import { getDatasourceByKeyEndpoint } from '../../../../../utils/api';
 
 @customElement('cms-datasource-field')
 export class DatasourceField extends connect(store)(LitElement) {
@@ -25,7 +25,7 @@ export class DatasourceField extends connect(store)(LitElement) {
   @property({ type: Boolean })
   highlight: boolean = false;
 
-  @state()
+  @watch('datasource')
   private datasource: DatasourceInfo | null = null;
 
   @state()
@@ -123,16 +123,9 @@ export class DatasourceField extends connect(store)(LitElement) {
     this.error = null;
 
     try {
-      const result = await store
-        .dispatch(
-          fetchDatasourceByKeyThunk({
-            baseURL: this.baseURL,
-            key: this.datasourceType,
-          })
-        )
-        .unwrap();
+      const result = await getDatasourceByKeyEndpoint<DatasourceInfo>(this.baseURL, this.datasourceType);
 
-      this.datasource = result;
+      this.datasource = result.value;
     } catch (err) {
       this.error = `Failed to load datasource: ${err instanceof Error ? err.message : String(err)}`;
       console.error('Error loading datasource:', err);

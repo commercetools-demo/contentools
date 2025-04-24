@@ -2,7 +2,9 @@
 *
 
 # But include these files/folders
-!dist/
+!dist/index.d.ts
+!dist/index.js
+!dist/index.js.map
 !package.json
 !README.md
 !index.html

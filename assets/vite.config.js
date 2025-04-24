@@ -21,7 +21,7 @@ export default defineConfig({
         assetFileNames: '[name][extname]',
         entryFileNames: '[name].js',
         chunkFileNames: '[name]-[hash].js',
-      },
+      }
     },
   },
   publicDir: resolve(__dirname, 'static'),

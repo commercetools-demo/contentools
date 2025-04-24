@@ -7,7 +7,7 @@ import {
   revertDraftEndpoint,
 } from '../utils/api';
 
-interface StateManagementState {
+export interface StateManagementState {
   states: {
     draft?: ContentItem | Page;
     published?: ContentItem | Page;
