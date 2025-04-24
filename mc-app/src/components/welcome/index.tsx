@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useCustomObject } from '../../controllers/custom-object.controller';
 import CMSAppWrapper from '../web-component-wrapper';
-import ScriptLoader from '../web-component-wrapper/script-loader';
 import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
+import '@commercetools-demo/cms-asset';
 
 const SHARED_DEPLOYED_URL = 'cms-app-deployed-url';
 const SHARED_CMS_CONTAINER = 'cms-shared-container';
@@ -33,10 +33,6 @@ const Welcome = () => {
 
   return (
     <div>
-      <ScriptLoader
-        src={`${(context?.environment as any)?.assetsUrl}/assets/layout-cms.js`}
-        id="layout-cms-script"
-      />
       {isLoading && <div>Loading...</div>}
       {deployedUrl && (
         <CMSAppWrapper
