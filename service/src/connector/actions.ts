@@ -7,13 +7,13 @@ export async function createCustomObject(
   apiRoot: ByProjectKeyRequestBuilder,
   applicationUrl: string
 ): Promise<void> {
-   await apiRoot
+  await apiRoot
     .customObjects()
     .post({
       body: {
         key: SHARED_DEPLOYED_URL,
         container: SHARED_CMS_CONTAINER,
-        value: applicationUrl
+        value: applicationUrl,
       },
     })
     .execute();

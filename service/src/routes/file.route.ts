@@ -12,7 +12,7 @@ const upload = multer({ storage: multer.memoryStorage() });
 const fileController = FileControllerFactory.createFileController();
 
 fileRouter.post(
-  '/upload-image',
+  '/upload-file',
   upload.single('file') as any,
   (async (req, res, next) => {
     try {
@@ -20,7 +20,14 @@ fileRouter.post(
         return res.status(400).json({ error: 'No file uploaded' });
       }
 
-      const fileUrl = await fileController.uploadFile(req.file);
+      const title = req.body.title || '';
+      const description = req.body.description || '';
+
+      const fileUrl = await fileController.uploadFile(req.file, undefined, {
+        title,
+        description,
+      });
+
       res.json({ url: fileUrl });
     } catch (error) {
       logger.error('Failed to upload file:', error);
@@ -28,6 +35,26 @@ fileRouter.post(
     }
   }) as RequestHandler
 );
+
+fileRouter.get('/media-library', (async (req, res, next) => {
+  try {
+    const extensions = req.query.extensions
+      ? String(req.query.extensions).split(',')
+      : [];
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 20;
+
+    const result = await fileController.getMediaLibrary(
+      extensions,
+      page,
+      limit
+    );
+    res.json(result);
+  } catch (error) {
+    logger.error('Failed to fetch media library:', error);
+    next(error);
+  }
+}) as RequestHandler);
 
 fileRouter.post('/compile-upload', (async (req, res, next) => {
   try {

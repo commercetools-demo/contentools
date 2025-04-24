@@ -3,9 +3,7 @@ dotenv.config();
 
 import { createApiRoot } from '../client/create.client';
 import { assertError, assertString } from '../utils/assert.utils';
-  import {
-    createCustomObject,
-} from './actions';
+import { createCustomObject } from './actions';
 
 const CONNECT_APPLICATION_URL_KEY = 'CONNECT_SERVICE_URL';
 

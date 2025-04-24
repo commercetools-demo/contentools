@@ -7,6 +7,7 @@ import {
   PageStates,
   PageVersions,
   StateInfo,
+  MediaLibraryResult,
 } from '../types';
 
 /**
@@ -413,4 +414,62 @@ export async function revertDraftEndpoint(
   }
 
   return;
+}
+
+/**
+ * Fetch media library with optional extensions filter and pagination
+ */
+export async function fetchMediaLibrary(
+  baseURL: string,
+  extensions: string[] = [],
+  page: number = 1,
+  limit: number = 20
+): Promise<MediaLibraryResult> {
+  const extensionsParam = extensions.length > 0 ? `extensions=${extensions.join(',')}` : '';
+  const pageParam = `page=${page}`;
+  const limitParam = `limit=${limit}`;
+
+  const queryParams = [extensionsParam, pageParam, limitParam].filter(param => param).join('&');
+
+  const url = `${baseURL}/media-library${queryParams ? `?${queryParams}` : ''}`;
+
+  const response = await fetch(url);
+
+  if (!response.ok) {
+    throw new Error(`API request failed: ${response.status} ${response.statusText}`);
+  }
+
+  return response.json();
+}
+
+/**
+ * Upload a file to the server
+ */
+export async function uploadFile(
+  baseURL: string,
+  file: File,
+  title?: string,
+  description?: string
+): Promise<{ url: string }> {
+  const formData = new FormData();
+  formData.append('file', file);
+
+  if (title) {
+    formData.append('title', title);
+  }
+
+  if (description) {
+    formData.append('description', description);
+  }
+
+  const response = await fetch(`${baseURL}/upload-file`, {
+    method: 'POST',
+    body: formData,
+  });
+
+  if (!response.ok) {
+    throw new Error(`Upload failed: ${response.status} ${response.statusText}`);
+  }
+
+  return response.json();
 }
