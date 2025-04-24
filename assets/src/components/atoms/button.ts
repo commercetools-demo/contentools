@@ -122,6 +122,10 @@ export class Button extends LitElement {
       font-size: 16px;
     }
 
+    .button.full-width {
+      width: 100%;
+    }
+
     /* Disabled state */
     .button:disabled {
       opacity: 0.6;
@@ -141,7 +145,7 @@ export class Button extends LitElement {
     | 'icon' = 'primary';
 
   @property({ type: String })
-  size: 'small' | 'medium' | 'large' = 'medium';
+  size: 'small' | 'medium' | 'large' | 'full-width' = 'medium';
 
   @property({ type: Boolean })
   disabled = false;

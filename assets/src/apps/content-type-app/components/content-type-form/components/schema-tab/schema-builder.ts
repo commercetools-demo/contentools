@@ -2,6 +2,7 @@ import { LitElement, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { PropertySchema } from '../../../../../../types';
 import './schema-builder-item';
+import '../../../../../../components/molecules/modal';
 
 @customElement('schema-builder')
 export class SchemaBuilder extends LitElement {
@@ -117,9 +118,8 @@ export class SchemaBuilder extends LitElement {
     }
 
     .property-types {
-      margin-top: 10px;
       display: flex;
-      flex-wrap: wrap;
+      flex-direction: column;
       gap: 8px;
       padding: 12px;
       background-color: #f0f0f0;
@@ -136,19 +136,6 @@ export class SchemaBuilder extends LitElement {
 
     .property-type-btn:hover {
       background-color: #f0f0f0;
-    }
-
-    .edit-dialog {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: rgba(0, 0, 0, 0.5);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
     }
   `;
 
@@ -204,35 +191,53 @@ export class SchemaBuilder extends LitElement {
         </ul>
       </div>
 
-      ${this._editingProperty
-        ? html`
-            <div class="edit-dialog">
-              <schema-builder-item
-                .propertyKey="${this._editingProperty}"
-                .propertySchema="${this.schemaObject[this._editingProperty]}"
-                @save-schema-builder-item="${this._handlePropertySave}"
-                @cancel-schema-builder-item="${this._closeEditDialog}"
-              ></schema-builder-item>
-            </div>
-          `
-        : ''}
-      ${this._showTypeSelector
-        ? html`
-            <div class="edit-dialog">
-              <div class="property-types">
-                ${this._propertyTypeOptions.map(
-                  type => html`
-                    <ui-button
-                      @click="${() => this._addNewProperty(type.value)}"
-                    >
-                      ${type.label}
-                    </ui-button>
-                  `
-                )}
-              </div>
-            </div>
-          `
-        : ''}
+      <!-- Property Editor Modal -->
+      <cms-modal
+        ?open="${this._editingProperty !== null}"
+        size="md"
+        ?showCloseButton="${true}"
+        ?closeOnClickOutside="${false}"
+        @modal-close="${this._closeEditDialog}"
+      >
+        <div slot="header">Edit Property</div>
+        <div slot="content">
+          ${this._editingProperty
+            ? html`
+                <schema-builder-item
+                  .propertyKey="${this._editingProperty}"
+                  .propertySchema="${this.schemaObject[this._editingProperty]}"
+                  @save-schema-builder-item="${this._handlePropertySave}"
+                  @cancel-schema-builder-item="${this._closeEditDialog}"
+                ></schema-builder-item>
+              `
+            : ''}
+        </div>
+      </cms-modal>
+
+      <!-- Type Selector Modal -->
+      <cms-modal
+        ?open="${this._showTypeSelector}"
+        size="sm"
+        ?showCloseButton="${true}"
+        ?closeOnClickOutside="${true}"
+        @modal-close="${this._toggleTypeSelector}"
+      >
+        <div slot="header">Select Property Type</div>
+        <div slot="content">
+          <div class="property-types">
+            ${this._propertyTypeOptions.map(
+              type => html`
+                <ui-button
+                  size="full-width"
+                  @click="${() => this._addNewProperty(type.value)}"
+                >
+                  ${type.label}
+                </ui-button>
+              `
+            )}
+          </div>
+        </div>
+      </cms-modal>
     `;
   }
 

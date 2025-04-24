@@ -29,11 +29,6 @@ export class SchemaBuilderItem extends connect(store)(LitElement) {
   static styles = css`
     :host {
       display: block;
-      width: 500px;
-      background-color: white;
-      border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      overflow: hidden;
     }
 
     .editor-header {
@@ -191,9 +186,6 @@ export class SchemaBuilderItem extends connect(store)(LitElement) {
 
   render() {
     return html`
-      <div class="editor-header">
-        <h3 class="editor-title">Edit Property</h3>
-      </div>
 
       <div class="editor-content">
         <div class="form-row">
