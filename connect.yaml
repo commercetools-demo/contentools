@@ -1,6 +1,4 @@
 deployAs:
-  - name: assets
-    applicationType: assets
   - name: mc-app
     applicationType: merchant-center-custom-application
     configuration:
