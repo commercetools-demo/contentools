@@ -15,6 +15,9 @@ export class FileField extends LitElement {
   @property({ type: String })
   baseURL: string = '';
 
+  @property({ type: String })
+  businessUnitKey: string = '';
+
   @property({ type: Array })
   extensions: string[] = [];
 
@@ -35,6 +38,7 @@ export class FileField extends LitElement {
         value="${this.value}"
         fieldKey="${this.fieldKey}"
         baseURL="${this.baseURL}"
+        businessUnitKey="${this.businessUnitKey}"
         .extensions="${this.extensions}"
         ?highlight="${this.highlight}"
       ></cms-media-library>

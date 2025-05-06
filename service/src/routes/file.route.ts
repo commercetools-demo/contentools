@@ -12,18 +12,19 @@ const upload = multer({ storage: multer.memoryStorage() });
 const fileController = FileControllerFactory.createFileController();
 
 fileRouter.post(
-  '/upload-file',
+  '/:businessUnitKey/upload-file',
   upload.single('file') as any,
   (async (req, res, next) => {
     try {
       if (!req.file) {
         return res.status(400).json({ error: 'No file uploaded' });
       }
+      const { businessUnitKey } = req.params;
 
       const title = req.body.title || '';
       const description = req.body.description || '';
 
-      const fileUrl = await fileController.uploadFile(req.file, undefined, {
+      const fileUrl = await fileController.uploadFile(req.file, businessUnitKey, {
         title,
         description,
       });
@@ -36,8 +37,10 @@ fileRouter.post(
   }) as RequestHandler
 );
 
-fileRouter.get('/media-library', (async (req, res, next) => {
+fileRouter.get('/:businessUnitKey/media-library', (async (req, res, next) => {
   try {
+    const { businessUnitKey } = req.params;
+
     const extensions = req.query.extensions
       ? String(req.query.extensions).split(',')
       : [];
@@ -47,7 +50,8 @@ fileRouter.get('/media-library', (async (req, res, next) => {
     const result = await fileController.getMediaLibrary(
       extensions,
       page,
-      limit
+      limit,
+      businessUnitKey
     );
     res.json(result);
   } catch (error) {

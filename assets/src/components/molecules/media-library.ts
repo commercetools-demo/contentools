@@ -17,6 +17,9 @@ export class MediaLibrary extends LitElement {
   @property({ type: String })
   baseURL: string = '';
 
+  @property({ type: String })
+  businessUnitKey: string = '';
+
   @property({ type: Array })
   extensions: string[] = [];
 
@@ -52,6 +55,10 @@ export class MediaLibrary extends LitElement {
 
   @state()
   private fileDescription: string = '';
+
+  get hydratedUrl() {
+    return `${this.baseURL}/${this.businessUnitKey}`;
+  }
 
   static styles = css`
     .form-group {
@@ -297,7 +304,7 @@ export class MediaLibrary extends LitElement {
   private async _loadMediaLibrary(page: number = 1) {
     this.loading = true;
     try {
-      const result = await fetchMediaLibrary(this.baseURL, this.extensions, page);
+      const result = await fetchMediaLibrary(this.hydratedUrl, this.extensions, page);
       this.mediaFiles = result.files;
       this.currentPage = result.pagination.currentPage;
       this.totalPages = result.pagination.totalPages;
@@ -360,7 +367,7 @@ export class MediaLibrary extends LitElement {
 
     try {
       const result = await uploadFile(
-        this.baseURL,
+        this.hydratedUrl,
         this.selectedFile,
         this.fileTitle,
         this.fileDescription

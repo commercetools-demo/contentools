@@ -28,8 +28,9 @@ export class GCPFileController implements FileController {
   ): Promise<string> {
     try {
       const bucket = this.storage.bucket(this.bucket);
+      const directory = path ? `${path}/uploads` : 'uploads';
       const blob = bucket.file(
-        `${path || 'uploads'}/${Date.now()}-${file.originalname}`
+        `${directory}/${Date.now()}-${file.originalname}`
       );
 
       // Prepare metadata from title and description if provided
@@ -54,10 +55,11 @@ export class GCPFileController implements FileController {
   async getMediaLibrary(
     extensions: string[],
     page: number,
-    limit: number
+    limit: number,
+    path?: string
   ): Promise<MediaLibraryResult> {
     try {
-      const prefix = 'uploads/';
+      const prefix = path ? `${path}/uploads` : 'uploads';
       const bucket = this.storage.bucket(this.bucket);
 
       // Get all files with the specified prefix

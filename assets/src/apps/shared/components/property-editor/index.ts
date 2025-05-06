@@ -297,6 +297,7 @@ export class PropertyEditor extends connect(store)(LitElement) {
                   .highlight="${this.diff.includes(key)}"
                   fieldKey="${key}"
                   .baseURL="${this.baseURL}"
+                  .businessUnitKey="${this.businessUnitKey}"
                   .extensions="${field.extensions || []}"
                   @field-change="${this.handleFieldChange}"
                 />
