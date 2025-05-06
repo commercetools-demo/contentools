@@ -1086,16 +1086,17 @@
     "@babel/runtime" "^7.17.9"
     "@babel/runtime-corejs3" "^7.17.9"
 
-"@commercetools-demo/cms-asset@^0.5.3":
-  version "0.5.3"
-  resolved "https://registry.yarnpkg.com/@commercetools-demo/cms-asset/-/cms-asset-0.5.3.tgz#cc7ecf5dda409cb16d529aa22fcb2a7253e99fcb"
-  integrity sha512-aDQ10hrGtnS4yVcFYLV7ejZZBI6LMIIHgLTiCuytO6F2PZFZW6hRZCPD32MKflEiT4yiAx9o9NEF4jZbHXCHcg==
+"@commercetools-demo/cms-asset@^0.6.0":
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/@commercetools-demo/cms-asset/-/cms-asset-0.6.0.tgz#e69518ffea03e96367bd2d325f0d655c73a91c18"
+  integrity sha512-avDZLSD6RXNk/T2QEp7pGCMS/V/9Kp1sA8LiarrLb1K0rpFwRIpfccKZajtz2fLedBAEyNrvR/8fClyObVY2yA==
   dependencies:
     "@commercetools/platform-sdk" "^4.0.0"
     "@commercetools/sdk-client-v2" "^2.0.0"
     "@reduxjs/toolkit" "^2.6.0"
     "@types/sortablejs" "^1.15.8"
     "@types/uuid" "^10.0.0"
+    country-to-currency "^2.0.2"
     dotenv "^16.0.3"
     lit "^3.2.1"
     lit-redux-watch "^0.3.8"
@@ -7264,6 +7265,11 @@ cosmiconfig@^7.0.0, cosmiconfig@^7.0.1:
     parse-json "^5.0.0"
     path-type "^4.0.0"
     yaml "^1.10.0"
+
+country-to-currency@^2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/country-to-currency/-/country-to-currency-2.0.2.tgz#3a46efc6dccb5904341821b4e727db0926bd4339"
+  integrity sha512-vM4pJUmhw1EEvfqx12ZpbXqCAHMPp/P6dxtz+V0mT5NKiJaC73cbKk7OPxpGZhno+CthOkIyl+a4VAlToFvX7Q==
 
 create-jest-runner@^0.11.2:
   version "0.11.2"
