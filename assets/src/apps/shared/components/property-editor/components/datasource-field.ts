@@ -123,7 +123,10 @@ export class DatasourceField extends connect(store)(LitElement) {
     this.error = null;
 
     try {
-      const result = await getDatasourceByKeyEndpoint<DatasourceInfo>(this.baseURL, this.datasourceType);
+      const result = await getDatasourceByKeyEndpoint<DatasourceInfo>(
+        this.baseURL,
+        this.datasourceType
+      );
 
       this.datasource = result.value;
     } catch (err) {

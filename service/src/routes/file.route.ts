@@ -24,10 +24,14 @@ fileRouter.post(
       const title = req.body.title || '';
       const description = req.body.description || '';
 
-      const fileUrl = await fileController.uploadFile(req.file, businessUnitKey, {
-        title,
-        description,
-      });
+      const fileUrl = await fileController.uploadFile(
+        req.file,
+        businessUnitKey,
+        {
+          title,
+          description,
+        }
+      );
 
       res.json({ url: fileUrl });
     } catch (error) {

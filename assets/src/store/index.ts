@@ -9,14 +9,18 @@ import { ContentTypeState } from '../types';
 import { EditorState } from '../types';
 import { PagesState } from '../types';
 
-export const store: Store<{
-  pages: PagesState;
-  editor: EditorState;
-  contentType: ContentTypeState;
-  contentItem: ContentItemState;
-  version: VersionState;
-  state: StateManagementState;
-}, any, any> = configureStore({
+export const store: Store<
+  {
+    pages: PagesState;
+    editor: EditorState;
+    contentType: ContentTypeState;
+    contentItem: ContentItemState;
+    version: VersionState;
+    state: StateManagementState;
+  },
+  any,
+  any
+> = configureStore({
   reducer: {
     pages: pagesReducer,
     editor: editorReducer,

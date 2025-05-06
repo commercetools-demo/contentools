@@ -1,5 +1,8 @@
 import { logger } from '../utils/logger.utils';
-import { getProductBySkuController, getProductsBySkuController } from './product.controller';
+import {
+  getProductBySkuController,
+  getProductsBySkuController,
+} from './product.controller';
 
 export const resolveDatasource = async (
   datasourceKey: string,

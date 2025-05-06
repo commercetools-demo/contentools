@@ -91,13 +91,13 @@ export const sampleContentTypeRegistry: Record<string, Partial<ContentType>> = {
         },
       },
     },
-    },
+  },
   [SampleContentType.WEBSITE_LOGO]: {
     type: SampleContentType.WEBSITE_LOGO,
     value: {
       metadata: {
         propertySchema: {
-          logoUrl: {  
+          logoUrl: {
             type: 'file',
             label: 'Logo URL',
             defaultValue: '',

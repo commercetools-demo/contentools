@@ -73,15 +73,15 @@ export class ContentItemController {
   ): Promise<ContentItem['value']> {
     // Get the content type associated with this content item
     try {
-      const contentType = (await this.contentTypeController.getCustomObject(
-        item.type
-      ).catch(async (error) => {
-        const inSampleTypeRegistry = sampleContentTypeRegistry[item.type];
-        if (inSampleTypeRegistry) {
-          return inSampleTypeRegistry
-        }
-        throw error;
-      })) as ContentType;
+      const contentType = (await this.contentTypeController
+        .getCustomObject(item.type)
+        .catch(async (error) => {
+          const inSampleTypeRegistry = sampleContentTypeRegistry[item.type];
+          if (inSampleTypeRegistry) {
+            return inSampleTypeRegistry;
+          }
+          throw error;
+        })) as ContentType;
       // If content type exists, resolve any datasource properties
       if (contentType) {
         return this.resolveDatasourceProperties(item, contentType);

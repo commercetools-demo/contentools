@@ -179,10 +179,9 @@ export class PageForm extends connect(store)(LitElement) {
           route: this.formData.route,
         };
 
-        await store
-          .dispatch(
-            updatePage({ baseUrl: `${this.baseURL}/${this.businessUnitKey}`, page: updatedPage })
-          );
+        await store.dispatch(
+          updatePage({ baseUrl: `${this.baseURL}/${this.businessUnitKey}`, page: updatedPage })
+        );
 
         // Dispatch event to notify parent
         this.dispatchEvent(
@@ -205,13 +204,12 @@ export class PageForm extends connect(store)(LitElement) {
         // Save to API
         if (store.getState().pages.currentPage) {
           const currentPage = store.getState().pages.currentPage;
-          await store
-            .dispatch(
-              createPage({
-                baseUrl: `${this.baseURL}/${this.businessUnitKey}`,
-                page: currentPage!,
-              })
-            );
+          await store.dispatch(
+            createPage({
+              baseUrl: `${this.baseURL}/${this.businessUnitKey}`,
+              page: currentPage!,
+            })
+          );
         }
 
         // Dispatch event to notify parent

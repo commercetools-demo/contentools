@@ -220,7 +220,10 @@ export class CmsWrapper extends LitElement {
             <div class="card-container">
               ${this.pagesAppEnabled
                 ? html`
-                    <ui-card header="Page Builder" @click="${() => this._setActiveApp('cms')}">
+                    <ui-card
+                      header="Page Builder"
+                      @click="${() => this._setActiveApp('cms')}"
+                    >
                       <div class="card-body">
                         <p class="card-description">
                           Create and manage pages with a flexible layout system. Add components and

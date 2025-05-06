@@ -340,13 +340,12 @@ export class PagesApp extends connect(store)(LitElement) {
   private async _handleSaveChanges() {
     if (this.currentPage) {
       try {
-        await store
-          .dispatch(
-            updatePage({
-              baseUrl: `${this.baseURL}/${this.businessUnitKey}`,
-              page: this.currentPage,
-            })
-          );
+        await store.dispatch(
+          updatePage({
+            baseUrl: `${this.baseURL}/${this.businessUnitKey}`,
+            page: this.currentPage,
+          })
+        );
       } catch (error) {
         console.error('Failed to save changes:', error);
       }

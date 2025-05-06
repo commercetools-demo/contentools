@@ -11,7 +11,7 @@ export default defineConfig({
     sourcemap: true,
     lib: {
       entry: {
-        'index': resolve(__dirname, 'src/main.ts'),
+        index: resolve(__dirname, 'src/main.ts'),
       },
       formats: ['es'],
     },
@@ -21,7 +21,7 @@ export default defineConfig({
         assetFileNames: '[name][extname]',
         entryFileNames: '[name].js',
         chunkFileNames: '[name]-[hash].js',
-      }
+      },
     },
   },
   publicDir: resolve(__dirname, 'static'),

@@ -36,7 +36,7 @@ export interface FileController {
     extensions: string[],
     page: number,
     limit: number,
-    path?: string,
+    path?: string
   ): Promise<MediaLibraryResult>;
 }
 

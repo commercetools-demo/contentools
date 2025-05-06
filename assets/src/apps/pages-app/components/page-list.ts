@@ -273,13 +273,12 @@ export class PageList extends connect(store)(LitElement) {
 
   private async _handleConfirmDelete(key: string) {
     try {
-      await store
-        .dispatch(
-          deletePage({
-            baseUrl: `${this.baseURL}/${this.businessUnitKey}`,
-            key,
-          })
-        );
+      await store.dispatch(
+        deletePage({
+          baseUrl: `${this.baseURL}/${this.businessUnitKey}`,
+          key,
+        })
+      );
       this.showDeleteConfirm = null;
 
       if (this.selectedPageKey === key) {

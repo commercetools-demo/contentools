@@ -8,13 +8,14 @@ A collection of web components for implementing CMS functionality in commercetoo
 npm install @commercetools-demo/cms-asset
 ```
 
-or 
+or
 
 ```bash
 yarn add @commercetools-demo/cms-asset
 ```
 
 ## React Usage
+
 Create a wrapper component
 
 ```tsx
@@ -59,7 +60,6 @@ const CMSAppWrapper: React.FC<Props> = ({ ...props }) => {
 };
 
 export default CMSAppWrapper;
-
 ```
 
 And use it in your application
@@ -91,9 +91,9 @@ This package provides three main web components:
 The main component for managing and editing CMS content.
 
 ```html
-<cms-app 
-  baseurl="/service" 
-  business-unit-key="your-business-unit" 
+<cms-app
+  baseurl="/service"
+  business-unit-key="your-business-unit"
   locale="en"
   available-locales='["en", "de"]'
 ></cms-app>
@@ -101,21 +101,21 @@ The main component for managing and editing CMS content.
 
 #### Properties
 
-| Property | Attribute | Type | Description | Required |
-|----------|-----------|------|-------------|----------|
-| baseURL | baseurl | String | Base URL for API endpoints | Yes |
-| businessUnitKey | business-unit-key | String | The business unit key for the CMS | Yes |
-| locale | locale | String | The current locale | No |
-| availableLocales | available-locales | Array<String> (JSON string) | Available locales as JSON string | No |
+| Property         | Attribute         | Type                        | Description                       | Required |
+| ---------------- | ----------------- | --------------------------- | --------------------------------- | -------- |
+| baseURL          | baseurl           | String                      | Base URL for API endpoints        | Yes      |
+| businessUnitKey  | business-unit-key | String                      | The business unit key for the CMS | Yes      |
+| locale           | locale            | String                      | The current locale                | No       |
+| availableLocales | available-locales | Array<String> (JSON string) | Available locales as JSON string  | No       |
 
 ### 2. CMS Renderer Component
 
 Renders a CMS page by key or route.
 
 ```html
-<cms-renderer 
-  baseurl="/service" 
-  business-unit-key="your-business-unit" 
+<cms-renderer
+  baseurl="/service"
+  business-unit-key="your-business-unit"
   key="homepage"
   locale="en"
 ></cms-renderer>
@@ -124,9 +124,9 @@ Renders a CMS page by key or route.
 OR
 
 ```html
-<cms-renderer 
-  baseurl="/service" 
-  business-unit-key="your-business-unit" 
+<cms-renderer
+  baseurl="/service"
+  business-unit-key="your-business-unit"
   route="/home"
   locale="en"
 ></cms-renderer>
@@ -134,23 +134,23 @@ OR
 
 #### Properties
 
-| Property | Attribute | Type | Description | Required |
-|----------|-----------|------|-------------|----------|
-| baseURL | baseurl | String | Base URL for API endpoints | Yes |
-| businessUnitKey | business-unit-key | String | The business unit key for the CMS | Yes |
-| key | key | String | The key of the page to render | Either key or route required |
-| route | route | String | The route of the page to render | Either key or route required |
-| locale | locale | String | The current locale | No |
-| availableLocales | available-locales | Array<String> | Available locales | No |
+| Property         | Attribute         | Type          | Description                       | Required                     |
+| ---------------- | ----------------- | ------------- | --------------------------------- | ---------------------------- |
+| baseURL          | baseurl           | String        | Base URL for API endpoints        | Yes                          |
+| businessUnitKey  | business-unit-key | String        | The business unit key for the CMS | Yes                          |
+| key              | key               | String        | The key of the page to render     | Either key or route required |
+| route            | route             | String        | The route of the page to render   | Either key or route required |
+| locale           | locale            | String        | The current locale                | No                           |
+| availableLocales | available-locales | Array<String> | Available locales                 | No                           |
 
 ### 3. Content Item Renderer Component
 
 Renders a specific content item.
 
 ```html
-<content-item-renderer 
-  baseurl="/service" 
-  business-unit-key="your-business-unit" 
+<content-item-renderer
+  baseurl="/service"
+  business-unit-key="your-business-unit"
   key="product-teaser-123"
   state="published"
 ></content-item-renderer>
@@ -158,12 +158,12 @@ Renders a specific content item.
 
 #### Properties
 
-| Property | Attribute | Type | Description | Required |
-|----------|-----------|------|-------------|----------|
-| baseURL | baseurl | String | Base URL for API endpoints | Yes |
-| businessUnitKey | business-unit-key | String | The business unit key for the CMS | Yes |
-| key | key | String | The key of the content item to render | Yes |
-| state | state | String | The state of the content item: "published" or "preview" | No (default: "published") |
+| Property        | Attribute         | Type   | Description                                             | Required                  |
+| --------------- | ----------------- | ------ | ------------------------------------------------------- | ------------------------- |
+| baseURL         | baseurl           | String | Base URL for API endpoints                              | Yes                       |
+| businessUnitKey | business-unit-key | String | The business unit key for the CMS                       | Yes                       |
+| key             | key               | String | The key of the content item to render                   | Yes                       |
+| state           | state             | String | The state of the content item: "published" or "preview" | No (default: "published") |
 
 ## Required API Endpoints
 
@@ -239,26 +239,27 @@ The following API endpoints should be available at the specified `baseURL`:
 ```html
 <!DOCTYPE html>
 <html>
-<head>
-  <title>CMS Example</title>
-  <script type="module" src="path/to/node_modules/@commercetools-demo/cms-asset/dist/index.js"></script>
-</head>
-<body>
-  <!-- Render a specific page by key -->
-  <cms-renderer 
-    baseurl="/api/cms" 
-    business-unit-key="my-business-unit" 
-    key="homepage"
-    locale="en">
-  </cms-renderer>
-  
-  <!-- Render a content item -->
-  <content-item-renderer 
-    baseurl="/api/cms" 
-    business-unit-key="my-business-unit" 
-    key="banner-123">
-  </content-item-renderer>
-</body>
+  <head>
+    <title>CMS Example</title>
+    <script
+      type="module"
+      src="path/to/node_modules/@commercetools-demo/cms-asset/dist/index.js"
+    ></script>
+  </head>
+  <body>
+    <!-- Render a specific page by key -->
+    <cms-renderer
+      baseurl="/api/cms"
+      business-unit-key="my-business-unit"
+      key="homepage"
+      locale="en"
+    >
+    </cms-renderer>
+
+    <!-- Render a content item -->
+    <content-item-renderer baseurl="/api/cms" business-unit-key="my-business-unit" key="banner-123">
+    </content-item-renderer>
+  </body>
 </html>
 ```
 
@@ -268,4 +269,4 @@ Please refer to the project's GitHub repository for contribution guidelines.
 
 ## License
 
-This project is part of the commercetools demo platform. 
+This project is part of the commercetools demo platform.

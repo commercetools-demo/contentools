@@ -22,13 +22,13 @@ export class WebsiteLogo extends LitElement {
     :host {
       display: block;
     }
-    
+
     img {
       max-width: 100%;
       height: auto;
       display: block;
     }
-    
+
     a {
       display: inline-block;
     }
@@ -36,19 +36,17 @@ export class WebsiteLogo extends LitElement {
 
   render() {
     const logoImage = html`
-      <img 
-        src="${this.logoUrl}" 
-        alt="${this.alt}" 
-        width="${this.width}" 
+      <img
+        src="${this.logoUrl}"
+        alt="${this.alt}"
+        width="${this.width}"
         height="${this.height}"
       />
     `;
 
     if (this.linkUrl) {
       return html`
-        <a href="${this.linkUrl}" title="${this.alt}">
-          ${logoImage}
-        </a>
+        <a href="${this.linkUrl}" title="${this.alt}"> ${logoImage} </a>
       `;
     }
 
