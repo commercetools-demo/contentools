@@ -22,6 +22,15 @@ class CMSWrapper extends connect(store)(LitElement) {
   @property({ type: String, attribute: 'available-locales' })
   availableLocales = '';
 
+  @property({ type: Boolean, attribute: 'pages-app-enabled' })
+  pagesAppEnabled = false;
+
+  @property({ type: Boolean, attribute: 'content-type-app-enabled' })
+  contentTypeAppEnabled = false;
+
+  @property({ type: Boolean, attribute: 'content-item-app-enabled' })
+  contentItemAppEnabled = false;
+
   static styles = [
     unsafeCSS(globalStyles),
     css`
@@ -59,6 +68,9 @@ class CMSWrapper extends connect(store)(LitElement) {
         .businessUnitKey="${this.businessUnitKey}"
         .locale="${this.locale}"
         .availableLocales="${JSON.parse(this.availableLocales)}"
+        .pagesAppEnabled="${this.pagesAppEnabled}"
+        .contentTypeAppEnabled="${this.contentTypeAppEnabled}"
+        .contentItemAppEnabled="${this.contentItemAppEnabled}"
       ></cms-wrapper>
     `;
   }

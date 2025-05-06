@@ -26,6 +26,15 @@ export class CmsWrapper extends LitElement {
   @property({ type: String })
   businessUnitKey: string = '';
 
+  @property({ type: Boolean })
+  pagesAppEnabled: boolean = false;
+
+  @property({ type: Boolean })
+  contentTypeAppEnabled: boolean = false;
+
+  @property({ type: Boolean })
+  contentItemAppEnabled: boolean = false;
+
   @state()
   private activeApp: 'welcome' | 'cms' | 'content-type' | 'content-item' = 'welcome';
 
@@ -41,8 +50,8 @@ export class CmsWrapper extends LitElement {
   @state()
   private showSidebar = false;
 
-  @state()
-  private cmsTitle = '<PUT NAME HERE>';
+  @property({ type: String })
+  cmsTitle = 'contentools';
 
   @state()
   private breadcrumbItems: BreadcrumbItem[] = [];
@@ -143,6 +152,18 @@ export class CmsWrapper extends LitElement {
     }
   `;
 
+  connectedCallback() {
+    super.connectedCallback();
+    // If only one app is enabled, set it as active
+    if (this.pagesAppEnabled && !this.contentTypeAppEnabled && !this.contentItemAppEnabled) {
+      this.activeApp = 'cms';
+    } else if (!this.pagesAppEnabled && this.contentTypeAppEnabled && !this.contentItemAppEnabled) {
+      this.activeApp = 'content-type';
+    } else if (!this.pagesAppEnabled && !this.contentTypeAppEnabled && this.contentItemAppEnabled) {
+      this.activeApp = 'content-item';
+    }
+  }
+
   updated(changedProperties: Map<string, any>) {
     if (changedProperties.has('cmsView') || changedProperties.has('contentTypeView')) {
       this._updateBreadcrumbItems();
@@ -196,32 +217,48 @@ export class CmsWrapper extends LitElement {
             </div>
 
             <div class="card-container">
-              <ui-card header="Page Builder" @click="${() => this._setActiveApp('cms')}">
-                <div class="card-body">
-                  <p class="card-description">
-                    Create and manage pages with a flexible layout system. Add components and
-                    customize content.
-                  </p>
-                </div>
-              </ui-card>
-              <ui-card
-                header="Content Type Manager"
-                @click="${() => this._setActiveApp('content-type')}"
-              >
-                <div class="card-body">
-                  <p class="card-description">
-                    Define and manage content types. Create structured content models for your site.
-                  </p>
-                </div>
-              </ui-card>
-              <ui-card header="Content Items" @click="${() => this._setActiveApp('content-item')}">
-                <div class="card-body">
-                  <p class="card-description">
-                    Create and manage content items. Use predefined content types to structure your
-                    content.
-                  </p>
-                </div>
-              </ui-card>
+              ${this.pagesAppEnabled
+                ? html`
+                    <ui-card header="Page Builder" @click="${() => this._setActiveApp('cms')}">
+                      <div class="card-body">
+                        <p class="card-description">
+                          Create and manage pages with a flexible layout system. Add components and
+                          customize content.
+                        </p>
+                      </div>
+                    </ui-card>
+                  `
+                : ''}
+              ${this.contentTypeAppEnabled
+                ? html`
+                    <ui-card
+                      header="Content Type Manager"
+                      @click="${() => this._setActiveApp('content-type')}"
+                    >
+                      <div class="card-body">
+                        <p class="card-description">
+                          Define and manage content types. Create structured content models for your
+                          site.
+                        </p>
+                      </div>
+                    </ui-card>
+                  `
+                : ''}
+              ${this.contentItemAppEnabled
+                ? html`
+                    <ui-card
+                      header="Content Items"
+                      @click="${() => this._setActiveApp('content-item')}"
+                    >
+                      <div class="card-body">
+                        <p class="card-description">
+                          Create and manage content items. Use predefined content types to structure
+                          your content.
+                        </p>
+                      </div>
+                    </ui-card>
+                  `
+                : ''}
             </div>
           </div>
         `;
