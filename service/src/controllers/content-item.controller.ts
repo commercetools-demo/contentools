@@ -1,4 +1,5 @@
 import { CONTENT_TYPE_CONTAINER } from '../routes/content-type.route';
+import { sampleContentTypeRegistry } from '../utils/constants';
 import { logger } from '../utils/logger.utils';
 import { CustomObjectController } from './custom-object.controller';
 import { resolveDatasource } from './datasource-resolution.route';
@@ -74,10 +75,16 @@ export class ContentItemController {
     try {
       const contentType = (await this.contentTypeController.getCustomObject(
         item.type
-      )) as ContentType;
+      ).catch(async (error) => {
+        const inSampleTypeRegistry = sampleContentTypeRegistry[item.type];
+        if (inSampleTypeRegistry) {
+          return inSampleTypeRegistry
+        }
+        throw error;
+      })) as ContentType;
       // If content type exists, resolve any datasource properties
       if (contentType) {
-        return await this.resolveDatasourceProperties(item, contentType);
+        return this.resolveDatasourceProperties(item, contentType);
       }
     } catch (error) {
       logger.error(`Failed to get content type for item`, error);

@@ -797,6 +797,11 @@ comlink@=4.3.1:
   resolved "https://registry.yarnpkg.com/comlink/-/comlink-4.3.1.tgz#0c6b9d69bcd293715c907c33fe8fc45aecad13c5"
   integrity sha512-+YbhUdNrpBZggBAHWcgQMLPLH1KDF3wJpeqrCKieWQ8RL7atmgsgTQko1XEBK6PsecfopWNntopJ+ByYG1lRaA==
 
+country-to-currency@^2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/country-to-currency/-/country-to-currency-2.0.2.tgz#3a46efc6dccb5904341821b4e727db0926bd4339"
+  integrity sha512-vM4pJUmhw1EEvfqx12ZpbXqCAHMPp/P6dxtz+V0mT5NKiJaC73cbKk7OPxpGZhno+CthOkIyl+a4VAlToFvX7Q==
+
 dedent@^1.5.3:
   version "1.5.3"
   resolved "https://registry.yarnpkg.com/dedent/-/dedent-1.5.3.tgz#99aee19eb9bae55a67327717b6e848d0bf777e5a"

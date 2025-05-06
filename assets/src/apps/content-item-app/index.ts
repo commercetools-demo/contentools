@@ -29,7 +29,7 @@ import '../shared/components/property-editor';
 import './components/content-item-editor';
 import './components/content-item-list';
 import './components/content-type-modal';
-
+import { v4 as uuidv4 } from 'uuid';
 @customElement('content-item-app')
 export class ContentItemApp extends connect(store)(LitElement) {
   @property({ type: String })
@@ -144,11 +144,15 @@ export class ContentItemApp extends connect(store)(LitElement) {
       };
       if (component) {
         if (this.view === 'new') {
+          this.selectedItem = {
+            ...component,
+            key: `item-${uuidv4()}`,
+          };
           store.dispatch(
             createContentItem({
               baseURL: this.hydratedUrl,
               businessUnitKey: this.businessUnitKey,
-              item: component,
+              item: this.selectedItem,
             })
           );
           this.view = 'list';

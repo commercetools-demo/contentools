@@ -68,12 +68,12 @@ export const createContentItem = createAsyncThunk(
   ) => {
     try {
       const newItem = {
-        key: `item-${uuidv4()}`,
         id: uuidv4(),
         businessUnitKey,
-        ...(item as Omit<ContentItem, 'key' | 'id' | 'businessUnitKey'>),
+        ...(item as Omit<ContentItem, 'id' | 'businessUnitKey'>),
       } as ContentItem;
-      return await createContentItemEndpoint<ContentItem>(baseURL, newItem);
+      const createdItem = await createContentItemEndpoint<ContentItem>(baseURL, newItem);
+      return createdItem;
     } catch (error) {
       return rejectWithValue(error instanceof Error ? error.message : String(error));
     }

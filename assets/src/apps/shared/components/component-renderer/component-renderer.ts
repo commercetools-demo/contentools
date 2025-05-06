@@ -12,6 +12,9 @@ export class ComponentRenderer extends LitElement {
   @property({ type: String })
   baseURL = '';
 
+  @property({ type: String })
+  locale: string | null = null;
+
   @state()
   private loading = true;
 
@@ -165,7 +168,7 @@ export class ComponentRenderer extends LitElement {
       }
 
       // Create and configure the component element
-      this.element = this.createComponentElement(tagName, properties);
+      this.element = this.createComponentElement(tagName, { ...properties, locale: this.locale });
 
       // Mark loading as complete
       this.loading = false;

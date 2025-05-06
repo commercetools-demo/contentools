@@ -1,5 +1,24 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
+import countryToCurrency, { Countries } from 'country-to-currency';
+
+export interface Product {
+  masterVariant: {
+    sku: string;
+    images: {
+      url: string;
+    }[];
+    prices: {
+      value: {
+        centAmount: number;
+        currencyCode: string;
+      };
+    }[];
+  };
+  name: {
+    [key: string]: string;
+  };
+}
 
 @customElement('product-slider')
 export class ProductSlider extends LitElement {
@@ -7,7 +26,10 @@ export class ProductSlider extends LitElement {
   title = 'Featured Products';
 
   @property({ type: Array })
-  skus = [];
+  skus: Product[] = [];
+
+  @property({ type: String })
+  locale?: string = 'en-US';
 
   @property({ type: Boolean })
   autoplay = true;
@@ -66,14 +88,18 @@ export class ProductSlider extends LitElement {
     }
 
     .product-image {
-      width: 100%;
       aspect-ratio: 1;
-      object-fit: cover;
+      object-fit: contain;
       background-color: #f5f5f5;
       display: flex;
       align-items: center;
       justify-content: center;
       color: #999;
+    }
+
+    .product-image img {
+      max-width: 200px;
+      object-fit: contain;
     }
 
     .product-details {
@@ -208,20 +234,38 @@ export class ProductSlider extends LitElement {
                   class="slider-track"
                   style="transform: translateX(-${this.currentSlide * (100 / this.slidesToShow)}%)"
                 >
-                  ${this.skus.map(
-                    sku => html`
-                      <div class="slider-slide">
+                  ${this.skus.map(sku => {
+                    const countryCode = (this.locale || 'en-US').split('-')[1] as Countries;
+                    const priceForLocale = sku?.masterVariant?.prices.find(
+                      price => price.value.currencyCode === countryToCurrency[countryCode]
+                    );
+                    return html`
+                    <div class="slider-slide">
                         <div class="product-card">
-                          <div class="product-image">Product Image</div>
+                          <div class="product-image">
+                            <img
+                              src="${sku?.masterVariant?.images[0]?.url}"
+                              alt="${sku?.name?.[this.locale || 'en-US'] ||
+                              sku?.name?.[this.locale || 'en-US']}"
+                            />
+                          </div>
                           <div class="product-details">
-                            <div class="product-name">Product Name</div>
-                            <div class="product-sku">SKU: ${sku}</div>
-                            <div class="product-price">$99.99</div>
+                            <div class="product-name">
+                              ${sku?.name?.[this.locale || 'en-US'] ||
+                              sku?.name?.[this.locale || 'en-US']}
+                            </div>
+                            <div class="product-sku">SKU: ${sku?.masterVariant?.sku}</div>
+                            <div class="product-price">
+                              ${priceForLocale?.value?.centAmount
+                                ? priceForLocale?.value?.centAmount / 100
+                                : 'N/A'}
+                              ${priceForLocale?.value?.currencyCode}
+                            </div>
                           </div>
                         </div>
                       </div>
-                    `
-                  )}
+                  `;
+                  })}
                 </div>
               </div>
 

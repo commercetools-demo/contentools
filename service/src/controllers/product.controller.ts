@@ -24,3 +24,21 @@ export const getProductBySkuController = async (sku: string) => {
     throw error;
   }
 };
+
+export const getProductsBySkuController = async (skus: string) => {
+  try {
+    logger.info('Searching products by SKUs:', skus);
+
+    const skusArray = skus.split(',').map(sku => sku.trim());
+
+    if (!skusArray || skusArray.length === 0) {
+      throw new Error('SKUs are required');
+    }
+
+    const products = await Promise.all(skusArray.map(sku => getProductBySkuController(sku)));
+    return products;
+  } catch (error) {
+    logger.error('Controller error fetching products by SKUs:', error);
+    throw error;
+  }
+};

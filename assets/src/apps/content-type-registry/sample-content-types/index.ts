@@ -67,9 +67,10 @@ export const sampleContentTypeRegistry: Record<string, ContentTypeMetaData> = {
         required: true,
       },
       skus: {
-        type: 'array',
+        type: 'datasource',
         label: 'Product SKUs',
         defaultValue: [],
+        datasourceType: 'products-by-sku',
       },
       autoplay: {
         type: 'boolean',

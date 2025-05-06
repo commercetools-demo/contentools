@@ -22,6 +22,9 @@ export class ContentItemRenderer extends LitElement {
   @property({ type: String, attribute: 'state' })
   state = 'published';
 
+  @property({ type: String, attribute: 'locale' })
+  locale = 'en-US';
+
   @state()
   private contentItem: ContentItem | null = null;
 
@@ -142,6 +145,7 @@ export class ContentItemRenderer extends LitElement {
       <component-renderer
         .component="${this.contentItem}"
         .baseURL="${this.baseURL}"
+        .locale="${this.locale}"
       ></component-renderer>
     `;
   }
