@@ -4,6 +4,7 @@ export enum SampleContentType {
   HERO_BANNER = 'heroBanner',
   PRODUCT_SLIDER = 'productSlider',
   RICH_TEXT = 'richText',
+  WEBSITE_LOGO = 'websiteLogo',
 }
 
 export const sampleContentTypeRegistry: Record<string, ContentTypeMetaData> = {
@@ -97,6 +98,24 @@ export const sampleContentTypeRegistry: Record<string, ContentTypeMetaData> = {
         type: 'string', // HTML content stored as string, to be edited with WYSIWYG in the CMS
         label: 'Content',
         defaultValue: '<p>Enter your content here...</p>',
+        required: true,
+      },
+    },
+  },
+  [SampleContentType.WEBSITE_LOGO]: {
+    type: SampleContentType.WEBSITE_LOGO,
+    name: 'Website Logo',
+    icon: '🖼️',
+    isBuiltIn: true,
+    defaultProperties: {
+      logoUrl: '',
+    },
+    propertySchema: {
+      logoUrl: {
+        type: 'file',
+        extensions: ['jpg', 'jpeg', 'png', 'webp'],
+        label: 'Logo URL',
+        defaultValue: '',
         required: true,
       },
     },

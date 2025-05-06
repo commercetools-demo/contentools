@@ -20,6 +20,9 @@ export class ContentItemEditor extends connect(store)(LitElement) {
   isNew: boolean = false;
 
   @property({ type: String })
+  locale: string = 'en-US';
+
+  @property({ type: String })
   baseURL: string = '';
 
   @property({ type: String })
@@ -208,6 +211,7 @@ export class ContentItemEditor extends connect(store)(LitElement) {
                   </cms-property-editor>
                   <div class="content-item-edit-preview">
                     <content-item-preview
+                      .locale="${this.locale}"
                       .contentItemKey="${this.item.key}"
                       .baseURL="${this.baseURL}"
                       .businessUnitKey="${this.businessUnitKey}"

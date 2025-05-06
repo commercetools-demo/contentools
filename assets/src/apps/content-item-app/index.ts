@@ -38,6 +38,9 @@ export class ContentItemApp extends connect(store)(LitElement) {
   @property({ type: String })
   businessUnitKey: string = '';
 
+  @property({ type: String })
+  locale: string = 'en-US';
+
   @state()
   private view: 'list' | 'editor' | 'new' = 'list';
 
@@ -300,6 +303,7 @@ export class ContentItemApp extends connect(store)(LitElement) {
           .item="${this.selectedItem}"
           .baseURL="${this.baseURL}"
           .businessUnitKey="${this.businessUnitKey}"
+          .locale="${this.locale}"
           .isNew="${this.view === 'new'}"
           @back="${() => {
             this.view = 'list';

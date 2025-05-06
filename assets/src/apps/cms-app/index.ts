@@ -203,6 +203,7 @@ export class CmsWrapper extends LitElement {
 
           <content-item-app
             .baseURL="${this.baseURL}"
+            .locale="${this.locale}"
             .businessUnitKey="${this.businessUnitKey}"
             @view-changed="${this._handleContentItemViewChanged}"
           ></content-item-app>

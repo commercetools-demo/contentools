@@ -15,6 +15,9 @@ export class ContentItemPreview extends LitElement {
   @property({ type: String })
   businessUnitKey: string = '';
 
+  @property({ type: String })
+  locale: string = 'en-US';
+
   @state()
   private loading: boolean = false;
 
@@ -118,6 +121,7 @@ export class ContentItemPreview extends LitElement {
           .baseURL="${this.baseURL}"
           .businessUnitKey="${this.businessUnitKey}"
           .component="${this.contentItem}"
+          .locale="${this.locale}"
         ></component-renderer>
       </div>
     `;
