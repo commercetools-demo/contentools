@@ -28,14 +28,16 @@ contentItemRouter.get(
       );
 
       const whereClause = contentItems
-        .map(
+        ?.map(
           (item) =>
             `(key = "${item.key}" AND businessUnitKey = "${businessUnitKey}")`
         )
         .join(' OR ');
-      const contentItemStates = await contentStateController.getCustomObjects(
-        `value(${whereClause})`
-      );
+      const contentItemStates = whereClause
+        ? await contentStateController.getCustomObjects(
+            `value(${whereClause})`
+          )
+        : [];
 
       // Merge content items with their states
       const contentItemsWithStates = contentItems.map((item) => {
