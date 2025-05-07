@@ -29,34 +29,35 @@ export class ContentItemPreview extends LitElement {
 
   static styles = css`
     :host {
-      display: block;
-      width: 100%;
+      display: var(--content-item-preview__host__display, block);
+      width: var(--content-item-preview__host__width, 100%);
     }
 
     .preview-container {
-      border: 1px solid #e0e0e0;
-      border-radius: 4px;
-      padding: 16px;
-      min-height: 200px;
+      border: var(--content-item-preview__preview-container__border, 1px solid #e0e0e0);
+      border-radius: var(--content-item-preview__preview-container__border-radius, 4px);
+      padding: var(--content-item-preview__preview-container__padding, 16px);
+      min-height: var(--content-item-preview__preview-container__min-height, 200px);
+      margin-top: var(--content-item-preview__preview-container__margin-top, 0px);
     }
 
     h3 {
-      margin-top: 0;
+      margin-top: var(--content-item-preview__h3__margin-top, 0);
     }
 
     .loading {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 200px;
+      display: var(--content-item-preview__loading__display, flex);
+      align-items: var(--content-item-preview__loading__align-items, center);
+      justify-content: var(--content-item-preview__loading__justify-content, center);
+      height: var(--content-item-preview__loading__height, 200px);
     }
 
     .error {
-      padding: 15px;
-      background-color: #ffebee;
-      border-radius: 4px;
-      color: #e53935;
-      margin-bottom: 20px;
+      padding: var(--content-item-preview__error__padding, 15px);
+      background-color: var(--content-item-preview__error__background-color, #ffebee);
+      border-radius: var(--content-item-preview__error__border-radius, 4px);
+      color: var(--content-item-preview__error__color, #e53935);
+      margin-bottom: var(--content-item-preview__error__margin-bottom, 20px);
     }
   `;
 

@@ -29,32 +29,32 @@ export class ComponentRenderer extends LitElement {
 
   static styles = css`
     :host {
-      display: block;
-      width: 100%;
+      display: var(--component-renderer__host__display, block);
+      width: var(--component-renderer__host__width, 100%);
     }
 
     .loading {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100px;
+      display: var(--component-renderer__loading__display, flex);
+      align-items: var(--component-renderer__loading__align-items, center);
+      justify-content: var(--component-renderer__loading__justify-content, center);
+      height: var(--component-renderer__loading__height, 100px);
     }
 
     .error {
-      padding: 15px;
-      background-color: #ffebee;
-      border-radius: 4px;
-      color: #e53935;
-      margin-bottom: 20px;
+      padding: var(--component-renderer__error__padding, 15px);
+      background-color: var(--component-renderer__error__background-color, #ffebee);
+      border-radius: var(--component-renderer__error__border-radius, 4px);
+      color: var(--component-renderer__error__color, #e53935);
+      margin-bottom: var(--component-renderer__error__margin-bottom, 20px);
     }
 
     .warning {
-      padding: 15px;
-      background-color: #fff3cd;
-      color: #856404;
-      border-radius: 4px;
-      margin-bottom: 20px;
-      border: 1px solid #ffeeba;
+      padding: var(--component-renderer__warning__padding, 15px);
+      background-color: var(--component-renderer__warning__background-color, #fff3cd);
+      color: var(--component-renderer__warning__color, #856404);
+      border-radius: var(--component-renderer__warning__border-radius, 4px);
+      margin-bottom: var(--component-renderer__warning__margin-bottom, 20px);
+      border: var(--component-renderer__warning__border, 1px solid #ffeeba);
     }
   `;
 

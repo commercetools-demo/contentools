@@ -9,36 +9,36 @@ import { customElement, property } from 'lit/decorators.js';
 export class StatusTag extends LitElement {
   static styles = css`
     :host {
-      display: inline-block;
+      display: var(--ui-status-tag__host__display, inline-block);
     }
 
     .status-tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      font-size: 12px;
-      font-weight: 500;
-      color: #333;
+      display: var(--ui-status-tag__status-tag__display, inline-flex);
+      align-items: var(--ui-status-tag__status-tag__align-items, center);
+      gap: var(--ui-status-tag__status-tag__gap, 5px);
+      font-size: var(--ui-status-tag__status-tag__font-size, 12px);
+      font-weight: var(--ui-status-tag__status-tag__font-weight, 500);
+      color: var(--ui-status-tag__status-tag__color, #333);
     }
 
     .status-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      display: inline-block;
-      flex-shrink: 0;
+      width: var(--ui-status-tag__status-dot__width, 10px);
+      height: var(--ui-status-tag__status-dot__height, 10px);
+      border-radius: var(--ui-status-tag__status-dot__border-radius, 50%);
+      display: var(--ui-status-tag__status-dot__display, inline-block);
+      flex-shrink: var(--ui-status-tag__status-dot__flex-shrink, 0);
     }
 
     .status-draft .status-dot {
-      background-color: #f5a623;
+      background-color: var(--ui-status-tag__status-draft-dot__background-color, #f5a623);
     }
 
     .status-published .status-dot {
-      background-color: #7ed321;
+      background-color: var(--ui-status-tag__status-published-dot__background-color, #7ed321);
     }
 
     .status-both .status-dot {
-      background: linear-gradient(90deg, #7ed321 50%, #f5a623 50%);
+      background: var(--ui-status-tag__status-both-dot__background, linear-gradient(90deg, #7ed321 50%, #f5a623 50%));
     }
   `;
 

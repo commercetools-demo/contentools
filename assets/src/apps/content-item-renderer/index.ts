@@ -39,34 +39,34 @@ export class ContentItemRenderer extends LitElement {
 
   static styles = css`
     :host {
-      display: block;
-      width: 100%;
-      height: 100%;
-      font-family: system-ui, sans-serif;
+      display: var(--content-item-renderer__host__display, block);
+      width: var(--content-item-renderer__host__width, 100%);
+      height: var(--content-item-renderer__host__height, 100%);
+      font-family: var(--content-item-renderer__host__font-family, system-ui, sans-serif);
     }
 
     .loading {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100px;
+      display: var(--content-item-renderer__loading__display, flex);
+      align-items: var(--content-item-renderer__loading__align-items, center);
+      justify-content: var(--content-item-renderer__loading__justify-content, center);
+      height: var(--content-item-renderer__loading__height, 100px);
     }
 
     .error {
-      padding: 15px;
-      background-color: #ffebee;
-      border-radius: 4px;
-      color: #e53935;
-      margin-bottom: 20px;
+      padding: var(--content-item-renderer__error__padding, 15px);
+      background-color: var(--content-item-renderer__error__background-color, #ffebee);
+      border-radius: var(--content-item-renderer__error__border-radius, 4px);
+      color: var(--content-item-renderer__error__color, #e53935);
+      margin-bottom: var(--content-item-renderer__error__margin-bottom, 20px);
     }
 
     .warning {
-      padding: 15px;
-      background-color: #fff3cd;
-      color: #856404;
-      border-radius: 4px;
-      margin-bottom: 20px;
-      border: 1px solid #ffeeba;
+      padding: var(--content-item-renderer__warning__padding, 15px);
+      background-color: var(--content-item-renderer__warning__background-color, #fff3cd);
+      color: var(--content-item-renderer__warning__color, #856404);
+      border-radius: var(--content-item-renderer__warning__border-radius, 4px);
+      margin-bottom: var(--content-item-renderer__warning__margin-bottom, 20px);
+      border: var(--content-item-renderer__warning__border, 1px solid #ffeeba);
     }
   `;
 

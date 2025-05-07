@@ -48,34 +48,34 @@ export default class ContentTypeForm extends connect(store)(LitElement) {
 
   static styles = css`
     .component-form {
-      background-color: white;
-      border-radius: 4px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-      padding: 0; /* Remove padding here, add to content */
-      margin: 20px;
-      overflow: hidden; /* Contain border radius */
+      background-color: var(--content-type-form__component-form__background-color, white);
+      border-radius: var(--content-type-form__component-form__border-radius, 4px);
+      box-shadow: var(--content-type-form__component-form__box-shadow, 0 2px 10px rgba(0, 0, 0, 0.1));
+      padding: var(--content-type-form__component-form__padding, 0); /* Remove padding here, add to content */
+      margin: var(--content-type-form__component-form__margin, 20px);
+      overflow: var(--content-type-form__component-form__overflow, hidden); /* Contain border radius */
     }
 
     .tab-header {
-      width: 100%;
+      width: var(--content-type-form__tab-header__width, 100%);
     }
 
     .tab-button {
-      padding: 10px 20px;
-      cursor: pointer;
-      border: none;
-      background-color: transparent;
-      font-size: 14px;
-      font-weight: 500;
-      color: #555;
-      border-bottom: 2px solid transparent;
-      margin-bottom: -1px; /* Overlap border */
+      padding: var(--content-type-form__tab-button__padding, 10px 20px);
+      cursor: var(--content-type-form__tab-button__cursor, pointer);
+      border: var(--content-type-form__tab-button__border, none);
+      background-color: var(--content-type-form__tab-button__background-color, transparent);
+      font-size: var(--content-type-form__tab-button__font-size, 14px);
+      font-weight: var(--content-type-form__tab-button__font-weight, 500);
+      color: var(--content-type-form__tab-button__color, #555);
+      border-bottom: var(--content-type-form__tab-button__border-bottom, 2px solid transparent);
+      margin-bottom: var(--content-type-form__tab-button__margin-bottom, -1px); /* Overlap border */
     }
 
     .tab-button[active] {
-      color: #007bff;
-      border-bottom-color: #007bff;
-      font-weight: 600;
+      color: var(--content-type-form__tab-button-active__color, #007bff);
+      border-bottom-color: var(--content-type-form__tab-button-active__border-bottom-color, #007bff);
+      font-weight: var(--content-type-form__tab-button-active__font-weight, 600);
     }
 
     .tab-content {
@@ -84,11 +84,11 @@ export default class ContentTypeForm extends connect(store)(LitElement) {
     }
 
     .form-buttons {
-      display: flex;
-      justify-content: flex-end;
-      gap: 10px;
-      margin: auto 0;
-      padding: 0 10px;
+      display: var(--content-type-form__form-buttons__display, flex);
+      justify-content: var(--content-type-form__form-buttons__justify-content, flex-end);
+      gap: var(--content-type-form__form-buttons__gap, 10px);
+      margin: var(--content-type-form__form-buttons__margin, auto 0);
+      padding: var(--content-type-form__form-buttons__padding, 0 10px);
     }
   `;
 

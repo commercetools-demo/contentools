@@ -16,36 +16,36 @@ export class GridRenderer extends LitElement {
 
   static styles = css`
     :host {
-      display: block;
-      width: 100%;
+      display: var(--grid-renderer__host__display, block);
+      width: var(--grid-renderer__host__width, 100%);
     }
 
     .grid-container {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
+      display: var(--grid-renderer__grid-container__display, flex);
+      flex-direction: var(--grid-renderer__grid-container__flex-direction, column);
+      gap: var(--grid-renderer__grid-container__gap, 20px);
     }
 
     .grid-row {
-      display: flex;
-      gap: 20px;
+      display: var(--grid-renderer__grid-row__display, flex);
+      gap: var(--grid-renderer__grid-row__gap, 20px);
     }
 
     .grid-cell {
-      flex: 1;
-      min-height: 100px;
+      flex: var(--grid-renderer__grid-cell__flex, 1);
+      min-height: var(--grid-renderer__grid-cell__min-height, 100px);
     }
 
     .grid-cell[data-columns='2'] {
-      flex: 2;
+      flex: var(--grid-renderer__grid-cell-2__flex, 2);
     }
 
     .grid-cell[data-columns='3'] {
-      flex: 3;
+      flex: var(--grid-renderer__grid-cell-3__flex, 3);
     }
 
     .grid-cell[data-columns='4'] {
-      flex: 4;
+      flex: var(--grid-renderer__grid-cell-4__flex, 4);
     }
   `;
 

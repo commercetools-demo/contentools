@@ -76,41 +76,41 @@ export class ContentItemApp extends connect(store)(LitElement) {
 
   static styles = css`
     :host {
-      display: block;
-      padding: 20px;
+      display: var(--content-item-app__host__display, block);
+      padding: var(--content-item-app__host__padding, 20px);
     }
 
     .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
+      display: var(--content-item-app__header__display, flex);
+      justify-content: var(--content-item-app__header__justify-content, space-between);
+      align-items: var(--content-item-app__header__align-items, center);
+      margin-bottom: var(--content-item-app__header__margin-bottom, 20px);
     }
 
     .title {
-      font-size: 24px;
-      margin: 0;
+      font-size: var(--content-item-app__title__font-size, 24px);
+      margin: var(--content-item-app__title__margin, 0);
     }
 
     .content {
-      background: white;
-      border-radius: 4px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      padding: 20px;
+      background: var(--content-item-app__content__background, white);
+      border-radius: var(--content-item-app__content__border-radius, 4px);
+      box-shadow: var(--content-item-app__content__box-shadow, 0 2px 4px rgba(0, 0, 0, 0.1));
+      padding: var(--content-item-app__content__padding, 20px);
     }
 
     .error {
-      color: red;
-      margin-bottom: 20px;
+      color: var(--content-item-app__error__color, red);
+      margin-bottom: var(--content-item-app__error__margin-bottom, 20px);
     }
 
     .loading {
-      text-align: center;
-      padding: 20px;
+      text-align: var(--content-item-app__loading__text-align, center);
+      padding: var(--content-item-app__loading__padding, 20px);
     }
 
     .back-button {
-      margin-bottom: 20px;
+      margin-bottom: var(--content-item-app__back-button__margin-bottom, 20px);
     }
   `;
 

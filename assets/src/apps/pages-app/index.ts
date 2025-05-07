@@ -72,59 +72,59 @@ export class PagesApp extends connect(store)(LitElement) {
 
   static styles = css`
     :host {
-      display: block;
-      height: 100%;
-      font-family: system-ui, sans-serif;
+      display: var(--pages-app__host__display, block);
+      height: var(--pages-app__host__height, 100%);
+      font-family: var(--pages-app__host__font-family, system-ui, sans-serif);
     }
 
     .cms-container {
-      display: flex;
-      flex-direction: column;
-      height: 100%;
+      display: var(--pages-app__cms-container__display, flex);
+      flex-direction: var(--pages-app__cms-container__flex-direction, column);
+      height: var(--pages-app__cms-container__height, 100%);
     }
 
     .cms-main {
-      flex: 1;
-      display: flex;
-      overflow: hidden;
+      flex: var(--pages-app__cms-main__flex, 1);
+      display: var(--pages-app__cms-main__display, flex);
+      overflow: var(--pages-app__cms-main__overflow, hidden);
     }
 
     .cms-content {
-      flex: 1;
-      overflow-y: auto;
-      padding: 20px;
-      transition: all 0.3s;
+      flex: var(--pages-app__cms-content__flex, 1);
+      overflow-y: var(--pages-app__cms-content__overflow-y, auto);
+      padding: var(--pages-app__cms-content__padding, 20px);
+      transition: var(--pages-app__cms-content__transition, all 0.3s);
     }
 
     .cms-content.with-sidebar {
-      width: calc(100% - 350px);
+      width: var(--pages-app__cms-content-with-sidebar__width, calc(100% - 350px));
     }
 
     .cms-editor-actions {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 20px;
+      display: var(--pages-app__cms-editor-actions__display, flex);
+      align-items: var(--pages-app__cms-editor-actions__align-items, center);
+      justify-content: var(--pages-app__cms-editor-actions__justify-content, space-between);
+      margin-bottom: var(--pages-app__cms-editor-actions__margin-bottom, 20px);
     }
 
     .cms-editor-buttons {
-      display: flex;
-      gap: 10px;
-      align-items: center;
+      display: var(--pages-app__cms-editor-buttons__display, flex);
+      gap: var(--pages-app__cms-editor-buttons__gap, 10px);
+      align-items: var(--pages-app__cms-editor-buttons__align-items, center);
     }
 
     .cms-back {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      color: #3498db;
-      cursor: pointer;
-      font-size: 14px;
-      text-decoration: none;
+      display: var(--pages-app__cms-back__display, inline-flex);
+      align-items: var(--pages-app__cms-back__align-items, center);
+      gap: var(--pages-app__cms-back__gap, 5px);
+      color: var(--pages-app__cms-back__color, #3498db);
+      cursor: var(--pages-app__cms-back__cursor, pointer);
+      font-size: var(--pages-app__cms-back__font-size, 14px);
+      text-decoration: var(--pages-app__cms-back__text-decoration, none);
     }
 
     .icon {
-      font-size: 16px;
+      font-size: var(--pages-app__icon__font-size, 16px);
     }
   `;
 

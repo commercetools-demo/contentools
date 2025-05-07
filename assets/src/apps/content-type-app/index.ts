@@ -49,16 +49,16 @@ export class ContentTypeApp extends connect(store)(LitElement) {
 
   static styles = css`
     :host {
-      display: block;
-      font-family: system-ui, sans-serif;
-      width: 100%;
-      height: 100%;
+      display: var(--content-type-app__host__display, block);
+      font-family: var(--content-type-app__host__font-family, system-ui, sans-serif);
+      width: var(--content-type-app__host__width, 100%);
+      height: var(--content-type-app__host__height, 100%);
     }
 
     .content-type-container {
-      display: flex;
-      flex-direction: column;
-      height: 100%;
+      display: var(--content-type-app__content-type-container__display, flex);
+      flex-direction: var(--content-type-app__content-type-container__flex-direction, column);
+      height: var(--content-type-app__content-type-container__height, 100%);
     }
   `;
 

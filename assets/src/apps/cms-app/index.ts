@@ -61,97 +61,97 @@ export class CmsWrapper extends LitElement {
 
   static styles = css`
     :host {
-      display: block;
-      height: 100%;
-      font-family: system-ui, sans-serif;
+      display: var(--cms-wrapper__host__display, block);
+      height: var(--cms-wrapper__host__height, 100%);
+      font-family: var(--cms-wrapper__host__font-family, system-ui, sans-serif);
     }
 
     .wrapper-container {
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-      padding: 2rem;
+      display: var(--cms-wrapper__wrapper-container__display, flex);
+      flex-direction: var(--cms-wrapper__wrapper-container__flex-direction, column);
+      height: var(--cms-wrapper__wrapper-container__height, 100%);
+      padding: var(--cms-wrapper__wrapper-container__padding, 2rem);
     }
 
     .welcome-header {
-      margin-bottom: 2rem;
-      text-align: center;
+      margin-bottom: var(--cms-wrapper__welcome-header__margin-bottom, 2rem);
+      text-align: var(--cms-wrapper__welcome-header__text-align, center);
     }
 
     .welcome-title {
-      font-size: 2rem;
-      font-weight: 600;
-      margin-bottom: 1rem;
+      font-size: var(--cms-wrapper__welcome-title__font-size, 2rem);
+      font-weight: var(--cms-wrapper__welcome-title__font-weight, 600);
+      margin-bottom: var(--cms-wrapper__welcome-title__margin-bottom, 1rem);
     }
 
     .welcome-subtitle {
-      font-size: 1.2rem;
-      color: #666;
+      font-size: var(--cms-wrapper__welcome-subtitle__font-size, 1.2rem);
+      color: var(--cms-wrapper__welcome-subtitle__color, #666);
     }
 
     .card-container {
-      display: flex;
-      gap: 2rem;
-      justify-content: center;
-      margin-top: 2rem;
+      display: var(--cms-wrapper__card-container__display, flex);
+      gap: var(--cms-wrapper__card-container__gap, 2rem);
+      justify-content: var(--cms-wrapper__card-container__justify-content, center);
+      margin-top: var(--cms-wrapper__card-container__margin-top, 2rem);
     }
 
     .back-button {
-      background-color: #3498db;
-      color: white;
-      border: none;
-      padding: 0.5rem 1rem;
-      border-radius: 4px;
-      cursor: pointer;
-      margin-bottom: 1rem;
-      font-size: 0.9rem;
+      background-color: var(--cms-wrapper__back-button__background-color, #3498db);
+      color: var(--cms-wrapper__back-button__color, white);
+      border: var(--cms-wrapper__back-button__border, none);
+      padding: var(--cms-wrapper__back-button__padding, 0.5rem 1rem);
+      border-radius: var(--cms-wrapper__back-button__border-radius, 4px);
+      cursor: var(--cms-wrapper__back-button__cursor, pointer);
+      margin-bottom: var(--cms-wrapper__back-button__margin-bottom, 1rem);
+      font-size: var(--cms-wrapper__back-button__font-size, 0.9rem);
     }
 
     .back-button:hover {
-      background-color: #2980b9;
+      background-color: var(--cms-wrapper__back-button-hover__background-color, #2980b9);
     }
 
     .cms-header {
-      display: flex;
-      align-items: center;
-      padding: 15px 20px;
-      border-bottom: 1px solid #ddd;
-      background-color: white;
+      display: var(--cms-app__cms-header__display, flex);
+      align-items: var(--cms-wrapper__cms-header__align-items, center);
+      padding: var(--cms-wrapper__cms-header__padding, 15px 20px);
+      border-bottom: var(--cms-wrapper__cms-header__border-bottom, 1px solid #ddd);
+      background-color: var(--cms-wrapper__cms-header__background-color, white);
     }
 
     .cms-title {
-      font-size: 20px;
-      font-weight: 600;
-      margin: 0;
-      width: 350px;
-      cursor: pointer;
-      transition: color 0.2s;
-      position: relative;
+      font-size: var(--cms-wrapper__cms-title__font-size, 20px);
+      font-weight: var(--cms-wrapper__cms-title__font-weight, 600);
+      margin: var(--cms-wrapper__cms-title__margin, 0);
+      width: var(--cms-wrapper__cms-title__width, 350px);
+      cursor: var(--cms-wrapper__cms-title__cursor, pointer);
+      transition: var(--cms-wrapper__cms-title__transition, color 0.2s);
+      position: var(--cms-wrapper__cms-title__position, relative);
     }
 
     .cms-title:hover {
-      color: #2980b9;
-      text-decoration: underline;
+      color: var(--cms-wrapper__cms-title-hover__color, #2980b9);
+      text-decoration: var(--cms-wrapper__cms-title-hover__text-decoration, underline);
     }
 
     .cms-title:hover .original-title {
-      display: none;
+      display: var(--cms-wrapper__cms-title-hover-original-title__display, none);
     }
 
     .cms-title:hover .hover-title {
-      display: inline;
+      display: var(--cms-wrapper__cms-title-hover-hover-title__display, inline);
     }
 
     .hover-title {
-      display: none;
+      display: var(--cms-wrapper__hover-title__display, none);
     }
 
     .toggle-sidebar-button {
-      margin-left: auto;
+      margin-left: var(--cms-wrapper__toggle-sidebar-button__margin-left, auto);
     }
 
     ui-breadcrumbs {
-      margin: 0 auto;
+      margin: var(--cms-wrapper__ui-breadcrumbs__margin, 0 auto);
     }
   `;
 

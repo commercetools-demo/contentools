@@ -47,73 +47,73 @@ export class Modal extends LitElement {
     }
 
     .modal-backdrop {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: var(--modal-backdrop-color);
-      z-index: var(--modal-z-index);
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      position: var(--cms-modal__modal-backdrop__position, fixed);
+      top: var(--cms-modal__modal-backdrop__top, 0);
+      left: var(--cms-modal__modal-backdrop__left, 0);
+      width: var(--cms-modal__modal-backdrop__width, 100%);
+      height: var(--cms-modal__modal-backdrop__height, 100%);
+      background-color: var(--cms-modal__modal-backdrop__background-color, var(--modal-backdrop-color));
+      z-index: var(--cms-modal__modal-backdrop__z-index, var(--modal-z-index));
+      display: var(--cms-modal__modal-backdrop__display, flex);
+      align-items: var(--cms-modal__modal-backdrop__align-items, center);
+      justify-content: var(--cms-modal__modal-backdrop__justify-content, center);
     }
 
     .modal {
-      background-color: var(--modal-background);
-      border-radius: var(--modal-border-radius);
-      box-shadow: var(--modal-box-shadow);
-      max-height: 60vh;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
+      background-color: var(--cms-modal__modal__background-color, var(--modal-background));
+      border-radius: var(--cms-modal__modal__border-radius, var(--modal-border-radius));
+      box-shadow: var(--cms-modal__modal__box-shadow, var(--modal-box-shadow));
+      max-height: var(--cms-modal__modal__max-height, 60vh);
+      display: var(--cms-modal__modal__display, flex);
+      flex-direction: var(--cms-modal__modal__flex-direction, column);
+      overflow: var(--cms-modal__modal__overflow, hidden);
     }
 
     .modal-sm {
-      width: var(--modal-width-sm);
+      width: var(--cms-modal__modal-sm__width, var(--modal-width-sm));
     }
 
     .modal-md {
-      width: var(--modal-width-md);
+      width: var(--cms-modal__modal-md__width, var(--modal-width-md));
     }
 
     .modal-lg {
-      width: var(--modal-width-lg);
+      width: var(--cms-modal__modal-lg__width, var(--modal-width-lg));
     }
 
     .modal-header {
-      padding: 16px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid #eee;
+      padding: var(--cms-modal__modal-header__padding, 16px);
+      display: var(--cms-modal__modal-header__display, flex);
+      justify-content: var(--cms-modal__modal-header__justify-content, space-between);
+      align-items: var(--cms-modal__modal-header__align-items, center);
+      border-bottom: var(--cms-modal__modal-header__border-bottom, 1px solid #eee);
     }
 
     .modal-content {
-      padding: 16px;
-      overflow-y: auto;
+      padding: var(--cms-modal__modal-content__padding, 16px);
+      overflow-y: var(--cms-modal__modal-content__overflow-y, auto);
     }
 
     .modal-actions {
-      padding: 16px;
-      display: flex;
-      justify-content: flex-end;
-      gap: 8px;
-      border-top: 1px solid #eee;
+      padding: var(--cms-modal__modal-actions__padding, 16px);
+      display: var(--cms-modal__modal-actions__display, flex);
+      justify-content: var(--cms-modal__modal-actions__justify-content, flex-end);
+      gap: var(--cms-modal__modal-actions__gap, 8px);
+      border-top: var(--cms-modal__modal-actions__border-top, 1px solid #eee);
     }
 
     .close-button {
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-size: 20px;
-      line-height: 1;
-      padding: 0;
-      margin-left: 8px;
+      background: var(--cms-modal__close-button__background, none);
+      border: var(--cms-modal__close-button__border, none);
+      cursor: var(--cms-modal__close-button__cursor, pointer);
+      font-size: var(--cms-modal__close-button__font-size, 20px);
+      line-height: var(--cms-modal__close-button__line-height, 1);
+      padding: var(--cms-modal__close-button__padding, 0);
+      margin-left: var(--cms-modal__close-button__margin-left, 8px);
     }
 
     :host(:not([open])) .modal-backdrop {
-      display: none;
+      display: var(--cms-modal__not-open-modal-backdrop__display, none);
     }
   `;
 

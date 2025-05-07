@@ -72,93 +72,93 @@ export class PropertyEditor extends connect(store)(LitElement) {
 
   static styles = css`
     .property-editor {
-      padding: 20px 0;
+      padding: var(--property-editor__property-editor__padding, 20px 0);
     }
 
     h2 {
-      font-size: 18px;
-      margin-top: 0;
-      margin-bottom: 20px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid #ddd;
+      font-size: var(--property-editor__h2__font-size, 18px);
+      margin-top: var(--property-editor__h2__margin-top, 0);
+      margin-bottom: var(--property-editor__h2__margin-bottom, 20px);
+      padding-bottom: var(--property-editor__h2__padding-bottom, 10px);
+      border-bottom: var(--property-editor__h2__border-bottom, 1px solid #ddd);
     }
 
     .actions {
-      margin-top: 20px;
-      display: flex;
-      justify-content: space-between;
+      margin-top: var(--property-editor__actions__margin-top, 20px);
+      display: var(--property-editor__actions__display, flex);
+      justify-content: var(--property-editor__actions__justify-content, space-between);
     }
 
     .save-button {
-      background: #2196f3;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      padding: 8px 15px;
-      cursor: pointer;
-      font-size: 14px;
+      background: var(--property-editor__save-button__background, #2196f3);
+      color: var(--property-editor__save-button__color, white);
+      border: var(--property-editor__save-button__border, none);
+      border-radius: var(--property-editor__save-button__border-radius, 4px);
+      padding: var(--property-editor__save-button__padding, 8px 15px);
+      cursor: var(--property-editor__save-button__cursor, pointer);
+      font-size: var(--property-editor__save-button__font-size, 14px);
     }
 
     .delete-button {
-      background: #f44336;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      padding: 8px 15px;
-      cursor: pointer;
-      font-size: 14px;
+      background: var(--property-editor__delete-button__background, #f44336);
+      color: var(--property-editor__delete-button__color, white);
+      border: var(--property-editor__delete-button__border, none);
+      border-radius: var(--property-editor__delete-button__border-radius, 4px);
+      padding: var(--property-editor__delete-button__padding, 8px 15px);
+      cursor: var(--property-editor__delete-button__cursor, pointer);
+      font-size: var(--property-editor__delete-button__font-size, 14px);
     }
 
     .delete-confirm-dialog {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.5);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
+      position: var(--property-editor__delete-confirm-dialog__position, fixed);
+      top: var(--property-editor__delete-confirm-dialog__top, 0);
+      left: var(--property-editor__delete-confirm-dialog__left, 0);
+      right: var(--property-editor__delete-confirm-dialog__right, 0);
+      bottom: var(--property-editor__delete-confirm-dialog__bottom, 0);
+      background: var(--property-editor__delete-confirm-dialog__background, rgba(0, 0, 0, 0.5));
+      display: var(--property-editor__delete-confirm-dialog__display, flex);
+      align-items: var(--property-editor__delete-confirm-dialog__align-items, center);
+      justify-content: var(--property-editor__delete-confirm-dialog__justify-content, center);
+      z-index: var(--property-editor__delete-confirm-dialog__z-index, 1000);
     }
 
     .dialog-content {
-      background: white;
-      padding: 20px;
-      border-radius: 4px;
-      max-width: 400px;
-      width: 100%;
+      background: var(--property-editor__dialog-content__background, white);
+      padding: var(--property-editor__dialog-content__padding, 20px);
+      border-radius: var(--property-editor__dialog-content__border-radius, 4px);
+      max-width: var(--property-editor__dialog-content__max-width, 400px);
+      width: var(--property-editor__dialog-content__width, 100%);
     }
 
     .dialog-title {
-      font-size: 18px;
-      margin-top: 0;
-      margin-bottom: 15px;
+      font-size: var(--property-editor__dialog-title__font-size, 18px);
+      margin-top: var(--property-editor__dialog-title__margin-top, 0);
+      margin-bottom: var(--property-editor__dialog-title__margin-bottom, 15px);
     }
 
     .dialog-buttons {
-      display: flex;
-      justify-content: flex-end;
-      margin-top: 20px;
-      gap: 10px;
+      display: var(--property-editor__dialog-buttons__display, flex);
+      justify-content: var(--property-editor__dialog-buttons__justify-content, flex-end);
+      margin-top: var(--property-editor__dialog-buttons__margin-top, 20px);
+      gap: var(--property-editor__dialog-buttons__gap, 10px);
     }
 
     .dialog-buttons button {
-      margin-left: 10px;
-      padding: 8px 15px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
+      margin-left: var(--property-editor__dialog-buttons-button__margin-left, 10px);
+      padding: var(--property-editor__dialog-buttons-button__padding, 8px 15px);
+      border: var(--property-editor__dialog-buttons-button__border, none);
+      border-radius: var(--property-editor__dialog-buttons-button__border-radius, 4px);
+      cursor: var(--property-editor__dialog-buttons-button__cursor, pointer);
     }
 
     .cancel-button {
-      background: #9e9e9e;
-      color: white;
+      background: var(--property-editor__cancel-button__background, #9e9e9e);
+      color: var(--property-editor__cancel-button__color, white);
     }
 
     .confirm-button {
-      background: #f44336;
-      color: white;
+      background: var(--property-editor__confirm-button__background, #f44336);
+      color: var(--property-editor__confirm-button__color, white);
     }
   `;
 

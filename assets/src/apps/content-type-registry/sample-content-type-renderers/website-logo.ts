@@ -20,17 +20,17 @@ export class WebsiteLogo extends LitElement {
 
   static styles = css`
     :host {
-      display: block;
+      display: var(--website-logo__host__display, block);
     }
 
     img {
-      max-width: 100%;
-      height: auto;
-      display: block;
+      max-width: var(--website-logo__img__max-width, 100%);
+      height: var(--website-logo__img__height, auto);
+      display: var(--website-logo__img__display, block);
     }
 
     a {
-      display: inline-block;
+      display: var(--website-logo__a__display, inline-block);
     }
   `;
 

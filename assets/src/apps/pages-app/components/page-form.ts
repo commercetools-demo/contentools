@@ -31,70 +31,70 @@ export class PageForm extends connect(store)(LitElement) {
 
   static styles = css`
     .page-form {
-      padding: 20px;
-      max-width: 500px;
-      margin: 0 auto;
+      padding: var(--cms-page-form__page-form__padding, 20px);
+      max-width: var(--cms-page-form__page-form__max-width, 500px);
+      margin: var(--cms-page-form__page-form__margin, 0 auto);
     }
 
     .page-form h2 {
-      margin-top: 0;
-      margin-bottom: 20px;
+      margin-top: var(--cms-page-form__page-form-h2__margin-top, 0);
+      margin-bottom: var(--cms-page-form__page-form-h2__margin-bottom, 20px);
     }
 
     .form-group {
-      margin-bottom: 15px;
+      margin-bottom: var(--cms-page-form__form-group__margin-bottom, 15px);
     }
 
     label {
-      display: block;
-      margin-bottom: 5px;
-      font-weight: 500;
+      display: var(--cms-page-form__label__display, block);
+      margin-bottom: var(--cms-page-form__label__margin-bottom, 5px);
+      font-weight: var(--cms-page-form__label__font-weight, 500);
     }
 
     input[type='text'] {
-      width: 100%;
-      padding: 8px 10px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      font-size: 14px;
+      width: var(--cms-page-form__input-text__width, 100%);
+      padding: var(--cms-page-form__input-text__padding, 8px 10px);
+      border: var(--cms-page-form__input-text__border, 1px solid #ddd);
+      border-radius: var(--cms-page-form__input-text__border-radius, 4px);
+      font-size: var(--cms-page-form__input-text__font-size, 14px);
     }
 
     button {
-      background-color: #3498db;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      padding: 10px 15px;
-      font-size: 14px;
-      cursor: pointer;
-      transition: background-color 0.2s;
+      background-color: var(--cms-page-form__button__background-color, #3498db);
+      color: var(--cms-page-form__button__color, white);
+      border: var(--cms-page-form__button__border, none);
+      border-radius: var(--cms-page-form__button__border-radius, 4px);
+      padding: var(--cms-page-form__button__padding, 10px 15px);
+      font-size: var(--cms-page-form__button__font-size, 14px);
+      cursor: var(--cms-page-form__button__cursor, pointer);
+      transition: var(--cms-page-form__button__transition, background-color 0.2s);
     }
 
     button:hover {
-      background-color: #2980b9;
+      background-color: var(--cms-page-form__button-hover__background-color, #2980b9);
     }
 
     button:disabled {
-      background-color: #bdc3c7;
-      cursor: not-allowed;
+      background-color: var(--cms-page-form__button-disabled__background-color, #bdc3c7);
+      cursor: var(--cms-page-form__button-disabled__cursor, not-allowed);
     }
 
     .error {
-      color: #e74c3c;
-      font-size: 14px;
-      margin-top: 5px;
+      color: var(--cms-page-form__error__color, #e74c3c);
+      font-size: var(--cms-page-form__error__font-size, 14px);
+      margin-top: var(--cms-page-form__error__margin-top, 5px);
     }
 
     .actions {
-      display: flex;
-      justify-content: flex-end;
-      margin-top: 20px;
+      display: var(--cms-page-form__actions__display, flex);
+      justify-content: var(--cms-page-form__actions__justify-content, flex-end);
+      margin-top: var(--cms-page-form__actions__margin-top, 20px);
     }
 
     .hint {
-      font-size: 12px;
-      color: #777;
-      margin-top: 5px;
+      font-size: var(--cms-page-form__hint__font-size, 12px);
+      color: var(--cms-page-form__hint__color, #777);
+      margin-top: var(--cms-page-form__hint__margin-top, 5px);
     }
   `;
 

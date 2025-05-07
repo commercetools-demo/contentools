@@ -51,54 +51,54 @@ export class ContentItemEditor extends connect(store)(LitElement) {
 
   static styles = css`
     :host {
-      display: block;
+      display: var(--content-item-editor__host__display, block);
     }
 
     .content-item-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-      gap: 20px;
+      display: var(--content-item-editor__content-item-header__display, flex);
+      justify-content: var(--content-item-editor__content-item-header__justify-content, space-between);
+      align-items: var(--content-item-editor__content-item-header__align-items, center);
+      margin-bottom: var(--content-item-editor__content-item-header__margin-bottom, 20px);
+      gap: var(--content-item-editor__content-item-header__gap, 20px);
     }
 
     .content-item-controls {
-      display: flex;
-      gap: 10px;
-      align-items: center;
+      display: var(--content-item-editor__content-item-controls__display, flex);
+      gap: var(--content-item-editor__content-item-controls__gap, 10px);
+      align-items: var(--content-item-editor__content-item-controls__align-items, center);
     }
 
     .content-item-edit {
-      display: flex;
-      flex-direction: row;
-      gap: 10px;
+      display: var(--content-item-editor__content-item-edit__display, flex);
+      flex-direction: var(--content-item-editor__content-item-edit__flex-direction, row);
+      gap: var(--content-item-editor__content-item-edit__gap, 10px);
     }
 
     .content-item-edit-editor {
-      flex-basis: 50%;
+      flex-basis: var(--content-item-editor__content-item-edit-editor__flex-basis, 50%);
     }
 
     .content-item-edit-preview {
-      flex-basis: 50%;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
+      flex-basis: var(--content-item-editor__content-item-edit-preview__flex-basis, 50%);
+      display: var(--content-item-editor__content-item-edit-preview__display, flex);
+      flex-direction: var(--content-item-editor__content-item-edit-preview__flex-direction, column);
+      gap: var(--content-item-editor__content-item-edit-preview__gap, 10px);
     }
 
     .content-item-body {
-      display: grid;
+      display: var(--content-item-editor__content-item-body__display, grid);
     }
 
     .content-item-body.with-sidebar {
-      display: grid;
-      grid-template-columns: 1fr 300px;
-      gap: 20px;
+      display: var(--content-item-editor__content-item-body-with-sidebar__display, grid);
+      grid-template-columns: var(--content-item-editor__content-item-body-with-sidebar__grid-template-columns, 1fr 300px);
+      gap: var(--content-item-editor__content-item-body-with-sidebar__gap, 20px);
     }
     .content-item-edit-editor-header {
-      display: flex;
-      justify-content: flex-end;
-      align-items: center;
-      gap: 10px;
+      display: var(--content-item-editor__content-item-edit-editor-header__display, flex);
+      justify-content: var(--content-item-editor__content-item-edit-editor-header__justify-content, flex-end);
+      align-items: var(--content-item-editor__content-item-edit-editor-header__align-items, center);
+      gap: var(--content-item-editor__content-item-edit-editor-header__gap, 10px);
     }
   `;
 

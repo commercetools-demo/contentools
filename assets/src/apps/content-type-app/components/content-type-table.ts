@@ -14,47 +14,47 @@ export class ContentTypeTable extends LitElement {
 
   static styles = css`
     :host {
-      display: block;
-      width: 100%;
+      display: var(--content-type-table__host__display, block);
+      width: var(--content-type-table__host__width, 100%);
     }
 
     .registry-list {
-      width: 100%;
-      border-collapse: collapse;
+      width: var(--content-type-table__registry-list__width, 100%);
+      border-collapse: var(--content-type-table__registry-list__border-collapse, collapse);
     }
 
     .registry-list th {
-      text-align: left;
-      padding: 12px 15px;
-      background-color: #f8f9fa;
-      border-bottom: 2px solid #ddd;
+      text-align: var(--content-type-table__registry-list-th__text-align, left);
+      padding: var(--content-type-table__registry-list-th__padding, 12px 15px);
+      background-color: var(--content-type-table__registry-list-th__background-color, #f8f9fa);
+      border-bottom: var(--content-type-table__registry-list-th__border-bottom, 2px solid #ddd);
     }
 
     .registry-list td {
-      padding: 10px 15px;
-      border-bottom: 1px solid #ddd;
+      padding: var(--content-type-table__registry-list-td__padding, 10px 15px);
+      border-bottom: var(--content-type-table__registry-list-td__border-bottom, 1px solid #ddd);
     }
 
     .registry-list tr:hover {
-      background-color: #f5f5f5;
+      background-color: var(--content-type-table__registry-list-tr-hover__background-color, #f5f5f5);
     }
 
     .action-buttons {
-      display: flex;
-      gap: 8px;
+      display: var(--content-type-table__action-buttons__display, flex);
+      gap: var(--content-type-table__action-buttons__gap, 8px);
     }
 
     .loading {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100px;
+      display: var(--content-type-table__loading__display, flex);
+      align-items: var(--content-type-table__loading__align-items, center);
+      justify-content: var(--content-type-table__loading__justify-content, center);
+      height: var(--content-type-table__loading__height, 100px);
     }
 
     .empty-state {
-      padding: 40px;
-      text-align: center;
-      color: #7f8c8d;
+      padding: var(--content-type-table__empty-state__padding, 40px);
+      text-align: var(--content-type-table__empty-state__text-align, center);
+      color: var(--content-type-table__empty-state__color, #7f8c8d);
     }
   `;
 

@@ -30,27 +30,27 @@ export class ContentItemList extends LitElement {
 
   static styles = css`
     .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
+      display: var(--content-item-list__header__display, flex);
+      justify-content: var(--content-item-list__header__justify-content, space-between);
+      align-items: var(--content-item-list__header__align-items, center);
+      margin-bottom: var(--content-item-list__header__margin-bottom, 20px);
     }
 
     .title {
-      font-size: 24px;
-      margin: 0;
+      font-size: var(--content-item-list__title__font-size, 24px);
+      margin: var(--content-item-list__title__margin, 0);
     }
 
     .content {
-      background: white;
-      border-radius: 4px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      padding: 20px;
+      background: var(--content-item-list__content__background, white);
+      border-radius: var(--content-item-list__content__border-radius, 4px);
+      box-shadow: var(--content-item-list__content__box-shadow, 0 2px 4px rgba(0, 0, 0, 0.1));
+      padding: var(--content-item-list__content__padding, 20px);
     }
 
     .action-buttons {
-      display: flex;
-      gap: 8px;
+      display: var(--content-item-list__action-buttons__display, flex);
+      gap: var(--content-item-list__action-buttons__gap, 8px);
     }
   `;
 

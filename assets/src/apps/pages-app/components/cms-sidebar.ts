@@ -27,86 +27,84 @@ export class CmsSidebar extends LitElement {
 
   static styles = css`
     :host {
-      display: block;
-      height: 100%;
+      display: var(--cms-sidebar__host__display, block);
+      height: var(--cms-sidebar__host__height, 100%);
     }
 
     .sidebar-content {
-      width: 350px;
-      height: 100%;
-      border-left: 1px solid #ddd;
-      background-color: white;
-      overflow-y: auto;
-      transition:
-        transform 0.3s,
-        box-shadow 0.3s;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      box-sizing: border-box;
+      width: var(--cms-sidebar__sidebar-content__width, 350px);
+      height: var(--cms-sidebar__sidebar-content__height, 100%);
+      border-left: var(--cms-sidebar__sidebar-content__border-left, 1px solid #ddd);
+      background-color: var(--cms-sidebar__sidebar-content__background-color, white);
+      overflow-y: var(--cms-sidebar__sidebar-content__overflow-y, auto);
+      transition: var(--cms-sidebar__sidebar-content__transition, transform 0.3s, box-shadow 0.3s);
+      padding: var(--cms-sidebar__sidebar-content__padding, 20px);
+      display: var(--cms-sidebar__sidebar-content__display, flex);
+      flex-direction: var(--cms-sidebar__sidebar-content__flex-direction, column);
+      box-sizing: var(--cms-sidebar__sidebar-content__box-sizing, border-box);
     }
 
     :host(.hidden) .sidebar-content {
-      display: none;
+      display: var(--cms-sidebar__hidden-sidebar-content__display, none);
     }
 
     .sidebar-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-      border-bottom: 1px solid #eee;
-      padding-bottom: 15px;
+      display: var(--cms-sidebar__sidebar-header__display, flex);
+      justify-content: var(--cms-sidebar__sidebar-header__justify-content, space-between);
+      align-items: var(--cms-sidebar__sidebar-header__align-items, center);
+      margin-bottom: var(--cms-sidebar__sidebar-header__margin-bottom, 20px);
+      border-bottom: var(--cms-sidebar__sidebar-header__border-bottom, 1px solid #eee);
+      padding-bottom: var(--cms-sidebar__sidebar-header__padding-bottom, 15px);
     }
 
     .sidebar-title {
-      font-size: 18px;
-      font-weight: 600;
-      margin: 0;
+      font-size: var(--cms-sidebar__sidebar-title__font-size, 18px);
+      font-weight: var(--cms-sidebar__sidebar-title__font-weight, 600);
+      margin: var(--cms-sidebar__sidebar-title__margin, 0);
     }
 
     .sidebar-tabs {
-      display: flex;
-      margin-bottom: 20px;
-      border-bottom: 1px solid #eee;
-      gap: 5px;
+      display: var(--cms-sidebar__sidebar-tabs__display, flex);
+      margin-bottom: var(--cms-sidebar__sidebar-tabs__margin-bottom, 20px);
+      border-bottom: var(--cms-sidebar__sidebar-tabs__border-bottom, 1px solid #eee);
+      gap: var(--cms-sidebar__sidebar-tabs__gap, 5px);
     }
 
     .tab-container {
-      position: relative;
+      position: var(--cms-sidebar__tab-container__position, relative);
     }
 
     .active-indicator {
-      position: absolute;
-      bottom: -2px;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background-color: #3498db;
+      position: var(--cms-sidebar__active-indicator__position, absolute);
+      bottom: var(--cms-sidebar__active-indicator__bottom, -2px);
+      left: var(--cms-sidebar__active-indicator__left, 0);
+      right: var(--cms-sidebar__active-indicator__right, 0);
+      height: var(--cms-sidebar__active-indicator__height, 2px);
+      background-color: var(--cms-sidebar__active-indicator__background-color, #3498db);
     }
 
     .sidebar-content-body {
-      flex: 1;
-      overflow-y: auto;
-      position: relative;
+      flex: var(--cms-sidebar__sidebar-content-body__flex, 1);
+      overflow-y: var(--cms-sidebar__sidebar-content-body__overflow-y, auto);
+      position: var(--cms-sidebar__sidebar-content-body__position, relative);
     }
 
     .sidebar-view {
-      opacity: 0;
-      visibility: hidden;
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      transition: opacity 0.3s;
-      height: 0;
+      opacity: var(--cms-sidebar__sidebar-view__opacity, 0);
+      visibility: var(--cms-sidebar__sidebar-view__visibility, hidden);
+      position: var(--cms-sidebar__sidebar-view__position, absolute);
+      top: var(--cms-sidebar__sidebar-view__top, 0);
+      left: var(--cms-sidebar__sidebar-view__left, 0);
+      right: var(--cms-sidebar__sidebar-view__right, 0);
+      transition: var(--cms-sidebar__sidebar-view__transition, opacity 0.3s);
+      height: var(--cms-sidebar__sidebar-view__height, 0);
     }
 
     .sidebar-view.active {
-      opacity: 1;
-      visibility: visible;
-      position: relative;
-      height: auto;
+      opacity: var(--cms-sidebar__sidebar-view-active__opacity, 1);
+      visibility: var(--cms-sidebar__sidebar-view-active__visibility, visible);
+      position: var(--cms-sidebar__sidebar-view-active__position, relative);
+      height: var(--cms-sidebar__sidebar-view-active__height, auto);
     }
   `;
 

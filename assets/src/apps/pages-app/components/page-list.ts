@@ -31,103 +31,103 @@ export class PageList extends connect(store)(LitElement) {
 
   static styles = css`
     .page-list {
-      margin-bottom: 30px;
+      margin-bottom: var(--cms-page-list__page-list__margin-bottom, 30px);
     }
 
     .page-list-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 15px;
+      display: var(--cms-page-list__page-list-header__display, flex);
+      justify-content: var(--cms-page-list__page-list-header__justify-content, space-between);
+      align-items: var(--cms-page-list__page-list-header__align-items, center);
+      margin-bottom: var(--cms-page-list__page-list-header__margin-bottom, 15px);
     }
 
     .page-list-header h2 {
-      font-size: 1.2rem;
-      margin: 0;
+      font-size: var(--cms-page-list__page-list-header-h2__font-size, 1.2rem);
+      margin: var(--cms-page-list__page-list-header-h2__margin, 0);
     }
 
     table {
-      width: 100%;
-      border-collapse: collapse;
+      width: var(--cms-page-list__table__width, 100%);
+      border-collapse: var(--cms-page-list__table__border-collapse, collapse);
     }
 
     th,
     td {
-      padding: 10px;
-      text-align: left;
-      border-bottom: 1px solid #ddd;
+      padding: var(--cms-page-list__th-td__padding, 10px);
+      text-align: var(--cms-page-list__th-td__text-align, left);
+      border-bottom: var(--cms-page-list__th-td__border-bottom, 1px solid #ddd);
     }
 
     th {
-      font-weight: 500;
-      color: #777;
-      font-size: 0.9rem;
+      font-weight: var(--cms-page-list__th__font-weight, 500);
+      color: var(--cms-page-list__th__color, #777);
+      font-size: var(--cms-page-list__th__font-size, 0.9rem);
     }
 
     tr:hover {
-      background-color: #f9f9f9;
+      background-color: var(--cms-page-list__tr-hover__background-color, #f9f9f9);
     }
 
     tr.selected {
-      background-color: rgba(52, 152, 219, 0.1);
+      background-color: var(--cms-page-list__tr-selected__background-color, rgba(52, 152, 219, 0.1));
     }
 
     .page-actions {
-      display: flex;
-      gap: 10px;
-      position: relative;
+      display: var(--cms-page-list__page-actions__display, flex);
+      gap: var(--cms-page-list__page-actions__gap, 10px);
+      position: var(--cms-page-list__page-actions__position, relative);
     }
 
     .no-pages {
-      padding: 20px;
-      text-align: center;
-      background-color: #f9f9f9;
-      border-radius: 4px;
-      color: #777;
+      padding: var(--cms-page-list__no-pages__padding, 20px);
+      text-align: var(--cms-page-list__no-pages__text-align, center);
+      background-color: var(--cms-page-list__no-pages__background-color, #f9f9f9);
+      border-radius: var(--cms-page-list__no-pages__border-radius, 4px);
+      color: var(--cms-page-list__no-pages__color, #777);
     }
 
     .delete-confirm {
-      position: absolute;
-      right: 0;
-      background-color: white;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      padding: 10px 15px;
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-      z-index: 10;
+      position: var(--cms-page-list__delete-confirm__position, absolute);
+      right: var(--cms-page-list__delete-confirm__right, 0);
+      background-color: var(--cms-page-list__delete-confirm__background-color, white);
+      border: var(--cms-page-list__delete-confirm__border, 1px solid #ddd);
+      border-radius: var(--cms-page-list__delete-confirm__border-radius, 4px);
+      padding: var(--cms-page-list__delete-confirm__padding, 10px 15px);
+      display: var(--cms-page-list__delete-confirm__display, flex);
+      flex-direction: var(--cms-page-list__delete-confirm__flex-direction, column);
+      gap: var(--cms-page-list__delete-confirm__gap, 5px);
+      box-shadow: var(--cms-page-list__delete-confirm__box-shadow, 0 2px 10px rgba(0, 0, 0, 0.1));
+      z-index: var(--cms-page-list__delete-confirm__z-index, 10);
     }
 
     .delete-confirm-message {
-      font-size: 14px;
-      margin-bottom: 5px;
+      font-size: var(--cms-page-list__delete-confirm-message__font-size, 14px);
+      margin-bottom: var(--cms-page-list__delete-confirm-message__margin-bottom, 5px);
     }
 
     .delete-confirm-actions {
-      display: flex;
-      gap: 10px;
-      justify-content: flex-end;
+      display: var(--cms-page-list__delete-confirm-actions__display, flex);
+      gap: var(--cms-page-list__delete-confirm-actions__gap, 10px);
+      justify-content: var(--cms-page-list__delete-confirm-actions__justify-content, flex-end);
     }
 
     .locale-badge {
-      display: inline-block;
-      background-color: #e1f5fe;
-      color: #0288d1;
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-size: 12px;
-      margin-left: 5px;
+      display: var(--cms-page-list__locale-badge__display, inline-block);
+      background-color: var(--cms-page-list__locale-badge__background-color, #e1f5fe);
+      color: var(--cms-page-list__locale-badge__color, #0288d1);
+      padding: var(--cms-page-list__locale-badge__padding, 2px 6px);
+      border-radius: var(--cms-page-list__locale-badge__border-radius, 4px);
+      font-size: var(--cms-page-list__locale-badge__font-size, 12px);
+      margin-left: var(--cms-page-list__locale-badge__margin-left, 5px);
     }
 
     .default-locale {
-      background-color: #e8f5e9;
-      color: #388e3c;
+      background-color: var(--cms-page-list__default-locale__background-color, #e8f5e9);
+      color: var(--cms-page-list__default-locale__color, #388e3c);
     }
 
     .clickable {
-      cursor: pointer;
+      cursor: var(--cms-page-list__clickable__cursor, pointer);
     }
   `;
 
