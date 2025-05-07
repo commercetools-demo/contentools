@@ -35,6 +35,9 @@ export class CmsWrapper extends LitElement {
   @property({ type: Boolean })
   contentItemAppEnabled: boolean = false;
 
+  @property({ type: Boolean })
+  headerEnabled: boolean = false;
+
   @state()
   private activeApp: 'welcome' | 'cms' | 'content-type' | 'content-item' = 'welcome';
 
@@ -174,7 +177,7 @@ export class CmsWrapper extends LitElement {
     switch (this.activeApp) {
       case 'cms':
         return html`
-          ${this._renderHeader()}
+          ${this.headerEnabled ? this._renderHeader() : ''}
 
           <pages-app
             .baseURL="${this.baseURL}"
@@ -189,7 +192,7 @@ export class CmsWrapper extends LitElement {
 
       case 'content-type':
         return html`
-          ${this._renderHeader()}
+          ${this.headerEnabled ? this._renderHeader() : ''}
 
           <content-type-app
             .baseURL="${this.baseURL}"
@@ -199,7 +202,7 @@ export class CmsWrapper extends LitElement {
 
       case 'content-item':
         return html`
-          ${this._renderHeader()}
+          ${this.headerEnabled ? this._renderHeader() : ''}
 
           <content-item-app
             .baseURL="${this.baseURL}"

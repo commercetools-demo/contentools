@@ -31,6 +31,9 @@ class CMSWrapper extends connect(store)(LitElement) {
   @property({ type: Boolean, attribute: 'content-item-app-enabled' })
   contentItemAppEnabled = false;
 
+  @property({ type: Boolean, attribute: 'header-enabled' })
+  headerEnabled = false;
+
   static styles = [
     unsafeCSS(globalStyles),
     css`
@@ -71,6 +74,7 @@ class CMSWrapper extends connect(store)(LitElement) {
         .pagesAppEnabled="${this.pagesAppEnabled}"
         .contentTypeAppEnabled="${this.contentTypeAppEnabled}"
         .contentItemAppEnabled="${this.contentItemAppEnabled}"
+        .headerEnabled="${this.headerEnabled}"
       ></cms-wrapper>
     `;
   }
