@@ -34,9 +34,47 @@ contentItemRouter.get(
         )
         .join(' OR ');
       const contentItemStates = whereClause
-        ? await contentStateController.getCustomObjects(
-            `value(${whereClause})`
-          )
+        ? await contentStateController.getCustomObjects(`value(${whereClause})`)
+        : [];
+
+      // Merge content items with their states
+      const contentItemsWithStates = contentItems.map((item) => {
+        const states = contentItemStates.find(
+          (state) => state.value.key === item.key
+        );
+        return {
+          ...item,
+          states: states?.value?.states || {},
+        };
+      });
+
+      res.json(contentItemsWithStates);
+    } catch (error) {
+      logger.error('Failed to get custom objects:', error);
+      next(error);
+    }
+  }
+);
+contentItemRouter.get(
+  '/:businessUnitKey/content-items/content-type/:contentType',
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const contentStateController = new CustomObjectController(
+        CONTENT_ITEM_STATE_CONTAINER
+      );
+      const { businessUnitKey } = req.params;
+      const contentItems = await contentController.getCustomObjects(
+        `value(businessUnitKey = "${businessUnitKey}") AND value(type = "${req.params.contentType}")`
+      );
+
+      const whereClause = contentItems
+        ?.map(
+          (item) =>
+            `(key = "${item.key}" AND businessUnitKey = "${businessUnitKey}")`
+        )
+        .join(' OR ');
+      const contentItemStates = whereClause
+        ? await contentStateController.getCustomObjects(`value(${whereClause})`)
         : [];
 
       // Merge content items with their states

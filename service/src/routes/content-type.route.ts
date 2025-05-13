@@ -1,6 +1,7 @@
 import { Router, RequestHandler } from 'express';
 import { logger } from '../utils/logger.utils';
 import { CustomObjectController } from '../controllers/custom-object.controller';
+import { sampleContentTypeRegistry } from '../utils/constants';
 
 export const CONTENT_TYPE_CONTAINER =
   process.env.CONTENT_TYPE_CONTAINER || 'content-type';
@@ -12,8 +13,12 @@ const contentTypeRouter = Router();
 
 contentTypeRouter.get('/content-type', async (req, res, next) => {
   try {
-    const objects = await contentTypeController.getCustomObjects();
-    res.json(objects);
+    const dynamicContentTypes = await contentTypeController.getCustomObjects();
+    const staticContentTypes = Object.values(sampleContentTypeRegistry);
+    res.json([
+      ...dynamicContentTypes.map((item) => item.value),
+      ...staticContentTypes,
+    ]);
   } catch (error) {
     logger.error('Failed to get content-type objects:', error);
     next(error);
