@@ -1,8 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
-import { ContentItem, ContentTypeMetaData, ContentTypeData } from '../types';
-import { store } from '../store';
-import { fetchContentTypesThunk } from '../store/content-type.slice';
 import { sampleContentTypeRegistry } from '../apps/content-type-registry/sample-content-types';
+import { ContentItem, ContentTypeData, ContentTypeMetaData } from '../types';
 
 // Helper function to convert defaultRegistry to RegistryComponentData format
 const convertSampleContentTypeToContentTypeData = (): ContentTypeData[] => {
@@ -18,23 +16,23 @@ export const getAllContentTypes = async ({
 }: {
   baseURL: string;
 }): Promise<ContentTypeData[]> => {
-  const state = store.getState();
+  // const state = store.getState();
 
-  if (state.contentType.contentTypes.length === 0 && !state.contentType.loading) {
-    await store.dispatch(fetchContentTypesThunk({ baseURL }));
-  }
+  // if (state.contentType.contentTypes.length === 0 && !state.contentType.loading) {
+  //   await store.dispatch(fetchContentTypesThunk({ baseURL }));
+  // }
 
-  const fetchedContentTypes = store.getState().contentType.contentTypes;
+  // const fetchedContentTypes = store.getState().contentType.contentTypes;
   const sampleContentTypes = convertSampleContentTypeToContentTypeData();
 
   // Combine components, prioritizing fetched components over default ones with the same type
-  const fetchedTypes = new Set(fetchedContentTypes.map((c: ContentTypeData) => c.metadata.type));
+  // const fetchedTypes = new Set(fetchedContentTypes.map((c: ContentTypeData) => c.metadata.type));
 
-  const filteredSampleContentTypes = sampleContentTypes.filter(
-    comp => !fetchedTypes.has(comp.metadata.type)
-  );
+  // const filteredSampleContentTypes = sampleContentTypes.filter(
+  //   comp => !fetchedTypes.has(comp.metadata.type)
+  // );
 
-  return [...fetchedContentTypes, ...filteredSampleContentTypes];
+  return [...sampleContentTypes];
 };
 
 // Helper functions
