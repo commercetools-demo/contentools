@@ -56,7 +56,10 @@ export class ContentItemEditor extends connect(store)(LitElement) {
 
     .content-item-header {
       display: var(--content-item-editor__content-item-header__display, flex);
-      justify-content: var(--content-item-editor__content-item-header__justify-content, space-between);
+      justify-content: var(
+        --content-item-editor__content-item-header__justify-content,
+        space-between
+      );
       align-items: var(--content-item-editor__content-item-header__align-items, center);
       margin-bottom: var(--content-item-editor__content-item-header__margin-bottom, 20px);
       gap: var(--content-item-editor__content-item-header__gap, 20px);
@@ -91,12 +94,18 @@ export class ContentItemEditor extends connect(store)(LitElement) {
 
     .content-item-body.with-sidebar {
       display: var(--content-item-editor__content-item-body-with-sidebar__display, grid);
-      grid-template-columns: var(--content-item-editor__content-item-body-with-sidebar__grid-template-columns, 1fr 300px);
+      grid-template-columns: var(
+        --content-item-editor__content-item-body-with-sidebar__grid-template-columns,
+        1fr 300px
+      );
       gap: var(--content-item-editor__content-item-body-with-sidebar__gap, 20px);
     }
     .content-item-edit-editor-header {
       display: var(--content-item-editor__content-item-edit-editor-header__display, flex);
-      justify-content: var(--content-item-editor__content-item-edit-editor-header__justify-content, flex-end);
+      justify-content: var(
+        --content-item-editor__content-item-edit-editor-header__justify-content,
+        flex-end
+      );
       align-items: var(--content-item-editor__content-item-edit-editor-header__align-items, center);
       gap: var(--content-item-editor__content-item-edit-editor-header__gap, 10px);
     }
@@ -159,8 +168,8 @@ export class ContentItemEditor extends connect(store)(LitElement) {
                     ? html`
                 <publishing-state-controls
                           .currentState="${this.currentState}"
-                          @publish="${this._handlePublish}"
-                          @revert="${this._handleRevert}"
+                          @publish-clicked="${this._handlePublish}"
+                          @revert-clicked="${this._handleRevert}"
                         ></publishing-state-controls>
               `
                     : ''}

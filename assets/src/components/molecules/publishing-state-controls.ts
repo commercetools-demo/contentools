@@ -81,7 +81,7 @@ export class PublishingStateControls extends LitElement {
 
   private _publish() {
     this.dispatchEvent(
-      new CustomEvent('publish', {
+      new CustomEvent('publish-clicked', {
         bubbles: true,
         composed: true,
       })
@@ -90,7 +90,7 @@ export class PublishingStateControls extends LitElement {
 
   private _revert() {
     this.dispatchEvent(
-      new CustomEvent('revert', {
+      new CustomEvent('revert-clicked', {
         bubbles: true,
         composed: true,
       })
