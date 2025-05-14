@@ -11,11 +11,8 @@ const convertSampleContentTypeToContentTypeData = (): ContentTypeData[] => {
 };
 
 // Helper function to get registry components from store and combine with default registry
-export const getAllContentTypes = async ({
-  baseURL,
-}: {
-  baseURL: string;
-}): Promise<ContentTypeData[]> => {
+// @ts-ignore
+export const getAllContentTypes = async ({ baseURL }: { baseURL: string }): Promise<ContentTypeData[]> => {
   // const state = store.getState();
 
   // if (state.contentType.contentTypes.length === 0 && !state.contentType.loading) {
