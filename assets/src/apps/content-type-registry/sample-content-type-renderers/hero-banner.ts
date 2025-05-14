@@ -113,14 +113,18 @@ export class HeroBanner extends LitElement {
               <div class="hero-overlay"></div>
               <h1 class="hero-title">${this.title}</h1>
               <p class="hero-subtitle">${this.subtitle}</p>
-              <a href="${this.ctaUrl}" class="hero-cta">${this.ctaText}</a>
+              ${this.ctaText
+                ? html`<a href="${this.ctaUrl}" class="hero-cta">${this.ctaText}</a>`
+                : ''}
             </div>
           `
         : html`
             <div class="hero-placeholder">
               <h1 class="hero-title" style="color: #333;">${this.title}</h1>
               <p class="hero-subtitle" style="color: #555;">${this.subtitle}</p>
-              <a href="${this.ctaUrl}" class="hero-cta">${this.ctaText}</a>
+              ${this.ctaText
+                ? html`<a href="${this.ctaUrl}" class="hero-cta">${this.ctaText}</a>`
+                : ''}
             </div>
           `}
     `;

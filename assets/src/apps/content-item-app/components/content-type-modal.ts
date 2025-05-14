@@ -54,6 +54,10 @@ export class ContentTypeModal extends LitElement {
     }
 
     .content-type-card {
+      display: var(--content-type-modal__content-type-card__display, flex);
+      flex-direction: var(--content-type-modal__content-type-card__flex-direction, column);
+      align-items: var(--content-type-modal__content-type-card__align-items, center);
+      justify-content: var(--content-type-modal__content-type-card__justify-content, center);
       border: var(--content-type-modal__content-type-card__border, 1px solid #ddd);
       border-radius: var(--content-type-modal__content-type-card__border-radius, 8px);
       padding: var(--content-type-modal__content-type-card__padding, 20px);
@@ -106,7 +110,7 @@ export class ContentTypeModal extends LitElement {
                   <div class="content-type-icon">
                     ${metadata.icon
                       ? html`
-                    <i class="${metadata.icon}"></i>
+                    <span>${metadata.icon}</span>
                   `
                       : html`
                     <i class="fas fa-file"></i>

@@ -19,6 +19,7 @@ export const sampleContentTypeRegistry: Record<string, ContentTypeMetaData> = {
       imageUrl: '',
       ctaText: 'Learn More',
       ctaUrl: '#',
+      slot: '',
     },
     propertySchema: {
       title: {
@@ -47,6 +48,11 @@ export const sampleContentTypeRegistry: Record<string, ContentTypeMetaData> = {
         label: 'CTA URL',
         defaultValue: '#',
       },
+      slot: {
+        type: 'string',
+        label: 'Slot',
+        defaultValue: '',
+      },
     },
   },
   [SampleContentType.PRODUCT_SLIDER]: {
@@ -59,6 +65,7 @@ export const sampleContentTypeRegistry: Record<string, ContentTypeMetaData> = {
       skus: [],
       autoplay: true,
       slidesToShow: 4,
+      slot: '',
     },
     propertySchema: {
       title: {
@@ -83,6 +90,11 @@ export const sampleContentTypeRegistry: Record<string, ContentTypeMetaData> = {
         label: 'Slides to Show',
         defaultValue: 4,
       },
+      slot: {
+        type: 'string',
+        label: 'Slot',
+        defaultValue: '',
+      },
     },
   },
   [SampleContentType.RICH_TEXT]: {
@@ -92,6 +104,7 @@ export const sampleContentTypeRegistry: Record<string, ContentTypeMetaData> = {
     isBuiltIn: true,
     defaultProperties: {
       content: '<p>Enter your content here...</p>',
+      slot: '',
     },
     propertySchema: {
       content: {
@@ -99,6 +112,11 @@ export const sampleContentTypeRegistry: Record<string, ContentTypeMetaData> = {
         label: 'Content',
         defaultValue: '<p>Enter your content here...</p>',
         required: true,
+      },
+      slot: {
+        type: 'string',
+        label: 'Slot',
+        defaultValue: '',
       },
     },
   },
@@ -109,6 +127,7 @@ export const sampleContentTypeRegistry: Record<string, ContentTypeMetaData> = {
     isBuiltIn: true,
     defaultProperties: {
       logoUrl: '',
+      slot: '',
     },
     propertySchema: {
       logoUrl: {
@@ -117,6 +136,11 @@ export const sampleContentTypeRegistry: Record<string, ContentTypeMetaData> = {
         label: 'Logo URL',
         defaultValue: '',
         required: true,
+      },
+      slot: {
+        type: 'string',
+        label: 'Slot',
+        defaultValue: '',
       },
     },
   },

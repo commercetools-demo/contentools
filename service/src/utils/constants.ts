@@ -10,6 +10,8 @@ export enum SampleContentType {
 export const sampleContentTypeRegistry: Record<string, Partial<ContentType>> = {
   [SampleContentType.HERO_BANNER]: {
     type: SampleContentType.HERO_BANNER,
+    name: 'Hero Banner',
+    icon: '🖼️',
     value: {
       metadata: {
         propertySchema: {
@@ -38,6 +40,11 @@ export const sampleContentTypeRegistry: Record<string, Partial<ContentType>> = {
             type: 'string',
             label: 'CTA URL',
             defaultValue: '#',
+          },
+          slot: {
+            type: 'string',
+            label: 'Slot',
+            defaultValue: '',
           },
         },
       },
@@ -73,12 +80,19 @@ export const sampleContentTypeRegistry: Record<string, Partial<ContentType>> = {
             label: 'Slides to Show',
             defaultValue: 4,
           },
+          slot: {
+            type: 'string',
+            label: 'Slot',
+            defaultValue: '',
+          },
         },
       },
     },
   },
   [SampleContentType.RICH_TEXT]: {
     type: SampleContentType.RICH_TEXT,
+    name: 'Rich Text Editor',
+    icon: '📝',
     value: {
       metadata: {
         propertySchema: {
@@ -88,12 +102,19 @@ export const sampleContentTypeRegistry: Record<string, Partial<ContentType>> = {
             defaultValue: '<p>Enter your content here...</p>',
             required: true,
           },
+          slot: {
+            type: 'string',
+            label: 'Slot',
+            defaultValue: '',
+          },
         },
       },
     },
   },
   [SampleContentType.WEBSITE_LOGO]: {
     type: SampleContentType.WEBSITE_LOGO,
+    name: 'Website Logo',
+    icon: '🖼️',
     value: {
       metadata: {
         propertySchema: {
@@ -102,6 +123,11 @@ export const sampleContentTypeRegistry: Record<string, Partial<ContentType>> = {
             label: 'Logo URL',
             defaultValue: '',
             required: true,
+          },
+          slot: {
+            type: 'string',
+            label: 'Slot',
+            defaultValue: '',
           },
         },
       },
