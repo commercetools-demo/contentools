@@ -78,11 +78,12 @@ export class ContentItemList extends LitElement {
 
         <div class="content">
           <ui-table
-            .headers="${['Name', 'Type', 'Status', 'Actions']}"
+            .headers="${['Name', 'Type', 'Slot', 'Status', 'Actions']}"
             .rows="${this.items.map(item => ({
               cells: [
                 item.name,
                 item.type,
+                item.properties?.slot,
                 html`
                   <ui-status-tag
                     status="${this.formatStatusClass(this.states[item.key])}"
