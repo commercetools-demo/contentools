@@ -1,0 +1,17 @@
+{
+  "name": "@commercetools-demo/cms-content-type-registry",
+  "description": "Content type registry for the Commercetools platform",
+  "version": "0.0.2",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "dist/commercetools-demo-cms-content-type-registry.cjs.js",
+  "module": "dist/commercetools-demo-cms-content-type-registry.esm.js",
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "@commercetools-demo/cms-types": "workspace:*"
+  }
+}

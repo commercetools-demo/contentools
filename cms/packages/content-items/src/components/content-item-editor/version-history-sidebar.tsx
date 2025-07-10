@@ -1,0 +1,77 @@
+import React from 'react';
+import Spacings from '@commercetools-uikit/spacings';
+import Text from '@commercetools-uikit/text';
+import Card from '@commercetools-uikit/card';
+import PrimaryButton from '@commercetools-uikit/primary-button';
+import SecondaryButton from '@commercetools-uikit/secondary-button';
+import { InfoModalPage } from '@commercetools-frontend/application-components';
+import { useStateVersion } from '@commercetools-demo/cms-state';
+import { ContentItemVersionInfo } from '@commercetools-demo/cms-types';
+
+interface VersionHistorySidebarProps {
+  isVisible: boolean;
+  selectedVersionId: string | null;
+  onVersionSelected: (versionId: string) => void;
+  onApplyVersion: (versionId: string) => void;
+  onSelectionCancelled: () => void;
+}
+
+const VersionHistorySidebar: React.FC<VersionHistorySidebarProps> = ({
+  isVisible,
+  selectedVersionId,
+  onVersionSelected,
+  onApplyVersion,
+  onSelectionCancelled,
+}) => {
+  const { versions } = useStateVersion<ContentItemVersionInfo>()
+
+
+  return (
+    <InfoModalPage
+      isOpen={isVisible}
+      onClose={onSelectionCancelled}
+      title="Version History"
+    >
+      <Spacings.Stack scale="m">
+        <Text.Subheadline as="h4">Version History</Text.Subheadline>
+        
+        {versions.length === 0 ? (
+          <Text.Body>No version history available</Text.Body>
+        ) : (
+          <Spacings.Stack scale="s">
+            {versions.map((version) => (
+              <Card 
+                key={version.id}
+                type={selectedVersionId === version.id ? 'raised' : 'flat'}
+                onClick={() => onVersionSelected(version.id)}
+              >
+                <Spacings.Stack scale="xs">
+                  {/* <Text.Detail>Version {version.version}</Text.Detail> */}
+                  <Text.Caption>{new Date(version.timestamp).toLocaleDateString()}</Text.Caption>
+                  {/* {version.createdBy && (
+                    <Text.Caption>by {version.createdBy}</Text.Caption>
+                  )} */}
+                </Spacings.Stack>
+              </Card>
+            ))}
+          </Spacings.Stack>
+        )}
+        
+        {selectedVersionId && (
+          <Spacings.Stack scale="s">
+            <PrimaryButton
+              label="Apply Version"
+              onClick={() => onApplyVersion(selectedVersionId)}
+            />
+            <SecondaryButton
+              label="Cancel"
+              onClick={onSelectionCancelled}
+            />
+          </Spacings.Stack>
+        )}
+      </Spacings.Stack>
+    </InfoModalPage>
+  );
+};
+
+export default VersionHistorySidebar; 

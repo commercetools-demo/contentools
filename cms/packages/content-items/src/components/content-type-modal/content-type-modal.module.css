@@ -1,0 +1,40 @@
+.contentTypeGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+  padding: 20px 0;
+}
+
+.contentTypeCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: white;
+  min-height: 120px;
+}
+
+.contentTypeCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-color: #007acc;
+}
+
+.contentTypeIcon {
+  font-size: 32px;
+  margin-bottom: 12px;
+  color: #007acc;
+}
+
+.contentTypeName {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0;
+  text-align: center;
+  color: #333;
+} 

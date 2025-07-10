@@ -1,0 +1,237 @@
+import { useState, useCallback } from 'react';
+import { v4 as uuidv4 } from 'uuid';
+import { ContentItem, ContentItemState, StateInfo } from '@commercetools-demo/cms-types';
+import {
+  fetchContentItemsEndpoint,
+  fetchPreviewContentItemEndpoint,
+  createContentItemEndpoint,
+  updateContentItemEndpoint,
+  deleteContentItemEndpoint,
+} from '../api';
+
+const initialState: ContentItemState = {
+  items: [],
+  states: {},
+  loading: false,
+  error: null,
+};
+
+export const useContentItem = (baseURL: string) => {
+  const [state, setState] = useState<ContentItemState>(initialState);
+
+  // Actions
+  const fetchContentItems = useCallback(async (hydratedUrl: string) => {
+    try {
+      setState(prev => ({ ...prev, loading: true, error: null }));
+      const result = await fetchContentItemsEndpoint<ContentItem>(hydratedUrl);
+      
+      const items = result.map(item => item.value);
+      const states = result.reduce(
+        (acc, item) => {
+          acc[item.key] = item.states;
+          return acc;
+        },
+        {} as Record<string, StateInfo>
+      );
+      
+      setState(prev => ({
+        ...prev,
+        items,
+        states,
+        loading: false,
+      }));
+      
+      return { items, states };
+    } catch (error) {
+      setState(prev => ({
+        ...prev,
+        loading: false,
+        error: error instanceof Error ? error.message : 'Failed to fetch content items',
+      }));
+      throw error;
+    }
+  }, []);
+
+  const fetchContentItem = useCallback(async (key: string) => {
+    try {
+      setState(prev => ({ ...prev, loading: true, error: null }));
+      const item = await fetchPreviewContentItemEndpoint<ContentItem>(baseURL, key);
+      
+      setState(prev => ({
+        ...prev,
+        loading: false,
+      }));
+      
+      return item;
+    } catch (error) {
+      setState(prev => ({
+        ...prev,
+        loading: false,
+        error: error instanceof Error ? error.message : 'Failed to fetch content item',
+      }));
+      throw error;
+    }
+  }, [baseURL]);
+
+  const createContentItem = useCallback(async (
+    businessUnitKey: string,
+    item: ContentItem
+  ) => {
+    try {
+      setState(prev => ({ ...prev, loading: true, error: null }));
+      
+      const newItem = {
+        ...item,
+        id: uuidv4(),
+        businessUnitKey,
+      } as ContentItem;
+      
+      const createdItem = await createContentItemEndpoint<ContentItem>(baseURL, newItem);
+      
+      setState(prev => ({
+        ...prev,
+        items: [...prev.items, createdItem],
+        loading: false,
+      }));
+      
+      return createdItem;
+    } catch (error) {
+      setState(prev => ({
+        ...prev,
+        loading: false,
+        error: error instanceof Error ? error.message : 'Failed to create content item',
+      }));
+      throw error;
+    }
+  }, [baseURL]);
+
+  const updateContentItem = useCallback(async (hydratedUrl: string, key: string, item: ContentItem) => {
+    try {
+      setState(prev => ({ ...prev, loading: true, error: null }));
+      const updatedItem = await updateContentItemEndpoint<ContentItem>(hydratedUrl, key, item);
+      
+      setState(prev => ({
+        ...prev,
+        items: prev.items.map(i => i.id === updatedItem.id ? updatedItem : i),
+        loading: false,
+      }));
+      
+      return updatedItem;
+    } catch (error) {
+      setState(prev => ({
+        ...prev,
+        loading: false,
+        error: error instanceof Error ? error.message : 'Failed to update content item',
+      }));
+      throw error;
+    }
+  }, []);
+
+  const deleteContentItem = useCallback(async (hydratedUrl: string, key: string) => {
+    try {
+      setState(prev => ({ ...prev, loading: true, error: null }));
+      await deleteContentItemEndpoint(hydratedUrl, key);
+      
+      setState(prev => ({
+        ...prev,
+        items: prev.items.filter(item => item.key !== key),
+        loading: false,
+      }));
+    } catch (error) {
+      setState(prev => ({
+        ...prev,
+        loading: false,
+        error: error instanceof Error ? error.message : 'Failed to delete content item',
+      }));
+      throw error;
+    }
+  }, []);
+
+  const clearError = useCallback(() => {
+    setState(prev => ({ ...prev, error: null }));
+  }, []);
+
+  // Local state actions
+  const addContentItemLocally = useCallback((item: ContentItem) => {
+    setState(prev => ({
+      ...prev,
+      items: [...prev.items, item],
+    }));
+  }, []);
+
+  const updateContentItemLocally = useCallback((itemId: string, updates: Partial<ContentItem>) => {
+    setState(prev => ({
+      ...prev,
+      items: prev.items.map(item => 
+        item.id === itemId ? { ...item, ...updates } : item
+      ),
+    }));
+  }, []);
+
+  const removeContentItemLocally = useCallback((itemId: string) => {
+    setState(prev => ({
+      ...prev,
+      items: prev.items.filter(item => item.id !== itemId),
+    }));
+  }, []);
+
+  const updateContentItemState = useCallback((key: string, stateInfo: StateInfo) => {
+    setState(prev => ({
+      ...prev,
+      states: {
+        ...prev.states,
+        [key]: stateInfo,
+      },
+    }));
+  }, []);
+
+  // Selectors
+  const getContentItemById = useCallback((id: string) => {
+    return state.items.find(item => item.id === id) || null;
+  }, [state.items]);
+
+  const getContentItemByKey = useCallback((key: string) => {
+    return state.items.find(item => item.key === key) || null;
+  }, [state.items]);
+
+  const getContentItemsByType = useCallback((type: string) => {
+    return state.items.filter(item => item.type === type);
+  }, [state.items]);
+
+  const getContentItemsByBusinessUnit = useCallback((businessUnitKey: string) => {
+    return state.items.filter(item => item.businessUnitKey === businessUnitKey);
+  }, [state.items]);
+
+  const getContentItemState = useCallback((key: string) => {
+    return state.states[key] || null;
+  }, [state.states]);
+
+  return {
+    // State
+    items: state.items,
+    states: state.states,
+    loading: state.loading,
+    error: state.error,
+    
+    // Actions
+    fetchContentItems,
+    fetchContentItem,
+    createContentItem,
+    updateContentItem,
+    deleteContentItem,
+    clearError,
+    
+    // Local actions
+    addContentItemLocally,
+    updateContentItemLocally,
+    removeContentItemLocally,
+    updateContentItemState,
+    
+    // Selectors
+    getContentItemById,
+    getContentItemByKey,
+    getContentItemsByType,
+    getContentItemsByBusinessUnit,
+    getContentItemState,
+  };
+}; 

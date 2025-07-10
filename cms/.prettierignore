@@ -1,0 +1,8 @@
+.cache
+.public
+public
+dist
+.percy-debug
+vendors
+.yarn
+.changeset
