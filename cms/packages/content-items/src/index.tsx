@@ -1,7 +1,6 @@
-import {
-  StateProvider
-} from '@commercetools-demo/cms-state';
+import { StateProvider } from '@commercetools-demo/cms-state';
 import ContentItemRouter from './router';
+import { BrowserRouter as Router,  } from 'react-router-dom';
 
 const WrappedContentItemApp = ({
   parentUrl,
@@ -15,15 +14,17 @@ const WrappedContentItemApp = ({
   locale?: string;
 }) => {
   return (
-    <StateProvider baseURL={baseURL}>
-      <ContentItemRouter
-        parentUrl={parentUrl}
-        baseURL={baseURL}
-        businessUnitKey={businessUnitKey}
-        locale={locale}
-      />
-    </StateProvider>
+    <Router basename={`/${parentUrl}`}>
+      <StateProvider baseURL={baseURL}>
+        <ContentItemRouter
+          parentUrl={parentUrl}
+          baseURL={baseURL}
+          businessUnitKey={businessUnitKey}
+          locale={locale}
+        />
+      </StateProvider>
+    </Router>
   );
 };
 
-export default WrappedContentItemApp ;
+export default WrappedContentItemApp;

@@ -20,7 +20,7 @@ const ContentItemRouter = ({
 
   return (
     <>
-      <Route path={match.path}>
+      <Route path="/">
         <ContentItemApp
           parentUrl={parentUrl}
           baseURL={baseURL}
@@ -28,13 +28,13 @@ const ContentItemRouter = ({
           locale={locale}
         />
       </Route>
-      <Route path={`${match.path}/new-content-item`} exact>
+      <Route path={`/new-content-item`} exact>
         <ContentTypeModal />
       </Route>
-      <Route path={`${match.path}/new-content-item/:contentType`} exact>
+      <Route path={`/new-content-item/:contentType`} exact>
         HEYYYY
       </Route>
-      <Route path={`${match.path}/content-item/:contentItemKey`} exact>
+      <Route path={`/content-item/:contentItemKey`} exact>
         <ContentItemEditor
           locale={locale}
           baseURL={baseURL}

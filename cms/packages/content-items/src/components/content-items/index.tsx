@@ -23,7 +23,6 @@ const ContentItemApp: React.FC<ContentItemAppProps> = ({
   businessUnitKey,
   locale = 'en-US',
 }) => {
-  const match = useRouteMatch();
   const history = useHistory();
 
   const {} = useStateContentItem();
@@ -67,12 +66,11 @@ const ContentItemApp: React.FC<ContentItemAppProps> = ({
   };
 
   const handleCreateNew = () => {
-    history.push(`${match.url}/new-content-item`);
+    history.push(`new-content-item`);
   };
 
   const handleEdit = (item: ContentItem) => {
-    console.log('item', item);
-    history.push(`${match.url}/content-item/${item.key}`);
+    history.push(`content-item/${item.key}`);
   };
 
   // const handleBack = () => {
