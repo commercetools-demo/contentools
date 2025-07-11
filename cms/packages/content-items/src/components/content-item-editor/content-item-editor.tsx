@@ -195,7 +195,7 @@ const ContentItemEditor: React.FC<ContentItemEditorProps> = ({
   const handleSelectionCancelled = () => {
     setSelectedVersionId(null);
     setContentVersion(null);
-    // versionHistoryState.closeModal();
+    handleCloseVersionHistory();
   };
 
   const handleJson = (isPreview: boolean = false) => {
@@ -220,6 +220,15 @@ const ContentItemEditor: React.FC<ContentItemEditorProps> = ({
   const handleClose = () => {
     contentItemEditorState.closeModal();
     history.goBack();
+  };
+
+  const handleCloseVersionHistory = () => {
+    versionHistoryState.closeModal();
+  };
+
+  const handleOpenVersionHistory = () => {
+
+    versionHistoryState.openModal();
   };
 
   useEffect(() => {
@@ -251,8 +260,8 @@ const ContentItemEditor: React.FC<ContentItemEditorProps> = ({
               showVersionHistory={versionHistoryState.isModalOpen}
               onToggleVersionHistory={() =>
                 versionHistoryState.isModalOpen
-                  ? versionHistoryState.closeModal()
-                  : versionHistoryState.openModal()
+                  ? handleCloseVersionHistory()
+                  : handleOpenVersionHistory()
               }
               currentState={currentState}
               onViewJson={handleJson}
