@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { Modal, useModalState } from '@commercetools-demo/cms-ui-components';
 import {
-  InfoModalPage,
-  useModalState,
-} from '@commercetools-frontend/application-components';
-import { ContentItem, ContentItemVersionInfo } from '@commercetools-demo/cms-types';
+  ContentItem,
+  ContentItemVersionInfo,
+} from '@commercetools-demo/cms-types';
 import Spacings from '@commercetools-uikit/spacings';
 import Text from '@commercetools-uikit/text';
 import ContentItemActions from './content-item-actions';
@@ -11,45 +11,140 @@ import VersionHistorySidebar from './version-history-sidebar';
 import {
   useStateStateManagement,
   useStateVersion,
+  useStateContentItem,
 } from '@commercetools-demo/cms-state';
+import { useHistory, useParams } from 'react-router-dom';
 
 interface ContentItemEditorProps {
-  isOpen: boolean;
-  onClose: () => void;
-  item: ContentItem | null;
-  isNew: boolean;
   locale?: string;
   baseURL?: string;
   businessUnitKey?: string;
-  onSave?: (item: ContentItem) => void;
-  onPublish?: (item: ContentItem) => void;
-  onRevert?: (key: string) => void;
 }
 
 const ContentItemEditor: React.FC<ContentItemEditorProps> = ({
-  isOpen,
-  onClose,
-  item,
-  isNew,
   locale = 'en-US',
   baseURL = '',
   businessUnitKey = '',
-  onSave,
-  onPublish,
-  onRevert,
 }) => {
+  const history = useHistory();
+  const { contentItemKey } = useParams<{ contentItemKey: string }>();
+  const isNew = !contentItemKey;
   const hydratedUrl = baseURL + '/' + businessUnitKey;
   const versionHistoryState = useModalState();
+  const contentItemEditorState = useModalState(true);
   const [selectedVersionId, setSelectedVersionId] = useState<string | null>(
     null
   );
-  const [contentVersion, setContentVersion] = useState<ContentItemVersionInfo | null>(
-    null
-  );
-
-  const { fetchVersions, versions } =
-    useStateVersion<ContentItemVersionInfo>();
+  const [contentVersion, setContentVersion] =
+    useState<ContentItemVersionInfo | null>(null);
+  const [item, setItem] = useState<ContentItem | null>(null);
+  const { fetchVersions, saveVersion, versions } = useStateVersion<ContentItemVersionInfo>();
   const { currentState } = useStateStateManagement();
+  const { fetchStates, saveDraft, publish, revertToPublished } =
+    useStateStateManagement();
+  const {
+    fetchContentItem,
+    items,
+    loading,
+    error,
+    states,
+    fetchContentItems,
+    clearError,
+    updateContentItem,
+    deleteContentItem,
+  } = useStateContentItem();
+
+  const handleSaveVersion = async () => {
+    if (item) {
+      return saveVersion(
+        hydratedUrl,
+        item,
+        item.key,
+        'content-items'
+      );
+    }
+  };
+
+  const handleFetchStates = async (key: string, contentType: string) => {
+    if (key && contentType) {
+      await fetchStates(
+        hydratedUrl,
+        key,
+        contentType as 'content-items' | 'pages'
+      );
+    }
+  };
+
+  const handleSaveDraft = (updatedItem: ContentItem) => {
+    if (item) {
+      return saveDraft(
+        hydratedUrl,
+        updatedItem,
+        item.key,
+        'content-items'
+      );
+    }
+  };
+
+  const onSave = async (currentItem: ContentItem) => {
+    clearError();
+    if (currentItem) {
+      const component = {
+        ...item,
+        ...currentItem,
+      };
+
+      if (component) {
+        // if (view === 'new') {
+        //   const newItem = {
+        //     ...component,
+        //     key: `item-${uuidv4()}`,
+        //   };
+        //   setSelectedItem(newItem);
+        //   dispatch(
+        //     createContentItem({
+        //       baseURL: hydratedUrl,
+        //       businessUnitKey,
+        //       item: newItem,
+        //     })
+        //   );
+        //   setView('list');
+        // } else {
+        await updateContentItem(hydratedUrl, component.key, component);
+        // }
+
+        await handleSaveVersion();
+        await handleSaveDraft(component);
+
+        // After updating, refresh versions and states
+        await fetchVersions(hydratedUrl, component.key, 'content-items');
+
+        await fetchStates(hydratedUrl, component.key, 'content-items');
+
+        await fetchContentItems(hydratedUrl);
+      }
+    } else {
+      console.error('No item to save');
+    }
+  };
+
+  const onPublish = async (params: {
+    item: ContentItem;
+    key: string;
+    contentType: string;
+    clearDraft?: boolean;
+  }) => {
+    const { item, key, contentType, clearDraft = false } = params;
+    if (item && key && contentType) {
+      await publish(
+        hydratedUrl,
+        item,
+        key,
+        contentType as 'content-items' | 'pages',
+        clearDraft
+      );
+    }
+  };
 
   const handleComponentUpdated = (updatedComponent: ContentItem) => {
     onSave?.(updatedComponent);
@@ -57,13 +152,24 @@ const ContentItemEditor: React.FC<ContentItemEditorProps> = ({
 
   const handlePublish = () => {
     if (item?.key) {
-      onPublish?.(item);
+      onPublish?.({item, key: item.key, contentType: 'content-items'});
+    }
+  };
+
+  const onRevert = async (params: { key: string; contentType: string }) => {
+    const { key, contentType } = params;
+    if (key && contentType) {
+      await revertToPublished(
+        hydratedUrl,
+        key,
+        contentType as 'content-items' | 'pages'
+      );
     }
   };
 
   const handleRevert = () => {
     if (item?.key) {
-      onRevert?.(item.key);
+      onRevert?.({key: item.key, contentType: 'content-items'});
       setContentVersion(null);
       setSelectedVersionId(null);
     }
@@ -111,23 +217,32 @@ const ContentItemEditor: React.FC<ContentItemEditorProps> = ({
     }
   }, [fetchVersions, item, hydratedUrl]);
 
-  useEffect(() => {
-    handleFetchVersions();
-  }, [handleFetchVersions]);
+  const handleClose = () => {
+    contentItemEditorState.closeModal();
+    history.goBack();
+  };
 
-  if (!item) {
+  useEffect(() => {
+    if (!isNew) {
+      fetchContentItem(hydratedUrl, contentItemKey).then((item) => {
+        setItem(item);
+      });
+    }
+  }, [fetchContentItem, hydratedUrl, contentItemKey]);
+
+  if (!item || loading) {
     return null;
   }
 
   return (
     <>
-      <InfoModalPage
-        isOpen={isOpen}
-        onClose={onClose}
+      <Modal
+        isOpen={contentItemEditorState.isModalOpen}
+        size={80}
+        onClose={handleClose}
         title={
           isNew ? 'Create Content Item' : `Edit ${item.name || 'Content Item'}`
         }
-        topBarCurrentPathLabel={isNew ? 'Create' : 'Edit'}
         topBarPreviousPathLabel="Content Items"
       >
         <Spacings.Stack>
@@ -181,7 +296,7 @@ const ContentItemEditor: React.FC<ContentItemEditorProps> = ({
             </div>
           </div>
         </Spacings.Stack>
-      </InfoModalPage>
+      </Modal>
       <VersionHistorySidebar
         isVisible={versionHistoryState.isModalOpen}
         selectedVersionId={selectedVersionId}

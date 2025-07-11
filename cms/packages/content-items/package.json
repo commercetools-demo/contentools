@@ -15,7 +15,7 @@
     "@babel/runtime-corejs3": "^7.28.0",
     "@commercetools-demo/cms-state": "workspace:*",
     "@commercetools-demo/cms-types": "workspace:*",
-    "@commercetools-frontend/application-components": "^24.2.1",
+    "@commercetools-demo/cms-ui-components": "workspace:*",
     "@commercetools-uikit/card": "^20.2.2",
     "@commercetools-uikit/checkbox-input": "^20.2.2",
     "@commercetools-uikit/data-table": "^20.2.1",
@@ -33,12 +33,19 @@
     "@emotion/react": "^11.14.0",
     "add": "^2.0.6",
     "react": "19.0.0",
-    "react-redux": "^9.2.0",
+    "react-router-dom": "5.3.4",
     "styled-components": "^6.1.19",
     "yarn": "^1.22.22"
   },
   "devDependencies": {
     "@types/add": "^2",
     "@types/react": "^19"
+  },
+  "peerDependencies": {
+    "@emotion/react": ">=11.0.0",
+    "react": ">=19.0.0",
+    "react-dom": ">=19.0.0",
+    "react-router-dom": ">=5.0.0",
+    "styled-components": ">=5.0.0"
   }
 }

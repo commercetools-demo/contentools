@@ -1,20 +1,23 @@
 import {
   StateProvider
 } from '@commercetools-demo/cms-state';
-import ContentItemApp from './components/content-items';
+import ContentItemRouter from './router';
 
 const WrappedContentItemApp = ({
+  parentUrl,
   baseURL,
   businessUnitKey,
   locale = 'en-US',
 }: {
+  parentUrl: string;
   baseURL: string;
   businessUnitKey: string;
   locale?: string;
 }) => {
   return (
     <StateProvider baseURL={baseURL}>
-      <ContentItemApp
+      <ContentItemRouter
+        parentUrl={parentUrl}
         baseURL={baseURL}
         businessUnitKey={businessUnitKey}
         locale={locale}

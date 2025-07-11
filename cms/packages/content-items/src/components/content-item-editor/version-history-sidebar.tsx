@@ -4,9 +4,9 @@ import Text from '@commercetools-uikit/text';
 import Card from '@commercetools-uikit/card';
 import PrimaryButton from '@commercetools-uikit/primary-button';
 import SecondaryButton from '@commercetools-uikit/secondary-button';
-import { InfoModalPage } from '@commercetools-frontend/application-components';
 import { useStateVersion } from '@commercetools-demo/cms-state';
 import { ContentItemVersionInfo } from '@commercetools-demo/cms-types';
+import { Modal } from '@commercetools-demo/cms-ui-components';
 
 interface VersionHistorySidebarProps {
   isVisible: boolean;
@@ -27,7 +27,7 @@ const VersionHistorySidebar: React.FC<VersionHistorySidebarProps> = ({
 
 
   return (
-    <InfoModalPage
+    <Modal
       isOpen={isVisible}
       onClose={onSelectionCancelled}
       title="Version History"
@@ -70,7 +70,7 @@ const VersionHistorySidebar: React.FC<VersionHistorySidebarProps> = ({
           </Spacings.Stack>
         )}
       </Spacings.Stack>
-    </InfoModalPage>
+    </Modal>
   );
 };
 

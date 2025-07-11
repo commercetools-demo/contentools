@@ -1,34 +1,30 @@
 import { ContentTypeMetaData } from '@commercetools-demo/cms-types';
-import {
-    InfoDialog,
-} from '@commercetools-frontend/application-components';
+import { Modal, useModalState } from '@commercetools-demo/cms-ui-components';
 import React from 'react';
 import styles from './content-type-modal.module.css';
+import { useHistory, useRouteMatch } from 'react-router-dom';
+import { useStateContentType } from '@commercetools-demo/cms-state';
 
-interface ContentTypeModalProps {
-  contentTypesMetaData: ContentTypeMetaData[];
-  onSelect: (contentTypeMetaData: ContentTypeMetaData) => void;
-  isOpen: boolean;
-  onClose: () => void;
-}
+const ContentTypeNewModal: React.FC = () => {
+  const history = useHistory();
+  const match = useRouteMatch();
+  const contentTypeModalState = useModalState(true);
+  const { contentTypesMetaData } = useStateContentType();
+  const handleClose = () => {
+    contentTypeModalState.closeModal();
+    history.goBack();
+  };
 
-const ContentTypeModal: React.FC<ContentTypeModalProps> = ({
-  contentTypesMetaData,
-  onSelect,
-  isOpen,
-  onClose,
-}) => {
   const handleSelect = (contentTypeMetaData: ContentTypeMetaData) => {
-    onSelect(contentTypeMetaData);
-    onClose();
+    history.push(`${match.path}/new-content-item/${contentTypeMetaData.type}`);
   };
 
   return (
-      <InfoDialog
-        isOpen={isOpen}
-        onClose={onClose}
+      <Modal
+        isOpen={contentTypeModalState.isModalOpen}
+        onClose={handleClose}
         title="Select Content Type"
-        size="l"
+        size={80}
       >
         <div className={styles.contentTypeGrid}>
           {contentTypesMetaData.map((metadata) => (
@@ -48,8 +44,8 @@ const ContentTypeModal: React.FC<ContentTypeModalProps> = ({
             </div>
           ))}
         </div>
-      </InfoDialog>
+      </Modal>
   );
 };
 
-export default ContentTypeModal;
+export default ContentTypeNewModal;
