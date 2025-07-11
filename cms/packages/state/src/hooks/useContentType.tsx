@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { ContentTypeState, ContentTypeData, DatasourceInfo } from '@commercetools-demo/cms-types';
 import {
   fetchContentTypesEndpoint,
@@ -7,12 +7,14 @@ import {
   deleteContentTypeEndpoint,
   getAvailableDatasourcesEndpoint,
 } from '../api';
+import { getAllContentTypesMetaData } from '../utils/content-type-utility';
 
 const initialState: ContentTypeState = {
   contentTypes: [],
   loading: false,
   error: null,
   availableDatasources: [],
+  contentTypesMetaData: [],
 };
 
 export const useContentType = (baseURL: string) => {
@@ -154,13 +156,21 @@ export const useContentType = (baseURL: string) => {
     return state.availableDatasources.find(ds => ds.key === key) || null;
   }, [state.availableDatasources]);
 
+  useEffect(() => {
+    const fetchContentTypesMetaData = async () => {
+      const contentTypesMetaData = await getAllContentTypesMetaData({ baseURL });
+      setState(prev => ({ ...prev, contentTypesMetaData }));
+    };
+    fetchContentTypesMetaData();
+  }, [baseURL]);
+
   return {
     // State
     contentTypes: state.contentTypes,
     loading: state.loading,
     error: state.error,
     availableDatasources: state.availableDatasources,
-    
+    contentTypesMetaData: state.contentTypesMetaData,
     // Actions
     fetchContentTypes,
     fetchAvailableDatasources,

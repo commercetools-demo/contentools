@@ -47,7 +47,7 @@ export const StateProvider = <T extends VersionInfo>({ children, baseURL }: Stat
   const editor = useEditor();
   const contentType = useContentType(baseURL);
   const contentItem = useContentItem(baseURL);
-  const version = useVersion(baseURL);
+  const version = useVersion<T>(baseURL);
   const stateManagement = useStateManagement(baseURL);
   const mediaLibrary = useMediaLibrary(baseURL);
 
@@ -74,7 +74,7 @@ export const useStateContext = <T extends VersionInfo>(): StateContextValue<T> =
   if (!context) {
     throw new Error('useStateContext must be used within a StateProvider');
   }
-  return context;
+  return context as StateContextValue<T>;
 };
 
 // Individual hook exports for convenience

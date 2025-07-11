@@ -150,6 +150,7 @@ export interface ContentTypeState {
   loading: boolean;
   error: string | null;
   availableDatasources: DatasourceInfo[];
+  contentTypesMetaData: ContentTypeMetaData[];
 }
 
 export interface RootState {
@@ -157,7 +158,7 @@ export interface RootState {
   editor: EditorState;
   contentType: ContentTypeState;
   contentItem: ContentItemState;
-  version: VersionState;
+  version: VersionState<ContentItemVersionInfo | PageVersionInfo>;
   state: StateManagementState;
 }
 

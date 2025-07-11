@@ -52,10 +52,10 @@ export const useContentItem = (baseURL: string) => {
     }
   }, []);
 
-  const fetchContentItem = useCallback(async (key: string) => {
+  const fetchContentItem = useCallback(async (hydratedUrl: string, key: string) => {
     try {
       setState(prev => ({ ...prev, loading: true, error: null }));
-      const item = await fetchPreviewContentItemEndpoint<ContentItem>(baseURL, key);
+      const item = await fetchPreviewContentItemEndpoint<ContentItem>(hydratedUrl, key);
       
       setState(prev => ({
         ...prev,
@@ -71,7 +71,7 @@ export const useContentItem = (baseURL: string) => {
       }));
       throw error;
     }
-  }, [baseURL]);
+  }, []);
 
   const createContentItem = useCallback(async (
     businessUnitKey: string,
