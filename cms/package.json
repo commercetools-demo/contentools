@@ -19,11 +19,23 @@
   },
   "workspaces": [
     "test-application",
+    "plain-react-test",
     "packages/*"
   ],
   "preconstruct": {
     "packages": [
       "packages/*"
+    ],
+    "externals": [
+      "react",
+      "react-dom",
+      "react-router-dom",
+      "react-intl",
+      "react-redux",
+      "@emotion/react",
+      "styled-components",
+      "@reduxjs/toolkit",
+      "uuid"
     ]
   },
   "engines": {
