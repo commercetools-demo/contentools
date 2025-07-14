@@ -8,8 +8,6 @@ import {
   PageVersions,
   StateInfo,
   MediaLibraryResult,
-  ContentTypeData,
-  DatasourceInfo,
 } from '@commercetools-demo/cms-types';
 
 /**
@@ -211,19 +209,14 @@ export async function createContentItemEndpoint<T extends { key: string }>(
   baseURL: string,
   data: T
 ): Promise<T> {
-  const response = await fetch(`${baseURL}/content-items/${data.key}`, {
+  const response = await fetchApi<T>(`${baseURL}/content-items/${data.key}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({ value: data }),
   });
-
-  if (!response.ok) {
-    throw new Error(`API request failed: ${response.status} ${response.statusText}`);
-  }
-
-  return response.json();
+  return response.value;
 }
 
 /**
@@ -234,19 +227,11 @@ export async function updateContentItemEndpoint<T>(
   key: string,
   data: T
 ): Promise<T> {
-  const response = await fetch(`${baseURL}/content-items/${key}`, {
+  const response = await fetchApi<T>(`${baseURL}/content-items/${key}`, {
     method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-    },
     body: JSON.stringify({ value: data }),
   });
-
-  if (!response.ok) {
-    throw new Error(`API request failed: ${response.status} ${response.statusText}`);
-  }
-
-  return response.json();
+  return response.value;
 }
 
 /**
@@ -263,12 +248,12 @@ export async function deleteContentItemEndpoint(baseURL: string, key: string): P
 }
 
 /**
- * Get available datasources
+ * Fetch available datasources
  */
 export async function getAvailableDatasourcesEndpoint<T>(
   baseURL: string
 ): Promise<ApiResponse<T>[]> {
-  const response = await fetch(`${baseURL}/datasources`);
+  const response = await fetch(`${baseURL}/datasource`);
 
   if (!response.ok) {
     throw new Error(`API request failed: ${response.status} ${response.statusText}`);
@@ -278,133 +263,117 @@ export async function getAvailableDatasourcesEndpoint<T>(
 }
 
 /**
- * Get datasource by key
+ * Fetch a specific datasource by key
  */
 export async function getDatasourceByKeyEndpoint<T>(
   baseURL: string,
   key: string
 ): Promise<ApiResponse<T>> {
-  return fetchApi<T>(`${baseURL}/datasources/${key}`);
+  return fetchApi<T>(`${baseURL}/datasource/${key}`);
 }
 
 /**
- * Compile and upload endpoint
+ * Compile and upload TypeScript files to create a bundled JavaScript file
+ *
+ * @param baseURL Base URL for the API
+ * @param key Component key
+ * @param files Object containing file names as keys and file content as values
+ * @returns Promise with the API response
  */
 export async function compileAndUploadEndpoint<T>(
   baseURL: string,
   key?: string,
   files?: Record<string, { content: string }>
 ): Promise<ApiResponse<T>> {
-  const url = key ? `${baseURL}/compile/${key}` : `${baseURL}/compile`;
-  return fetchApi<T>(url, {
+  return fetchApi<T>(`${baseURL}/compile-upload`, {
     method: 'POST',
-    body: JSON.stringify({ files }),
+    body: JSON.stringify({ key, files }),
   });
 }
 
 /**
- * Fetch versions endpoint
+ * Version management functions
  */
+
+// Fetch versions for a content type (content-items or pages)
 export async function fetchVersionsEndpoint<T>(
   baseURL: string,
   contentType: 'pages' | 'content-items',
   key: string
 ): Promise<T> {
-  const response = await fetch(`${baseURL}/${contentType}/${key}/versions`);
-
-  if (!response.ok) {
-    throw new Error(`API request failed: ${response.status} ${response.statusText}`);
-  }
-
-  return response.json();
+  return fetch(`${baseURL}/${contentType}/${key}/versions`, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  }).then(response => response.json());
 }
 
-/**
- * Save version endpoint
- */
+// Save a new version
 export async function saveVersionEndpoint<T>(
   baseURL: string,
   contentType: 'pages' | 'content-items',
   key: string,
   data: T
 ): Promise<ContentItemVersions | PageVersions> {
-  const response = await fetch(`${baseURL}/${contentType}/${key}/versions`, {
+  console.log('Saving version:', data);
+  return fetch(`${baseURL}/${contentType}/${key}/versions`, {
     method: 'POST',
+    body: JSON.stringify({ value: data }),
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ value: data }),
-  });
-
-  if (!response.ok) {
-    throw new Error(`API request failed: ${response.status} ${response.statusText}`);
-  }
-
-  return response.json();
+  }).then(response => response.json());
 }
 
-/**
- * Get version endpoint
- */
+// Get a specific version
 export async function getVersionEndpoint<T>(
   baseURL: string,
   contentType: 'pages' | 'content-items',
   key: string,
   versionId: string
 ): Promise<T> {
-  const response = await fetch(`${baseURL}/${contentType}/${key}/versions/${versionId}`);
-
-  if (!response.ok) {
-    throw new Error(`API request failed: ${response.status} ${response.statusText}`);
-  }
-
-  return response.json();
+  return fetch(`${baseURL}/${contentType}/${key}/versions/${versionId}`, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  }).then(response => response.json());
 }
 
 /**
- * Get states endpoint
+ * State management functions
  */
+
+// Get states
 export async function getStatesEndpoint<T>(
   baseURL: string,
   contentType: 'pages' | 'content-items',
   key: string
 ): Promise<T> {
-  const response = await fetch(`${baseURL}/${contentType}/${key}/states`);
-
-  if (!response.ok) {
-    throw new Error(`API request failed: ${response.status} ${response.statusText}`);
-  }
-
-  return response.json();
+  return fetch(`${baseURL}/${contentType}/${key}/states`, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  }).then(response => response.json());
 }
 
-/**
- * Save draft endpoint
- */
+// Save draft state
 export async function saveDraftEndpoint<T>(
   baseURL: string,
   contentType: 'pages' | 'content-items',
   key: string,
   data: T
 ): Promise<ContentItemStates | PageStates> {
-  const response = await fetch(`${baseURL}/${contentType}/${key}/states/draft`, {
-    method: 'POST',
+  console.log('Saving draft:', data);
+  return fetch(`${baseURL}/${contentType}/${key}/states/draft`, {
+    method: 'PUT',
+    body: JSON.stringify({ value: data }),
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ value: data }),
-  });
-
-  if (!response.ok) {
-    throw new Error(`API request failed: ${response.status} ${response.statusText}`);
-  }
-
-  return response.json();
+  }).then(response => response.json());
 }
 
-/**
- * Publish endpoint
- */
+// Publish state
 export async function publishEndpoint<T extends (Page | ContentItem) & { states?: StateInfo }>(
   baseURL: string,
   contentType: 'pages' | 'content-items',
@@ -412,24 +381,25 @@ export async function publishEndpoint<T extends (Page | ContentItem) & { states?
   data: T,
   clearDraft: boolean = false
 ): Promise<ContentItemStates | PageStates> {
-  const response = await fetch(`${baseURL}/${contentType}/${key}/states/published`, {
-    method: 'POST',
+  let url = `${baseURL}/${contentType}/${key}/states/published`;
+  if (clearDraft) {
+    url += '?clearDraft=true';
+  }
+
+  if ('states' in data) {
+    delete data.states;
+  }
+
+  return fetch(url, {
+    method: 'PUT',
+    body: JSON.stringify({ value: data }),
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ value: data, clearDraft }),
-  });
-
-  if (!response.ok) {
-    throw new Error(`API request failed: ${response.status} ${response.statusText}`);
-  }
-
-  return response.json();
+  }).then(response => response.json());
 }
 
-/**
- * Revert draft endpoint
- */
+// Revert draft state (delete draft)
 export async function revertDraftEndpoint(
   baseURL: string,
   contentType: 'pages' | 'content-items',
@@ -437,15 +407,20 @@ export async function revertDraftEndpoint(
 ): Promise<void> {
   const response = await fetch(`${baseURL}/${contentType}/${key}/states/draft`, {
     method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+    },
   });
 
   if (!response.ok) {
     throw new Error(`API request failed: ${response.status} ${response.statusText}`);
   }
+
+  return;
 }
 
 /**
- * Fetch media library
+ * Fetch media library with optional extensions filter and pagination
  */
 export async function fetchMediaLibrary(
   baseURL: string,
@@ -453,16 +428,15 @@ export async function fetchMediaLibrary(
   page: number = 1,
   limit: number = 20
 ): Promise<MediaLibraryResult> {
-  const params = new URLSearchParams({
-    page: page.toString(),
-    limit: limit.toString(),
-  });
+  const extensionsParam = extensions.length > 0 ? `extensions=${extensions.join(',')}` : '';
+  const pageParam = `page=${page}`;
+  const limitParam = `limit=${limit}`;
 
-  if (extensions.length > 0) {
-    params.append('extensions', extensions.join(','));
-  }
+  const queryParams = [extensionsParam, pageParam, limitParam].filter(param => param).join('&');
 
-  const response = await fetch(`${baseURL}/media?${params}`);
+  const url = `${baseURL}/media-library${queryParams ? `?${queryParams}` : ''}`;
+
+  const response = await fetch(url);
 
   if (!response.ok) {
     throw new Error(`API request failed: ${response.status} ${response.statusText}`);
@@ -472,7 +446,7 @@ export async function fetchMediaLibrary(
 }
 
 /**
- * Upload file
+ * Upload a file to the server
  */
 export async function uploadFile(
   baseURL: string,
@@ -482,23 +456,23 @@ export async function uploadFile(
 ): Promise<{ url: string }> {
   const formData = new FormData();
   formData.append('file', file);
-  
+
   if (title) {
     formData.append('title', title);
   }
-  
+
   if (description) {
     formData.append('description', description);
   }
 
-  const response = await fetch(`${baseURL}/media/upload`, {
+  const response = await fetch(`${baseURL}/upload-file`, {
     method: 'POST',
     body: formData,
   });
 
   if (!response.ok) {
-    throw new Error(`API request failed: ${response.status} ${response.statusText}`);
+    throw new Error(`Upload failed: ${response.status} ${response.statusText}`);
   }
 
   return response.json();
-} 
+}

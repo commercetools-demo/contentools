@@ -68,6 +68,7 @@ interface WysiwygFieldProps {
   value: string;
   highlight?: boolean;
   required?: boolean;
+  error?: string;
   onFieldChange: (key: string, value: any) => void;
 }
 
@@ -77,6 +78,7 @@ export const WysiwygField: React.FC<WysiwygFieldProps> = ({
   value,
   highlight = false,
   required = false,
+  error,
   onFieldChange,
 }) => {
   const handleChange = useCallback((event: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -165,6 +167,11 @@ export const WysiwygField: React.FC<WysiwygFieldProps> = ({
           placeholder="Enter your content here..."
         />
       </HighlightedContainer>
+      {error && (
+        <Text.Detail tone="negative">
+          {error}
+        </Text.Detail>
+      )}
     </Spacings.Stack>
   );
 }; 

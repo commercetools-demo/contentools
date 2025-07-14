@@ -1,14 +1,19 @@
+import React, { useEffect } from 'react';
+import styled from 'styled-components';
 import IconButton from '@commercetools-uikit/icon-button';
 import { CloseIcon } from '@commercetools-uikit/icons';
 import Text from '@commercetools-uikit/text';
-import React, { useEffect } from 'react';
-import styled from 'styled-components';
+import Spacings from '@commercetools-uikit/spacings';
+import PrimaryButton from '@commercetools-uikit/primary-button';
+import SecondaryButton from '@commercetools-uikit/secondary-button';
 
-interface ModalProps {
+interface ConfirmationModalProps {
   isOpen: boolean;
   onClose: () => void;
-  title: string;
-  topBarPreviousPathLabel?: string;
+  onConfirm: () => void;
+  onReject: () => void;
+  confirmTitle: string;
+  rejectTitle: string;
   size?: number; // in percent
   children?: React.ReactNode;
 }
@@ -24,21 +29,25 @@ const ModalOverlay = styled.div<{ isVisible: boolean }>`
   opacity: ${props => props.isVisible ? 1 : 0};
   visibility: ${props => props.isVisible ? 'visible' : 'hidden'};
   transition: opacity 0.3s ease, visibility 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 const ModalContainer = styled.div<{ isVisible: boolean; size: number }>`
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
   width: ${props => props.size}%;
+  max-width: 600px;
+  min-width: 400px;
   background-color: white;
-  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
   z-index: 1001;
-  transform: translateX(${props => props.isVisible ? '0' : '100%'});
-  transition: transform 0.3s ease;
+  transform: scale(${props => props.isVisible ? '1' : '0.9'});
+  opacity: ${props => props.isVisible ? 1 : 0};
+  transition: transform 0.3s ease, opacity 0.3s ease;
   display: flex;
   flex-direction: column;
+  max-height: 90vh;
 `;
 
 const ModalHeader = styled.div`
@@ -48,12 +57,7 @@ const ModalHeader = styled.div`
   padding: 16px 24px;
   border-bottom: 1px solid #e0e0e0;
   background-color: #f5f5f5;
-`;
-
-const ModalHeaderContent = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  border-radius: 8px 8px 0 0;
 `;
 
 const ModalBody = styled.div`
@@ -62,21 +66,24 @@ const ModalBody = styled.div`
   overflow-y: auto;
 `;
 
-const Breadcrumb = styled.span`
-  color: #666;
-  font-size: 14px;
-  &:after {
-    content: ' › ';
-    margin: 0 4px;
-  }
+const ModalFooter = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 16px 24px;
+  border-top: 1px solid #e0e0e0;
+  background-color: #f5f5f5;
+  border-radius: 0 0 8px 8px;
 `;
 
-export const Modal: React.FC<ModalProps> = ({
+export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   isOpen,
   onClose,
-  title,
-  topBarPreviousPathLabel,
-  size = 50,
+  onConfirm,
+  onReject,
+  confirmTitle,
+  rejectTitle,
+  size = 40,
   children,
 }) => {
   // Handle ESC key to close modal
@@ -106,16 +113,21 @@ export const Modal: React.FC<ModalProps> = ({
     }
   };
 
+  const handleConfirm = () => {
+    onConfirm();
+  };
+
+  const handleReject = () => {
+    onReject();
+  };
+
+  if (!isOpen) return null;
+
   return (
     <ModalOverlay isVisible={isOpen} onClick={handleOverlayClick}>
       <ModalContainer isVisible={isOpen} size={size}>
         <ModalHeader>
-          <ModalHeaderContent>
-            {topBarPreviousPathLabel && (
-              <Breadcrumb>{topBarPreviousPathLabel}</Breadcrumb>
-            )}
-            <Text.Subheadline as="h4">{title}</Text.Subheadline>
-          </ModalHeaderContent>
+          <Text.Subheadline as="h4">Confirmation</Text.Subheadline>
           <IconButton
             icon={<CloseIcon />}
             label="Close"
@@ -124,8 +136,22 @@ export const Modal: React.FC<ModalProps> = ({
           />
         </ModalHeader>
         <ModalBody>
-          {children}
+          <Spacings.Stack scale="m">
+            {children}
+          </Spacings.Stack>
         </ModalBody>
+        <ModalFooter>
+          <SecondaryButton
+            label={rejectTitle}
+            onClick={handleReject}
+            size="medium"
+          />
+          <PrimaryButton
+            label={confirmTitle}
+            onClick={handleConfirm}
+            size="medium"
+          />
+        </ModalFooter>
       </ModalContainer>
     </ModalOverlay>
   );

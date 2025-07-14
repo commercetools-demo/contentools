@@ -6,6 +6,7 @@ import FieldLabel from '@commercetools-uikit/field-label';
 import SecondaryButton from '@commercetools-uikit/secondary-button';
 import IconButton from '@commercetools-uikit/icon-button';
 import { BinLinearIcon, PlusBoldIcon } from '@commercetools-uikit/icons';
+import Text from '@commercetools-uikit/text';
 
 const HighlightedContainer = styled.div<{ $highlight: boolean }>`
   position: relative;
@@ -41,6 +42,7 @@ interface ArrayFieldProps {
   value: any[];
   highlight?: boolean;
   required?: boolean;
+  error?: string;
   onFieldChange: (key: string, value: any) => void;
 }
 
@@ -50,6 +52,7 @@ export const ArrayField: React.FC<ArrayFieldProps> = ({
   value,
   highlight = false,
   required = false,
+  error,
   onFieldChange,
 }) => {
   const handleItemChange = useCallback((index: number, itemValue: string) => {
@@ -104,6 +107,11 @@ export const ArrayField: React.FC<ArrayFieldProps> = ({
           />
         </Spacings.Stack>
       </HighlightedContainer>
+      {error && (
+        <Text.Detail tone="negative">
+          {error}
+        </Text.Detail>
+      )}
     </Spacings.Stack>
   );
 }; 

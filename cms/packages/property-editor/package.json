@@ -1,19 +1,18 @@
 {
-  "name": "@commercetools-demo/cms-content-items",
-  "description": "Content items CMS",
+  "name": "@commercetools-demo/cms-property-editor",
+  "description": "Property editor for content items",
   "version": "0.0.2",
   "license": "MIT",
   "publishConfig": {
     "access": "public"
   },
-  "main": "dist/commercetools-demo-cms-content-items.cjs.js",
-  "module": "dist/commercetools-demo-cms-content-items.esm.js",
+  "main": "dist/commercetools-demo-cms-property-editor.cjs.js",
+  "module": "dist/commercetools-demo-cms-property-editor.esm.js",
   "files": [
     "dist"
   ],
   "dependencies": {
     "@babel/runtime-corejs3": "^7.28.0",
-    "@commercetools-demo/cms-property-editor": "workspace:*",
     "@commercetools-demo/cms-state": "workspace:*",
     "@commercetools-demo/cms-types": "workspace:*",
     "@commercetools-demo/cms-ui-components": "workspace:*",
@@ -33,10 +32,11 @@
     "@commercetools-uikit/text-input": "^20.2.2",
     "@emotion/react": "^11.14.0",
     "add": "^2.0.6",
+    "formik": "^2.4.6",
     "react": "19.0.0",
-    "react-router-dom": "5.3.4",
     "styled-components": "^6.1.19",
-    "yarn": "^1.22.22"
+    "yarn": "^1.22.22",
+    "yup": "^1.6.1"
   },
   "devDependencies": {
     "@types/add": "^2",
@@ -46,7 +46,6 @@
     "@emotion/react": ">=11.0.0",
     "react": ">=19.0.0",
     "react-dom": ">=19.0.0",
-    "react-router-dom": ">=5.0.0",
     "styled-components": ">=5.0.0"
   }
 }

@@ -5,8 +5,8 @@ import ContentItemEditorEditForm from './edit-form';
 
 interface ContentItemEditorProps {
   locale?: string;
-  baseURL?: string;
-  businessUnitKey?: string;
+  baseURL: string;
+  businessUnitKey: string;
 }
 
 const ContentItemEditor: React.FC<ContentItemEditorProps> = (props: ContentItemEditorProps) => {

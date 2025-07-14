@@ -1,8 +1,9 @@
 import React, { useCallback } from 'react';
 import styled from 'styled-components';
-import CheckboxInput from '@commercetools-uikit/checkbox-input';
+import NumberInput from '@commercetools-uikit/number-input';
 import Spacings from '@commercetools-uikit/spacings';
 import FieldLabel from '@commercetools-uikit/field-label';
+import Text from '@commercetools-uikit/text';
 
 const HighlightedContainer = styled.div<{ $highlight: boolean }>`
   position: relative;
@@ -22,25 +23,28 @@ const HighlightedContainer = styled.div<{ $highlight: boolean }>`
   `}
 `;
 
-interface BooleanFieldProps {
+interface NumberFieldProps {
   fieldKey: string;
   label: string;
-  value: boolean | undefined;
+  value: number | undefined;
   highlight?: boolean;
   required?: boolean;
+  error?: string;
   onFieldChange: (key: string, value: any) => void;
 }
 
-export const BooleanField: React.FC<BooleanFieldProps> = ({
+export const NumberField: React.FC<NumberFieldProps> = ({
   fieldKey,
   label,
   value,
   highlight = false,
   required = false,
+  error,
   onFieldChange,
 }) => {
   const handleChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    onFieldChange(fieldKey, event.target.checked);
+    const numericValue = event.target.value === '' ? undefined : Number(event.target.value);
+    onFieldChange(fieldKey, numericValue);
   }, [fieldKey, onFieldChange]);
 
   return (
@@ -51,13 +55,19 @@ export const BooleanField: React.FC<BooleanFieldProps> = ({
         htmlFor={fieldKey}
       />
       <HighlightedContainer $highlight={highlight}>
-        <CheckboxInput
+        <NumberInput
           id={fieldKey}
           name={fieldKey}
-          isChecked={value || false}
+          value={value ?? ''}
           onChange={handleChange}
+          hasError={!!error}
         />
       </HighlightedContainer>
+      {error && (
+        <Text.Detail tone="negative">
+          {error}
+        </Text.Detail>
+      )}
     </Spacings.Stack>
   );
 }; 

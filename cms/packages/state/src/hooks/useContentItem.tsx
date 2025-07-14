@@ -16,7 +16,7 @@ const initialState: ContentItemState = {
   error: null,
 };
 
-export const useContentItem = (baseURL: string) => {
+export const useContentItem = () => {
   const [state, setState] = useState<ContentItemState>(initialState);
 
   // Actions
@@ -74,6 +74,7 @@ export const useContentItem = (baseURL: string) => {
   }, []);
 
   const createContentItem = useCallback(async (
+    hydratedUrl: string,
     businessUnitKey: string,
     item: ContentItem
   ) => {
@@ -83,10 +84,11 @@ export const useContentItem = (baseURL: string) => {
       const newItem = {
         ...item,
         id: uuidv4(),
+        key: `item-${uuidv4()}`,
         businessUnitKey,
       } as ContentItem;
       
-      const createdItem = await createContentItemEndpoint<ContentItem>(baseURL, newItem);
+      const createdItem = await createContentItemEndpoint<ContentItem>(hydratedUrl, newItem);
       
       setState(prev => ({
         ...prev,
@@ -103,7 +105,7 @@ export const useContentItem = (baseURL: string) => {
       }));
       throw error;
     }
-  }, [baseURL]);
+  }, []);
 
   const updateContentItem = useCallback(async (hydratedUrl: string, key: string, item: ContentItem) => {
     try {

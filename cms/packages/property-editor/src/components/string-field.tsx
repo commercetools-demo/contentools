@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import TextInput from '@commercetools-uikit/text-input';
 import Spacings from '@commercetools-uikit/spacings';
 import FieldLabel from '@commercetools-uikit/field-label';
+import Text from '@commercetools-uikit/text';
 
 const HighlightedContainer = styled.div<{ $highlight: boolean }>`
   position: relative;
@@ -28,6 +29,7 @@ interface StringFieldProps {
   value: string;
   highlight?: boolean;
   required?: boolean;
+  error?: string;
   onFieldChange: (key: string, value: any) => void;
 }
 
@@ -37,6 +39,7 @@ export const StringField: React.FC<StringFieldProps> = ({
   value,
   highlight = false,
   required = false,
+  error,
   onFieldChange,
 }) => {
   const handleChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
@@ -56,9 +59,14 @@ export const StringField: React.FC<StringFieldProps> = ({
           name={fieldKey}
           value={value}
           onChange={handleChange}
-          isRequired={required}
+          hasError={!!error}
         />
       </HighlightedContainer>
+      {error && (
+        <Text.Detail tone="negative">
+          {error}
+        </Text.Detail>
+      )}
     </Spacings.Stack>
   );
 }; 

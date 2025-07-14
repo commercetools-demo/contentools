@@ -30,18 +30,19 @@ const initialState: MediaLibraryState = {
   uploadError: null,
 };
 
-export const useMediaLibrary = (baseURL: string) => {
+export const useMediaLibrary = () => {
   const [state, setState] = useState<MediaLibraryState>(initialState);
 
   // Actions
   const fetchMedia = useCallback(async (
+    hydratedUrl: string,
     extensions: string[] = [],
     page: number = 1,
     limit: number = 20
   ) => {
     try {
       setState(prev => ({ ...prev, loading: true, error: null }));
-      const result = await fetchMediaLibrary(baseURL, extensions, page, limit);
+      const result = await fetchMediaLibrary(hydratedUrl, extensions, page, limit);
       
       setState(prev => ({
         ...prev,
@@ -59,16 +60,17 @@ export const useMediaLibrary = (baseURL: string) => {
       }));
       throw error;
     }
-  }, [baseURL]);
+  }, []);
 
   const uploadMediaFile = useCallback(async (
+    hydratedUrl: string,
     file: File,
     title?: string,
     description?: string
   ) => {
     try {
       setState(prev => ({ ...prev, uploading: true, uploadError: null }));
-      const result = await uploadFile(baseURL, file, title, description);
+      const result = await uploadFile(hydratedUrl, file, title, description);
       
       // Create a new MediaFile object for the uploaded file
       const newMediaFile: MediaFile = {
@@ -100,30 +102,30 @@ export const useMediaLibrary = (baseURL: string) => {
       }));
       throw error;
     }
-  }, [baseURL]);
+  }, []);
 
-  const loadNextPage = useCallback(async (extensions: string[] = []) => {
+  const loadNextPage = useCallback(async (hydratedUrl: string, extensions: string[] = []) => {
     const nextPage = state.pagination.currentPage + 1;
     if (nextPage <= state.pagination.totalPages) {
-      await fetchMedia(extensions, nextPage, state.pagination.limit);
+      await fetchMedia(hydratedUrl, extensions, nextPage, state.pagination.limit);
     }
   }, [fetchMedia, state.pagination]);
 
-  const loadPreviousPage = useCallback(async (extensions: string[] = []) => {
+  const loadPreviousPage = useCallback(async (hydratedUrl: string, extensions: string[] = []) => {
     const prevPage = state.pagination.currentPage - 1;
     if (prevPage >= 1) {
-      await fetchMedia(extensions, prevPage, state.pagination.limit);
+      await fetchMedia(hydratedUrl, extensions, prevPage, state.pagination.limit);
     }
   }, [fetchMedia, state.pagination]);
 
-  const goToPage = useCallback(async (page: number, extensions: string[] = []) => {
+  const goToPage = useCallback(async (hydratedUrl: string, page: number, extensions: string[] = []) => {
     if (page >= 1 && page <= state.pagination.totalPages) {
-      await fetchMedia(extensions, page, state.pagination.limit);
+      await fetchMedia(hydratedUrl, extensions, page, state.pagination.limit);
     }
   }, [fetchMedia, state.pagination.totalPages]);
 
-  const refreshMedia = useCallback(async (extensions: string[] = []) => {
-    await fetchMedia(extensions, state.pagination.currentPage, state.pagination.limit);
+  const refreshMedia = useCallback(async (hydratedUrl: string, extensions: string[] = []) => {
+    await fetchMedia(hydratedUrl, extensions, state.pagination.currentPage, state.pagination.limit);
   }, [fetchMedia, state.pagination]);
 
   const clearError = useCallback(() => {

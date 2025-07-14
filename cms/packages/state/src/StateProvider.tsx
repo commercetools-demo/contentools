@@ -49,7 +49,7 @@ export const StateProvider = <T extends VersionInfo>({ children, baseURL }: Stat
   const contentItem = useContentItem(baseURL);
   const version = useVersion<T>(baseURL);
   const stateManagement = useStateManagement(baseURL);
-  const mediaLibrary = useMediaLibrary(baseURL);
+  const mediaLibrary = useMediaLibrary();
 
   const contextValue: StateContextValue<T> = {
     pages,

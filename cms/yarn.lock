@@ -1659,7 +1659,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.10.0, @babel/runtime@npm:^7.10.2, @babel/runtime@npm:^7.11.2, @babel/runtime@npm:^7.12.0, @babel/runtime@npm:^7.12.13, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.14.8, @babel/runtime@npm:^7.16.3, @babel/runtime@npm:^7.17.9, @babel/runtime@npm:^7.18.3, @babel/runtime@npm:^7.20.13, @babel/runtime@npm:^7.22.15, @babel/runtime@npm:^7.22.5, @babel/runtime@npm:^7.25.6, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.7.7, @babel/runtime@npm:^7.8.7, @babel/runtime@npm:^7.9.2":
+"@babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.10.0, @babel/runtime@npm:^7.10.2, @babel/runtime@npm:^7.11.2, @babel/runtime@npm:^7.12.0, @babel/runtime@npm:^7.12.13, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.14.8, @babel/runtime@npm:^7.15.4, @babel/runtime@npm:^7.16.3, @babel/runtime@npm:^7.17.9, @babel/runtime@npm:^7.18.3, @babel/runtime@npm:^7.20.13, @babel/runtime@npm:^7.22.15, @babel/runtime@npm:^7.22.5, @babel/runtime@npm:^7.25.6, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.7.7, @babel/runtime@npm:^7.8.7, @babel/runtime@npm:^7.9.2":
   version: 7.27.6
   resolution: "@babel/runtime@npm:7.27.6"
   checksum: 10/cc957a12ba3781241b83d528eb69ddeb86ca5ac43179a825e83aa81263a6b3eb88c57bed8a937cdeacfc3192e07ec24c73acdfea4507d0c0428c8e23d6322bfe
@@ -1736,6 +1736,7 @@ __metadata:
   resolution: "@commercetools-demo/cms-content-items@workspace:packages/content-items"
   dependencies:
     "@babel/runtime-corejs3": "npm:^7.28.0"
+    "@commercetools-demo/cms-property-editor": "workspace:*"
     "@commercetools-demo/cms-state": "workspace:*"
     "@commercetools-demo/cms-types": "workspace:*"
     "@commercetools-demo/cms-ui-components": "workspace:*"
@@ -1775,6 +1776,45 @@ __metadata:
   resolution: "@commercetools-demo/cms-content-type-registry@workspace:packages/content-type-registry"
   dependencies:
     "@commercetools-demo/cms-types": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
+"@commercetools-demo/cms-property-editor@workspace:*, @commercetools-demo/cms-property-editor@workspace:packages/property-editor":
+  version: 0.0.0-use.local
+  resolution: "@commercetools-demo/cms-property-editor@workspace:packages/property-editor"
+  dependencies:
+    "@babel/runtime-corejs3": "npm:^7.28.0"
+    "@commercetools-demo/cms-state": "workspace:*"
+    "@commercetools-demo/cms-types": "workspace:*"
+    "@commercetools-demo/cms-ui-components": "workspace:*"
+    "@commercetools-uikit/card": "npm:^20.2.2"
+    "@commercetools-uikit/checkbox-input": "npm:^20.2.2"
+    "@commercetools-uikit/data-table": "npm:^20.2.1"
+    "@commercetools-uikit/field-label": "npm:^20.2.2"
+    "@commercetools-uikit/flat-button": "npm:^20.2.1"
+    "@commercetools-uikit/icon-button": "npm:^20.2.1"
+    "@commercetools-uikit/icons": "npm:^20.2.1"
+    "@commercetools-uikit/number-input": "npm:^20.2.2"
+    "@commercetools-uikit/primary-button": "npm:^20.2.1"
+    "@commercetools-uikit/secondary-button": "npm:^20.2.2"
+    "@commercetools-uikit/spacings": "npm:^20.2.1"
+    "@commercetools-uikit/stamp": "npm:^20.2.1"
+    "@commercetools-uikit/text": "npm:^20.2.2"
+    "@commercetools-uikit/text-input": "npm:^20.2.2"
+    "@emotion/react": "npm:^11.14.0"
+    "@types/add": "npm:^2"
+    "@types/react": "npm:^19"
+    add: "npm:^2.0.6"
+    formik: "npm:^2.4.6"
+    react: "npm:19.0.0"
+    styled-components: "npm:^6.1.19"
+    yarn: "npm:^1.22.22"
+    yup: "npm:^1.6.1"
+  peerDependencies:
+    "@emotion/react": ">=11.0.0"
+    react: ">=19.0.0"
+    react-dom: ">=19.0.0"
+    styled-components: ">=5.0.0"
   languageName: unknown
   linkType: soft
 
@@ -1822,6 +1862,8 @@ __metadata:
     "@commercetools-uikit/flat-button": "npm:^20.2.1"
     "@commercetools-uikit/icon-button": "npm:^20.2.1"
     "@commercetools-uikit/icons": "npm:^20.2.1"
+    "@commercetools-uikit/primary-button": "npm:^20.2.2"
+    "@commercetools-uikit/secondary-button": "npm:^20.2.2"
     "@commercetools-uikit/spacings": "npm:^20.2.1"
     "@commercetools-uikit/text": "npm:^20.2.2"
     "@emotion/react": "npm:^11.14.0"
@@ -3932,6 +3974,27 @@ __metadata:
   peerDependencies:
     react: 19.x
   checksum: 10/652638831d6d8fca0a8f12f335c19077f9919cf12f5aeb9cd81a39a712b6f1e40ca872da161b52ce9aef38d0296206d25d5c37620efa6e6ae78ab33d0537c0d6
+  languageName: node
+  linkType: hard
+
+"@commercetools-uikit/primary-button@npm:^20.2.2":
+  version: 20.2.2
+  resolution: "@commercetools-uikit/primary-button@npm:20.2.2"
+  dependencies:
+    "@babel/runtime": "npm:^7.20.13"
+    "@babel/runtime-corejs3": "npm:^7.20.13"
+    "@commercetools-uikit/accessible-button": "npm:20.2.2"
+    "@commercetools-uikit/design-system": "npm:20.2.2"
+    "@commercetools-uikit/spacings-inline": "npm:20.2.2"
+    "@commercetools-uikit/text": "npm:20.2.2"
+    "@commercetools-uikit/utils": "npm:20.2.2"
+    "@emotion/react": "npm:^11.10.5"
+    "@emotion/styled": "npm:^11.10.5"
+    lodash: "npm:4.17.21"
+    react-intl: "npm:^7.1.4"
+  peerDependencies:
+    react: 19.x
+  checksum: 10/c38bf1113d94a2bcf631b77f2241ef6ac9cfb18704e2f761691156f7d333afc088d4e1405e7ea404ff0acd80a776d3d304301a21b76fb1507958ffe724a3d510
   languageName: node
   linkType: hard
 
@@ -9676,7 +9739,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-redux@npm:^7.1.26":
+"@types/react-redux@npm:^7.1.20, @types/react-redux@npm:^7.1.26":
   version: 7.1.34
   resolution: "@types/react-redux@npm:7.1.34"
   dependencies:
@@ -21974,6 +22037,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"property-expr@npm:^2.0.5":
+  version: 2.0.6
+  resolution: "property-expr@npm:2.0.6"
+  checksum: 10/89977f4bb230736c1876f460dd7ca9328034502fd92e738deb40516d16564b850c0bbc4e052c3df88b5b8cd58e51c93b46a94bea049a3f23f4a022c038864cab
+  languageName: node
+  linkType: hard
+
 "proto-list@npm:~1.2.1":
   version: 1.2.4
   resolution: "proto-list@npm:1.2.4"
@@ -22287,6 +22357,27 @@ __metadata:
   version: 18.3.1
   resolution: "react-is@npm:18.3.1"
   checksum: 10/d5f60c87d285af24b1e1e7eaeb123ec256c3c8bdea7061ab3932e3e14685708221bf234ec50b21e10dd07f008f1b966a2730a0ce4ff67905b3872ff2042aec22
+  languageName: node
+  linkType: hard
+
+"react-redux@npm:7.2.9":
+  version: 7.2.9
+  resolution: "react-redux@npm:7.2.9"
+  dependencies:
+    "@babel/runtime": "npm:^7.15.4"
+    "@types/react-redux": "npm:^7.1.20"
+    hoist-non-react-statics: "npm:^3.3.2"
+    loose-envify: "npm:^1.4.0"
+    prop-types: "npm:^15.7.2"
+    react-is: "npm:^17.0.2"
+  peerDependencies:
+    react: ^16.8.3 || ^17 || ^18
+  peerDependenciesMeta:
+    react-dom:
+      optional: true
+    react-native:
+      optional: true
+  checksum: 10/1c3018bd2601e6d18339281867910b583dcbb3d8856403086e08c00abf0dfe467a94c0d1356bafa8cdf107bf1e2c9899a28486e4778e85c8bc4dfed2076b116f
   languageName: node
   linkType: hard
 
@@ -24793,6 +24884,7 @@ __metadata:
     react: "npm:19.0.0"
     react-dom: "npm:19.0.0"
     react-intl: "npm:^7.1.4"
+    react-redux: "npm:7.2.9"
     react-router-dom: "npm:5.3.4"
     redux: "npm:4.2.1"
     typescript: "npm:5.0.4"
@@ -24885,6 +24977,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"tiny-case@npm:^1.0.3":
+  version: 1.0.3
+  resolution: "tiny-case@npm:1.0.3"
+  checksum: 10/3f7a30c39d5b0e1bc097b0b271bec14eb5b836093db034f35a0de26c14422380b50dc12bfd37498cf35b192f5df06f28a710712c87ead68872a9e37ad6f6049d
+  languageName: node
+  linkType: hard
+
 "tiny-invariant@npm:1.3.3, tiny-invariant@npm:^1.0.2, tiny-invariant@npm:^1.0.6":
   version: 1.3.3
   resolution: "tiny-invariant@npm:1.3.3"
@@ -24945,6 +25044,13 @@ __metadata:
   version: 1.0.1
   resolution: "toidentifier@npm:1.0.1"
   checksum: 10/952c29e2a85d7123239b5cfdd889a0dde47ab0497f0913d70588f19c53f7e0b5327c95f4651e413c74b785147f9637b17410ac8c846d5d4a20a5a33eb6dc3a45
+  languageName: node
+  linkType: hard
+
+"toposort@npm:^2.0.2":
+  version: 2.0.2
+  resolution: "toposort@npm:2.0.2"
+  checksum: 10/6f128353e4ed9739e49a28fb756b0a00f3752b29fc9b862ff781446598ee3b486cd229697feebc4eabd916eac5de219f3dae450c585bf13673f6b133a7226e06
   languageName: node
   linkType: hard
 
@@ -27082,6 +27188,18 @@ __metadata:
   version: 1.2.1
   resolution: "yocto-queue@npm:1.2.1"
   checksum: 10/0843d6c2c0558e5c06e98edf9c17942f25c769e21b519303a5c2adefd5b738c9b2054204dc856ac0cd9d134b1bc27d928ce84fd23c9e2423b7e013d5a6f50577
+  languageName: node
+  linkType: hard
+
+"yup@npm:^1.6.1":
+  version: 1.6.1
+  resolution: "yup@npm:1.6.1"
+  dependencies:
+    property-expr: "npm:^2.0.5"
+    tiny-case: "npm:^1.0.3"
+    toposort: "npm:^2.0.2"
+    type-fest: "npm:^2.19.0"
+  checksum: 10/19dba13403160a8739a9e57c8b816254842f3a9e01672846a980d8230cee8763783c089ded88662b30158d1479cf6bce0b51dce7f19ae7d0477be0c981024bc0
   languageName: node
   linkType: hard
 

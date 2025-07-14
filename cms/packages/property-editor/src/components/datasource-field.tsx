@@ -65,6 +65,7 @@ interface DatasourceFieldProps {
   value: Record<string, any>;
   highlight?: boolean;
   required?: boolean;
+  validationError?: string;
   datasourceType: string;
   baseURL: string;
   onFieldChange: (key: string, value: any) => void;
@@ -76,6 +77,7 @@ export const DatasourceField: React.FC<DatasourceFieldProps> = ({
   value,
   highlight = false,
   required = false,
+  validationError,
   datasourceType,
   baseURL,
   onFieldChange,
@@ -249,6 +251,11 @@ export const DatasourceField: React.FC<DatasourceFieldProps> = ({
           </Spacings.Stack>
         </DatasourceConfig>
       </HighlightedContainer>
+      {validationError && (
+        <Text.Detail tone="negative">
+          {validationError}
+        </Text.Detail>
+      )}
     </Spacings.Stack>
   );
 }; 
