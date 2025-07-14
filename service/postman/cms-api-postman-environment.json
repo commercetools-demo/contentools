@@ -1,0 +1,63 @@
+{
+  "id": "cms-api-environment",
+  "name": "CMS API Environment",
+  "values": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8080/service",
+      "description": "Base URL for the CMS API service",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "business_unit_key",
+      "value": "default",
+      "description": "Default business unit key",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "content_type_key",
+      "value": "hero-banner",
+      "description": "Sample content type key for testing",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "content_item_key",
+      "value": "sample-hero",
+      "description": "Sample content item key for testing",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "page_key",
+      "value": "homepage",
+      "description": "Sample page key for testing",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "datasource_key",
+      "value": "sample-datasource",
+      "description": "Sample datasource key for testing",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "version_id",
+      "value": "12345678-1234-1234-1234-123456789012",
+      "description": "Sample version ID for testing",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "bearer_token",
+      "value": "",
+      "description": "Bearer token for authentication (update with actual token)",
+      "type": "secret",
+      "enabled": true
+    }
+  ],
+  "_postman_variable_scope": "environment"
+} 

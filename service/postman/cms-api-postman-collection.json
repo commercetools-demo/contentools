@@ -1,0 +1,957 @@
+{
+  "info": {
+    "name": "CMS Service API",
+    "description": "Comprehensive API collection for CMS Service endpoints",
+    "version": "1.0.0",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearer_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8080/service",
+      "type": "string"
+    },
+    {
+      "key": "business_unit_key",
+      "value": "default",
+      "type": "string"
+    },
+    {
+      "key": "content_type_key",
+      "value": "hero-banner",
+      "type": "string"
+    },
+    {
+      "key": "content_item_key",
+      "value": "sample-hero",
+      "type": "string"
+    },
+    {
+      "key": "page_key",
+      "value": "homepage",
+      "type": "string"
+    },
+    {
+      "key": "datasource_key",
+      "value": "sample-datasource",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Content Types",
+      "item": [
+        {
+          "name": "Get All Content Types",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/content-type",
+              "host": ["{{base_url}}"],
+              "path": ["content-type"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Content Type by Key",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/content-type/{{content_type_key}}",
+              "host": ["{{base_url}}"],
+              "path": ["content-type", "{{content_type_key}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Content Type",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"value\": {\n    \"name\": \"Hero Banner\",\n    \"schema\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"title\": {\n          \"type\": \"string\"\n        },\n        \"subtitle\": {\n          \"type\": \"string\"\n        },\n        \"image\": {\n          \"type\": \"string\"\n        }\n      }\n    },\n    \"renderer\": \"HeroBannerRenderer\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/content-type/{{content_type_key}}",
+              "host": ["{{base_url}}"],
+              "path": ["content-type", "{{content_type_key}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Content Type",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"value\": {\n    \"name\": \"Updated Hero Banner\",\n    \"schema\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"title\": {\n          \"type\": \"string\"\n        },\n        \"subtitle\": {\n          \"type\": \"string\"\n        },\n        \"image\": {\n          \"type\": \"string\"\n        },\n        \"ctaText\": {\n          \"type\": \"string\"\n        }\n      }\n    },\n    \"renderer\": \"HeroBannerRenderer\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/content-type/{{content_type_key}}",
+              "host": ["{{base_url}}"],
+              "path": ["content-type", "{{content_type_key}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Content Type",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/content-type/{{content_type_key}}",
+              "host": ["{{base_url}}"],
+              "path": ["content-type", "{{content_type_key}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Content Items",
+      "item": [
+        {
+          "name": "Get All Content Items",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/content-items",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "content-items"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Content Items by Content Type",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/content-items/content-type/{{content_type_key}}",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "content-items", "content-type", "{{content_type_key}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Content Item by Key",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/content-items/{{content_item_key}}",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "content-items", "{{content_item_key}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Published Content Item",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/published/content-items/{{content_item_key}}",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "published", "content-items", "{{content_item_key}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Preview Content Item",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/preview/content-items/{{content_item_key}}",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "preview", "content-items", "{{content_item_key}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Content Item",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"value\": {\n    \"type\": \"hero-banner\",\n    \"name\": \"Sample Hero Banner\",\n    \"data\": {\n      \"title\": \"Welcome to Our Site\",\n      \"subtitle\": \"Discover amazing content\",\n      \"image\": \"https://example.com/hero-image.jpg\"\n    }\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/content-items/{{content_item_key}}",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "content-items", "{{content_item_key}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Content Item",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"value\": {\n    \"type\": \"hero-banner\",\n    \"name\": \"Updated Hero Banner\",\n    \"data\": {\n      \"title\": \"Updated Welcome to Our Site\",\n      \"subtitle\": \"Discover even more amazing content\",\n      \"image\": \"https://example.com/updated-hero-image.jpg\"\n    }\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/content-items/{{content_item_key}}",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "content-items", "{{content_item_key}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Content Item",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/content-items/{{content_item_key}}",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "content-items", "{{content_item_key}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Pages",
+      "item": [
+        {
+          "name": "Get All Pages",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/pages",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "pages"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Page by Key",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/pages/{{page_key}}",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "pages", "{{page_key}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Page",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"value\": {\n    \"name\": \"Homepage\",\n    \"content\": {\n      \"layout\": \"default\",\n      \"sections\": [\n        {\n          \"type\": \"hero\",\n          \"data\": {\n            \"title\": \"Welcome\",\n            \"subtitle\": \"To our amazing site\"\n          }\n        }\n      ]\n    }\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/pages/{{page_key}}",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "pages", "{{page_key}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Page",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"value\": {\n    \"name\": \"Updated Homepage\",\n    \"content\": {\n      \"layout\": \"default\",\n      \"sections\": [\n        {\n          \"type\": \"hero\",\n          \"data\": {\n            \"title\": \"Updated Welcome\",\n            \"subtitle\": \"To our updated amazing site\"\n          }\n        },\n        {\n          \"type\": \"about\",\n          \"data\": {\n            \"title\": \"About Us\",\n            \"description\": \"Learn more about our company\"\n          }\n        }\n      ]\n    }\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/pages/{{page_key}}",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "pages", "{{page_key}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Page",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/pages/{{page_key}}",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "pages", "{{page_key}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "File Management",
+      "item": [
+        {
+          "name": "Upload File",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "title",
+                  "value": "Sample Image",
+                  "type": "text"
+                },
+                {
+                  "key": "description",
+                  "value": "A sample image for testing",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/upload-file",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "upload-file"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Media Library",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/media-library?extensions=jpg,png,gif&page=1&limit=20",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "media-library"],
+              "query": [
+                {
+                  "key": "extensions",
+                  "value": "jpg,png,gif"
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Compile and Upload",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"files\": {\n    \"component.ts\": {\n      \"content\": \"export const MyComponent = () => { return <div>Hello World</div>; };\"\n    }\n  },\n  \"key\": \"my-component\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/compile-upload",
+              "host": ["{{base_url}}"],
+              "path": ["compile-upload"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Datasources",
+      "item": [
+        {
+          "name": "Get All Datasources",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/datasource",
+              "host": ["{{base_url}}"],
+              "path": ["datasource"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Datasource by Key",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/datasource/{{datasource_key}}",
+              "host": ["{{base_url}}"],
+              "path": ["datasource", "{{datasource_key}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Datasource",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"value\": {\n    \"name\": \"Sample Datasource\",\n    \"type\": \"api\",\n    \"config\": {\n      \"url\": \"https://api.example.com/data\",\n      \"method\": \"GET\",\n      \"headers\": {\n        \"Authorization\": \"Bearer token\"\n      }\n    }\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/datasource/{{datasource_key}}",
+              "host": ["{{base_url}}"],
+              "path": ["datasource", "{{datasource_key}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Datasource",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"value\": {\n    \"name\": \"Updated Sample Datasource\",\n    \"type\": \"api\",\n    \"config\": {\n      \"url\": \"https://api.example.com/updated-data\",\n      \"method\": \"POST\",\n      \"headers\": {\n        \"Authorization\": \"Bearer updated-token\",\n        \"Content-Type\": \"application/json\"\n      }\n    }\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/datasource/{{datasource_key}}",
+              "host": ["{{base_url}}"],
+              "path": ["datasource", "{{datasource_key}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Datasource",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/datasource/{{datasource_key}}",
+              "host": ["{{base_url}}"],
+              "path": ["datasource", "{{datasource_key}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "State Management",
+      "item": [
+        {
+          "name": "Content Item States",
+          "item": [
+            {
+              "name": "Get Content Item States",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/{{business_unit_key}}/content-items/{{content_item_key}}/states",
+                  "host": ["{{base_url}}"],
+                  "path": ["{{business_unit_key}}", "content-items", "{{content_item_key}}", "states"]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Save Content Item Draft State",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"value\": {\n    \"type\": \"hero-banner\",\n    \"name\": \"Draft Hero Banner\",\n    \"data\": {\n      \"title\": \"Draft Title\",\n      \"subtitle\": \"Draft Subtitle\",\n      \"image\": \"https://example.com/draft-image.jpg\"\n    }\n  }\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/{{business_unit_key}}/content-items/{{content_item_key}}/states/draft",
+                  "host": ["{{base_url}}"],
+                  "path": ["{{business_unit_key}}", "content-items", "{{content_item_key}}", "states", "draft"]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Publish Content Item State",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"value\": {\n    \"type\": \"hero-banner\",\n    \"name\": \"Published Hero Banner\",\n    \"data\": {\n      \"title\": \"Published Title\",\n      \"subtitle\": \"Published Subtitle\",\n      \"image\": \"https://example.com/published-image.jpg\"\n    }\n  }\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/{{business_unit_key}}/content-items/{{content_item_key}}/states/published?clearDraft=true",
+                  "host": ["{{base_url}}"],
+                  "path": ["{{business_unit_key}}", "content-items", "{{content_item_key}}", "states", "published"],
+                  "query": [
+                    {
+                      "key": "clearDraft",
+                      "value": "true"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Delete Content Item Draft State",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/{{business_unit_key}}/content-items/{{content_item_key}}/states/draft",
+                  "host": ["{{base_url}}"],
+                  "path": ["{{business_unit_key}}", "content-items", "{{content_item_key}}", "states", "draft"]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Page States",
+          "item": [
+            {
+              "name": "Get Page States",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/{{business_unit_key}}/pages/{{page_key}}/states",
+                  "host": ["{{base_url}}"],
+                  "path": ["{{business_unit_key}}", "pages", "{{page_key}}", "states"]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Save Page Draft State",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"value\": {\n    \"name\": \"Draft Homepage\",\n    \"content\": {\n      \"layout\": \"default\",\n      \"sections\": [\n        {\n          \"type\": \"hero\",\n          \"data\": {\n            \"title\": \"Draft Welcome\",\n            \"subtitle\": \"Draft subtitle\"\n          }\n        }\n      ]\n    }\n  }\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/{{business_unit_key}}/pages/{{page_key}}/states/draft",
+                  "host": ["{{base_url}}"],
+                  "path": ["{{business_unit_key}}", "pages", "{{page_key}}", "states", "draft"]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Publish Page State",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"value\": {\n    \"name\": \"Published Homepage\",\n    \"content\": {\n      \"layout\": \"default\",\n      \"sections\": [\n        {\n          \"type\": \"hero\",\n          \"data\": {\n            \"title\": \"Published Welcome\",\n            \"subtitle\": \"Published subtitle\"\n          }\n        }\n      ]\n    }\n  }\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/{{business_unit_key}}/pages/{{page_key}}/states/published?clearDraft=true",
+                  "host": ["{{base_url}}"],
+                  "path": ["{{business_unit_key}}", "pages", "{{page_key}}", "states", "published"],
+                  "query": [
+                    {
+                      "key": "clearDraft",
+                      "value": "true"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Delete Page Draft State",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/{{business_unit_key}}/pages/{{page_key}}/states/draft",
+                  "host": ["{{base_url}}"],
+                  "path": ["{{business_unit_key}}", "pages", "{{page_key}}", "states", "draft"]
+                }
+              },
+              "response": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Version Management",
+      "item": [
+        {
+          "name": "Content Item Versions",
+          "item": [
+            {
+              "name": "Get Content Item Versions",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/{{business_unit_key}}/content-items/{{content_item_key}}/versions",
+                  "host": ["{{base_url}}"],
+                  "path": ["{{business_unit_key}}", "content-items", "{{content_item_key}}", "versions"]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get Specific Content Item Version",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/{{business_unit_key}}/content-items/{{content_item_key}}/versions/{{version_id}}",
+                  "host": ["{{base_url}}"],
+                  "path": ["{{business_unit_key}}", "content-items", "{{content_item_key}}", "versions", "{{version_id}}"]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Create Content Item Version",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"value\": {\n    \"type\": \"hero-banner\",\n    \"name\": \"Version 1.0\",\n    \"data\": {\n      \"title\": \"Version 1.0 Title\",\n      \"subtitle\": \"Version 1.0 Subtitle\",\n      \"image\": \"https://example.com/v1-image.jpg\"\n    }\n  }\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/{{business_unit_key}}/content-items/{{content_item_key}}/versions",
+                  "host": ["{{base_url}}"],
+                  "path": ["{{business_unit_key}}", "content-items", "{{content_item_key}}", "versions"]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Page Versions",
+          "item": [
+            {
+              "name": "Get Page Versions",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/{{business_unit_key}}/pages/{{page_key}}/versions",
+                  "host": ["{{base_url}}"],
+                  "path": ["{{business_unit_key}}", "pages", "{{page_key}}", "versions"]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Get Specific Page Version",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/{{business_unit_key}}/pages/{{page_key}}/versions/{{version_id}}",
+                  "host": ["{{base_url}}"],
+                  "path": ["{{business_unit_key}}", "pages", "{{page_key}}", "versions", "{{version_id}}"]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Create Page Version",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"value\": {\n    \"name\": \"Homepage v1.0\",\n    \"content\": {\n      \"layout\": \"default\",\n      \"sections\": [\n        {\n          \"type\": \"hero\",\n          \"data\": {\n            \"title\": \"Welcome v1.0\",\n            \"subtitle\": \"Version 1.0 subtitle\"\n          }\n        }\n      ]\n    }\n  }\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/{{business_unit_key}}/pages/{{page_key}}/versions",
+                  "host": ["{{base_url}}"],
+                  "path": ["{{business_unit_key}}", "pages", "{{page_key}}", "versions"]
+                }
+              },
+              "response": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Proxy",
+      "item": [
+        {
+          "name": "Proxy Script",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/proxy-script?url=https://example.com/script.js",
+              "host": ["{{base_url}}"],
+              "path": ["proxy-script"],
+              "query": [
+                {
+                  "key": "url",
+                  "value": "https://example.com/script.js"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+} 
