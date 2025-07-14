@@ -16,7 +16,7 @@ const ContentTypeNewModal: React.FC = () => {
   };
 
   const handleSelect = (contentTypeMetaData: ContentTypeMetaData) => {
-    history.push(`${match.path}/new-content-item/${contentTypeMetaData.type}`);
+    history.push(`new-content-item/${contentTypeMetaData.type}`);
   };
 
   return (

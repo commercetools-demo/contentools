@@ -31,8 +31,12 @@ const ContentItemRouter = ({
       <Route path={`/new-content-item`} exact>
         <ContentTypeModal />
       </Route>
-      <Route path={`/new-content-item/:contentType`} exact>
-        HEYYYY
+      <Route path={`/new-content-item/:contentTypeKey`} exact>
+        <ContentItemEditor
+          locale={locale}
+          baseURL={baseURL}
+          businessUnitKey={businessUnitKey}
+        />
       </Route>
       <Route path={`/content-item/:contentItemKey`} exact>
         <ContentItemEditor

@@ -24,7 +24,7 @@ export const useContentItem = (baseURL: string) => {
     try {
       setState(prev => ({ ...prev, loading: true, error: null }));
       const result = await fetchContentItemsEndpoint<ContentItem>(hydratedUrl);
-      
+
       const items = result.map(item => item.value);
       const states = result.reduce(
         (acc, item) => {

@@ -139,7 +139,7 @@ export const ContentItemList: React.FC<ContentItemListProps> = ({
     },
   ];
 
-  if (loading || items.length === 0) {
+  if (loading) {
     return <div className={styles.loading}>Loading...</div>;
   }
 
