@@ -1,13 +1,11 @@
 import {
-  useStateContentItem
+  useStateContentItem,
 } from '@commercetools-demo/cms-state';
 import {
-  ContentItem,
-  ContentTypeMetaData
+  ContentItem
 } from '@commercetools-demo/cms-types';
-import { useModalState } from '@commercetools-demo/cms-ui-components';
-import React, { useEffect, useState } from 'react';
-import { useHistory, useRouteMatch } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 import { ContentItemList } from '../content-item-list/content-item-list';
 import styles from './index.module.css';
 interface ContentItemAppProps {
@@ -25,17 +23,6 @@ const ContentItemApp: React.FC<ContentItemAppProps> = ({
 }) => {
   const history = useHistory();
 
-  const {} = useStateContentItem();
-
-  const contentItemEditorState = useModalState();
-  // Local state
-  const [selectedItem, setSelectedItem] = useState<ContentItem | null>(null);
-  const [contentTypesMetaData, setContentTypesMetaData] = useState<
-    ContentTypeMetaData[]
-  >([]);
-  const [contentTypesError, setContentTypesError] = useState<string | null>(
-    null
-  );
   const {
     items,
     loading,
@@ -85,9 +72,9 @@ const ContentItemApp: React.FC<ContentItemAppProps> = ({
   }
 
   // Show error state
-  if (error || contentTypesError) {
+  if (error) {
     return (
-      <div className={styles.errorContainer}>{error || contentTypesError}</div>
+      <div className={styles.errorContainer}>{error}</div>
     );
   }
 

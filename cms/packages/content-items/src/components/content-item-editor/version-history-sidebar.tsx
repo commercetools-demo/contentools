@@ -14,6 +14,7 @@ interface VersionHistorySidebarProps {
   onVersionSelected: (versionId: string) => void;
   onApplyVersion: (versionId: string) => void;
   onSelectionCancelled: () => void;
+  onClose: () => void;
 }
 
 const VersionHistorySidebar: React.FC<VersionHistorySidebarProps> = ({
@@ -22,6 +23,7 @@ const VersionHistorySidebar: React.FC<VersionHistorySidebarProps> = ({
   onVersionSelected,
   onApplyVersion,
   onSelectionCancelled,
+  onClose,
 }) => {
   const { versions } = useStateVersion<ContentItemVersionInfo>()
 
@@ -29,7 +31,7 @@ const VersionHistorySidebar: React.FC<VersionHistorySidebarProps> = ({
   return (
     <Modal
       isOpen={isVisible}
-      onClose={onSelectionCancelled}
+      onClose={onClose}
       title="Version History"
     >
       <Spacings.Stack scale="m">

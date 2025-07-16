@@ -14,6 +14,18 @@ import {
   useStateContentItem,
 } from '@commercetools-demo/cms-state';
 import { useHistory, useParams } from 'react-router-dom';
+import styled from 'styled-components';
+import PropertyEditor from '@commercetools-demo/cms-property-editor';
+
+const StyledRowDiv = styled.div`
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+`;
+
+const StyledColumnDiv = styled.div`
+  width: 50%;
+`;
 
 interface ContentItemEditorEditFormProps {
   locale?: string;
@@ -39,44 +51,19 @@ const ContentItemEditorEditForm: React.FC<ContentItemEditorEditFormProps> = ({
   const [contentVersion, setContentVersion] =
     useState<ContentItemVersionInfo | null>(null);
   const [item, setItem] = useState<ContentItem | null>(null);
-  const { fetchVersions, saveVersion, versions } =
+  const { fetchVersions, versions } =
     useStateVersion<ContentItemVersionInfo>();
   const { currentState } = useStateStateManagement();
-  const { fetchStates, saveDraft, publish, revertToPublished } =
+  const { fetchStates, publish, revertToPublished } =
     useStateStateManagement();
   const {
     fetchContentItem,
-    items,
     loading,
-    error,
-    states,
     fetchContentItems,
     clearError,
     updateContentItem,
-    deleteContentItem,
   } = useStateContentItem();
 
-  const handleSaveVersion = async () => {
-    if (item) {
-      return saveVersion(hydratedUrl, item, item.key, 'content-items');
-    }
-  };
-
-  const handleFetchStates = async (key: string, contentType: string) => {
-    if (key && contentType) {
-      await fetchStates(
-        hydratedUrl,
-        key,
-        contentType as 'content-items' | 'pages'
-      );
-    }
-  };
-
-  const handleSaveDraft = (updatedItem: ContentItem) => {
-    if (item) {
-      return saveDraft(hydratedUrl, updatedItem, item.key, 'content-items');
-    }
-  };
 
   const onSave = async (currentItem: ContentItem) => {
     clearError();
@@ -87,32 +74,13 @@ const ContentItemEditorEditForm: React.FC<ContentItemEditorEditFormProps> = ({
       };
 
       if (component) {
-        // if (view === 'new') {
-        //   const newItem = {
-        //     ...component,
-        //     key: `item-${uuidv4()}`,
-        //   };
-        //   setSelectedItem(newItem);
-        //   dispatch(
-        //     createContentItem({
-        //       baseURL: hydratedUrl,
-        //       businessUnitKey,
-        //       item: newItem,
-        //     })
-        //   );
-        //   setView('list');
-        // } else {
-        await updateContentItem(hydratedUrl, component.key, component);
-        // }
 
-        await handleSaveVersion();
-        await handleSaveDraft(component);
+        await updateContentItem(hydratedUrl, component.key, component).then((item) => {
+          setItem(item);
+        });
 
-        // After updating, refresh versions and states
         await fetchVersions(hydratedUrl, component.key, 'content-items');
-
         await fetchStates(hydratedUrl, component.key, 'content-items');
-
         await fetchContentItems(hydratedUrl);
       }
     } else {
@@ -126,7 +94,7 @@ const ContentItemEditorEditForm: React.FC<ContentItemEditorEditFormProps> = ({
     contentType: string;
     clearDraft?: boolean;
   }) => {
-    const { item, key, contentType, clearDraft = false } = params;
+    const { item, key, contentType, clearDraft = true } = params;
     if (item && key && contentType) {
       await publish(
         hydratedUrl,
@@ -145,6 +113,7 @@ const ContentItemEditorEditForm: React.FC<ContentItemEditorEditFormProps> = ({
   const handlePublish = () => {
     if (item?.key) {
       onPublish?.({ item, key: item.key, contentType: 'content-items' });
+      fetchContentItems(hydratedUrl);
     }
   };
 
@@ -223,7 +192,7 @@ const ContentItemEditorEditForm: React.FC<ContentItemEditorEditFormProps> = ({
   };
 
   useEffect(() => {
-      handleFetchVersions();
+    handleFetchVersions();
   }, [handleFetchVersions, item]);
 
   useEffect(() => {
@@ -244,43 +213,43 @@ const ContentItemEditorEditForm: React.FC<ContentItemEditorEditFormProps> = ({
         isOpen={contentItemEditorState.isModalOpen}
         size={80}
         onClose={handleClose}
-        title={
-          `Edit ${item.name || 'Content Item'}`
-        }
+        title={`Edit ${item.name || 'Content Item'}`}
         topBarPreviousPathLabel="Content Items"
       >
         <Spacings.Stack>
-            <ContentItemActions
-              showVersionHistory={versionHistoryState.isModalOpen}
-              onToggleVersionHistory={() =>
-                versionHistoryState.isModalOpen
-                  ? handleCloseVersionHistory()
-                  : handleOpenVersionHistory()
-              }
-              currentState={currentState}
-              onViewJson={handleJson}
-              onRevert={handleRevert}
-              onPublish={handlePublish}
-            />
+          <ContentItemActions
+            showVersionHistory={versionHistoryState.isModalOpen}
+            onToggleVersionHistory={() =>
+              versionHistoryState.isModalOpen
+                ? handleCloseVersionHistory()
+                : handleOpenVersionHistory()
+            }
+            currentState={currentState}
+            onViewJson={handleJson}
+            onRevert={handleRevert}
+            onPublish={handlePublish}
+          />
 
           <div
             className={`content-item-body ${
               versionHistoryState.isModalOpen ? 'with-sidebar' : ''
             }`}
           >
-            <div className="content-item-edit">
-              <div className="content-item-edit-editor">
-                <Spacings.Stack scale="m">
-                  <Text.Subheadline as="h4">Edit Content Item</Text.Subheadline>
-                  <Text.Body>Content item: {item.name || item.key}</Text.Body>
-                  <Text.Detail>
-                    This is a placeholder for the property editor component.
-                    You'll need to implement the actual editing interface based
-                    on your content type schemas.
-                  </Text.Detail>
-                </Spacings.Stack>
-              </div>
+            <StyledRowDiv>
+              <StyledColumnDiv>
+                <div className="content-item-edit-editor">
+                  <PropertyEditor
+                    component={item}
+                    baseURL={baseURL}
+                    businessUnitKey={businessUnitKey}
+                    onComponentUpdated={handleComponentUpdated}
+                    onComponentDeleted={() => {}}
+                    versionedContent={selectedVersionId ? contentVersion : null}
+                  />
+                </div>
+              </StyledColumnDiv>
 
+              <StyledColumnDiv>
                 <div className="content-item-edit-preview">
                   <Spacings.Stack scale="m">
                     <Text.Subheadline as="h4">Content Preview</Text.Subheadline>
@@ -293,7 +262,8 @@ const ContentItemEditorEditForm: React.FC<ContentItemEditorEditFormProps> = ({
                     </Text.Detail>
                   </Spacings.Stack>
                 </div>
-            </div>
+              </StyledColumnDiv>
+            </StyledRowDiv>
           </div>
         </Spacings.Stack>
       </Modal>
@@ -303,6 +273,7 @@ const ContentItemEditorEditForm: React.FC<ContentItemEditorEditFormProps> = ({
         onVersionSelected={handleVersionSelected}
         onApplyVersion={handleApplyVersion}
         onSelectionCancelled={handleSelectionCancelled}
+        onClose={handleCloseVersionHistory}
       />
     </>
   );

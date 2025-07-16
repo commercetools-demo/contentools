@@ -34,7 +34,8 @@ const ContentItemEditorCreateForm = ({
   }>();
   const history = useHistory();
 
-  const { createContentItem } = useStateContentItem();
+  const { createContentItem, fetchContentItems } = useStateContentItem();
+
   const hydratedUrl = baseURL + '/' + businessUnitKey;
 
   const contentItemEditorState = useModalState(true);
@@ -45,7 +46,8 @@ const ContentItemEditorCreateForm = ({
   };
 
   const handleCreateContentItem = async (contentItem: ContentItem) => {
-    await createContentItem(hydratedUrl, businessUnitKey, contentItem);
+    await createContentItem(hydratedUrl, contentItem);
+    await fetchContentItems(hydratedUrl);
     history.push(`/`);
     contentItemEditorState.closeModal();
   };
@@ -69,7 +71,9 @@ const ContentItemEditorCreateForm = ({
               <PropertyEditor
                 baseURL={baseURL}
                 businessUnitKey={businessUnitKey}
-                onComponentUpdated={(component) => handleCreateContentItem(component)}
+                onComponentUpdated={(component) =>
+                  handleCreateContentItem(component)
+                }
                 onComponentDeleted={() => {}}
                 isContentVersion={false}
                 versionedContent={null}
