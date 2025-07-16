@@ -17,7 +17,7 @@ const HighlightedContainer = styled.div<{ $highlight: boolean }>`
       bottom: -2px;
       background: linear-gradient(90deg, #ffd700, #ffed4e);
       border-radius: 4px;
-      z-index: -1;
+      z-index: 0;
     }
   `}
 `;
@@ -31,6 +31,8 @@ const WysiwygTextArea = styled.textarea`
   font-family: inherit;
   font-size: 14px;
   resize: vertical;
+  position: inherit;
+  box-sizing: border-box;
   
   &:focus {
     outline: none;
@@ -47,6 +49,7 @@ const WysiwygToolbar = styled.div`
   background: #f9f9f9;
   border: 1px solid #ddd;
   border-radius: 4px 4px 0 0;
+  position: inherit;
 `;
 
 const ToolbarButton = styled.button`

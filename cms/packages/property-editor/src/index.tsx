@@ -42,7 +42,6 @@ interface PropertyEditorProps {
   component: ContentItem;
   baseURL: string;
   businessUnitKey: string;
-  isContentVersion?: boolean;
   versionedContent?: ContentItem | null;
   onComponentUpdated: (component: ContentItem) => void;
   onComponentDeleted?: (componentId: string) => void;

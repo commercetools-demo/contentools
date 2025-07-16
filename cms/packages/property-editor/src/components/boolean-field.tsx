@@ -18,7 +18,7 @@ const HighlightedContainer = styled.div<{ $highlight: boolean }>`
       bottom: -2px;
       background: linear-gradient(90deg, #ffd700, #ffed4e);
       border-radius: 4px;
-      z-index: -1;
+      z-index: 0;
     }
   `}
 `;
