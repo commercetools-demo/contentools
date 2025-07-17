@@ -156,13 +156,11 @@ export const useContentType = (baseURL: string) => {
     return state.availableDatasources.find(ds => ds.key === key) || null;
   }, [state.availableDatasources]);
 
-  useEffect(() => {
-    const fetchContentTypesMetaData = async () => {
-      const contentTypesMetaData = await getAllContentTypesMetaData({ baseURL });
-      setState(prev => ({ ...prev, contentTypesMetaData }));
-    };
-    fetchContentTypesMetaData();
-  }, [baseURL]);
+  const fetchContentTypesMetaData = async () => {
+    const contentTypesMetaData = await getAllContentTypesMetaData({ baseURL });
+    setState(prev => ({ ...prev, contentTypesMetaData }));
+  };
+
 
   return {
     // State
@@ -178,6 +176,7 @@ export const useContentType = (baseURL: string) => {
     updateContentType,
     removeContentType,
     clearError,
+    fetchContentTypesMetaData,
     
     // Selectors
     getContentTypeByType,

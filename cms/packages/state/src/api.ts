@@ -205,11 +205,11 @@ export async function fetchPublishedContentItemEndpoint<T>(
 /**
  * Create a content item
  */
-export async function createContentItemEndpoint<T extends { key: string }>(
+export async function createContentItemEndpoint<T>(
   baseURL: string,
   data: T
 ): Promise<T> {
-  const response = await fetchApi<T>(`${baseURL}/content-items/${data.key}`, {
+  const response = await fetchApi<T>(`${baseURL}/content-items`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

@@ -9,6 +9,7 @@ export {
   useStateVersion,
   useStateStateManagement,
   useStateMediaLibrary,
+  useStateDatasource,
 } from './StateProvider';
 
 

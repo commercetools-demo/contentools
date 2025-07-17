@@ -39,48 +39,40 @@ const ContentItemActions: React.FC<ContentItemActionsProps> = ({
     <Spacings.Stack>
       <Spacings.Inline alignItems="center" justifyContent="flex-end">
         <SecondaryButton
-        size='10'
-          label={showVersionHistory ? "Hide History" : "Show History"}
+          size="10"
+          label={showVersionHistory ? 'Hide History' : 'Show History'}
           onClick={onToggleVersionHistory}
         />
-        
+
         {(currentState === 'published' || currentState === 'both') && (
           <SecondaryButton
-          size='10'
+            size="10"
             iconLeft={<ExternalLinkIcon />}
             label="View Published JSON"
             onClick={() => onViewJson(false)}
           />
         )}
-        
+
         <SecondaryButton
-        size='10'
+          size="10"
           iconLeft={<ExternalLinkIcon />}
           label="View Draft JSON"
           onClick={() => onViewJson(true)}
         />
-        
-        {currentState && (
-          <Stamp tone={getStampTone()}>
-            {currentState}
-          </Stamp>
-        )}
-        
+
+        {currentState && <Stamp tone={getStampTone()}>{currentState}</Stamp>}
+
         <Spacings.Inline>
-          {currentState !== 'draft' && (
+          {(currentState === 'draft' || currentState === 'both') && (
             <SecondaryButton
-            size='10'
+              size="10"
               label="Revert to Published"
               onClick={onRevert}
             />
           )}
-          
+
           {currentState !== 'published' && (
-            <PrimaryButton
-            size='10'
-              label="Publish"
-              onClick={onPublish}
-            />
+            <PrimaryButton size="10" label="Publish" onClick={onPublish} />
           )}
         </Spacings.Inline>
       </Spacings.Inline>
@@ -88,4 +80,4 @@ const ContentItemActions: React.FC<ContentItemActionsProps> = ({
   );
 };
 
-export default ContentItemActions; 
+export default ContentItemActions;

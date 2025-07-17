@@ -1,5 +1,4 @@
 import { useState, useCallback } from 'react';
-import { v4 as uuidv4 } from 'uuid';
 import { ContentItem, ContentItemState, StateInfo } from '@commercetools-demo/cms-types';
 import {
   fetchContentItemsEndpoint,
@@ -75,20 +74,12 @@ export const useContentItem = () => {
 
   const createContentItem = useCallback(async (
     hydratedUrl: string,
-    businessUnitKey: string,
     item: ContentItem
   ) => {
     try {
       setState(prev => ({ ...prev, loading: true, error: null }));
       
-      const newItem = {
-        ...item,
-        id: uuidv4(),
-        key: `item-${uuidv4()}`,
-        businessUnitKey,
-      } as ContentItem;
-      
-      const createdItem = await createContentItemEndpoint<ContentItem>(hydratedUrl, newItem);
+      const createdItem = await createContentItemEndpoint<ContentItem>(hydratedUrl, item);
       
       setState(prev => ({
         ...prev,

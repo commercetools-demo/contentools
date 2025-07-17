@@ -5,6 +5,7 @@ import FieldLabel from '@commercetools-uikit/field-label';
 import SecondaryButton from '@commercetools-uikit/secondary-button';
 import Text from '@commercetools-uikit/text';
 import { DatasourceInfo } from '@commercetools-demo/cms-types';
+import { useStateDatasource } from '@commercetools-demo/cms-state';
 
 const HighlightedContainer = styled.div<{ $highlight: boolean }>`
   position: relative;
@@ -82,31 +83,10 @@ export const DatasourceField: React.FC<DatasourceFieldProps> = ({
   baseURL,
   onFieldChange,
 }) => {
-  const [availableDatasources, setAvailableDatasources] = useState<DatasourceInfo[]>([]);
+  const { datasources: availableDatasources,  } = useStateDatasource();
   const [selectedDatasource, setSelectedDatasource] = useState<DatasourceInfo | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  // Load available datasources
-  useEffect(() => {
-    const loadDatasources = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch(`${baseURL}/api/datasources`);
-        if (!response.ok) {
-          throw new Error('Failed to load datasources');
-        }
-        const datasources: DatasourceInfo[] = await response.json();
-        setAvailableDatasources(datasources.filter(ds => ds.key === datasourceType));
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to load datasources');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadDatasources();
-  }, [baseURL, datasourceType]);
 
   // Set selected datasource when available datasources change
   useEffect(() => {

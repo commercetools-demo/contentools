@@ -124,7 +124,11 @@ const ContentItemEditorEditForm: React.FC<ContentItemEditorEditFormProps> = ({
         hydratedUrl,
         key,
         contentType as 'content-items' | 'pages'
-      );
+      ).then(() => {
+        fetchContentItem(hydratedUrl, key).then((item) => {
+          setItem(item);
+        });
+      });
     }
   };
 
