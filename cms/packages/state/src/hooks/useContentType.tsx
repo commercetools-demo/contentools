@@ -6,11 +6,13 @@ import {
   updateContentTypeEndpoint,
   deleteContentTypeEndpoint,
   getAvailableDatasourcesEndpoint,
+  fetchContentTypeEndpoint,
 } from '../api';
-import { getAllContentTypesMetaData } from '../utils/content-type-utility';
+import { getAllContentTypesMetaData, getAllContentTypesRenderers } from '@commercetools-demo/cms-content-type-registry';
 
 const initialState: ContentTypeState = {
   contentTypes: [],
+  contentTypesRenderers: {},
   loading: false,
   error: null,
   availableDatasources: [],
@@ -25,7 +27,7 @@ export const useContentType = (baseURL: string) => {
     try {
       setState(prev => ({ ...prev, loading: true, error: null }));
       const response = await fetchContentTypesEndpoint<ContentTypeData>(baseURL);
-      const contentTypes = response.map(item => item.value);
+      const contentTypes = response.map(item => item);
       
       setState(prev => ({
         ...prev,
@@ -34,6 +36,23 @@ export const useContentType = (baseURL: string) => {
       }));
       
       return contentTypes;
+    } catch (error) {
+      setState(prev => ({
+        ...prev,
+        loading: false,
+        error: error instanceof Error ? error.message : 'Failed to fetch content types',
+      }));
+      throw error;
+    }
+  }, [baseURL]);
+
+  const fetchContentType = useCallback(async (key: string) => {
+    try {
+      setState(prev => ({ ...prev, loading: true, error: null }));
+      const response = await fetchContentTypeEndpoint<ContentTypeData>(baseURL, key);
+      const contentType = response.value;
+      
+      return contentType;
     } catch (error) {
       setState(prev => ({
         ...prev,
@@ -74,6 +93,33 @@ export const useContentType = (baseURL: string) => {
         baseURL,
         contentType.metadata.type,
         contentType
+      );
+      const newContentType = response.value;
+      
+      setState(prev => ({
+        ...prev,
+        contentTypes: [...prev.contentTypes, newContentType],
+        loading: false,
+      }));
+      
+      return newContentType;
+    } catch (error) {
+      setState(prev => ({
+        ...prev,
+        loading: false,
+        error: error instanceof Error ? error.message : 'Failed to add content type',
+      }));
+      throw error;
+    }
+  }, [baseURL]);
+
+  const addContentTypeWithCode = useCallback(async ({ key, data }: { key: string, data: any }) => {
+    try {
+      setState(prev => ({ ...prev, loading: true, error: null }));
+      const response = await createContentTypeEndpoint<ContentTypeData>(
+        baseURL,
+        key,
+        data
       );
       const newContentType = response.value;
       
@@ -161,6 +207,11 @@ export const useContentType = (baseURL: string) => {
     setState(prev => ({ ...prev, contentTypesMetaData }));
   };
 
+  const fetchContentTypesRenderers = async () => {
+    const contentTypesRenderers = await getAllContentTypesRenderers();
+    setState(prev => ({ ...prev, contentTypesRenderers }));
+  };
+
 
   return {
     // State
@@ -169,18 +220,23 @@ export const useContentType = (baseURL: string) => {
     error: state.error,
     availableDatasources: state.availableDatasources,
     contentTypesMetaData: state.contentTypesMetaData,
+    contentTypesRenderers: state.contentTypesRenderers,
     // Actions
     fetchContentTypes,
+    fetchContentType,
     fetchAvailableDatasources,
     addContentType,
     updateContentType,
     removeContentType,
     clearError,
     fetchContentTypesMetaData,
+    fetchContentTypesRenderers,
     
     // Selectors
     getContentTypeByType,
     getContentTypeMetadata,
     getDatasourceByKey,
+
+    addContentTypeWithCode,
   };
 }; 

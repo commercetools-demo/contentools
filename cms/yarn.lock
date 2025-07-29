@@ -357,7 +357,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/parser@npm:^7.1.0, @babel/parser@npm:^7.14.7, @babel/parser@npm:^7.20.7, @babel/parser@npm:^7.23.9, @babel/parser@npm:^7.27.2, @babel/parser@npm:^7.28.0":
+"@babel/parser@npm:^7.1.0, @babel/parser@npm:^7.14.7, @babel/parser@npm:^7.20.7, @babel/parser@npm:^7.23.9, @babel/parser@npm:^7.25.6, @babel/parser@npm:^7.27.2, @babel/parser@npm:^7.28.0":
   version: 7.28.0
   resolution: "@babel/parser@npm:7.28.0"
   dependencies:
@@ -1504,7 +1504,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/preset-env@npm:^7.11.0, @babel/preset-env@npm:^7.12.1, @babel/preset-env@npm:^7.16.4, @babel/preset-env@npm:^7.19.4, @babel/preset-env@npm:^7.22.15":
+"@babel/preset-env@npm:^7.11.0, @babel/preset-env@npm:^7.12.1, @babel/preset-env@npm:^7.16.4, @babel/preset-env@npm:^7.19.4, @babel/preset-env@npm:^7.22.15, @babel/preset-env@npm:^7.28.0":
   version: 7.28.0
   resolution: "@babel/preset-env@npm:7.28.0"
   dependencies:
@@ -1597,7 +1597,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/preset-react@npm:^7.12.5, @babel/preset-react@npm:^7.16.0, @babel/preset-react@npm:^7.18.6, @babel/preset-react@npm:^7.22.15":
+"@babel/preset-react@npm:^7.12.5, @babel/preset-react@npm:^7.16.0, @babel/preset-react@npm:^7.18.6, @babel/preset-react@npm:^7.22.15, @babel/preset-react@npm:^7.27.1":
   version: 7.27.1
   resolution: "@babel/preset-react@npm:7.27.1"
   dependencies:
@@ -1613,7 +1613,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/preset-typescript@npm:^7.16.0, @babel/preset-typescript@npm:^7.18.6, @babel/preset-typescript@npm:^7.22.15":
+"@babel/preset-typescript@npm:^7.16.0, @babel/preset-typescript@npm:^7.18.6, @babel/preset-typescript@npm:^7.22.15, @babel/preset-typescript@npm:^7.27.1":
   version: 7.27.1
   resolution: "@babel/preset-typescript@npm:7.27.1"
   dependencies:
@@ -1666,6 +1666,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@babel/standalone@npm:^7.28.2":
+  version: 7.28.2
+  resolution: "@babel/standalone@npm:7.28.2"
+  checksum: 10/2924e8842827ae2cf01125dfecada47d282f478e4e84d3391c3bd943a1c6c71eab5d79bb1b6a7246953c7b58e74996306c60fb18fecc0e21f15edb82f4050775
+  languageName: node
+  linkType: hard
+
 "@babel/template@npm:^7.27.1, @babel/template@npm:^7.27.2, @babel/template@npm:^7.3.3":
   version: 7.27.2
   resolution: "@babel/template@npm:7.27.2"
@@ -1702,6 +1709,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@babel/types@npm:^7.25.6":
+  version: 7.28.2
+  resolution: "@babel/types@npm:7.28.2"
+  dependencies:
+    "@babel/helper-string-parser": "npm:^7.27.1"
+    "@babel/helper-validator-identifier": "npm:^7.27.1"
+  checksum: 10/a8de404a2e3109651f346d892dc020ce2c82046068f4ce24de7f487738dfbfa7bd716b35f1dcd6d6c32dde96208dc74a56b7f56a2c0bcb5af0ddc56cbee13533
+  languageName: node
+  linkType: hard
+
 "@bcoe/v8-coverage@npm:^0.2.3":
   version: 0.2.3
   resolution: "@bcoe/v8-coverage@npm:0.2.3"
@@ -1718,6 +1735,25 @@ __metadata:
   checksum: 10/e5df6b617a0b23b27e4f95bce90ed8cdad34395cc68c7a44781e42658fb849d94cf81d1c04d7b609a0809502f4aad3e06fb3631f49ce4df1c0c10a1ba9e150cb
   languageName: node
   linkType: hard
+
+"@commercetools-demo/cms-content-item-renderer@workspace:*, @commercetools-demo/cms-content-item-renderer@workspace:packages/content-item-renderer":
+  version: 0.0.0-use.local
+  resolution: "@commercetools-demo/cms-content-item-renderer@workspace:packages/content-item-renderer"
+  dependencies:
+    "@babel/runtime-corejs3": "npm:^7.28.0"
+    "@commercetools-demo/cms-state": "workspace:*"
+    "@commercetools-demo/cms-types": "workspace:*"
+    "@commercetools-demo/cms-ui-components": "workspace:*"
+    "@emotion/react": "npm:^11.14.0"
+    "@types/react": "npm:^19"
+    styled-components: "npm:^6.1.19"
+  peerDependencies:
+    "@emotion/react": ">=11.0.0"
+    react: ">=19.0.0"
+    react-dom: ">=19.0.0"
+    styled-components: ">=5.0.0"
+  languageName: unknown
+  linkType: soft
 
 "@commercetools-demo/cms-content-items@link:../packages/content-items::locator=plain-react-test%40workspace%3Aplain-react-test":
   version: 0.0.0-use.local
@@ -1736,6 +1772,8 @@ __metadata:
   resolution: "@commercetools-demo/cms-content-items@workspace:packages/content-items"
   dependencies:
     "@babel/runtime-corejs3": "npm:^7.28.0"
+    "@commercetools-demo/cms-content-item-renderer": "workspace:*"
+    "@commercetools-demo/cms-content-type-editor": "workspace:*"
     "@commercetools-demo/cms-property-editor": "workspace:*"
     "@commercetools-demo/cms-state": "workspace:*"
     "@commercetools-demo/cms-types": "workspace:*"
@@ -1758,7 +1796,6 @@ __metadata:
     "@types/add": "npm:^2"
     "@types/react": "npm:^19"
     add: "npm:^2.0.6"
-    react: "npm:19.0.0"
     react-router-dom: "npm:5.3.4"
     styled-components: "npm:^6.1.19"
     yarn: "npm:^1.22.22"
@@ -1771,11 +1808,88 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@commercetools-demo/cms-content-type-editor@workspace:*, @commercetools-demo/cms-content-type-editor@workspace:packages/content-type-editor":
+  version: 0.0.0-use.local
+  resolution: "@commercetools-demo/cms-content-type-editor@workspace:packages/content-type-editor"
+  dependencies:
+    "@babel/runtime-corejs3": "npm:^7.28.0"
+    "@babel/standalone": "npm:^7.28.2"
+    "@commercetools-demo/cms-types": "workspace:*"
+    "@emotion/react": "npm:^11.14.0"
+    "@monaco-editor/react": "npm:^4.7.0"
+    "@types/babel__standalone": "npm:^7"
+    "@types/react": "npm:^19.0.0"
+    "@types/styled-components": "npm:^5.1.0"
+    country-to-currency: "npm:^1.1.0"
+    styled-components: "npm:^6.0.0"
+  peerDependencies:
+    "@emotion/react": ">=11.0.0"
+    react: ">=19.0.0"
+    react-dom: ">=19.0.0"
+  languageName: unknown
+  linkType: soft
+
 "@commercetools-demo/cms-content-type-registry@workspace:*, @commercetools-demo/cms-content-type-registry@workspace:packages/content-type-registry":
   version: 0.0.0-use.local
   resolution: "@commercetools-demo/cms-content-type-registry@workspace:packages/content-type-registry"
   dependencies:
+    "@babel/runtime-corejs3": "npm:^7.28.0"
     "@commercetools-demo/cms-types": "workspace:*"
+    "@emotion/react": "npm:^11.14.0"
+    "@types/react": "npm:^19.0.0"
+    "@types/styled-components": "npm:^5.1.0"
+    country-to-currency: "npm:^1.1.0"
+    styled-components: "npm:^6.0.0"
+  peerDependencies:
+    "@emotion/react": ">=11.0.0"
+    react: ">=19.0.0"
+    react-dom: ">=19.0.0"
+  languageName: unknown
+  linkType: soft
+
+"@commercetools-demo/cms-content-types@link:../packages/content-types::locator=plain-react-test%40workspace%3Aplain-react-test":
+  version: 0.0.0-use.local
+  resolution: "@commercetools-demo/cms-content-types@link:../packages/content-types::locator=plain-react-test%40workspace%3Aplain-react-test"
+  languageName: node
+  linkType: soft
+
+"@commercetools-demo/cms-content-types@workspace:packages/content-types":
+  version: 0.0.0-use.local
+  resolution: "@commercetools-demo/cms-content-types@workspace:packages/content-types"
+  dependencies:
+    "@babel/runtime-corejs3": "npm:^7.28.0"
+    "@commercetools-demo/cms-content-type-editor": "workspace:*"
+    "@commercetools-demo/cms-property-editor": "workspace:*"
+    "@commercetools-demo/cms-state": "workspace:*"
+    "@commercetools-demo/cms-types": "workspace:*"
+    "@commercetools-demo/cms-ui-components": "workspace:*"
+    "@commercetools-uikit/card": "npm:^20.2.2"
+    "@commercetools-uikit/checkbox-input": "npm:^20.2.2"
+    "@commercetools-uikit/data-table": "npm:^20.2.1"
+    "@commercetools-uikit/field-label": "npm:^20.2.2"
+    "@commercetools-uikit/flat-button": "npm:^20.2.1"
+    "@commercetools-uikit/icon-button": "npm:^20.2.1"
+    "@commercetools-uikit/icons": "npm:^20.2.1"
+    "@commercetools-uikit/number-input": "npm:^20.2.2"
+    "@commercetools-uikit/primary-button": "npm:^20.2.1"
+    "@commercetools-uikit/secondary-button": "npm:^20.2.2"
+    "@commercetools-uikit/spacings": "npm:^20.2.1"
+    "@commercetools-uikit/stamp": "npm:^20.2.1"
+    "@commercetools-uikit/text": "npm:^20.2.2"
+    "@commercetools-uikit/text-input": "npm:^20.2.2"
+    "@emotion/react": "npm:^11.14.0"
+    "@types/add": "npm:^2"
+    "@types/react": "npm:^19"
+    add: "npm:^2.0.6"
+    react-router-dom: "npm:5.3.4"
+    styled-components: "npm:^6.1.19"
+    yarn: "npm:^1.22.22"
+  peerDependencies:
+    "@emotion/react": ">=11.0.0"
+    react: ">=19.0.0"
+    react-dom: ">=19.0.0"
+    react-router-dom: ">=5.0.0"
+    styled-components: ">=5.0.0"
   languageName: unknown
   linkType: soft
 
@@ -1806,7 +1920,6 @@ __metadata:
     "@types/react": "npm:^19"
     add: "npm:^2.0.6"
     formik: "npm:^2.4.6"
-    react: "npm:19.0.0"
     styled-components: "npm:^6.1.19"
     yarn: "npm:^1.22.22"
     yup: "npm:^1.6.1"
@@ -1827,23 +1940,10 @@ __metadata:
     "@commercetools-demo/cms-types": "workspace:*"
     "@emotion/react": "npm:^11.14.0"
     "@types/react": "npm:^19"
-    react: "npm:19.0.0"
     uuid: "npm:^11.1.0"
   peerDependencies:
     "@emotion/react": ">=11.0.0"
     react: ">=19.0.0"
-  languageName: unknown
-  linkType: soft
-
-"@commercetools-demo/cms-store@workspace:packages/store":
-  version: 0.0.0-use.local
-  resolution: "@commercetools-demo/cms-store@workspace:packages/store"
-  dependencies:
-    "@babel/runtime-corejs3": "npm:^7.28.0"
-    "@commercetools-demo/cms-content-type-registry": "workspace:*"
-    "@commercetools-demo/cms-types": "workspace:*"
-    "@reduxjs/toolkit": "npm:^2.8.2"
-    uuid: "npm:^11.1.0"
   languageName: unknown
   linkType: soft
 
@@ -1882,10 +1982,13 @@ __metadata:
   resolution: "@commercetools-demo/cms@workspace:."
   dependencies:
     "@babel/core": "npm:^7.22.17"
-    "@commercetools-frontend/babel-preset-mc-app": "npm:24.0.0"
+    "@babel/preset-env": "npm:^7.28.0"
+    "@babel/preset-react": "npm:^7.27.1"
+    "@babel/preset-typescript": "npm:^7.27.1"
     "@commercetools-frontend/eslint-config-mc-app": "npm:24.0.0"
     "@manypkg/cli": "npm:0.24.0"
     "@preconstruct/cli": "npm:2.8.10"
+    "@types/babel__preset-env": "npm:^7"
     "@types/node": "npm:^22.13.1"
     "@types/prettier": "npm:^2.7.3"
     "@typescript-eslint/eslint-plugin": "npm:8.18.0"
@@ -2164,40 +2267,6 @@ __metadata:
   version: 24.2.1
   resolution: "@commercetools-frontend/assets@npm:24.2.1"
   checksum: 10/c558f3a43084039db53fbfc2471148cd006371c0c94d3a77dc59c89b8bcf27bc13745ecb4108cb0a9958c2449abb68265c0a023c69f78ff3d056a9aa54dd1d22
-  languageName: node
-  linkType: hard
-
-"@commercetools-frontend/babel-preset-mc-app@npm:24.0.0":
-  version: 24.0.0
-  resolution: "@commercetools-frontend/babel-preset-mc-app@npm:24.0.0"
-  dependencies:
-    "@babel/core": "npm:^7.22.17"
-    "@babel/plugin-proposal-do-expressions": "npm:^7.22.5"
-    "@babel/plugin-proposal-export-default-from": "npm:^7.22.17"
-    "@babel/plugin-transform-class-properties": "npm:^7.22.5"
-    "@babel/plugin-transform-destructuring": "npm:^7.22.15"
-    "@babel/plugin-transform-export-namespace-from": "npm:^7.22.11"
-    "@babel/plugin-transform-logical-assignment-operators": "npm:^7.22.11"
-    "@babel/plugin-transform-object-rest-spread": "npm:^7.22.15"
-    "@babel/plugin-transform-private-methods": "npm:^7.22.5"
-    "@babel/plugin-transform-private-property-in-object": "npm:^7.22.11"
-    "@babel/plugin-transform-regenerator": "npm:^7.22.10"
-    "@babel/plugin-transform-runtime": "npm:^7.22.15"
-    "@babel/preset-env": "npm:^7.22.15"
-    "@babel/preset-react": "npm:^7.22.15"
-    "@babel/preset-typescript": "npm:^7.22.15"
-    "@babel/runtime": "npm:^7.22.15"
-    "@babel/runtime-corejs3": "npm:^7.22.15"
-    "@emotion/babel-plugin": "npm:^11.13.5"
-    "@emotion/babel-preset-css-prop": "npm:^11.12.0"
-    babel-plugin-dev-expression: "npm:^0.2.3"
-    babel-plugin-formatjs: "npm:^10.5.25"
-    babel-plugin-lodash: "npm:^3.3.4"
-    babel-plugin-macros: "npm:^3.1.0"
-    babel-plugin-preval: "npm:^5.1.0"
-    babel-plugin-transform-react-remove-prop-types: "npm:^0.4.24"
-    core-js: "npm:^3.32.2"
-  checksum: 10/e6a3d9e7b71130340e6d95544d9887cdb19f90d3c4542fcd077ee10858f8901d320d36938ef3798069d0a18d8288345c4e0f47b5c4947a0ba943b5ec7d981a0e
   languageName: node
   linkType: hard
 
@@ -7386,6 +7455,28 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@monaco-editor/loader@npm:^1.5.0":
+  version: 1.5.0
+  resolution: "@monaco-editor/loader@npm:1.5.0"
+  dependencies:
+    state-local: "npm:^1.0.6"
+  checksum: 10/97d79916afa856809de4eaafaee1b1c6dc9443c0fdde81a7562f4ffa0c252496e97c4becf4c1f00c4119878c76d73390ce416a64305e59865a5830bded5afe55
+  languageName: node
+  linkType: hard
+
+"@monaco-editor/react@npm:^4.7.0":
+  version: 4.7.0
+  resolution: "@monaco-editor/react@npm:4.7.0"
+  dependencies:
+    "@monaco-editor/loader": "npm:^1.5.0"
+  peerDependencies:
+    monaco-editor: ">= 0.25.0 < 1"
+    react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+    react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+  checksum: 10/d72392c4ed6faf8d830ba43421461e1b767b5978edba0739457d7781aa9533c66982be7f59bb156a77a2b578eddfb4711f50e0d84f0f0d25d28b5ab11140f5cc
+  languageName: node
+  linkType: hard
+
 "@mswjs/cookies@npm:^0.2.2":
   version: 0.2.2
   resolution: "@mswjs/cookies@npm:0.2.2"
@@ -7986,28 +8077,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@reduxjs/toolkit@npm:^2.8.2":
-  version: 2.8.2
-  resolution: "@reduxjs/toolkit@npm:2.8.2"
-  dependencies:
-    "@standard-schema/spec": "npm:^1.0.0"
-    "@standard-schema/utils": "npm:^0.3.0"
-    immer: "npm:^10.0.3"
-    redux: "npm:^5.0.1"
-    redux-thunk: "npm:^3.1.0"
-    reselect: "npm:^5.1.0"
-  peerDependencies:
-    react: ^16.9.0 || ^17.0.0 || ^18 || ^19
-    react-redux: ^7.2.1 || ^8.1.3 || ^9.0.0
-  peerDependenciesMeta:
-    react:
-      optional: true
-    react-redux:
-      optional: true
-  checksum: 10/7834b7b91a364f98f5ffa932b1027179d9a0a27a145206a7b5256304acafe5516c6622540656435e310e4a08e579eecaee5c2582442c4ef6a4dbe6f417b7d395
-  languageName: node
-  linkType: hard
-
 "@rollup/plugin-alias@npm:^3.1.1":
   version: 3.1.9
   resolution: "@rollup/plugin-alias@npm:3.1.9"
@@ -8590,20 +8659,6 @@ __metadata:
   dependencies:
     "@sinonjs/commons": "npm:^1.7.0"
   checksum: 10/da50ddd68411617fcf72d9fb70b621aa2a6d17faa93a2769c7af390c88b40e045f84544db022dd1ac30a6db115d2a0f96473854d4a106b0174351f22d42910ce
-  languageName: node
-  linkType: hard
-
-"@standard-schema/spec@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "@standard-schema/spec@npm:1.0.0"
-  checksum: 10/aee780cc1431888ca4b9aba9b24ffc8f3073fc083acc105e3951481478a2f4dc957796931b2da9e2d8329584cf211e4542275f188296c1cdff3ed44fd93a8bc8
-  languageName: node
-  linkType: hard
-
-"@standard-schema/utils@npm:^0.3.0":
-  version: 0.3.0
-  resolution: "@standard-schema/utils@npm:0.3.0"
-  checksum: 10/7084f875d322792f2e0a5904009434c8374b9345b09ba89828b68fd56fa3c2b366d35bf340d9e8c72736ef01793c2f70d350c372ed79845dc3566c58d34b4b51
   languageName: node
   linkType: hard
 
@@ -9230,7 +9285,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/babel__generator@npm:*":
+"@types/babel__generator@npm:*, @types/babel__generator@npm:^7.6.8":
   version: 7.27.0
   resolution: "@types/babel__generator@npm:7.27.0"
   dependencies:
@@ -9248,7 +9303,28 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/babel__template@npm:*":
+"@types/babel__preset-env@npm:^7":
+  version: 7.10.0
+  resolution: "@types/babel__preset-env@npm:7.10.0"
+  checksum: 10/7d4d12758d89708afe327079d7d7580e8af3292295f087b8a9a48e12ac1d90aadc18ac3bc00f9b0cbc8778f3ce9fe778801d4d49b7691a75e3f13a901b69fd07
+  languageName: node
+  linkType: hard
+
+"@types/babel__standalone@npm:^7":
+  version: 7.1.9
+  resolution: "@types/babel__standalone@npm:7.1.9"
+  dependencies:
+    "@babel/parser": "npm:^7.25.6"
+    "@babel/types": "npm:^7.25.6"
+    "@types/babel__core": "npm:^7.20.5"
+    "@types/babel__generator": "npm:^7.6.8"
+    "@types/babel__template": "npm:^7.4.4"
+    "@types/babel__traverse": "npm:^7.20.6"
+  checksum: 10/ed22e64e4c14351eec992c04da2b64b915cdeecbe5c8c1ecbcf5af3c833e8a899718be8f5c10d6705de71c2c808f4ddcd64d01bbd08a83c65a7e289b08a0fb80
+  languageName: node
+  linkType: hard
+
+"@types/babel__template@npm:*, @types/babel__template@npm:^7.4.4":
   version: 7.4.4
   resolution: "@types/babel__template@npm:7.4.4"
   dependencies:
@@ -9471,7 +9547,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/hoist-non-react-statics@npm:^3.3.0, @types/hoist-non-react-statics@npm:^3.3.1":
+"@types/hoist-non-react-statics@npm:*, @types/hoist-non-react-statics@npm:^3.3.0, @types/hoist-non-react-statics@npm:^3.3.1":
   version: 3.3.6
   resolution: "@types/hoist-non-react-statics@npm:3.3.6"
   dependencies:
@@ -9781,7 +9857,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:*, @types/react@npm:16 || 17 || 18 || 19, @types/react@npm:^19, @types/react@npm:^19.0.3":
+"@types/react@npm:*, @types/react@npm:16 || 17 || 18 || 19, @types/react@npm:^19, @types/react@npm:^19.0.0, @types/react@npm:^19.0.3":
   version: 19.1.8
   resolution: "@types/react@npm:19.1.8"
   dependencies:
@@ -9899,6 +9975,17 @@ __metadata:
   version: 2.0.3
   resolution: "@types/stack-utils@npm:2.0.3"
   checksum: 10/72576cc1522090fe497337c2b99d9838e320659ac57fa5560fcbdcbafcf5d0216c6b3a0a8a4ee4fdb3b1f5e3420aa4f6223ab57b82fef3578bec3206425c6cf5
+  languageName: node
+  linkType: hard
+
+"@types/styled-components@npm:^5.1.0":
+  version: 5.1.34
+  resolution: "@types/styled-components@npm:5.1.34"
+  dependencies:
+    "@types/hoist-non-react-statics": "npm:*"
+    "@types/react": "npm:*"
+    csstype: "npm:^3.0.2"
+  checksum: 10/3da291b46f03d378a0176c9d034deee7ee0684c5d62e1c5ce82f3be0972918eaa806f45c62e9a4f1c8d24c5ba6571c260caba2493fc7e82b528ac7d15903e2c1
   languageName: node
   linkType: hard
 
@@ -12631,6 +12718,13 @@ __metadata:
     path-type: "npm:^4.0.0"
     yaml: "npm:^1.10.0"
   checksum: 10/03600bb3870c80ed151b7b706b99a1f6d78df8f4bdad9c95485072ea13358ef294b13dd99f9e7bf4cc0b43bcd3599d40df7e648750d21c2f6817ca2cd687e071
+  languageName: node
+  linkType: hard
+
+"country-to-currency@npm:^1.1.0":
+  version: 1.1.5
+  resolution: "country-to-currency@npm:1.1.5"
+  checksum: 10/93cc13da3d2f2d0b7e4f5ba3092f9c6a25b6b1babab01106d86fc976f9bfaa10f36dcfbf19ca966bc573d1190b0e725f53372e0eff404a3040caf0986ad2bb0f
   languageName: node
   linkType: hard
 
@@ -16497,13 +16591,6 @@ __metadata:
   version: 3.0.6
   resolution: "immediate@npm:3.0.6"
   checksum: 10/f9b3486477555997657f70318cc8d3416159f208bec4cca3ff3442fd266bc23f50f0c9bd8547e1371a6b5e82b821ec9a7044a4f7b944798b25aa3cc6d5e63e62
-  languageName: node
-  linkType: hard
-
-"immer@npm:^10.0.3":
-  version: 10.1.1
-  resolution: "immer@npm:10.1.1"
-  checksum: 10/9dacf1e8c201d69191ccd88dc5d733bafe166cd45a5a360c5d7c88f1de0dff974a94114d72b35f3106adfe587fcfb131c545856184a2247d89d735ad25589863
   languageName: node
   linkType: hard
 
@@ -20871,6 +20958,7 @@ __metadata:
   resolution: "plain-react-test@workspace:plain-react-test"
   dependencies:
     "@commercetools-demo/cms-content-items": "link:../packages/content-items"
+    "@commercetools-demo/cms-content-types": "link:../packages/content-types"
     "@emotion/react": "npm:^11.14.0"
     "@testing-library/dom": "npm:^10.4.0"
     "@testing-library/jest-dom": "npm:^6.6.3"
@@ -22727,15 +22815,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"redux-thunk@npm:^3.1.0":
-  version: 3.1.0
-  resolution: "redux-thunk@npm:3.1.0"
-  peerDependencies:
-    redux: ^5.0.0
-  checksum: 10/38c563db5f0bbec90d2e65cc27f3c870c1b6102e0c071258734fac41cb0e51d31d894125815c2f4133b20aff231f51f028ad99bccc05a7e3249f1a5d5a959ed3
-  languageName: node
-  linkType: hard
-
 "redux@npm:4.2.1, redux@npm:^4.0.0, redux@npm:^4.2.1":
   version: 4.2.1
   resolution: "redux@npm:4.2.1"
@@ -22943,13 +23022,6 @@ __metadata:
   version: 4.1.8
   resolution: "reselect@npm:4.1.8"
   checksum: 10/199984d9872f71cd207f4aa6e6fd2bd48d95154f7aa9b3aee3398335f39f5491059e732f28c12e9031d5d434adab2c458dc8af5afb6564d0ad37e1644445e09c
-  languageName: node
-  linkType: hard
-
-"reselect@npm:^5.1.0":
-  version: 5.1.1
-  resolution: "reselect@npm:5.1.1"
-  checksum: 10/1fdae11a39ed9c8d85a24df19517c8372ee24fefea9cce3fae9eaad8e9cefbba5a3d4940c6fe31296b6addf76e035588c55798f7e6e147e1b7c0855f119e7fa5
   languageName: node
   linkType: hard
 
@@ -24153,6 +24225,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"state-local@npm:^1.0.6":
+  version: 1.0.7
+  resolution: "state-local@npm:1.0.7"
+  checksum: 10/1d956043e270861d40a639ff3457938cf61dbc7e25209d21b55060d8dfaf74742b8a1e525ed6fcb0c2d89b7d3e305bb8589bf27392012889456b3ad82a4b7d0a
+  languageName: node
+  linkType: hard
+
 "static-eval@npm:2.0.2":
   version: 2.0.2
   resolution: "static-eval@npm:2.0.2"
@@ -24452,7 +24531,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"styled-components@npm:^6.1.19":
+"styled-components@npm:^6.0.0, styled-components@npm:^6.1.19":
   version: 6.1.19
   resolution: "styled-components@npm:6.1.19"
   dependencies:

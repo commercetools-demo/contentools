@@ -137,11 +137,12 @@ export interface ContentTypeMetaData {
 }
 
 export interface ContentTypeData {
+  id: string;
+  key: string;
   metadata: ContentTypeMetaData;
-  deployedUrl: string;
   code?: {
-    filename: string;
-    content: string;
+    componentName: string;
+    transpiledCode: string;
   }[];
 }
 
@@ -151,6 +152,7 @@ export interface ContentTypeState {
   error: string | null;
   availableDatasources: DatasourceInfo[];
   contentTypesMetaData: ContentTypeMetaData[];
+  contentTypesRenderers: Record<string, React.FC<any>>;
 }
 
 export interface RootState {

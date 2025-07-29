@@ -71,6 +71,7 @@ export const StateProvider = <T extends VersionInfo>({ children, baseURL }: Stat
 
   useEffect(() => {
     contentType.fetchContentTypesMetaData();
+    contentType.fetchContentTypes();
     datasource.fetchDatasources();
   }, [baseURL]);
 

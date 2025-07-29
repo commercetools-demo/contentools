@@ -6,7 +6,7 @@ import {
   ContentTypeMetaData,
   PropertySchema,
 } from '@commercetools-demo/cms-types';
-import { getAllContentTypesMetaData } from '@commercetools-demo/cms-state';
+import { useStateContentType } from '@commercetools-demo/cms-state';
 import styled from 'styled-components';
 import Spacings from '@commercetools-uikit/spacings';
 import Text from '@commercetools-uikit/text';
@@ -55,6 +55,8 @@ const PropertyEditor: React.FC<PropertyEditorProps> = ({
   onComponentUpdated,
   onComponentDeleted,
 }) => {
+
+  const { contentTypesMetaData } = useStateContentType();
   const [metadata, setMetadata] = useState<ContentTypeMetaData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -145,9 +147,8 @@ const PropertyEditor: React.FC<PropertyEditorProps> = ({
       setError(null);
 
       try {
-        const allMetadata = await getAllContentTypesMetaData({ baseURL });
         const metadata =
-          allMetadata.find((m) => m.type === component.type) || null;
+          contentTypesMetaData.find((m) => m.type === component.type) || null;
         setMetadata(metadata);
       } catch (err) {
         setError(
@@ -162,7 +163,7 @@ const PropertyEditor: React.FC<PropertyEditorProps> = ({
     };
 
     fetchMetadata();
-  }, [component.type, baseURL]);
+  }, [component.type, contentTypesMetaData]);
 
   const handleSubmit = useCallback(
     (values: FormValues) => {
@@ -224,15 +225,15 @@ const PropertyEditor: React.FC<PropertyEditorProps> = ({
       switch (field.type) {
         case 'string':
           if (component.type === 'richText' && key === 'content') {
-            return <WysiwygField {...commonProps} value={value || ''} />;
+            return <WysiwygField {...commonProps} value={value || ''} key={key} />;
           }
-          return <StringField {...commonProps} value={value || ''} />;
+          return <StringField {...commonProps} value={value || ''} key={key} />;
         case 'number':
-          return <NumberField {...commonProps} value={value} />;
+          return <NumberField {...commonProps} value={value} key={key} />;
         case 'boolean':
-          return <BooleanField {...commonProps} value={value} />;
+          return <BooleanField {...commonProps} value={value} key={key} />;
         case 'array':
-          return <ArrayField {...commonProps} value={value || []} />;
+          return <ArrayField {...commonProps} value={value || []} key={key} />;
         case 'file':
           return (
             <FileField
@@ -266,7 +267,7 @@ const PropertyEditor: React.FC<PropertyEditorProps> = ({
           );
         default:
           return (
-            <Spacings.Stack scale="s">
+            <Spacings.Stack scale="s" key={key}>
               <Text.Detail tone="warning">
                 Unsupported field type: {field.type}
               </Text.Detail>

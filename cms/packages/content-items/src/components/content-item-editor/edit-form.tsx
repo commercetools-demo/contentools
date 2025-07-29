@@ -16,6 +16,7 @@ import {
 import { useHistory, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import PropertyEditor from '@commercetools-demo/cms-property-editor';
+import ContentItemPreview from '../content-item-preview';
 
 const StyledRowDiv = styled.div`
   display: flex;
@@ -51,11 +52,9 @@ const ContentItemEditorEditForm: React.FC<ContentItemEditorEditFormProps> = ({
   const [contentVersion, setContentVersion] =
     useState<ContentItemVersionInfo | null>(null);
   const [item, setItem] = useState<ContentItem | null>(null);
-  const { fetchVersions, versions } =
-    useStateVersion<ContentItemVersionInfo>();
+  const { fetchVersions, versions } = useStateVersion<ContentItemVersionInfo>();
   const { currentState } = useStateStateManagement();
-  const { fetchStates, publish, revertToPublished } =
-    useStateStateManagement();
+  const { fetchStates, publish, revertToPublished } = useStateStateManagement();
   const {
     fetchContentItem,
     loading,
@@ -63,7 +62,6 @@ const ContentItemEditorEditForm: React.FC<ContentItemEditorEditFormProps> = ({
     clearError,
     updateContentItem,
   } = useStateContentItem();
-
 
   const onSave = async (currentItem: ContentItem) => {
     clearError();
@@ -74,10 +72,11 @@ const ContentItemEditorEditForm: React.FC<ContentItemEditorEditFormProps> = ({
       };
 
       if (component) {
-
-        await updateContentItem(hydratedUrl, component.key, component).then((item) => {
-          setItem(item);
-        });
+        await updateContentItem(hydratedUrl, component.key, component).then(
+          (item) => {
+            setItem(item);
+          }
+        );
 
         await fetchVersions(hydratedUrl, component.key, 'content-items');
         await fetchStates(hydratedUrl, component.key, 'content-items');
@@ -254,18 +253,12 @@ const ContentItemEditorEditForm: React.FC<ContentItemEditorEditFormProps> = ({
               </StyledColumnDiv>
 
               <StyledColumnDiv>
-                <div className="content-item-edit-preview">
-                  <Spacings.Stack scale="m">
-                    <Text.Subheadline as="h4">Content Preview</Text.Subheadline>
-                    <Text.Body>Previewing content item: {item.key}</Text.Body>
-                    <Text.Detail>Locale: {locale}</Text.Detail>
-                    <Text.Detail>
-                      This is a placeholder for the content preview component.
-                      You'll need to implement the actual preview rendering
-                      based on your content types.
-                    </Text.Detail>
-                  </Spacings.Stack>
-                </div>
+                <ContentItemPreview
+                  item={item}
+                  baseURL={baseURL}
+                  businessUnitKey={businessUnitKey}
+                  locale={locale}
+                />
               </StyledColumnDiv>
             </StyledRowDiv>
           </div>

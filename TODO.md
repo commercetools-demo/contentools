@@ -67,3 +67,21 @@ Suggested implementation order based on core CMS functionality:
    - Plugins/Extensions: Allows for customization and extension
    - Audit Logs: Useful for tracking changes in team environments
    - Visual Editor: Enhances the content editing experience
+
+
+Server:
+[] use CustomError to return errors
+[] refactoe custom object controller and not use the class
+[] refactor all other routes
+
+
+FE:
+[] Cleanup the edit page:
+   [] move save to up of the page
+   [] use better wysivig editor for react
+   [] cleanup items on top
+[] Add preview
+
+App:
+[] post deploy to add datasoures
+[] post deploy default content types

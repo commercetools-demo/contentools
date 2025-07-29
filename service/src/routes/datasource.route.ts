@@ -1,8 +1,7 @@
 import { Router, RequestHandler } from 'express';
 import { logger } from '../utils/logger.utils';
 import { CustomObjectController } from '../controllers/custom-object.controller';
-
-const DATASOURCE_CONTAINER = process.env.DATASOURCE_CONTAINER || 'datasource';
+import { DATASOURCE_CONTAINER } from '../constants';
 
 const datasourceController = new CustomObjectController(DATASOURCE_CONTAINER);
 const datasourceRouter = Router();

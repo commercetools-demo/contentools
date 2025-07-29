@@ -2,9 +2,8 @@ import { Router, RequestHandler } from 'express';
 import { logger } from '../utils/logger.utils';
 import { CustomObjectController } from '../controllers/custom-object.controller';
 import { sampleContentTypeRegistry } from '../utils/constants';
+import { CONTENT_TYPE_CONTAINER } from '../constants';
 
-export const CONTENT_TYPE_CONTAINER =
-  process.env.CONTENT_TYPE_CONTAINER || 'content-type';
 
 const contentTypeController = new CustomObjectController(
   CONTENT_TYPE_CONTAINER
@@ -14,10 +13,15 @@ const contentTypeRouter = Router();
 contentTypeRouter.get('/content-type', async (req, res, next) => {
   try {
     const dynamicContentTypes = await contentTypeController.getCustomObjects();
-    const staticContentTypes = Object.values(sampleContentTypeRegistry);
+    // TODO: uncomment
+    // const staticContentTypes = Object.values(sampleContentTypeRegistry);
     res.json([
-      ...dynamicContentTypes.map((item) => item.value),
-      ...staticContentTypes,
+      ...dynamicContentTypes.map((item) => ({
+        id: item.id,
+        key: item.key,
+        ...item.value,
+      })),
+      // ...staticContentTypes,
     ]);
   } catch (error) {
     logger.error('Failed to get content-type objects:', error);
@@ -29,7 +33,11 @@ contentTypeRouter.get('/content-type/:key', async (req, res, next) => {
   try {
     const { key } = req.params;
     const object = await contentTypeController.getCustomObject(key);
-    res.json(object);
+    res.json({
+      id: object.key,
+      key: object.key,
+      ...object.value,
+    });
   } catch (error) {
     logger.error(
       `Failed to get content-type object with key ${req.params.key}:`,

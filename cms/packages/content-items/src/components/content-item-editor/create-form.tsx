@@ -75,7 +75,6 @@ const ContentItemEditorCreateForm = ({
                   handleCreateContentItem(component)
                 }
                 onComponentDeleted={() => {}}
-                isContentVersion={false}
                 versionedContent={null}
                 component={{
                   businessUnitKey,

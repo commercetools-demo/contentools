@@ -1,0 +1,31 @@
+{
+  "name": "@commercetools-demo/cms-content-item-renderer",
+  "description": "Content item renderer",
+  "version": "0.0.2",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "dist/commercetools-demo-cms-content-item-renderer.cjs.js",
+  "module": "dist/commercetools-demo-cms-content-item-renderer.esm.js",
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "@babel/runtime-corejs3": "^7.28.0",
+    "@commercetools-demo/cms-state": "workspace:*",
+    "@commercetools-demo/cms-types": "workspace:*",
+    "@commercetools-demo/cms-ui-components": "workspace:*",
+    "@emotion/react": "^11.14.0",
+    "styled-components": "^6.1.19"
+  },
+  "devDependencies": {
+    "@types/react": "^19"
+  },
+  "peerDependencies": {
+    "@emotion/react": ">=11.0.0",
+    "react": ">=19.0.0",
+    "react-dom": ">=19.0.0",
+    "styled-components": ">=5.0.0"
+  }
+}

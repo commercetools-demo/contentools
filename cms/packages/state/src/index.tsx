@@ -23,9 +23,3 @@ export {
   LOCAL_STORAGE_KEY_PREFIX, 
   DEBOUNCE_DELAY 
 } from './utils/constants';
-export {
-  getAllContentTypes,
-  getContentTypeMetaData,
-  getAllContentTypesMetaData,
-  createContentItem,
-} from './utils/content-type-utility';

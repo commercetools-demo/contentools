@@ -33,7 +33,6 @@
     "@emotion/react": "^11.14.0",
     "add": "^2.0.6",
     "formik": "^2.4.6",
-    "react": "19.0.0",
     "styled-components": "^6.1.19",
     "yarn": "^1.22.22",
     "yup": "^1.6.1"

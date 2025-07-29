@@ -8,6 +8,7 @@ import {
   PageVersions,
   StateInfo,
   MediaLibraryResult,
+  ContentTypeData,
 } from '@commercetools-demo/cms-types';
 
 /**
@@ -92,7 +93,7 @@ export async function deletePageEndpoint(baseURL: string, key: string): Promise<
 /**
  * Fetch registry components
  */
-export async function fetchContentTypesEndpoint<T>(baseURL: string): Promise<ApiResponse<T>[]> {
+export async function fetchContentTypesEndpoint<T>(baseURL: string): Promise<ContentTypeData[]> {
   const response = await fetch(`${baseURL}/content-type`);
 
   if (!response.ok) {

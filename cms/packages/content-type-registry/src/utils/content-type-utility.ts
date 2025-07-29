@@ -1,6 +1,5 @@
-import { v4 as uuidv4 } from 'uuid';
-import { ContentItem, ContentTypeData, ContentTypeMetaData } from '@commercetools-demo/cms-types';
-import { sampleContentTypeRegistry } from '@commercetools-demo/cms-content-type-registry';
+import { ContentTypeData, ContentTypeMetaData } from '@commercetools-demo/cms-types';
+import { sampleContentTypeRegistry, sampleContentTypeRenderers } from '../sample-content-type-definitions';
 
 // Helper function to convert defaultRegistry to RegistryComponentData format
 const convertSampleContentTypeToContentTypeData = (): ContentTypeData[] => {
@@ -11,7 +10,7 @@ const convertSampleContentTypeToContentTypeData = (): ContentTypeData[] => {
 };
 
 // Helper function to get registry components from store and combine with default registry
-export const getAllContentTypes = async ({ baseURL }: { baseURL: string }): Promise<ContentTypeData[]> => {
+const getAllContentTypes = async ({ baseURL }: { baseURL: string }): Promise<ContentTypeData[]> => {
   // For now, just return sample content types
   // In a real implementation, this would fetch from the API
   const sampleContentTypes = convertSampleContentTypeToContentTypeData();
@@ -32,6 +31,11 @@ export const getContentTypeMetaData = async ({
   return contentType?.metadata || null;
 };
 
+// TODO: add baseUrl later
+export const getAllContentTypesRenderers = async (): Promise<Record<string, React.FC<any>>> => {
+  return sampleContentTypeRenderers;
+};
+
 export const getAllContentTypesMetaData = async ({
   baseURL,
 }: {
@@ -41,29 +45,3 @@ export const getAllContentTypesMetaData = async ({
   return contentTypes.map(c => c.metadata);
 };
 
-export const createContentItem = async ({
-  baseURL,
-  type,
-  name,
-  businessUnitKey,
-}: {
-  baseURL: string;
-  type: string;
-  name?: string;
-  businessUnitKey: string;
-}): Promise<ContentItem> => {
-  const metadata = await getContentTypeMetaData({ baseURL, type });
-
-  if (!metadata) {
-    throw new Error(`Component type "${type}" not found in registry`);
-  }
-
-  return {
-    id: uuidv4(),
-    key: uuidv4(),
-    businessUnitKey,
-    type: metadata.type,
-    name: name || metadata.name,
-    properties: { ...metadata.defaultProperties },
-  };
-}; 

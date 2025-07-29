@@ -12,6 +12,19 @@
     "dist"
   ],
   "dependencies": {
-    "@commercetools-demo/cms-types": "workspace:*"
+    "@babel/runtime-corejs3": "^7.28.0",
+    "@commercetools-demo/cms-types": "workspace:*",
+    "@emotion/react": "^11.14.0",
+    "country-to-currency": "^1.1.0",
+    "styled-components": "^6.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "@types/styled-components": "^5.1.0"
+  },
+  "peerDependencies": {
+    "@emotion/react": ">=11.0.0",
+    "react": ">=19.0.0",
+    "react-dom": ">=19.0.0"
   }
 }
