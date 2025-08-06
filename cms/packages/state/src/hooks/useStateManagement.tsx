@@ -1,10 +1,10 @@
 import { useState, useCallback } from 'react';
-import { 
-  ContentItem, 
-  Page, 
-  ContentItemStates, 
-  PageStates, 
-  StateManagementState 
+import {
+  ContentItem,
+  Page,
+  ContentItemStates,
+  PageStates,
+  StateManagementState,
 } from '@commercetools-demo/cms-types';
 import {
   getStatesEndpoint,
@@ -40,164 +40,184 @@ export const useStateManagement = (baseURL: string) => {
   const [state, setState] = useState<StateManagementState>(initialState);
 
   // Actions
-  const fetchStates = useCallback(async (
-    hydratedUrl: string,
-    key: string,
-    contentType: 'content-items' | 'pages',
-  ) => {
-    try {
-      setState(prev => ({ ...prev, loading: true, error: null }));
-      const result = await getStatesEndpoint<ContentItemStates | PageStates>(
-        hydratedUrl,
-        contentType,
-        key
-      );
-      
-      const states = result.states || {};
-      
-      setState(prev => ({
-        ...prev,
-        states,
-        contentType,
-        currentState: determineCurrentState(states),
-        loading: false,
-      }));
-      
-      return states;
-    } catch (error) {
-      setState(prev => ({
-        ...prev,
-        loading: false,
-        error: error instanceof Error ? error.message : 'Failed to fetch states',
-      }));
-      throw error;
-    }
-  }, []);
+  const fetchStates = useCallback(
+    async (
+      hydratedUrl: string,
+      key: string,
+      contentType: 'content-items' | 'pages'
+    ) => {
+      try {
+        setState((prev) => ({ ...prev, loading: true, error: null }));
+        const result = await getStatesEndpoint<ContentItemStates | PageStates>(
+          hydratedUrl,
+          contentType,
+          key
+        );
 
-  const saveDraft = useCallback(async (
-    hydratedUrl: string,
-    item: ContentItem | Page,
-    key: string,
-    contentType: 'content-items' | 'pages',
-  ) => {
-    try {
-      setState(prev => ({ ...prev, loading: true, error: null }));
-      const result = await saveDraftEndpoint<ContentItem | Page>(
-        hydratedUrl,
-        contentType,
-        key,
-        item
-      );
-      
-      const states = result.states;
-      
-      setState(prev => ({
-        ...prev,
-        states,
-        contentType,
-        currentState: determineCurrentState(states),
-        loading: false,
-      }));
-      
-      return states;
-    } catch (error) {
-      setState(prev => ({
-        ...prev,
-        loading: false,
-        error: error instanceof Error ? error.message : 'Failed to save draft',
-      }));
-      throw error;
-    }
-  }, []);
+        const states = result.states || {};
 
-  const publish = useCallback(async (
-    hydratedUrl: string,
-    item: ContentItem | Page,
-    key: string,
-    contentType: 'content-items' | 'pages',
-    clearDraft: boolean = false
-  ) => {
-    try {
-      setState(prev => ({ ...prev, loading: true, error: null }));
-      const result = await publishEndpoint<ContentItem | Page>(
-        hydratedUrl,
-        contentType,
-        key,
-        item,
-        clearDraft
-      );
-      
-      const states = result.states;
-      
-      setState(prev => ({
-        ...prev,
-        states,
-        contentType,
-        currentState: determineCurrentState(states),
-        loading: false,
-      }));
-      
-      return states;
-    } catch (error) {
-      setState(prev => ({
-        ...prev,
-        loading: false,
-        error: error instanceof Error ? error.message : 'Failed to publish',
-      }));
-      throw error;
-    }
-  }, []);
+        setState((prev) => ({
+          ...prev,
+          states,
+          contentType,
+          currentState: determineCurrentState(states),
+          loading: false,
+        }));
 
-  const revertToPublished = useCallback(async (
-    hydratedUrl: string,
-    key: string,
-    contentType: 'content-items' | 'pages',
-  ) => {
-    try {
-      setState(prev => ({ ...prev, loading: true, error: null }));
-      await revertDraftEndpoint(hydratedUrl, contentType, key);
-      
-      // After reverting, fetch the updated states
-      const result = await getStatesEndpoint<ContentItemStates | PageStates>(
-        hydratedUrl,
-        contentType,
-        key
-      );
-      
-      const states = result.states || {};
-      
-      setState(prev => ({
-        ...prev,
-        states,
-        contentType,
-        currentState: determineCurrentState(states),
-        loading: false,
-      }));
-      
-      return { success: true };
-    } catch (error) {
-      setState(prev => ({
-        ...prev,
-        loading: false,
-        error: error instanceof Error ? error.message : 'Failed to revert to published',
-      }));
-      throw error;
-    }
-  }, []);
+        return states;
+      } catch (error) {
+        setState((prev) => ({
+          ...prev,
+          loading: false,
+          error:
+            error instanceof Error ? error.message : 'Failed to fetch states',
+        }));
+        throw error;
+      }
+    },
+    []
+  );
 
-  const setContentType = useCallback((contentType: 'content-items' | 'pages') => {
-    setState(prev => ({
-      ...prev,
-      contentType,
-    }));
-  }, []);
+  const saveDraft = useCallback(
+    async (
+      hydratedUrl: string,
+      item: ContentItem | Page,
+      key: string,
+      contentType: 'content-items' | 'pages'
+    ) => {
+      try {
+        setState((prev) => ({ ...prev, loading: true, error: null }));
+        const result = await saveDraftEndpoint<ContentItem | Page>(
+          hydratedUrl,
+          contentType,
+          key,
+          item
+        );
+
+        const states = result.states;
+
+        setState((prev) => ({
+          ...prev,
+          states,
+          contentType,
+          currentState: determineCurrentState(states),
+          loading: false,
+        }));
+
+        return states;
+      } catch (error) {
+        setState((prev) => ({
+          ...prev,
+          loading: false,
+          error:
+            error instanceof Error ? error.message : 'Failed to save draft',
+        }));
+        throw error;
+      }
+    },
+    []
+  );
+
+  const publish = useCallback(
+    async (
+      hydratedUrl: string,
+      item: ContentItem | Page,
+      key: string,
+      contentType: 'content-items' | 'pages',
+      clearDraft: boolean = false
+    ) => {
+      try {
+        setState((prev) => ({ ...prev, loading: true, error: null }));
+        const result = await publishEndpoint<ContentItem | Page>(
+          hydratedUrl,
+          contentType,
+          key,
+          item,
+          clearDraft
+        );
+
+        const states = result.states;
+
+        setState((prev) => ({
+          ...prev,
+          states,
+          contentType,
+          currentState: determineCurrentState(states),
+          loading: false,
+        }));
+
+        return states;
+      } catch (error) {
+        setState((prev) => ({
+          ...prev,
+          loading: false,
+          error: error instanceof Error ? error.message : 'Failed to publish',
+        }));
+        throw error;
+      }
+    },
+    []
+  );
+
+  const revertToPublished = useCallback(
+    async (
+      hydratedUrl: string,
+      key: string,
+      contentType: 'content-items' | 'pages'
+    ) => {
+      try {
+        setState((prev) => ({ ...prev, loading: true, error: null }));
+        await revertDraftEndpoint(hydratedUrl, contentType, key);
+
+        // After reverting, fetch the updated states
+        const result = await getStatesEndpoint<ContentItemStates | PageStates>(
+          hydratedUrl,
+          contentType,
+          key
+        );
+
+        const states = result.states || {};
+
+        setState((prev) => ({
+          ...prev,
+          states,
+          contentType,
+          currentState: determineCurrentState(states),
+          loading: false,
+        }));
+
+        return { success: true };
+      } catch (error) {
+        setState((prev) => ({
+          ...prev,
+          loading: false,
+          error:
+            error instanceof Error
+              ? error.message
+              : 'Failed to revert to published',
+        }));
+        throw error;
+      }
+    },
+    []
+  );
+
+  const setContentType = useCallback(
+    (contentType: 'content-items' | 'pages') => {
+      setState((prev) => ({
+        ...prev,
+        contentType,
+      }));
+    },
+    []
+  );
 
   const clearError = useCallback(() => {
-    setState(prev => ({ ...prev, error: null }));
+    setState((prev) => ({ ...prev, error: null }));
   }, []);
 
   const clearStates = useCallback(() => {
-    setState(prev => ({
+    setState((prev) => ({
       ...prev,
       states: {},
       currentState: null,
@@ -234,7 +254,14 @@ export const useStateManagement = (baseURL: string) => {
       draft: getDraftState(),
       published: getPublishedState(),
     };
-  }, [state.currentState, hasChanges, isPublished, isDraft, getDraftState, getPublishedState]);
+  }, [
+    state.currentState,
+    hasChanges,
+    isPublished,
+    isDraft,
+    getDraftState,
+    getPublishedState,
+  ]);
 
   return {
     // State
@@ -243,7 +270,7 @@ export const useStateManagement = (baseURL: string) => {
     contentType: state.contentType,
     loading: state.loading,
     error: state.error,
-    
+
     // Actions
     fetchStates,
     saveDraft,
@@ -252,7 +279,7 @@ export const useStateManagement = (baseURL: string) => {
     setContentType,
     clearError,
     clearStates,
-    
+
     // Selectors
     hasChanges,
     isPublished,
@@ -261,4 +288,4 @@ export const useStateManagement = (baseURL: string) => {
     getPublishedState,
     getStateInfo,
   };
-}; 
+};

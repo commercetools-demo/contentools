@@ -117,7 +117,14 @@ export interface EditorState {
 }
 
 export interface PropertySchema {
-  type: 'string' | 'number' | 'boolean' | 'array' | 'object' | 'file' | 'datasource';
+  type:
+    | 'string'
+    | 'number'
+    | 'boolean'
+    | 'array'
+    | 'object'
+    | 'file'
+    | 'datasource';
   label: string;
   defaultValue?: any;
   required?: boolean;

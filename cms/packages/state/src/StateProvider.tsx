@@ -12,28 +12,28 @@ import { VersionInfo } from '@commercetools-demo/cms-types';
 export interface StateContextValue<T extends VersionInfo> {
   // Pages
   pages: ReturnType<typeof usePages>;
-  
+
   // Editor
   editor: ReturnType<typeof useEditor>;
-  
+
   // Content Types
   contentType: ReturnType<typeof useContentType>;
-  
+
   // Content Items
   contentItem: ReturnType<typeof useContentItem>;
-  
+
   // Versions
   version: ReturnType<typeof useVersion<T>>;
-  
+
   // State Management (draft/published)
   stateManagement: ReturnType<typeof useStateManagement>;
-  
+
   // Media Library
   mediaLibrary: ReturnType<typeof useMediaLibrary>;
-  
+
   // Datasource
   datasource: ReturnType<typeof useDatasource>;
-  
+
   // Base URL
   baseURL: string;
 }
@@ -45,7 +45,10 @@ export interface StateProviderProps {
   baseURL: string;
 }
 
-export const StateProvider = <T extends VersionInfo>({ children, baseURL }: StateProviderProps) => {
+export const StateProvider = <T extends VersionInfo>({
+  children,
+  baseURL,
+}: StateProviderProps) => {
   // Initialize all hooks
   const pages = usePages(baseURL);
   const editor = useEditor();
@@ -68,7 +71,6 @@ export const StateProvider = <T extends VersionInfo>({ children, baseURL }: Stat
     baseURL,
   };
 
-
   useEffect(() => {
     contentType.fetchContentTypes();
     datasource.fetchDatasources();
@@ -81,7 +83,9 @@ export const StateProvider = <T extends VersionInfo>({ children, baseURL }: Stat
   );
 };
 
-export const useStateContext = <T extends VersionInfo>(): StateContextValue<T> => {
+export const useStateContext = <
+  T extends VersionInfo
+>(): StateContextValue<T> => {
   const context = useContext(StateContext);
   if (!context) {
     throw new Error('useStateContext must be used within a StateProvider');
@@ -94,7 +98,8 @@ export const useStatePages = () => useStateContext().pages;
 export const useStateEditor = () => useStateContext().editor;
 export const useStateContentType = () => useStateContext().contentType;
 export const useStateContentItem = () => useStateContext().contentItem;
-export const useStateVersion = <T extends VersionInfo>() => useStateContext<T>().version;
+export const useStateVersion = <T extends VersionInfo>() =>
+  useStateContext<T>().version;
 export const useStateStateManagement = () => useStateContext().stateManagement;
 export const useStateMediaLibrary = () => useStateContext().mediaLibrary;
-export const useStateDatasource = () => useStateContext().datasource; 
+export const useStateDatasource = () => useStateContext().datasource;

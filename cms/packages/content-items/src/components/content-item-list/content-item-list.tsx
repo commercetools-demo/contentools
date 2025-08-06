@@ -1,20 +1,20 @@
-import { ContentItem, StateInfo } from "@commercetools-demo/cms-types";
-import DataTable, { TColumn, TRow } from "@commercetools-uikit/data-table";
-import IconButton from "@commercetools-uikit/icon-button";
+import { useStateContentType } from '@commercetools-demo/cms-state';
+import { ContentItem, StateInfo } from '@commercetools-demo/cms-types';
+import DataTable, { TColumn, TRow } from '@commercetools-uikit/data-table';
+import IconButton from '@commercetools-uikit/icon-button';
 import {
-    BinLinearIcon,
-    CopyIcon,
-    EditIcon,
-    ExternalLinkIcon,
-} from "@commercetools-uikit/icons";
-import PrimaryButton from "@commercetools-uikit/primary-button";
-import Stamp from "@commercetools-uikit/stamp";
-import React from "react";
-import Spacings from "@commercetools-uikit/spacings";
-import Text from "@commercetools-uikit/text";
-import LoadingSpinner from "@commercetools-uikit/loading-spinner";
-import styled from "styled-components";
-import { useStateContentType } from "@commercetools-demo/cms-state";
+  BinLinearIcon,
+  CopyIcon,
+  EditIcon,
+  ExternalLinkIcon,
+} from '@commercetools-uikit/icons';
+import LoadingSpinner from '@commercetools-uikit/loading-spinner';
+import PrimaryButton from '@commercetools-uikit/primary-button';
+import Spacings from '@commercetools-uikit/spacings';
+import Stamp from '@commercetools-uikit/stamp';
+import Text from '@commercetools-uikit/text';
+import React from 'react';
+import styled from 'styled-components';
 
 const LoadingContainer = styled.div`
   display: flex;
@@ -46,30 +46,30 @@ type ContentItemRow = TRow & ContentItem;
 
 const formatStatus = (status?: StateInfo): string => {
   if (!status) {
-    return "Draft";
+    return 'Draft';
   }
 
   if (status.draft && status.published) {
-    return "Draft & Published";
+    return 'Draft & Published';
   }
 
   if (status.draft) {
-    return "Draft";
+    return 'Draft';
   }
 
-  return "Published";
+  return 'Published';
 };
 
 const formatTone = (status?: StateInfo) => {
   if (!status) {
-    return "critical";
+    return 'critical';
   }
 
   if (status.draft && status.published) {
-    return "warning"; // Using archived for "both" state
+    return 'warning'; // Using archived for "both" state
   }
 
-  return status.draft ? "information" : "positive";
+  return status.draft ? 'information' : 'positive';
 };
 
 export const ContentItemList: React.FC<ContentItemListProps> = ({
@@ -86,41 +86,39 @@ export const ContentItemList: React.FC<ContentItemListProps> = ({
   const { contentTypes } = useStateContentType();
   const handleCopy = (item: ContentItem) => {
     navigator.clipboard.writeText(item.key);
-    alert("Item ID copied to clipboard");
+    alert('Item ID copied to clipboard');
   };
 
   const handleJson = (item: ContentItem) => {
     window.open(
       `${baseURL}/${businessUnitKey}/published/content-items/${item.key}`,
-      "_blank"
+      '_blank'
     );
   };
 
   const columns: TColumn<ContentItemRow>[] = [
     {
-      key: "name",
-      label: "Name",
-      renderItem: (row: ContentItemRow) => (
-        <Text.Body>{row.name}</Text.Body>
-      ),
+      key: 'name',
+      label: 'Name',
+      renderItem: (row: ContentItemRow) => <Text.Body>{row.name}</Text.Body>,
     },
     {
-      key: "key",
-      label: "Key",
+      key: 'key',
+      label: 'Key',
       renderItem: (row: ContentItemRow) => (
         <Text.Body truncate>{row.key}</Text.Body>
       ),
     },
     {
-      key: "slot",
-      label: "Slot",
+      key: 'slot',
+      label: 'Slot',
       renderItem: (row: ContentItemRow) => (
-        <Text.Body>{row.properties?.slot || "-"}</Text.Body>
+        <Text.Body>{row.properties?.slot || '-'}</Text.Body>
       ),
     },
     {
-      key: "status",
-      label: "Status",
+      key: 'status',
+      label: 'Status',
       renderItem: (row: ContentItemRow) => (
         <Stamp tone={formatTone(states[row.key])}>
           {formatStatus(states[row.key])}
@@ -128,8 +126,8 @@ export const ContentItemList: React.FC<ContentItemListProps> = ({
       ),
     },
     {
-      key: "actions",
-      label: "Actions",
+      key: 'actions',
+      label: 'Actions',
       renderItem: (row: ContentItemRow) => (
         <Spacings.Inline alignItems="center">
           <IconButton
@@ -170,9 +168,11 @@ export const ContentItemList: React.FC<ContentItemListProps> = ({
   ];
 
   if (loading) {
-    return <LoadingContainer>
-    <LoadingSpinner />
-  </LoadingContainer>
+    return (
+      <LoadingContainer>
+        <LoadingSpinner />
+      </LoadingContainer>
+    );
   }
 
   if (error) {

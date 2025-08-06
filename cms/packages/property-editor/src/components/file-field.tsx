@@ -212,9 +212,6 @@ export const FileField: React.FC<FileFieldProps> = ({
     selectModal.openModal();
   }, [selectModal]);
 
-
-
-
   const handleFileInputChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const file = event.target.files?.[0];
@@ -363,21 +360,21 @@ export const FileField: React.FC<FileFieldProps> = ({
     </>
   );
 
-    // Reset form when modals close
-    useEffect(() => {
-      if (!uploadModal.isModalOpen) {
-        setSelectedFile(null);
-        setFileTitle('');
-        setFileDescription('');
-        setError(null);
-      }
-    }, [uploadModal.isModalOpen]);
-  
-    useEffect(() => {
-      if (!selectModal.isModalOpen) {
-        setSelectedMediaFile(null);
-      }
-    }, [selectModal.isModalOpen]);
+  // Reset form when modals close
+  useEffect(() => {
+    if (!uploadModal.isModalOpen) {
+      setSelectedFile(null);
+      setFileTitle('');
+      setFileDescription('');
+      setError(null);
+    }
+  }, [uploadModal.isModalOpen]);
+
+  useEffect(() => {
+    if (!selectModal.isModalOpen) {
+      setSelectedMediaFile(null);
+    }
+  }, [selectModal.isModalOpen]);
 
   return (
     <Spacings.Stack scale="xs">

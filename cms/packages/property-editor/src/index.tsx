@@ -59,9 +59,10 @@ const PropertyEditor: React.FC<PropertyEditorProps> = ({
   onComponentUpdated,
   onComponentDeleted,
 }) => {
-
   const { contentTypes } = useStateContentType();
-  const [metadata, setMetadata] = useState<ContentTypeMetaData | null>(metadataProp || null);
+  const [metadata, setMetadata] = useState<ContentTypeMetaData | null>(
+    metadataProp || null
+  );
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -235,7 +236,9 @@ const PropertyEditor: React.FC<PropertyEditorProps> = ({
       switch (field.type) {
         case 'string':
           if (component.type === 'richText' && key === 'content') {
-            return <WysiwygField {...commonProps} value={value || ''} key={key} />;
+            return (
+              <WysiwygField {...commonProps} value={value || ''} key={key} />
+            );
           }
           return <StringField {...commonProps} value={value || ''} key={key} />;
         case 'number':

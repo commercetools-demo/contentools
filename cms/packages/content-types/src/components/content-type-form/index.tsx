@@ -1,15 +1,14 @@
-import React, { useState, useCallback, useEffect } from 'react';
 import { ContentTypeData } from '@commercetools-demo/cms-types';
-import ViewSwitcher from '@commercetools-uikit/view-switcher';
-import Spacings from '@commercetools-uikit/spacings';
 import Card from '@commercetools-uikit/card';
-import Text from '@commercetools-uikit/text';
 import PrimaryButton from '@commercetools-uikit/primary-button';
 import SecondaryButton from '@commercetools-uikit/secondary-button';
+import Spacings from '@commercetools-uikit/spacings';
+import ViewSwitcher from '@commercetools-uikit/view-switcher';
+import React, { useCallback, useState } from 'react';
 import styled from 'styled-components';
 
+import { CodeEditorTab, GeneralTab, SchemaTab } from './components';
 import { useContentTypeForm } from './hooks';
-import { GeneralTab, SchemaTab, CodeEditorTab } from './components';
 
 const FormContainer = styled.div`
   padding: 20px;
@@ -92,7 +91,6 @@ const ContentTypeForm: React.FC<ContentTypeFormProps> = ({
   const handleSave = useCallback(() => {
     if (isValid && hasChanges) {
       if (isEdit && onUpdate) {
-        
         onUpdate(contentType);
       } else if (!isEdit && onCreate) {
         onCreate(contentType);
@@ -134,7 +132,6 @@ const ContentTypeForm: React.FC<ContentTypeFormProps> = ({
             businessUnitKey={businessUnitKey}
             locale={locale}
             onCodeChange={updateContentType}
-
           />
         );
       default:
@@ -162,14 +159,13 @@ const ContentTypeForm: React.FC<ContentTypeFormProps> = ({
           </ViewSwitcher.Group>
         </TabContainer>
         <ActionsContainer>
-
-        <SecondaryButton label="Cancel" onClick={handleCancel} />
-        <PrimaryButton
-          label={isEdit ? 'Update Content Type' : 'Create Content Type'}
-          onClick={handleSave}
-          isDisabled={!isValid || !hasChanges}
-        />
-      </ActionsContainer>
+          <SecondaryButton label="Cancel" onClick={handleCancel} />
+          <PrimaryButton
+            label={isEdit ? 'Update Content Type' : 'Create Content Type'}
+            onClick={handleSave}
+            isDisabled={!isValid || !hasChanges}
+          />
+        </ActionsContainer>
       </HeaderContainer>
       <Card>
         <Spacings.Stack scale="m">

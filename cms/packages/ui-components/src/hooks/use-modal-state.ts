@@ -19,7 +19,7 @@ export const useModalState = (initialState: boolean = false): ModalState => {
   }, []);
 
   const toggleModal = useCallback(() => {
-    setIsModalOpen(prev => !prev);
+    setIsModalOpen((prev) => !prev);
   }, []);
 
   return {

@@ -1,22 +1,21 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { Modal, useModalState } from '@commercetools-demo/cms-ui-components';
+import PropertyEditor from '@commercetools-demo/cms-property-editor';
+import {
+  useStateContentItem,
+  useStateStateManagement,
+  useStateVersion,
+} from '@commercetools-demo/cms-state';
 import {
   ContentItem,
   ContentItemVersionInfo,
 } from '@commercetools-demo/cms-types';
+import { Modal, useModalState } from '@commercetools-demo/cms-ui-components';
 import Spacings from '@commercetools-uikit/spacings';
-import Text from '@commercetools-uikit/text';
-import ContentItemActions from './content-item-actions';
-import VersionHistorySidebar from './version-history-sidebar';
-import {
-  useStateStateManagement,
-  useStateVersion,
-  useStateContentItem,
-} from '@commercetools-demo/cms-state';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import PropertyEditor from '@commercetools-demo/cms-property-editor';
 import ContentItemPreview from '../content-item-preview';
+import ContentItemActions from './content-item-actions';
+import VersionHistorySidebar from './version-history-sidebar';
 
 const StyledRowDiv = styled.div`
   display: flex;
@@ -53,7 +52,8 @@ const ContentItemEditorEditForm: React.FC<ContentItemEditorEditFormProps> = ({
     useState<ContentItemVersionInfo | null>(null);
   const [item, setItem] = useState<ContentItem | null>(null);
   const { fetchVersions, versions } = useStateVersion<ContentItemVersionInfo>();
-  const { fetchStates, publish, revertToPublished, currentState } = useStateStateManagement();
+  const { fetchStates, publish, revertToPublished, currentState } =
+    useStateStateManagement();
   const {
     fetchContentItem,
     loading,

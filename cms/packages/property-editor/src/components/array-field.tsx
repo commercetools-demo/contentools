@@ -10,8 +10,10 @@ import Text from '@commercetools-uikit/text';
 
 const HighlightedContainer = styled.div<{ $highlight: boolean }>`
   position: relative;
-  
-  ${({ $highlight }) => $highlight && `
+
+  ${({ $highlight }) =>
+    $highlight &&
+    `
     &::before {
       content: '';
       position: absolute;
@@ -30,7 +32,7 @@ const ArrayItemContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
-  
+
   .array-item-input {
     flex: 1;
   }
@@ -55,21 +57,27 @@ export const ArrayField: React.FC<ArrayFieldProps> = ({
   error,
   onFieldChange,
 }) => {
-  const handleItemChange = useCallback((index: number, itemValue: string) => {
-    const newArray = [...value];
-    newArray[index] = itemValue;
-    onFieldChange(fieldKey, newArray);
-  }, [fieldKey, value, onFieldChange]);
+  const handleItemChange = useCallback(
+    (index: number, itemValue: string) => {
+      const newArray = [...value];
+      newArray[index] = itemValue;
+      onFieldChange(fieldKey, newArray);
+    },
+    [fieldKey, value, onFieldChange]
+  );
 
   const handleAddItem = useCallback(() => {
     const newArray = [...value, ''];
     onFieldChange(fieldKey, newArray);
   }, [fieldKey, value, onFieldChange]);
 
-  const handleRemoveItem = useCallback((index: number) => {
-    const newArray = value.filter((_, i) => i !== index);
-    onFieldChange(fieldKey, newArray);
-  }, [fieldKey, value, onFieldChange]);
+  const handleRemoveItem = useCallback(
+    (index: number) => {
+      const newArray = value.filter((_, i) => i !== index);
+      onFieldChange(fieldKey, newArray);
+    },
+    [fieldKey, value, onFieldChange]
+  );
 
   return (
     <Spacings.Stack scale="xs">
@@ -87,7 +95,9 @@ export const ArrayField: React.FC<ArrayFieldProps> = ({
                   id={`${fieldKey}-${index}`}
                   name={`${fieldKey}-${index}`}
                   value={String(item)}
-                  onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleItemChange(index, event.target.value)}
+                  onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                    handleItemChange(index, event.target.value)
+                  }
                   placeholder={`Item ${index + 1}`}
                 />
               </div>
@@ -107,11 +117,7 @@ export const ArrayField: React.FC<ArrayFieldProps> = ({
           />
         </Spacings.Stack>
       </HighlightedContainer>
-      {error && (
-        <Text.Detail tone="negative">
-          {error}
-        </Text.Detail>
-      )}
+      {error && <Text.Detail tone="negative">{error}</Text.Detail>}
     </Spacings.Stack>
   );
-}; 
+};

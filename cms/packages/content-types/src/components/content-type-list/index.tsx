@@ -1,10 +1,7 @@
 import { ContentTypeData } from '@commercetools-demo/cms-types';
 import DataTable, { TColumn } from '@commercetools-uikit/data-table';
 import IconButton from '@commercetools-uikit/icon-button';
-import {
-  BinLinearIcon,
-  EditIcon
-} from '@commercetools-uikit/icons';
+import { BinLinearIcon, EditIcon } from '@commercetools-uikit/icons';
 import PrimaryButton from '@commercetools-uikit/primary-button';
 import Spacings from '@commercetools-uikit/spacings';
 import Text from '@commercetools-uikit/text';
@@ -18,7 +15,6 @@ type Props = {
   onEdit: (item: ContentTypeData) => void;
   onDelete: (key: string) => void;
 };
-
 
 const ContentTypeList = ({
   items,

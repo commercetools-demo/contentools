@@ -1,22 +1,22 @@
 import { useState, useCallback } from 'react';
-import { 
-  ContentItem, 
-  Page, 
-  ContentItemVersions, 
-  PageVersions, 
+import {
+  ContentItem,
+  Page,
+  ContentItemVersions,
+  PageVersions,
   VersionState,
   ContentItemVersionInfo,
-  PageVersionInfo, 
+  PageVersionInfo,
 } from '@commercetools-demo/cms-types';
-import { 
-  fetchVersionsEndpoint, 
-  saveVersionEndpoint, 
-  getVersionEndpoint 
+import {
+  fetchVersionsEndpoint,
+  saveVersionEndpoint,
+  getVersionEndpoint,
 } from '../api';
 
-
-
-export function useVersion<T extends ContentItemVersionInfo | PageVersionInfo>(baseURL: string) {
+export function useVersion<T extends ContentItemVersionInfo | PageVersionInfo>(
+  baseURL: string
+) {
   const initialState: VersionState<T> = {
     versions: [],
     selectedVersion: null,
@@ -27,107 +27,118 @@ export function useVersion<T extends ContentItemVersionInfo | PageVersionInfo>(b
   const [state, setState] = useState<VersionState<T>>(initialState);
 
   // Actions
-  const fetchVersions = useCallback(async (
-    hydratedUrl: string,
-    key: string,
-    contentType: 'content-items' | 'pages',
-  ) => {
-    try {
-      setState(prev => ({ ...prev, loading: true, error: null }));
-      const result = await fetchVersionsEndpoint<ContentItemVersions | PageVersions>(
-        hydratedUrl,
-        contentType,
-        key
-      );
-      
-      const versions = result.versions as T[];
-      
-      setState(prev => ({
-        ...prev,
-        versions,
-        contentType,
-        loading: false,
-      }));
-      
-      return versions;
-    } catch (error) {
-      setState(prev => ({
-        ...prev,
-        loading: false,
-        error: error instanceof Error ? error.message : 'Failed to fetch versions',
-      }));
-      throw error;
-    }
-  }, []);
+  const fetchVersions = useCallback(
+    async (
+      hydratedUrl: string,
+      key: string,
+      contentType: 'content-items' | 'pages'
+    ) => {
+      try {
+        setState((prev) => ({ ...prev, loading: true, error: null }));
+        const result = await fetchVersionsEndpoint<
+          ContentItemVersions | PageVersions
+        >(hydratedUrl, contentType, key);
 
-  const saveVersion = useCallback(async (
-    hydratedUrl: string,
-    item: ContentItem | Page,
-    key: string,
-    contentType: 'content-items' | 'pages',
-  ) => {
-    try {
-      setState(prev => ({ ...prev, loading: true, error: null }));
-      const result = await saveVersionEndpoint<ContentItem | Page>(
-        hydratedUrl,
-        contentType,
-        key,
-        item
-      );
-      
-      const versions = result.versions as T[];
-      
-      setState(prev => ({
-        ...prev,
-        versions,
-        loading: false,
-      }));
-      
-      return versions;
-    } catch (error) {
-      setState(prev => ({
-        ...prev,
-        loading: false,
-        error: error instanceof Error ? error.message : 'Failed to save version',
-      }));
-      throw error;
-    }
-  }, []);
+        const versions = result.versions as T[];
 
-  const getVersion = useCallback(async (
-    contentType: 'content-items' | 'pages',
-    key: string,
-    versionId: string
-  ) => {
-    try {
-      setState(prev => ({ ...prev, loading: true, error: null }));
-      const result = await getVersionEndpoint<T>(
-        baseURL,
-        contentType,
-        key,
-        versionId
-      );
-      
-      setState(prev => ({
-        ...prev,
-        selectedVersion: result,
-        loading: false,
-      }));
-      
-      return result;
-    } catch (error) {
-      setState(prev => ({
-        ...prev,
-        loading: false,
-        error: error instanceof Error ? error.message : 'Failed to get version',
-      }));
-      throw error;
-    }
-  }, [baseURL]);
+        setState((prev) => ({
+          ...prev,
+          versions,
+          contentType,
+          loading: false,
+        }));
+
+        return versions;
+      } catch (error) {
+        setState((prev) => ({
+          ...prev,
+          loading: false,
+          error:
+            error instanceof Error ? error.message : 'Failed to fetch versions',
+        }));
+        throw error;
+      }
+    },
+    []
+  );
+
+  const saveVersion = useCallback(
+    async (
+      hydratedUrl: string,
+      item: ContentItem | Page,
+      key: string,
+      contentType: 'content-items' | 'pages'
+    ) => {
+      try {
+        setState((prev) => ({ ...prev, loading: true, error: null }));
+        const result = await saveVersionEndpoint<ContentItem | Page>(
+          hydratedUrl,
+          contentType,
+          key,
+          item
+        );
+
+        const versions = result.versions as T[];
+
+        setState((prev) => ({
+          ...prev,
+          versions,
+          loading: false,
+        }));
+
+        return versions;
+      } catch (error) {
+        setState((prev) => ({
+          ...prev,
+          loading: false,
+          error:
+            error instanceof Error ? error.message : 'Failed to save version',
+        }));
+        throw error;
+      }
+    },
+    []
+  );
+
+  const getVersion = useCallback(
+    async (
+      contentType: 'content-items' | 'pages',
+      key: string,
+      versionId: string
+    ) => {
+      try {
+        setState((prev) => ({ ...prev, loading: true, error: null }));
+        const result = await getVersionEndpoint<T>(
+          baseURL,
+          contentType,
+          key,
+          versionId
+        );
+
+        setState((prev) => ({
+          ...prev,
+          selectedVersion: result,
+          loading: false,
+        }));
+
+        return result;
+      } catch (error) {
+        setState((prev) => ({
+          ...prev,
+          loading: false,
+          error:
+            error instanceof Error ? error.message : 'Failed to get version',
+        }));
+        throw error;
+      }
+    },
+    [baseURL]
+  );
 
   const selectVersion = useCallback((versionId: string) => {
-    setState(prev => {
-      const version = prev.versions.find(v => 'id' in v && v.id === versionId) || null;
+    setState((prev) => {
+      const version =
+        prev.versions.find((v) => 'id' in v && v.id === versionId) || null;
       return {
         ...prev,
         selectedVersion: version,
@@ -136,25 +147,28 @@ export function useVersion<T extends ContentItemVersionInfo | PageVersionInfo>(b
   }, []);
 
   const clearSelectedVersion = useCallback(() => {
-    setState(prev => ({
+    setState((prev) => ({
       ...prev,
       selectedVersion: null,
     }));
   }, []);
 
-  const setContentType = useCallback((contentType: 'content-items' | 'pages') => {
-    setState(prev => ({
-      ...prev,
-      contentType,
-    }));
-  }, []);
+  const setContentType = useCallback(
+    (contentType: 'content-items' | 'pages') => {
+      setState((prev) => ({
+        ...prev,
+        contentType,
+      }));
+    },
+    []
+  );
 
   const clearError = useCallback(() => {
-    setState(prev => ({ ...prev, error: null }));
+    setState((prev) => ({ ...prev, error: null }));
   }, []);
 
   const clearVersions = useCallback(() => {
-    setState(prev => ({
+    setState((prev) => ({
       ...prev,
       versions: [],
       selectedVersion: null,
@@ -162,21 +176,29 @@ export function useVersion<T extends ContentItemVersionInfo | PageVersionInfo>(b
   }, []);
 
   // Selectors
-  const getVersionById = useCallback((versionId: string) => {
-    return state.versions.find(v => 'id' in v && v.id === versionId) || null;
-  }, [state.versions]);
+  const getVersionById = useCallback(
+    (versionId: string) => {
+      return (
+        state.versions.find((v) => 'id' in v && v.id === versionId) || null
+      );
+    },
+    [state.versions]
+  );
 
-  const getVersionsByContentType = useCallback((contentType: 'content-items' | 'pages') => {
-    return state.versions.filter(v => {
-      // This would need to be implemented based on how versions are structured
-      // For now, we'll return all versions
-      return true;
-    });
-  }, [state.versions]);
+  const getVersionsByContentType = useCallback(
+    (contentType: 'content-items' | 'pages') => {
+      return state.versions.filter((v) => {
+        // This would need to be implemented based on how versions are structured
+        // For now, we'll return all versions
+        return true;
+      });
+    },
+    [state.versions]
+  );
 
   const getLatestVersion = useCallback(() => {
     if (state.versions.length === 0) return null;
-    
+
     // Assuming versions are sorted by timestamp, return the latest
     return state.versions.reduce((latest, current) => {
       const latestTimestamp = new Date(latest.timestamp).getTime();
@@ -196,7 +218,7 @@ export function useVersion<T extends ContentItemVersionInfo | PageVersionInfo>(b
     contentType: state.contentType,
     loading: state.loading,
     error: state.error,
-    
+
     // Actions
     fetchVersions,
     saveVersion,
@@ -206,11 +228,11 @@ export function useVersion<T extends ContentItemVersionInfo | PageVersionInfo>(b
     setContentType,
     clearError,
     clearVersions,
-    
+
     // Selectors
     getVersionById,
     getVersionsByContentType,
     getLatestVersion,
     getVersionsCount,
   };
-}; 
+}

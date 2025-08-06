@@ -1,13 +1,16 @@
-import React from 'react';
-import Spacings from '@commercetools-uikit/spacings';
 import IconButton from '@commercetools-uikit/icon-button';
-import PrimaryButton from '@commercetools-uikit/primary-button';
-import SecondaryButton from '@commercetools-uikit/secondary-button';
-import { ExternalLinkIcon, ClockIcon, ListWithSearchIcon } from '@commercetools-uikit/icons';
-import Stamp from '@commercetools-uikit/stamp';
+import {
+  ClockIcon,
+  ListWithSearchIcon
+} from '@commercetools-uikit/icons';
 import PrimaryActionDropdown, {
   Option,
 } from '@commercetools-uikit/primary-action-dropdown';
+import PrimaryButton from '@commercetools-uikit/primary-button';
+import SecondaryButton from '@commercetools-uikit/secondary-button';
+import Spacings from '@commercetools-uikit/spacings';
+import Stamp from '@commercetools-uikit/stamp';
+import React from 'react';
 import styled from 'styled-components';
 
 const StyledStamp = styled.span`

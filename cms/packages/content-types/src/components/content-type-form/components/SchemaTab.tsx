@@ -9,7 +9,11 @@ import TextInput from '@commercetools-uikit/text-input';
 import FieldLabel from '@commercetools-uikit/field-label';
 import CheckboxInput from '@commercetools-uikit/checkbox-input';
 import styled from 'styled-components';
-import { formatDefaultValue, getDefaultValuePlaceholder, parseDefaultValue } from '../utils/schema';
+import {
+  formatDefaultValue,
+  getDefaultValuePlaceholder,
+  parseDefaultValue,
+} from '../utils/schema';
 
 const SchemaBuilder = styled.div`
   border: 1px solid #ddd;
@@ -85,12 +89,16 @@ const SchemaTab: React.FC<SchemaTabProps> = ({
     defaultValue: '',
   });
 
-  const [expandedProperties, setExpandedProperties] = useState<Set<string>>(new Set());
+  const [expandedProperties, setExpandedProperties] = useState<Set<string>>(
+    new Set()
+  );
 
-  const propertyEntries = Object.entries(contentType.metadata.propertySchema || {});
+  const propertyEntries = Object.entries(
+    contentType.metadata.propertySchema || {}
+  );
 
   const togglePropertyExpanded = useCallback((propertyKey: string) => {
-    setExpandedProperties(prev => {
+    setExpandedProperties((prev) => {
       const newSet = new Set(prev);
       if (newSet.has(propertyKey)) {
         newSet.delete(propertyKey);
@@ -115,9 +123,14 @@ const SchemaTab: React.FC<SchemaTabProps> = ({
     };
 
     // Add default value to defaultProperties if provided
-    const updatedDefaultProperties = { ...contentType.metadata.defaultProperties };
+    const updatedDefaultProperties = {
+      ...contentType.metadata.defaultProperties,
+    };
     if (newProperty.defaultValue) {
-      const parsedValue = parseDefaultValue(newProperty.defaultValue, newProperty.type);
+      const parsedValue = parseDefaultValue(
+        newProperty.defaultValue,
+        newProperty.type
+      );
       updatedDefaultProperties[newProperty.key] = parsedValue;
     }
 
@@ -138,74 +151,85 @@ const SchemaTab: React.FC<SchemaTabProps> = ({
     });
   }, [newProperty, contentType, onContentTypeChange]);
 
-  const handleRemoveProperty = useCallback((propertyKey: string) => {
-    const updatedSchema = { ...contentType.metadata.propertySchema };
-    delete updatedSchema[propertyKey];
+  const handleRemoveProperty = useCallback(
+    (propertyKey: string) => {
+      const updatedSchema = { ...contentType.metadata.propertySchema };
+      delete updatedSchema[propertyKey];
 
-    // Remove from defaultProperties
-    const updatedDefaultProperties = { ...contentType.metadata.defaultProperties };
-    delete updatedDefaultProperties[propertyKey];
-
-    onContentTypeChange({
-      metadata: {
-        ...contentType.metadata,
-        propertySchema: updatedSchema,
-        defaultProperties: updatedDefaultProperties,
-      },
-    });
-  }, [contentType, onContentTypeChange]);
-
-  const handlePropertyUpdate = useCallback((propertyKey: string, updates: Partial<PropertySchema>) => {
-    const updatedSchema = {
-      ...contentType.metadata.propertySchema,
-      [propertyKey]: {
-        ...contentType.metadata.propertySchema[propertyKey],
-        ...updates,
-      },
-    };
-
-    onContentTypeChange({
-      metadata: {
-        ...contentType.metadata,
-        propertySchema: updatedSchema,
-      },
-    });
-  }, [contentType, onContentTypeChange]);
-
-  const handleDefaultValueChange = useCallback((propertyKey: string, value: string, type: PropertySchema['type']) => {
-    const updatedDefaultProperties = { ...contentType.metadata.defaultProperties };
-    
-    if (value.trim() === '') {
-      // Remove default value if empty
+      // Remove from defaultProperties
+      const updatedDefaultProperties = {
+        ...contentType.metadata.defaultProperties,
+      };
       delete updatedDefaultProperties[propertyKey];
-    } else {
-      // Parse and set default value
-      const parsedValue = parseDefaultValue(value, type);
-      updatedDefaultProperties[propertyKey] = parsedValue;
-    }
 
-    onContentTypeChange({
-      metadata: {
-        ...contentType.metadata,
-        defaultProperties: updatedDefaultProperties,
-      },
-    });
-  }, [contentType, onContentTypeChange]);
+      onContentTypeChange({
+        metadata: {
+          ...contentType.metadata,
+          propertySchema: updatedSchema,
+          defaultProperties: updatedDefaultProperties,
+        },
+      });
+    },
+    [contentType, onContentTypeChange]
+  );
 
-  
+  const handlePropertyUpdate = useCallback(
+    (propertyKey: string, updates: Partial<PropertySchema>) => {
+      const updatedSchema = {
+        ...contentType.metadata.propertySchema,
+        [propertyKey]: {
+          ...contentType.metadata.propertySchema[propertyKey],
+          ...updates,
+        },
+      };
+
+      onContentTypeChange({
+        metadata: {
+          ...contentType.metadata,
+          propertySchema: updatedSchema,
+        },
+      });
+    },
+    [contentType, onContentTypeChange]
+  );
+
+  const handleDefaultValueChange = useCallback(
+    (propertyKey: string, value: string, type: PropertySchema['type']) => {
+      const updatedDefaultProperties = {
+        ...contentType.metadata.defaultProperties,
+      };
+
+      if (value.trim() === '') {
+        // Remove default value if empty
+        delete updatedDefaultProperties[propertyKey];
+      } else {
+        // Parse and set default value
+        const parsedValue = parseDefaultValue(value, type);
+        updatedDefaultProperties[propertyKey] = parsedValue;
+      }
+
+      onContentTypeChange({
+        metadata: {
+          ...contentType.metadata,
+          defaultProperties: updatedDefaultProperties,
+        },
+      });
+    },
+    [contentType, onContentTypeChange]
+  );
 
   return (
     <Spacings.Stack scale="m">
       <Text.Subheadline as="h4">Property Schema</Text.Subheadline>
-      
+
       <Text.Detail>
-        Define the properties that content items of this type will have. Each property
-        will become an editable field in the content editor.
+        Define the properties that content items of this type will have. Each
+        property will become an editable field in the content editor.
       </Text.Detail>
 
       <SchemaBuilder>
         <Text.Body fontWeight="medium">Current Properties</Text.Body>
-        
+
         {propertyEntries.length === 0 ? (
           <div style={{ padding: '20px', textAlign: 'center' }}>
             <Text.Detail tone="secondary">
@@ -222,46 +246,67 @@ const SchemaTab: React.FC<SchemaTabProps> = ({
                     <Text.Detail>
                       Key: {key} • Type: {property.type}
                       {property.required && ' • Required'}
-                      {contentType.metadata.defaultProperties?.[key] && 
-                        ` • Default: ${formatDefaultValue(contentType.metadata.defaultProperties[key], property.type)}`}
+                      {contentType.metadata.defaultProperties?.[key] &&
+                        ` • Default: ${formatDefaultValue(
+                          contentType.metadata.defaultProperties[key],
+                          property.type
+                        )}`}
                     </Text.Detail>
                   </PropertyInfo>
                   <PropertyActions>
                     <SecondaryButton
                       size="small"
-                      label={expandedProperties.has(key) ? "Collapse" : "Expand"}
+                      label={
+                        expandedProperties.has(key) ? 'Collapse' : 'Expand'
+                      }
                       onClick={() => togglePropertyExpanded(key)}
                     />
-                                         <SecondaryButton
-                       size="small"
-                       label="Remove"
-                       onClick={() => handleRemoveProperty(key)}
-                     />
+                    <SecondaryButton
+                      size="small"
+                      label="Remove"
+                      onClick={() => handleRemoveProperty(key)}
+                    />
                   </PropertyActions>
                 </PropertyHeader>
-                
+
                 {expandedProperties.has(key) && (
                   <PropertyDetails>
                     <div>
-                      <FieldLabel title="Default Value" htmlFor={`default-${key}`} />
+                      <FieldLabel
+                        title="Default Value"
+                        htmlFor={`default-${key}`}
+                      />
                       <TextInput
                         id={`default-${key}`}
-                        value={formatDefaultValue(contentType.metadata.defaultProperties?.[key], property.type)}
-                        onChange={(e) => handleDefaultValueChange(key, e.target.value, property.type)}
+                        value={formatDefaultValue(
+                          contentType.metadata.defaultProperties?.[key],
+                          property.type
+                        )}
+                        onChange={(e) =>
+                          handleDefaultValueChange(
+                            key,
+                            e.target.value,
+                            property.type
+                          )
+                        }
                         placeholder={getDefaultValuePlaceholder(property.type)}
                       />
                     </div>
-                    
+
                     <div>
                       <CheckboxInput
                         value="required"
                         isChecked={property.required || false}
-                        onChange={() => handlePropertyUpdate(key, { required: !property.required })}
+                        onChange={() =>
+                          handlePropertyUpdate(key, {
+                            required: !property.required,
+                          })
+                        }
                       >
                         Required field
                       </CheckboxInput>
                     </div>
-                    
+
                     <div>
                       <SecondaryButton
                         size="small"
@@ -281,37 +326,43 @@ const SchemaTab: React.FC<SchemaTabProps> = ({
 
         <Spacings.Stack scale="m">
           <Text.Body fontWeight="medium">Add New Property</Text.Body>
-          
+
           <AddPropertyForm>
             <div>
               <FieldLabel title="Property Key" htmlFor="property-key" />
               <TextInput
                 id="property-key"
                 value={newProperty.key}
-                onChange={(e) => setNewProperty(prev => ({ ...prev, key: e.target.value }))}
+                onChange={(e) =>
+                  setNewProperty((prev) => ({ ...prev, key: e.target.value }))
+                }
                 placeholder="e.g., title"
               />
             </div>
-            
+
             <div>
               <FieldLabel title="Display Label" htmlFor="property-label" />
               <TextInput
                 id="property-label"
                 value={newProperty.label}
-                onChange={(e) => setNewProperty(prev => ({ ...prev, label: e.target.value }))}
+                onChange={(e) =>
+                  setNewProperty((prev) => ({ ...prev, label: e.target.value }))
+                }
                 placeholder="e.g., Title"
               />
             </div>
-            
+
             <div>
               <FieldLabel title="Type" htmlFor="property-type" />
               <select
                 id="property-type"
                 value={newProperty.type}
-                onChange={(e) => setNewProperty(prev => ({ 
-                  ...prev, 
-                  type: e.target.value as PropertySchema['type'] 
-                }))}
+                onChange={(e) =>
+                  setNewProperty((prev) => ({
+                    ...prev,
+                    type: e.target.value as PropertySchema['type'],
+                  }))
+                }
                 style={{
                   padding: '8px 12px',
                   border: '1px solid #ddd',
@@ -328,17 +379,25 @@ const SchemaTab: React.FC<SchemaTabProps> = ({
                 <option value="datasource">Datasource</option>
               </select>
             </div>
-            
+
             <div>
-              <FieldLabel title="Default Value" htmlFor="new-property-default" />
+              <FieldLabel
+                title="Default Value"
+                htmlFor="new-property-default"
+              />
               <TextInput
                 id="new-property-default"
                 value={newProperty.defaultValue}
-                onChange={(e) => setNewProperty(prev => ({ ...prev, defaultValue: e.target.value }))}
+                onChange={(e) =>
+                  setNewProperty((prev) => ({
+                    ...prev,
+                    defaultValue: e.target.value,
+                  }))
+                }
                 placeholder={getDefaultValuePlaceholder(newProperty.type)}
               />
             </div>
-            
+
             <PrimaryButton
               size="small"
               label="Add Property"

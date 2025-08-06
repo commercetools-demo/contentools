@@ -1,17 +1,21 @@
 import { useState, useCallback, useMemo } from 'react';
-import { ContentTypeData, ContentTypeMetaData } from '@commercetools-demo/cms-types';
+import {
+  ContentTypeData,
+  ContentTypeMetaData,
+} from '@commercetools-demo/cms-types';
 
-const createDefaultContentType = (): ContentTypeData => ({
-  key: '',
-  metadata: {
-    type: '',
-    name: '',
-    icon: '',
-    defaultProperties: {},
-    propertySchema: {},
-    isBuiltIn: false,
-  },
-} as ContentTypeData);
+const createDefaultContentType = (): ContentTypeData =>
+  ({
+    key: '',
+    metadata: {
+      type: '',
+      name: '',
+      icon: '',
+      defaultProperties: {},
+      propertySchema: {},
+      isBuiltIn: false,
+    },
+  } as ContentTypeData);
 
 export interface UseContentTypeFormReturn {
   contentType: ContentTypeData;
@@ -31,26 +35,32 @@ export const useContentTypeForm = (
   );
 
   const originalContentType = useMemo(
-    () => initialContentType ? { ...initialContentType } : createDefaultContentType(),
+    () =>
+      initialContentType
+        ? { ...initialContentType }
+        : createDefaultContentType(),
     [initialContentType]
   );
 
   const updateContentType = useCallback((updates: Partial<ContentTypeData>) => {
-    setContentType(prev => ({
+    setContentType((prev) => ({
       ...prev,
       ...updates,
     }));
   }, []);
 
-  const updateMetadata = useCallback((updates: Partial<ContentTypeMetaData>) => {
-    setContentType(prev => ({
-      ...prev,
-      metadata: {
-        ...prev.metadata,
-        ...updates,
-      },
-    }));
-  }, []);
+  const updateMetadata = useCallback(
+    (updates: Partial<ContentTypeMetaData>) => {
+      setContentType((prev) => ({
+        ...prev,
+        metadata: {
+          ...prev.metadata,
+          ...updates,
+        },
+      }));
+    },
+    []
+  );
 
   const resetForm = useCallback(() => {
     setContentType(originalContentType);

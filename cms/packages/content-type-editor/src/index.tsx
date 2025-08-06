@@ -33,9 +33,8 @@ class SecureTranspiler {
 
   static cleanCode(sourceCode: string): string {
     return sourceCode
-    .replace(/import\s+.*?\s+from\s+['"][^'"]*['"];?\s*/g, '')
-    .replace(/import\s+['"][^'"]*['"];?\s*/g, '');
-
+      .replace(/import\s+.*?\s+from\s+['"][^'"]*['"];?\s*/g, '')
+      .replace(/import\s+['"][^'"]*['"];?\s*/g, '');
   }
 
   static transpile(sourceCode: string, componentName: string): string {

@@ -6,8 +6,10 @@ import Text from '@commercetools-uikit/text';
 
 const HighlightedContainer = styled.div<{ $highlight: boolean }>`
   position: relative;
-  
-  ${({ $highlight }) => $highlight && `
+
+  ${({ $highlight }) =>
+    $highlight &&
+    `
     &::before {
       content: '';
       position: absolute;
@@ -33,7 +35,7 @@ const WysiwygTextArea = styled.textarea`
   resize: vertical;
   position: inherit;
   box-sizing: border-box;
-  
+
   &:focus {
     outline: none;
     border-color: #0066cc;
@@ -59,7 +61,7 @@ const ToolbarButton = styled.button`
   background: white;
   cursor: pointer;
   font-size: 12px;
-  
+
   &:hover {
     background: #f0f0f0;
   }
@@ -84,28 +86,35 @@ export const WysiwygField: React.FC<WysiwygFieldProps> = ({
   error,
   onFieldChange,
 }) => {
-  const handleChange = useCallback((event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    onFieldChange(fieldKey, event.target.value);
-  }, [fieldKey, onFieldChange]);
+  const handleChange = useCallback(
+    (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+      onFieldChange(fieldKey, event.target.value);
+    },
+    [fieldKey, onFieldChange]
+  );
 
-  const insertText = useCallback((textToInsert: string) => {
-    const textarea = document.getElementById(fieldKey) as HTMLTextAreaElement;
-    if (!textarea) return;
+  const insertText = useCallback(
+    (textToInsert: string) => {
+      const textarea = document.getElementById(fieldKey) as HTMLTextAreaElement;
+      if (!textarea) return;
 
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const text = textarea.value;
-    
-    const newText = text.substring(0, start) + textToInsert + text.substring(end);
-    onFieldChange(fieldKey, newText);
-    
-    // Restore cursor position
-    setTimeout(() => {
-      textarea.selectionStart = start + textToInsert.length;
-      textarea.selectionEnd = start + textToInsert.length;
-      textarea.focus();
-    }, 0);
-  }, [fieldKey, onFieldChange]);
+      const start = textarea.selectionStart;
+      const end = textarea.selectionEnd;
+      const text = textarea.value;
+
+      const newText =
+        text.substring(0, start) + textToInsert + text.substring(end);
+      onFieldChange(fieldKey, newText);
+
+      // Restore cursor position
+      setTimeout(() => {
+        textarea.selectionStart = start + textToInsert.length;
+        textarea.selectionEnd = start + textToInsert.length;
+        textarea.focus();
+      }, 0);
+    },
+    [fieldKey, onFieldChange]
+  );
 
   return (
     <Spacings.Stack scale="xs">
@@ -125,28 +134,16 @@ export const WysiwygField: React.FC<WysiwygFieldProps> = ({
           >
             Bold
           </ToolbarButton>
-          <ToolbarButton
-            type="button"
-            onClick={() => insertText('<em></em>')}
-          >
+          <ToolbarButton type="button" onClick={() => insertText('<em></em>')}>
             Italic
           </ToolbarButton>
-          <ToolbarButton
-            type="button"
-            onClick={() => insertText('<h2></h2>')}
-          >
+          <ToolbarButton type="button" onClick={() => insertText('<h2></h2>')}>
             H2
           </ToolbarButton>
-          <ToolbarButton
-            type="button"
-            onClick={() => insertText('<h3></h3>')}
-          >
+          <ToolbarButton type="button" onClick={() => insertText('<h3></h3>')}>
             H3
           </ToolbarButton>
-          <ToolbarButton
-            type="button"
-            onClick={() => insertText('<p></p>')}
-          >
+          <ToolbarButton type="button" onClick={() => insertText('<p></p>')}>
             Paragraph
           </ToolbarButton>
           <ToolbarButton
@@ -170,11 +167,7 @@ export const WysiwygField: React.FC<WysiwygFieldProps> = ({
           placeholder="Enter your content here..."
         />
       </HighlightedContainer>
-      {error && (
-        <Text.Detail tone="negative">
-          {error}
-        </Text.Detail>
-      )}
+      {error && <Text.Detail tone="negative">{error}</Text.Detail>}
     </Spacings.Stack>
   );
-}; 
+};

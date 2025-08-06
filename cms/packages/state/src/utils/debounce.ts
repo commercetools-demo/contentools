@@ -7,7 +7,7 @@ export function debounce<T extends (...args: any[]) => any>(
   return (...args: Parameters<T>) => {
     // Create a snapshot of the arguments at the time of call
     // This prevents issues with the objects being modified or revoked later
-    const safeArgs = args.map(arg => {
+    const safeArgs = args.map((arg) => {
       if (typeof arg === 'object' && arg !== null) {
         try {
           // Try to make a deep copy of the object
@@ -34,4 +34,4 @@ export function debounce<T extends (...args: any[]) => any>(
       }
     }, wait);
   };
-} 
+}

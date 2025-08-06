@@ -7,8 +7,10 @@ import Text from '@commercetools-uikit/text';
 
 const HighlightedContainer = styled.div<{ $highlight: boolean }>`
   position: relative;
-  
-  ${({ $highlight }) => $highlight && `
+
+  ${({ $highlight }) =>
+    $highlight &&
+    `
     &::before {
       content: '';
       position: absolute;
@@ -42,10 +44,14 @@ export const NumberField: React.FC<NumberFieldProps> = ({
   error,
   onFieldChange,
 }) => {
-  const handleChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    const numericValue = event.target.value === '' ? undefined : Number(event.target.value);
-    onFieldChange(fieldKey, numericValue);
-  }, [fieldKey, onFieldChange]);
+  const handleChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const numericValue =
+        event.target.value === '' ? undefined : Number(event.target.value);
+      onFieldChange(fieldKey, numericValue);
+    },
+    [fieldKey, onFieldChange]
+  );
 
   return (
     <Spacings.Stack scale="xs">
@@ -63,11 +69,7 @@ export const NumberField: React.FC<NumberFieldProps> = ({
           hasError={!!error}
         />
       </HighlightedContainer>
-      {error && (
-        <Text.Detail tone="negative">
-          {error}
-        </Text.Detail>
-      )}
+      {error && <Text.Detail tone="negative">{error}</Text.Detail>}
     </Spacings.Stack>
   );
-}; 
+};

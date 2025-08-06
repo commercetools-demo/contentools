@@ -33,7 +33,8 @@ const GeneralTab: React.FC<GeneralTabProps> = ({
   onContentTypeChange,
   isEdit,
 }) => {
-  const handleMetadataChange = (field: keyof ContentTypeData['metadata']) => 
+  const handleMetadataChange =
+    (field: keyof ContentTypeData['metadata']) =>
     (event: React.ChangeEvent<HTMLInputElement>) => {
       onContentTypeChange({
         metadata: {
@@ -46,9 +47,8 @@ const GeneralTab: React.FC<GeneralTabProps> = ({
   return (
     <Spacings.Stack scale="m">
       <Text.Subheadline as="h4">General Information</Text.Subheadline>
-      
-      <FormRow>
 
+      <FormRow>
         <FormField>
           <FieldLabel
             title="Content Type Name"
@@ -97,7 +97,8 @@ const GeneralTab: React.FC<GeneralTabProps> = ({
 
       {isEdit && (
         <Text.Detail tone="information">
-          Note: Content Type Key and Component Type cannot be changed after creation.
+          Note: Content Type Key and Component Type cannot be changed after
+          creation.
         </Text.Detail>
       )}
     </Spacings.Stack>

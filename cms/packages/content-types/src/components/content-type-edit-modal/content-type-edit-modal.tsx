@@ -1,6 +1,5 @@
 import {
   ContentTypeData,
-  ContentTypeMetaData,
 } from '@commercetools-demo/cms-types';
 import { Modal, useModalState } from '@commercetools-demo/cms-ui-components';
 import React, { useEffect, useState } from 'react';
@@ -9,12 +8,6 @@ import { useStateContentType } from '@commercetools-demo/cms-state';
 import ContentTypeForm from '../content-type-form';
 import styled from 'styled-components';
 
-const LoadingContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-`;
 
 const ErrorContainer = styled.div`
   display: flex;
@@ -35,7 +28,7 @@ const ContentTypeEditModal: React.FC<{
   const contentTypeModalState = useModalState(true);
   const { fetchContentType, error, updateContentType } = useStateContentType();
   const [contentType, setContentType] = useState<ContentTypeData | null>(null);
-  
+
   const handleClose = () => {
     contentTypeModalState.closeModal();
     history.goBack();

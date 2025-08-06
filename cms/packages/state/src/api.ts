@@ -14,7 +14,10 @@ import {
 /**
  * Generic fetch function for making API calls
  */
-export async function fetchApi<T>(url: string, options: RequestInit = {}): Promise<ApiResponse<T>> {
+export async function fetchApi<T>(
+  url: string,
+  options: RequestInit = {}
+): Promise<ApiResponse<T>> {
   const response = await fetch(url, {
     headers: {
       'Content-Type': 'application/json',
@@ -24,7 +27,9 @@ export async function fetchApi<T>(url: string, options: RequestInit = {}): Promi
   });
 
   if (!response.ok) {
-    throw new Error(`API request failed: ${response.status} ${response.statusText}`);
+    throw new Error(
+      `API request failed: ${response.status} ${response.statusText}`
+    );
   }
 
   return response.json();
@@ -33,18 +38,25 @@ export async function fetchApi<T>(url: string, options: RequestInit = {}): Promi
 /**
  * Fetch a single custom object
  */
-export async function fetchPageEndpoint<T>(baseURL: string, key: string): Promise<ApiResponse<T>> {
+export async function fetchPageEndpoint<T>(
+  baseURL: string,
+  key: string
+): Promise<ApiResponse<T>> {
   return fetchApi<T>(`${baseURL}/pages/${key}`);
 }
 
 /**
  * Fetch all custom objects
  */
-export async function fetchPagesEndpoint<T>(baseURL: string): Promise<ApiResponse<T>[]> {
+export async function fetchPagesEndpoint<T>(
+  baseURL: string
+): Promise<ApiResponse<T>[]> {
   const response = await fetch(`${baseURL}/pages`);
 
   if (!response.ok) {
-    throw new Error(`API request failed: ${response.status} ${response.statusText}`);
+    throw new Error(
+      `API request failed: ${response.status} ${response.statusText}`
+    );
   }
 
   return response.json();
@@ -80,24 +92,33 @@ export async function createPageEndpoint<T extends { key: string }>(
 /**
  * Delete a custom object
  */
-export async function deletePageEndpoint(baseURL: string, key: string): Promise<void> {
+export async function deletePageEndpoint(
+  baseURL: string,
+  key: string
+): Promise<void> {
   const response = await fetch(`${baseURL}/pages/${key}`, {
     method: 'DELETE',
   });
 
   if (!response.ok) {
-    throw new Error(`API request failed: ${response.status} ${response.statusText}`);
+    throw new Error(
+      `API request failed: ${response.status} ${response.statusText}`
+    );
   }
 }
 
 /**
  * Fetch registry components
  */
-export async function fetchContentTypesEndpoint(baseURL: string): Promise<ContentTypeData[]> {
+export async function fetchContentTypesEndpoint(
+  baseURL: string
+): Promise<ContentTypeData[]> {
   const response = await fetch(`${baseURL}/content-type`);
 
   if (!response.ok) {
-    throw new Error(`API request failed: ${response.status} ${response.statusText}`);
+    throw new Error(
+      `API request failed: ${response.status} ${response.statusText}`
+    );
   }
 
   return response.json();
@@ -110,8 +131,8 @@ export async function fetchContentTypeEndpoint<T>(
   baseURL: string,
   key: string
 ): Promise<T> {
-   const response = await fetch(`${baseURL}/content-type/${key}`);
-   return response.json();
+  const response = await fetch(`${baseURL}/content-type/${key}`);
+  return response.json();
 }
 
 /**
@@ -144,13 +165,18 @@ export async function updateContentTypeEndpoint<T>(
 /**
  * Delete a registry component
  */
-export async function deleteContentTypeEndpoint(baseURL: string, key: string): Promise<void> {
+export async function deleteContentTypeEndpoint(
+  baseURL: string,
+  key: string
+): Promise<void> {
   const response = await fetch(`${baseURL}/content-type/${key}`, {
     method: 'DELETE',
   });
 
   if (!response.ok) {
-    throw new Error(`API request failed: ${response.status} ${response.statusText}`);
+    throw new Error(
+      `API request failed: ${response.status} ${response.statusText}`
+    );
   }
 }
 
@@ -169,7 +195,9 @@ export async function fetchContentItemsEndpoint<T>(baseURL: string): Promise<
   const response = await fetch(`${baseURL}/content-items`);
 
   if (!response.ok) {
-    throw new Error(`API request failed: ${response.status} ${response.statusText}`);
+    throw new Error(
+      `API request failed: ${response.status} ${response.statusText}`
+    );
   }
 
   const data = await response.json();
@@ -179,12 +207,15 @@ export async function fetchContentItemsEndpoint<T>(baseURL: string): Promise<
 /**
  * Fetch a single content item
  */
-export async function fetchPreviewContentItemEndpoint<T>(baseURL: string, key: string): Promise<T> {
+export async function fetchPreviewContentItemEndpoint<T>(
+  baseURL: string,
+  key: string
+): Promise<T> {
   const response = await fetch(`${baseURL}/preview/content-items/${key}`, {
     headers: {
       'Content-Type': 'application/json',
     },
-  }).then(response => response.json());
+  }).then((response) => response.json());
   return response;
 }
 
@@ -199,7 +230,7 @@ export async function fetchPublishedContentItemEndpoint<T>(
     headers: {
       'Content-Type': 'application/json',
     },
-  }).then(response => response.json());
+  }).then((response) => response.json());
   return response;
 }
 
@@ -238,13 +269,18 @@ export async function updateContentItemEndpoint<T>(
 /**
  * Delete a content item
  */
-export async function deleteContentItemEndpoint(baseURL: string, key: string): Promise<void> {
+export async function deleteContentItemEndpoint(
+  baseURL: string,
+  key: string
+): Promise<void> {
   const response = await fetch(`${baseURL}/content-items/${key}`, {
     method: 'DELETE',
   });
 
   if (!response.ok) {
-    throw new Error(`API request failed: ${response.status} ${response.statusText}`);
+    throw new Error(
+      `API request failed: ${response.status} ${response.statusText}`
+    );
   }
 }
 
@@ -257,7 +293,9 @@ export async function getAvailableDatasourcesEndpoint<T>(
   const response = await fetch(`${baseURL}/datasource`);
 
   if (!response.ok) {
-    throw new Error(`API request failed: ${response.status} ${response.statusText}`);
+    throw new Error(
+      `API request failed: ${response.status} ${response.statusText}`
+    );
   }
 
   return response.json();
@@ -306,7 +344,7 @@ export async function fetchVersionsEndpoint<T>(
     headers: {
       'Content-Type': 'application/json',
     },
-  }).then(response => response.json());
+  }).then((response) => response.json());
 }
 
 // Save a new version
@@ -323,7 +361,7 @@ export async function saveVersionEndpoint<T>(
     headers: {
       'Content-Type': 'application/json',
     },
-  }).then(response => response.json());
+  }).then((response) => response.json());
 }
 
 // Get a specific version
@@ -337,7 +375,7 @@ export async function getVersionEndpoint<T>(
     headers: {
       'Content-Type': 'application/json',
     },
-  }).then(response => response.json());
+  }).then((response) => response.json());
 }
 
 /**
@@ -354,7 +392,7 @@ export async function getStatesEndpoint<T>(
     headers: {
       'Content-Type': 'application/json',
     },
-  }).then(response => response.json());
+  }).then((response) => response.json());
 }
 
 // Save draft state
@@ -371,11 +409,13 @@ export async function saveDraftEndpoint<T>(
     headers: {
       'Content-Type': 'application/json',
     },
-  }).then(response => response.json());
+  }).then((response) => response.json());
 }
 
 // Publish state
-export async function publishEndpoint<T extends (Page | ContentItem) & { states?: StateInfo }>(
+export async function publishEndpoint<
+  T extends (Page | ContentItem) & { states?: StateInfo }
+>(
   baseURL: string,
   contentType: 'pages' | 'content-items',
   key: string,
@@ -397,7 +437,7 @@ export async function publishEndpoint<T extends (Page | ContentItem) & { states?
     headers: {
       'Content-Type': 'application/json',
     },
-  }).then(response => response.json());
+  }).then((response) => response.json());
 }
 
 // Revert draft state (delete draft)
@@ -406,15 +446,20 @@ export async function revertDraftEndpoint(
   contentType: 'pages' | 'content-items',
   key: string
 ): Promise<void> {
-  const response = await fetch(`${baseURL}/${contentType}/${key}/states/draft`, {
-    method: 'DELETE',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
+  const response = await fetch(
+    `${baseURL}/${contentType}/${key}/states/draft`,
+    {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+  );
 
   if (!response.ok) {
-    throw new Error(`API request failed: ${response.status} ${response.statusText}`);
+    throw new Error(
+      `API request failed: ${response.status} ${response.statusText}`
+    );
   }
 
   return;
@@ -429,18 +474,23 @@ export async function fetchMediaLibrary(
   page: number = 1,
   limit: number = 20
 ): Promise<MediaLibraryResult> {
-  const extensionsParam = extensions.length > 0 ? `extensions=${extensions.join(',')}` : '';
+  const extensionsParam =
+    extensions.length > 0 ? `extensions=${extensions.join(',')}` : '';
   const pageParam = `page=${page}`;
   const limitParam = `limit=${limit}`;
 
-  const queryParams = [extensionsParam, pageParam, limitParam].filter(param => param).join('&');
+  const queryParams = [extensionsParam, pageParam, limitParam]
+    .filter((param) => param)
+    .join('&');
 
   const url = `${baseURL}/media-library${queryParams ? `?${queryParams}` : ''}`;
 
   const response = await fetch(url);
 
   if (!response.ok) {
-    throw new Error(`API request failed: ${response.status} ${response.statusText}`);
+    throw new Error(
+      `API request failed: ${response.status} ${response.statusText}`
+    );
   }
 
   return response.json();

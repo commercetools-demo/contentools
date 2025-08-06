@@ -7,8 +7,10 @@ import Text from '@commercetools-uikit/text';
 
 const HighlightedContainer = styled.div<{ $highlight: boolean }>`
   position: relative;
-  
-  ${({ $highlight }) => $highlight && `
+
+  ${({ $highlight }) =>
+    $highlight &&
+    `
     &::before {
       content: '';
       position: absolute;
@@ -42,9 +44,12 @@ export const StringField: React.FC<StringFieldProps> = ({
   error,
   onFieldChange,
 }) => {
-  const handleChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    onFieldChange(fieldKey, event.target.value);
-  }, [fieldKey, onFieldChange]);
+  const handleChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      onFieldChange(fieldKey, event.target.value);
+    },
+    [fieldKey, onFieldChange]
+  );
 
   return (
     <Spacings.Stack scale="xs">
@@ -62,11 +67,7 @@ export const StringField: React.FC<StringFieldProps> = ({
           hasError={!!error}
         />
       </HighlightedContainer>
-      {error && (
-        <Text.Detail tone="negative">
-          {error}
-        </Text.Detail>
-      )}
+      {error && <Text.Detail tone="negative">{error}</Text.Detail>}
     </Spacings.Stack>
   );
-}; 
+};

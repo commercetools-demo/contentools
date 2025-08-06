@@ -1,13 +1,8 @@
-import React, {
-  Suspense,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
-import { ContentItem } from '@commercetools-demo/cms-types';
-import { DynamicComponentErrorBoundary } from './components/error-boundary';
-import { SecureDynamicComponentLoader } from './components/dynamic-component-loader';
 import { useStateContentType } from '@commercetools-demo/cms-state';
+import { ContentItem } from '@commercetools-demo/cms-types';
+import React, { Suspense, useEffect, useMemo, useState } from 'react';
+import { SecureDynamicComponentLoader } from './components/dynamic-component-loader';
+import { DynamicComponentErrorBoundary } from './components/error-boundary';
 
 export interface ComponentRendererProps {
   /** The content item to render */
@@ -45,7 +40,6 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = ({
   // error = null,
   onError,
 }) => {
-
   const { fetchContentType } = useStateContentType();
   const [Component, setComponent] = useState<any>(null);
 

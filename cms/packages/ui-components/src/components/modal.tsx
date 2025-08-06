@@ -21,8 +21,8 @@ const ModalOverlay = styled.div<{ isVisible: boolean }>`
   bottom: 0;
   background-color: rgba(0, 0, 0, 0.3);
   z-index: 1000;
-  opacity: ${props => props.isVisible ? 1 : 0};
-  visibility: ${props => props.isVisible ? 'visible' : 'hidden'};
+  opacity: ${(props) => (props.isVisible ? 1 : 0)};
+  visibility: ${(props) => (props.isVisible ? 'visible' : 'hidden')};
   transition: opacity 0.3s ease, visibility 0.3s ease;
 `;
 
@@ -31,11 +31,11 @@ const ModalContainer = styled.div<{ isVisible: boolean; size: number }>`
   top: 0;
   right: 0;
   bottom: 0;
-  width: ${props => props.size}%;
+  width: ${(props) => props.size}%;
   background-color: white;
   box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
   z-index: 1001;
-  transform: translateX(${props => props.isVisible ? '0' : '100%'});
+  transform: translateX(${(props) => (props.isVisible ? '0' : '100%')});
   transition: transform 0.3s ease;
   display: flex;
   flex-direction: column;
@@ -123,9 +123,7 @@ export const Modal: React.FC<ModalProps> = ({
             size="medium"
           />
         </ModalHeader>
-        <ModalBody>
-          {children}
-        </ModalBody>
+        <ModalBody>{children}</ModalBody>
       </ModalContainer>
     </ModalOverlay>
   );

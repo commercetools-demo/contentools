@@ -1,5 +1,5 @@
 import React from 'react';
-import { useHistory, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import ContentItemEditorCreateForm from './create-form';
 import ContentItemEditorEditForm from './edit-form';
 
@@ -9,13 +9,15 @@ interface ContentItemEditorProps {
   businessUnitKey: string;
 }
 
-const ContentItemEditor: React.FC<ContentItemEditorProps> = (props: ContentItemEditorProps) => {
+const ContentItemEditor: React.FC<ContentItemEditorProps> = (
+  props: ContentItemEditorProps
+) => {
   const { contentItemKey, contentTypeKey } = useParams<{
     contentItemKey?: string;
     contentTypeKey?: string;
   }>();
   const isNew = !contentItemKey && !!contentTypeKey;
-  
+
   return (
     <>
       {isNew ? (

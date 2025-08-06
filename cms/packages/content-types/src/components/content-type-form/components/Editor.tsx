@@ -1,12 +1,10 @@
-import React, { useState, useMemo } from 'react';
-import { ContentTypeData, ContentItem } from '@commercetools-demo/cms-types';
-import PropertyEditor from '@commercetools-demo/cms-property-editor';
 import { ComponentPlayground } from '@commercetools-demo/cms-content-type-editor';
+import { ContentTypeData } from '@commercetools-demo/cms-types';
+import Card from '@commercetools-uikit/card';
 import Spacings from '@commercetools-uikit/spacings';
 import Text from '@commercetools-uikit/text';
-import Card from '@commercetools-uikit/card';
+import React, { useMemo } from 'react';
 import styled from 'styled-components';
-
 
 const PreviewPanel = styled(Card)`
   padding: 20px;
@@ -27,7 +25,6 @@ const PreviewTab: React.FC<PreviewTabProps> = ({
   locale,
   onCodeChange,
 }) => {
-
   const props = useMemo(() => {
     return Object.keys(contentType.metadata.propertySchema || {}).join(', ');
   }, [contentType.metadata.propertySchema]);
@@ -64,24 +61,22 @@ const PreviewTab: React.FC<PreviewTabProps> = ({
     <Spacings.Stack scale="m">
       <Text.Subheadline as="h4">Code Editor</Text.Subheadline>
 
-        <PreviewPanel>
-          {hasSchema ? (
-            <ComponentPlayground
-              props={props}
-              componentName={contentType.metadata.type}
-              initialCode={contentType.code?.text}
-              onCodeChange={handleCodeChange}
-            />
-          ) : (
-            <Spacings.Stack scale="m">
-              <Text.Detail tone="secondary">
-                No component code available for preview.
-              </Text.Detail>
-
-              
-            </Spacings.Stack>
-          )}
-        </PreviewPanel>
+      <PreviewPanel>
+        {hasSchema ? (
+          <ComponentPlayground
+            props={props}
+            componentName={contentType.metadata.type}
+            initialCode={contentType.code?.text}
+            onCodeChange={handleCodeChange}
+          />
+        ) : (
+          <Spacings.Stack scale="m">
+            <Text.Detail tone="secondary">
+              No component code available for preview.
+            </Text.Detail>
+          </Spacings.Stack>
+        )}
+      </PreviewPanel>
     </Spacings.Stack>
   );
 };

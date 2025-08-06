@@ -12,35 +12,38 @@ export const useEditor = () => {
 
   // Actions
   const selectComponent = useCallback((componentId: string | null) => {
-    setState(prev => ({
+    setState((prev) => ({
       ...prev,
       selectedComponentId: componentId,
     }));
   }, []);
 
-  const setDraggingComponentType = useCallback((componentType: string | null) => {
-    setState(prev => ({
-      ...prev,
-      draggingComponentType: componentType,
-    }));
-  }, []);
+  const setDraggingComponentType = useCallback(
+    (componentType: string | null) => {
+      setState((prev) => ({
+        ...prev,
+        draggingComponentType: componentType,
+      }));
+    },
+    []
+  );
 
   const toggleSidebar = useCallback(() => {
-    setState(prev => ({
+    setState((prev) => ({
       ...prev,
       showSidebar: !prev.showSidebar,
     }));
   }, []);
 
   const setSidebarVisibility = useCallback((visible: boolean) => {
-    setState(prev => ({
+    setState((prev) => ({
       ...prev,
       showSidebar: visible,
     }));
   }, []);
 
   const clearSelection = useCallback(() => {
-    setState(prev => ({
+    setState((prev) => ({
       ...prev,
       selectedComponentId: null,
     }));
@@ -55,7 +58,7 @@ export const useEditor = () => {
     selectedComponentId: state.selectedComponentId,
     draggingComponentType: state.draggingComponentType,
     showSidebar: state.showSidebar,
-    
+
     // Actions
     selectComponent,
     setDraggingComponentType,
@@ -64,4 +67,4 @@ export const useEditor = () => {
     clearSelection,
     reset,
   };
-}; 
+};

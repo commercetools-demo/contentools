@@ -28,8 +28,8 @@ const ModalOverlay = styled.div<{ isVisible: boolean }>`
   bottom: 0;
   background-color: rgba(0, 0, 0, 0.3);
   z-index: 1000;
-  opacity: ${props => props.isVisible ? 1 : 0};
-  visibility: ${props => props.isVisible ? 'visible' : 'hidden'};
+  opacity: ${(props) => (props.isVisible ? 1 : 0)};
+  visibility: ${(props) => (props.isVisible ? 'visible' : 'hidden')};
   transition: opacity 0.3s ease, visibility 0.3s ease;
   display: flex;
   align-items: center;
@@ -37,15 +37,15 @@ const ModalOverlay = styled.div<{ isVisible: boolean }>`
 `;
 
 const ModalContainer = styled.div<{ isVisible: boolean; size: number }>`
-  width: ${props => props.size}%;
+  width: ${(props) => props.size}%;
   max-width: 600px;
   min-width: 400px;
   background-color: white;
   border-radius: 8px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
   z-index: 1001;
-  transform: scale(${props => props.isVisible ? '1' : '0.9'});
-  opacity: ${props => props.isVisible ? 1 : 0};
+  transform: scale(${(props) => (props.isVisible ? '1' : '0.9')});
+  opacity: ${(props) => (props.isVisible ? 1 : 0)};
   transition: transform 0.3s ease, opacity 0.3s ease;
   display: flex;
   flex-direction: column;
@@ -139,7 +139,7 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
           />
         </ModalHeader>
         <ModalBody>
-          <Spacings.Stack scale="m" alignItems='flex-start'>
+          <Spacings.Stack scale="m" alignItems="flex-start">
             {children}
           </Spacings.Stack>
         </ModalBody>
