@@ -1,5 +1,6 @@
 import React from 'react';
 import { ComponentCache } from './component-cache';
+import styled from 'styled-components';
 
 export class SecureDynamicComponentLoader {
   private componentCache = new ComponentCache();
@@ -42,8 +43,6 @@ export class SecureDynamicComponentLoader {
       // Step 1: Secure transpilation
       const transpiledCode = componentData.transpiledCode;
 
-      console.log('transpiledCode', transpiledCode);
-
       // Step 2: Create controlled execution environment
       const cleanup: (() => void)[] = [];
 
@@ -61,17 +60,19 @@ export class SecureDynamicComponentLoader {
         },
       };
 
-      console.log('wrappedReact', wrappedReact);
+      // Inject styled-components
+      const dependencies = {
+        styled: styled,
+      };
 
       // Step 3: Execute component with Function constructor (most secure)
       const componentFactory = new Function(
         'React',
+        'styled',
         `return (${transpiledCode})`
       );
-      console.log('componentFactory', componentFactory);
-      const componentIIFE = componentFactory(wrappedReact);
+      const componentIIFE = componentFactory(wrappedReact, dependencies.styled);
       const Component = componentIIFE(wrappedReact);
-      console.log('Component', Component);
       // Step 4: Validate the result
       if (!Component || typeof Component !== 'function') {
         throw new Error(

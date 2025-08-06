@@ -1,6 +1,6 @@
 import { transform } from '@babel/standalone';
 import Editor from '@monaco-editor/react';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 
 class SecureTranspiler {
   private static readonly DANGEROUS_PATTERNS = [
@@ -31,11 +31,19 @@ class SecureTranspiler {
     }
   }
 
-  static transpile(sourceCode: string): string {
+  static cleanCode(sourceCode: string): string {
+    return sourceCode
+    .replace(/import\s+.*?\s+from\s+['"][^'"]*['"];?\s*/g, '')
+    .replace(/import\s+['"][^'"]*['"];?\s*/g, '');
+
+  }
+
+  static transpile(sourceCode: string, componentName: string): string {
     this.validateCode(sourceCode);
+    const cleanedCode = this.cleanCode(sourceCode);
 
     try {
-      const result = transform(sourceCode, {
+      const result = transform(cleanedCode, {
         presets: ['react'],
         plugins: ['transform-runtime'],
         sourceMaps: false, // TODO: Disable for production
@@ -54,7 +62,7 @@ class SecureTranspiler {
             
             // Auto-detect component export
             if (typeof Component !== 'undefined') return Component;
-            if (typeof MyComponent !== 'undefined') return MyComponent;
+            if (typeof ${componentName} !== 'undefined') return ${componentName};
             
             throw new Error('No valid React component found');
           })
@@ -68,31 +76,40 @@ class SecureTranspiler {
 interface ComponentPlaygroundProps {
   initialCode?: string;
   componentName: string;
-  onCodeChange: (data: string) => void;
+  props: string;
+  onCodeChange: (data: { transpiledCode: string; text: string }) => void;
 }
 
 const ComponentPlayground = ({
   onCodeChange,
+  initialCode,
   componentName,
+  props,
 }: ComponentPlaygroundProps) => {
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const handleChange = useCallback((value?: string) => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
-
-    timeoutRef.current = setTimeout(() => {
-      if (value) {
-        try {
-          onCodeChange(SecureTranspiler.transpile(value));
-        } catch (error) {
-          console.error('Transpilation error:', error);
-        }
+  const handleChange = useCallback(
+    (value?: string) => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
       }
-      timeoutRef.current = null;
-    }, 300); 
-  }, [onCodeChange]);
+
+      timeoutRef.current = setTimeout(() => {
+        if (value) {
+          try {
+            onCodeChange({
+              transpiledCode: SecureTranspiler.transpile(value, componentName),
+              text: value,
+            });
+          } catch (error) {
+            console.error('Transpilation error:', error);
+          }
+        }
+        timeoutRef.current = null;
+      }, 300);
+    },
+    [onCodeChange]
+  );
 
   useEffect(() => {
     return () => {
@@ -102,11 +119,13 @@ const ComponentPlayground = ({
     };
   }, []);
 
-  const defaultCode = `function ${componentName}(props) {
+  const defaultCode = `import React from 'react';
+import styled from 'styled-components';
+
+function ${componentName}({${props}}) {
   return (
     <div>
-      <h1>{props.title}</h1>
-      <p>{props.subtitle}</p>
+      // TODO: Add your component code here
     </div>
   );
 }`;
@@ -114,7 +133,7 @@ const ComponentPlayground = ({
     <Editor
       height="400px"
       defaultLanguage="javascript"
-      value={defaultCode}
+      value={initialCode || defaultCode}
       onChange={handleChange}
       options={{
         minimap: { enabled: false },
