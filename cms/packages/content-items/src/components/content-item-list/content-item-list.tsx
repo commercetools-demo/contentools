@@ -12,6 +12,7 @@ import Stamp from "@commercetools-uikit/stamp";
 import React from "react";
 import styles from "./content-item-list.module.css";
 import Spacings from "@commercetools-uikit/spacings";
+import Text from "@commercetools-uikit/text";
 
 interface ContentItemListProps {
   items: ContentItem[];
@@ -150,7 +151,7 @@ export const ContentItemList: React.FC<ContentItemListProps> = ({
   return (
     <Spacings.Stack>
       <Spacings.Inline alignItems="center" justifyContent="space-between">
-        <h1 className={styles.title}>Content Items</h1>
+        <Text.Headline as="h1">Content Items</Text.Headline>
         <PrimaryButton onClick={onCreateNew} label="Create New" />
       </Spacings.Inline>
 

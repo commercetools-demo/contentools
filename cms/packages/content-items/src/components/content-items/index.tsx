@@ -60,11 +60,6 @@ const ContentItemApp: React.FC<ContentItemAppProps> = ({
     history.push(`content-item/${item.key}`);
   };
 
-  // const handleBack = () => {
-  //   // setView('list');
-  //   contentTypeModalState.openModal();
-  //   setSelectedItem(null);
-  // };
 
   // Show loading state
   if (loading) {

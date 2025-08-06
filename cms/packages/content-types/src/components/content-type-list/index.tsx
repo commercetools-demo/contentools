@@ -1,17 +1,14 @@
 import { ContentTypeData } from '@commercetools-demo/cms-types';
-import React from 'react';
-import DataTable, { TColumn, TRow } from '@commercetools-uikit/data-table';
+import DataTable, { TColumn } from '@commercetools-uikit/data-table';
 import IconButton from '@commercetools-uikit/icon-button';
 import {
   BinLinearIcon,
-  CopyIcon,
-  EditIcon,
-  ExternalLinkIcon,
+  EditIcon
 } from '@commercetools-uikit/icons';
 import PrimaryButton from '@commercetools-uikit/primary-button';
 import Spacings from '@commercetools-uikit/spacings';
-import styled from 'styled-components';
 import Text from '@commercetools-uikit/text';
+import styled from 'styled-components';
 
 type Props = {
   items: (ContentTypeData & { id: string })[];
@@ -78,7 +75,7 @@ const ContentTypeList = ({
   return (
     <Spacings.Stack>
       <Spacings.Inline alignItems="center" justifyContent="space-between">
-        <StyledH1>Content Items</StyledH1>
+        <Text.Headline as="h1">Content types</Text.Headline>
         <PrimaryButton onClick={onCreateNew} label="Create New" />
       </Spacings.Inline>
 
