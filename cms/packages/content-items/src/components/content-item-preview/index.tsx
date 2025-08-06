@@ -1,8 +1,15 @@
 import { ContentItem } from '@commercetools-demo/cms-types';
-// import { ComponentRenderer } from '@commercetools-demo/cms-content-item-renderer';
 import React from 'react';
 import { ComponentRenderer } from '@commercetools-demo/cms-content-item-renderer';
-// import { ComponentPlayground } from '@commercetools-demo/cms-content-type-editor';
+import styled from 'styled-components';
+
+const StyledContentItemPreview = styled.div`
+  margin-top: 20px;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  padding: 16px;
+  margin-bottom: 16px;
+`;
 
 type Props = {
   item: ContentItem;
@@ -22,12 +29,13 @@ const ContentItemPreview = ({
     return null;
   }
   return (
-    <ComponentRenderer
-      component={item}
-      baseURL={hydratedBaseUrl}
-      locale={locale}
-      
-    />
+    <StyledContentItemPreview>
+      <ComponentRenderer
+        component={item}
+        baseURL={hydratedBaseUrl}
+        locale={locale}
+      />
+    </StyledContentItemPreview>
   );
 };
 
