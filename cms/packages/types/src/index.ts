@@ -152,7 +152,6 @@ export interface ContentTypeState {
   loading: boolean;
   error: string | null;
   availableDatasources: DatasourceInfo[];
-  contentTypesMetaData: ContentTypeMetaData[];
   contentTypesRenderers: Record<string, React.FC<any>>;
 }
 

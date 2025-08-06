@@ -1,9 +1,26 @@
-import { ContentTypeData, ContentTypeMetaData } from '@commercetools-demo/cms-types';
+import {
+  ContentTypeData,
+  ContentTypeMetaData,
+} from '@commercetools-demo/cms-types';
 import { Modal, useModalState } from '@commercetools-demo/cms-ui-components';
 import React from 'react';
-import styles from './content-type-modal.module.css';
 import { useHistory, useRouteMatch } from 'react-router-dom';
 import { useStateContentType } from '@commercetools-demo/cms-state';
+import styled from 'styled-components';
+
+const StyledGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+`;
+
+const StyledCard = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 16px;
+`;
 
 const ContentTypeNewModal: React.FC = () => {
   const history = useHistory();
@@ -21,31 +38,30 @@ const ContentTypeNewModal: React.FC = () => {
   };
 
   return (
-      <Modal
-        isOpen={contentTypeModalState.isModalOpen}
-        onClose={handleClose}
-        title="Select Content Type"
-        size={80}
-      >
-        <div className={styles.contentTypeGrid}>
-          {contentTypes.map((contentType) => (
-            <div
-              key={contentType.key}
-              className={styles.contentTypeCard}
-              onClick={() => handleSelect(contentType)}
-            >
-              <div className={styles.contentTypeIcon}>
-                {contentType.metadata.icon ? (
-                  <span>{contentType.metadata.icon}</span>
-                ) : (
-                  <i className="fas fa-file"></i>
-                )}
-              </div>
-              <h3 className={styles.contentTypeName}>{contentType.metadata.name}</h3>
+    <Modal
+      isOpen={contentTypeModalState.isModalOpen}
+      onClose={handleClose}
+      title="Select Content Type"
+      size={30}
+    >
+      <StyledGrid>
+        {contentTypes.map((contentType) => (
+          <StyledCard
+            key={contentType.key}
+            onClick={() => handleSelect(contentType)}
+          >
+            <div>
+              {contentType.metadata.icon ? (
+                <span>{contentType.metadata.icon}</span>
+              ) : (
+                <i className="fas fa-file"></i>
+              )}
             </div>
-          ))}
-        </div>
-      </Modal>
+            <h3>{contentType.metadata.name}</h3>
+          </StyledCard>
+        ))}
+      </StyledGrid>
+    </Modal>
   );
 };
 

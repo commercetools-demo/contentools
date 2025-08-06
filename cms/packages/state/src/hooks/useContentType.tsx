@@ -15,7 +15,6 @@ const initialState: ContentTypeState = {
   loading: false,
   error: null,
   availableDatasources: [],
-  contentTypesMetaData: [],
 };
 
 export const useContentType = (baseURL: string) => {
@@ -122,8 +121,7 @@ export const useContentType = (baseURL: string) => {
       setState(prev => ({ ...prev, loading: true, error: null }));
       const response = await createContentTypeEndpoint<ContentTypeData>(
         baseURL,
-        contentType.key,
-        contentType
+        contentType 
       );
       const newContentType = response.value;
       
@@ -144,12 +142,11 @@ export const useContentType = (baseURL: string) => {
     }
   }, [baseURL]);
 
-  const addContentTypeWithCode = useCallback(async ({ key, data }: { key: string, data: any }) => {
+  const addContentTypeWithCode = useCallback(async ({ data }: { data: any }) => {
     try {
       setState(prev => ({ ...prev, loading: true, error: null }));
       const response = await createContentTypeEndpoint<ContentTypeData>(
         baseURL,
-        key,
         data
       );
       const newContentType = response.value;
@@ -240,22 +237,12 @@ export const useContentType = (baseURL: string) => {
     return state.availableDatasources.find(ds => ds.key === key) || null;
   }, [state.availableDatasources]);
 
-  const fetchContentTypesMetaData = async () => {
-    const contentTypes = await fetchContentTypes();
-    const contentTypesMetaData = contentTypes.map(ct => ct.metadata);
-
-    setState(prev => ({ ...prev, contentTypesMetaData }));
-  };
-
-
-
   return {
     // State
     contentTypes: state.contentTypes,
     loading: state.loading,
     error: state.error,
     availableDatasources: state.availableDatasources,
-    contentTypesMetaData: state.contentTypesMetaData,
     contentTypesRenderers: state.contentTypesRenderers,
     // Actions
     fetchContentTypes,
@@ -265,7 +252,6 @@ export const useContentType = (baseURL: string) => {
     updateContentType,
     removeContentType,
     clearError,
-    fetchContentTypesMetaData,
     
     // Selectors
     getContentTypeByType,

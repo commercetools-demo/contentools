@@ -246,6 +246,7 @@ const ContentItemEditorEditForm: React.FC<ContentItemEditorEditFormProps> = ({
                     baseURL={baseURL}
                     businessUnitKey={businessUnitKey}
                     onComponentUpdated={handleComponentUpdated}
+                    onChange={(component) => setItem(component)}
                     onComponentDeleted={() => {}}
                     versionedContent={selectedVersionId ? contentVersion : null}
                   />

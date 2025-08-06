@@ -1,8 +1,8 @@
 import { Router, RequestHandler } from 'express';
 import { logger } from '../utils/logger.utils';
 import { CustomObjectController } from '../controllers/custom-object.controller';
-import { sampleContentTypeRegistry } from '../utils/constants';
 import { CONTENT_TYPE_CONTAINER } from '../constants';
+import { v4 as uuidv4 } from 'uuid';
 
 
 const contentTypeController = new CustomObjectController(
@@ -13,15 +13,13 @@ const contentTypeRouter = Router();
 contentTypeRouter.get('/content-type', async (req, res, next) => {
   try {
     const dynamicContentTypes = await contentTypeController.getCustomObjects();
-    // TODO: uncomment
-    // const staticContentTypes = Object.values(sampleContentTypeRegistry);
+    
     res.json([
       ...dynamicContentTypes.map((item) => ({
         id: item.id,
         key: item.key,
         ...item.value,
       })),
-      // ...staticContentTypes,
     ]);
   } catch (error) {
     logger.error('Failed to get content-type objects:', error);
@@ -47,25 +45,14 @@ contentTypeRouter.get('/content-type/:key', async (req, res, next) => {
   }
 });
 
-contentTypeRouter.post('/content-type/:key', (async (req, res, next) => {
+contentTypeRouter.post('/content-type', (async (req, res, next) => {
   try {
-    // return error if key exists
-    const { key } = req.params;
-    try {
-      const objectExists = await contentTypeController.getCustomObject(key);
-      if (objectExists) {
-        return res
-          .status(400)
-          .json({ error: 'content-type object with key already exists' });
-      }
-    } catch (error) {
-      logger.error(
-        `Failed to get content-type object with key ${req.params.key}:`,
-        error
-      );
-    }
+    const key = `type-${uuidv4()}`;
     const { value } = req.body;
-    const object = await contentTypeController.createCustomObject(key, value);
+    const object = await contentTypeController.createCustomObject(key, {
+      ...value,
+      key,
+    });
     res.status(201).json(object);
   } catch (error) {
     logger.error(

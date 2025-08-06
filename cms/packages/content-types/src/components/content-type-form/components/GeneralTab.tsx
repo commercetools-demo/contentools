@@ -43,31 +43,11 @@ const GeneralTab: React.FC<GeneralTabProps> = ({
       });
     };
 
-  const handleKeyChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    onContentTypeChange({
-      key: event.target.value,
-    });
-  };
-
   return (
     <Spacings.Stack scale="m">
       <Text.Subheadline as="h4">General Information</Text.Subheadline>
       
       <FormRow>
-        <FormField>
-          <FieldLabel
-            title="Content Type Key"
-            hint="Unique identifier for this content type"
-            htmlFor="content-type-key"
-          />
-          <TextInput
-            id="content-type-key"
-            value={contentType.key}
-            onChange={handleKeyChange}
-            placeholder="e.g., hero-banner"
-            isDisabled={isEdit}
-          />
-        </FormField>
 
         <FormField>
           <FieldLabel

@@ -1785,6 +1785,7 @@ __metadata:
     "@commercetools-uikit/flat-button": "npm:^20.2.1"
     "@commercetools-uikit/icon-button": "npm:^20.2.1"
     "@commercetools-uikit/icons": "npm:^20.2.1"
+    "@commercetools-uikit/loading-spinner": "npm:^20.2.2"
     "@commercetools-uikit/number-input": "npm:^20.2.2"
     "@commercetools-uikit/primary-button": "npm:^20.2.1"
     "@commercetools-uikit/secondary-button": "npm:^20.2.2"
@@ -1815,27 +1816,10 @@ __metadata:
     "@babel/runtime-corejs3": "npm:^7.28.0"
     "@babel/standalone": "npm:^7.28.2"
     "@commercetools-demo/cms-types": "workspace:*"
+    "@commercetools-uikit/loading-spinner": "npm:^20.2.2"
     "@emotion/react": "npm:^11.14.0"
     "@monaco-editor/react": "npm:^4.7.0"
     "@types/babel__standalone": "npm:^7"
-    "@types/react": "npm:^19.0.0"
-    "@types/styled-components": "npm:^5.1.0"
-    country-to-currency: "npm:^1.1.0"
-    styled-components: "npm:^6.0.0"
-  peerDependencies:
-    "@emotion/react": ">=11.0.0"
-    react: ">=19.0.0"
-    react-dom: ">=19.0.0"
-  languageName: unknown
-  linkType: soft
-
-"@commercetools-demo/cms-content-type-registry@workspace:*, @commercetools-demo/cms-content-type-registry@workspace:packages/content-type-registry":
-  version: 0.0.0-use.local
-  resolution: "@commercetools-demo/cms-content-type-registry@workspace:packages/content-type-registry"
-  dependencies:
-    "@babel/runtime-corejs3": "npm:^7.28.0"
-    "@commercetools-demo/cms-types": "workspace:*"
-    "@emotion/react": "npm:^11.14.0"
     "@types/react": "npm:^19.0.0"
     "@types/styled-components": "npm:^5.1.0"
     country-to-currency: "npm:^1.1.0"
@@ -1871,6 +1855,7 @@ __metadata:
     "@commercetools-uikit/flat-button": "npm:^20.2.1"
     "@commercetools-uikit/icon-button": "npm:^20.2.1"
     "@commercetools-uikit/icons": "npm:^20.2.1"
+    "@commercetools-uikit/loading-spinner": "npm:^20.2.2"
     "@commercetools-uikit/number-input": "npm:^20.2.2"
     "@commercetools-uikit/primary-button": "npm:^20.2.1"
     "@commercetools-uikit/secondary-button": "npm:^20.2.2"
@@ -1938,7 +1923,6 @@ __metadata:
   resolution: "@commercetools-demo/cms-state@workspace:packages/state"
   dependencies:
     "@babel/runtime-corejs3": "npm:^7.28.0"
-    "@commercetools-demo/cms-content-type-registry": "workspace:*"
     "@commercetools-demo/cms-types": "workspace:*"
     "@emotion/react": "npm:^11.14.0"
     "@types/react": "npm:^19"
@@ -1964,6 +1948,7 @@ __metadata:
     "@commercetools-uikit/flat-button": "npm:^20.2.1"
     "@commercetools-uikit/icon-button": "npm:^20.2.1"
     "@commercetools-uikit/icons": "npm:^20.2.1"
+    "@commercetools-uikit/loading-spinner": "npm:^20.2.2"
     "@commercetools-uikit/primary-button": "npm:^20.2.2"
     "@commercetools-uikit/secondary-button": "npm:^20.2.2"
     "@commercetools-uikit/spacings": "npm:^20.2.1"
@@ -3843,6 +3828,24 @@ __metadata:
   peerDependencies:
     react: 19.x
   checksum: 10/f46b362daf65939f813c02e8f8956114fe91a98b375bc29f74257f090149bd76ff19d4e56782f8fdd1605400376b4e79dfe220cf9863c7d99d03b22d77acc0d3
+  languageName: node
+  linkType: hard
+
+"@commercetools-uikit/loading-spinner@npm:^20.2.2":
+  version: 20.2.2
+  resolution: "@commercetools-uikit/loading-spinner@npm:20.2.2"
+  dependencies:
+    "@babel/runtime": "npm:^7.20.13"
+    "@babel/runtime-corejs3": "npm:^7.20.13"
+    "@commercetools-uikit/design-system": "npm:20.2.2"
+    "@commercetools-uikit/spacings-inline": "npm:20.2.2"
+    "@commercetools-uikit/text": "npm:20.2.2"
+    "@commercetools-uikit/utils": "npm:20.2.2"
+    "@emotion/react": "npm:^11.10.5"
+    react-intl: "npm:^7.1.4"
+  peerDependencies:
+    react: 19.x
+  checksum: 10/0d9e63d0686237c0c236bfa01afd6c695cb032668cacbafe819680d38b0fdd8de5f0a203006d67973f26a2ff0067706f0758f42d9818fc8879f3e1d0ab31cd94
   languageName: node
   linkType: hard
 

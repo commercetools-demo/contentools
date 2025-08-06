@@ -64,11 +64,6 @@ const PreviewTab: React.FC<PreviewTabProps> = ({
     <Spacings.Stack scale="m">
       <Text.Subheadline as="h4">Code Editor</Text.Subheadline>
 
-      <Text.Body>
-        Test your content type by editing the code and seeing how it renders.
-      </Text.Body>
-
-
         <PreviewPanel>
           {hasSchema ? (
             <ComponentPlayground

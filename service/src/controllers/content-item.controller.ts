@@ -157,7 +157,15 @@ export const getContentItems = async (
   }
   const contentItems = await contentItemController.getCustomObjects(
     contentItemWhereClause
-  );
+  ).then((items) => {
+    return items.map((item) => ({
+      ...item,
+      value: {
+        ...item.value,
+        id: item.id,
+      },
+    }));
+  });
 
   const whereClause = contentItems
     ?.map(
@@ -189,7 +197,7 @@ export const getContentItemWithStates = async (
   const item = contentItem.value;
   const contentStates =
     await ContentStateController.getContentStatesWithWhereClause(
-      `value(key = "${key}" AND businessUnitKey = "${businessUnitKey}")`
+      `key = "${key}" AND businessUnitKey = "${businessUnitKey}"`
     );
   if (contentStates.length > 0) {
     if (contentStates[0].states.draft) {
@@ -206,15 +214,11 @@ export const getPublishedContentItem = async (
   businessUnitKey: string,
   key: string
 ): Promise<ContentItem['value'] | undefined> => {
-  const contentItemController = new CustomObjectController(
-    CONTENT_ITEM_CONTAINER
-  );
-  const contentItem = await contentItemController.getCustomObject(key);
-  const item = contentItem.value;
   const contentStates =
     await ContentStateController.getContentStatesWithWhereClause(
-      `value(key = "${key}" AND businessUnitKey = "${businessUnitKey}")`
+      `key = "${key}" AND businessUnitKey = "${businessUnitKey}"`
     );
+
   if (contentStates.length > 0) {
     if (contentStates[0].states.published) {
       return resolveContentItemDatasource(contentStates[0].states.published);

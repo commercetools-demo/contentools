@@ -10,9 +10,25 @@ import {
 import PrimaryButton from "@commercetools-uikit/primary-button";
 import Stamp from "@commercetools-uikit/stamp";
 import React from "react";
-import styles from "./content-item-list.module.css";
 import Spacings from "@commercetools-uikit/spacings";
 import Text from "@commercetools-uikit/text";
+import LoadingSpinner from "@commercetools-uikit/loading-spinner";
+import styled from "styled-components";
+import { useStateContentType } from "@commercetools-demo/cms-state";
+
+const LoadingContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+`;
+
+const ErrorContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+`;
 
 interface ContentItemListProps {
   items: ContentItem[];
@@ -67,6 +83,7 @@ export const ContentItemList: React.FC<ContentItemListProps> = ({
   onEdit,
   onDelete,
 }) => {
+  const { contentTypes } = useStateContentType();
   const handleCopy = (item: ContentItem) => {
     navigator.clipboard.writeText(item.key);
     alert("Item ID copied to clipboard");
@@ -83,15 +100,23 @@ export const ContentItemList: React.FC<ContentItemListProps> = ({
     {
       key: "name",
       label: "Name",
+      renderItem: (row: ContentItemRow) => (
+        <Text.Body>{row.name}</Text.Body>
+      ),
     },
     {
-      key: "type",
-      label: "Type",
+      key: "key",
+      label: "Key",
+      renderItem: (row: ContentItemRow) => (
+        <Text.Body truncate>{row.key}</Text.Body>
+      ),
     },
     {
       key: "slot",
       label: "Slot",
-      renderItem: (row: ContentItemRow) => row.properties?.slot || "-",
+      renderItem: (row: ContentItemRow) => (
+        <Text.Body>{row.properties?.slot || "-"}</Text.Body>
+      ),
     },
     {
       key: "status",
@@ -110,6 +135,7 @@ export const ContentItemList: React.FC<ContentItemListProps> = ({
           <IconButton
             onClick={() => onEdit?.(row)}
             label="Edit"
+            size="20"
             icon={<EditIcon />}
           >
             Edit
@@ -117,6 +143,7 @@ export const ContentItemList: React.FC<ContentItemListProps> = ({
           <IconButton
             onClick={() => onDelete?.(row.key)}
             label="Delete"
+            size="20"
             icon={<BinLinearIcon />}
           >
             Delete
@@ -124,6 +151,7 @@ export const ContentItemList: React.FC<ContentItemListProps> = ({
           <IconButton
             onClick={() => handleCopy(row)}
             label="Copy ID"
+            size="20"
             icon={<CopyIcon />}
           >
             Copy ID
@@ -131,6 +159,7 @@ export const ContentItemList: React.FC<ContentItemListProps> = ({
           <IconButton
             onClick={() => handleJson(row)}
             label="Open JSON"
+            size="20"
             icon={<ExternalLinkIcon />}
           >
             Open JSON
@@ -141,11 +170,13 @@ export const ContentItemList: React.FC<ContentItemListProps> = ({
   ];
 
   if (loading) {
-    return <div className={styles.loading}>Loading...</div>;
+    return <LoadingContainer>
+    <LoadingSpinner />
+  </LoadingContainer>
   }
 
   if (error) {
-    return <div className={styles.error}>{error}</div>;
+    return <ErrorContainer>{error}</ErrorContainer>;
   }
 
   return (

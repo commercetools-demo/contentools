@@ -24,9 +24,7 @@ const ContentTypeNewModal: React.FC<{
   };
 
   const handleCreate = async (contentType: ContentTypeData) => {
-    console.log(contentType);
     const contentTypeData = await addContentType(contentType);
-    console.log(contentTypeData);
     history.replace(`/content-type/${contentTypeData.key}`);
   };
 
@@ -39,6 +37,7 @@ const ContentTypeNewModal: React.FC<{
     >
       <ContentTypeForm
         onCreate={handleCreate}
+        onCancel={handleClose}
         parentUrl={match.url}
         baseURL={baseURL}
         businessUnitKey={businessUnitKey}

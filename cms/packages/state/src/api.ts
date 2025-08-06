@@ -119,10 +119,9 @@ export async function fetchContentTypeEndpoint<T>(
  */
 export async function createContentTypeEndpoint<T>(
   baseURL: string,
-  key: string,
   data: T
 ): Promise<ApiResponse<T>> {
-  return fetchApi<T>(`${baseURL}/content-type/${key}`, {
+  return fetchApi<T>(`${baseURL}/content-type`, {
     method: 'POST',
     body: JSON.stringify({ value: data }),
   });

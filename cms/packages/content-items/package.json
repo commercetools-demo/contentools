@@ -26,6 +26,7 @@
     "@commercetools-uikit/flat-button": "^20.2.1",
     "@commercetools-uikit/icon-button": "^20.2.1",
     "@commercetools-uikit/icons": "^20.2.1",
+    "@commercetools-uikit/loading-spinner": "^20.2.2",
     "@commercetools-uikit/number-input": "^20.2.2",
     "@commercetools-uikit/primary-button": "^20.2.1",
     "@commercetools-uikit/secondary-button": "^20.2.2",

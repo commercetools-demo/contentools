@@ -6,6 +6,7 @@ import Text from '@commercetools-uikit/text';
 import Spacings from '@commercetools-uikit/spacings';
 import PrimaryButton from '@commercetools-uikit/primary-button';
 import SecondaryButton from '@commercetools-uikit/secondary-button';
+import LoadingSpinner from '@commercetools-uikit/loading-spinner';
 
 interface ConfirmationModalProps {
   isOpen: boolean;
@@ -16,6 +17,7 @@ interface ConfirmationModalProps {
   rejectTitle: string;
   size?: number; // in percent
   children?: React.ReactNode;
+  loading?: boolean;
 }
 
 const ModalOverlay = styled.div<{ isVisible: boolean }>`
@@ -85,6 +87,7 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   rejectTitle,
   size = 40,
   children,
+  loading,
 }) => {
   // Handle ESC key to close modal
   useEffect(() => {
@@ -136,7 +139,7 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
           />
         </ModalHeader>
         <ModalBody>
-          <Spacings.Stack scale="m">
+          <Spacings.Stack scale="m" alignItems='flex-start'>
             {children}
           </Spacings.Stack>
         </ModalBody>
@@ -149,7 +152,9 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
           <PrimaryButton
             label={confirmTitle}
             onClick={handleConfirm}
+            isDisabled={loading}
             size="medium"
+            iconRight={loading ? <LoadingSpinner /> : undefined}
           />
         </ModalFooter>
       </ModalContainer>

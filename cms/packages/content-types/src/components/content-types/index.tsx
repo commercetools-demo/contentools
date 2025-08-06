@@ -1,9 +1,15 @@
 import { useStateContentType } from '@commercetools-demo/cms-state';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import ContentTypeList from '../content-type-list';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import { ContentTypeData } from '@commercetools-demo/cms-types';
+import {
+  ConfirmationModal,
+  useModalState,
+} from '@commercetools-demo/cms-ui-components';
+import Text from '@commercetools-uikit/text';
+import LoadingSpinner from '@commercetools-uikit/loading-spinner';
 
 type Props = {
   parentUrl: string;
@@ -32,7 +38,11 @@ const ContentTypesApp = ({
   locale,
 }: Props) => {
   const history = useHistory();
-
+  const deleteModal = useModalState();
+  const [selectedItem, setSelectedItem] = useState<ContentTypeData | null>(
+    null
+  );
+  const [isLoading, setIsLoading] = useState(false);
   const {
     fetchContentTypes,
     clearError,
@@ -41,10 +51,18 @@ const ContentTypesApp = ({
     removeContentType,
   } = useStateContentType();
 
-  const handleDelete = async (key: string) => {
-    if (!confirm('Are you sure you want to delete this item?')) return;
+  const handleDeleteConfirmation = async (key: string) => {
+    setIsLoading(true);
     await removeContentType(key);
     clearError();
+    setIsLoading(false);
+    loadItems();
+    deleteModal.closeModal();
+  };
+
+  const handleDeleteModalOpen = (key: string) => {
+    setSelectedItem(contentTypes?.find((item) => item.key === key) || null);
+    deleteModal.openModal();
   };
 
   const handleCreateNew = () => {
@@ -55,18 +73,22 @@ const ContentTypesApp = ({
     history.push(`content-type/${item.key}`);
   };
 
-  // Load data on mount
-  useEffect(() => {
-    loadItems();
-  }, [baseURL, businessUnitKey]);
-
   const loadItems = async () => {
     await fetchContentTypes();
     clearError();
   };
 
+  // Load data on mount
+  useEffect(() => {
+    loadItems();
+  }, [baseURL, businessUnitKey]);
+
   if (!contentTypes) {
-    return <LoadingContainer>Loading...</LoadingContainer>;
+    return (
+      <LoadingContainer>
+        <LoadingSpinner />
+      </LoadingContainer>
+    );
   }
 
   // Show error state
@@ -75,15 +97,34 @@ const ContentTypesApp = ({
   }
 
   return (
-    <ContentTypeList
-      items={contentTypes}
-      baseURL={baseURL}
-      businessUnitKey={businessUnitKey}
-      error={error}
-      onCreateNew={handleCreateNew}
-      onEdit={handleEdit}
-      onDelete={handleDelete}
-    />
+    <>
+      <ContentTypeList
+        items={contentTypes}
+        baseURL={baseURL}
+        businessUnitKey={businessUnitKey}
+        error={error}
+        onCreateNew={handleCreateNew}
+        onEdit={handleEdit}
+        onDelete={handleDeleteModalOpen}
+      />
+      <ConfirmationModal
+        isOpen={deleteModal.isModalOpen}
+        onClose={deleteModal.closeModal}
+        onConfirm={() => handleDeleteConfirmation(selectedItem?.key || '')}
+        onReject={deleteModal.closeModal}
+        confirmTitle="Delete"
+        rejectTitle="Cancel"
+        loading={isLoading}
+      >
+        <Text.Body>
+          Are you sure you want to delete content-type with key{' '}
+          <Text.Body as="span" fontWeight="bold">
+            {selectedItem?.key}
+          </Text.Body>
+          ?
+        </Text.Body>
+      </ConfirmationModal>
+    </>
   );
 };
 

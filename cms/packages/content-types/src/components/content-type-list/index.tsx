@@ -8,7 +8,6 @@ import {
 import PrimaryButton from '@commercetools-uikit/primary-button';
 import Spacings from '@commercetools-uikit/spacings';
 import Text from '@commercetools-uikit/text';
-import styled from 'styled-components';
 
 type Props = {
   items: (ContentTypeData & { id: string })[];
@@ -20,10 +19,6 @@ type Props = {
   onDelete: (key: string) => void;
 };
 
-const StyledH1 = styled.h1`
-  font-size: 24px;
-  font-weight: 600;
-`;
 
 const ContentTypeList = ({
   items,
@@ -43,10 +38,10 @@ const ContentTypeList = ({
       ),
     },
     {
-      key: 'type',
-      label: 'Type',
+      key: 'key',
+      label: 'Key',
       renderItem: (row: ContentTypeData) => (
-        <Text.Body>{row.metadata.type}</Text.Body>
+        <Text.Body truncate>{row.key}</Text.Body>
       ),
     },
     {
@@ -57,13 +52,15 @@ const ContentTypeList = ({
           <IconButton
             onClick={() => onEdit?.(row)}
             label="Edit"
+            size="20"
             icon={<EditIcon />}
           >
             Edit
           </IconButton>
           <IconButton
-            onClick={() => onDelete?.(row.metadata.type)}
+            onClick={() => onDelete?.(row.key)}
             label="Delete"
+            size="20"
             icon={<BinLinearIcon />}
           >
             Delete
