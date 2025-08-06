@@ -351,13 +351,6 @@ const PropertyEditor: React.FC<PropertyEditorProps> = ({
                 )}
 
                 <ActionsContainer>
-                  <SecondaryButton
-                    label="Delete Component"
-                    onClick={useCallback(
-                      () => setShowDeleteConfirm(true),
-                      [setShowDeleteConfirm]
-                    )}
-                  />
                   <PrimaryButton
                     type="submit"
                     label="Save Changes"

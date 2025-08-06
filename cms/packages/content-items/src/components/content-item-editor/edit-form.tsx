@@ -53,8 +53,7 @@ const ContentItemEditorEditForm: React.FC<ContentItemEditorEditFormProps> = ({
     useState<ContentItemVersionInfo | null>(null);
   const [item, setItem] = useState<ContentItem | null>(null);
   const { fetchVersions, versions } = useStateVersion<ContentItemVersionInfo>();
-  const { currentState } = useStateStateManagement();
-  const { fetchStates, publish, revertToPublished } = useStateStateManagement();
+  const { fetchStates, publish, revertToPublished, currentState } = useStateStateManagement();
   const {
     fetchContentItem,
     loading,
@@ -202,6 +201,7 @@ const ContentItemEditorEditForm: React.FC<ContentItemEditorEditFormProps> = ({
     if (contentItemKey) {
       fetchContentItem(hydratedUrl, contentItemKey).then((item) => {
         setItem(item);
+        fetchStates(hydratedUrl, contentItemKey, 'content-items');
       });
     }
   }, [fetchContentItem, hydratedUrl, contentItemKey]);

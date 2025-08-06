@@ -31,12 +31,11 @@ const VersionHistorySidebar: React.FC<VersionHistorySidebarProps> = ({
   return (
     <Modal
       isOpen={isVisible}
+      size={15}
       onClose={onClose}
       title="Version History"
     >
       <Spacings.Stack scale="m">
-        <Text.Subheadline as="h4">Version History</Text.Subheadline>
-        
         {versions.length === 0 ? (
           <Text.Body>No version history available</Text.Body>
         ) : (
@@ -60,16 +59,18 @@ const VersionHistorySidebar: React.FC<VersionHistorySidebarProps> = ({
         )}
         
         {selectedVersionId && (
-          <Spacings.Stack scale="s">
+          <Spacings.Inline scale="s" alignItems="flex-end" justifyContent="space-evenly">
             <PrimaryButton
               label="Apply Version"
+              size='medium'
               onClick={() => onApplyVersion(selectedVersionId)}
             />
             <SecondaryButton
               label="Cancel"
+              size='medium'
               onClick={onSelectionCancelled}
             />
-          </Spacings.Stack>
+          </Spacings.Inline>
         )}
       </Spacings.Stack>
     </Modal>
