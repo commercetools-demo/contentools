@@ -1,17 +1,14 @@
 import React, {
-  Component,
   Suspense,
   useEffect,
   useMemo,
   useState,
 } from 'react';
-import styled from 'styled-components';
 import { ContentItem } from '@commercetools-demo/cms-types';
 import { DynamicComponentErrorBoundary } from './components/error-boundary';
 import { SecureDynamicComponentLoader } from './components/dynamic-component-loader';
 import { useStateContentType } from '@commercetools-demo/cms-state';
 
-// Props interface
 export interface ComponentRendererProps {
   /** The content item to render */
   component: ContentItem;

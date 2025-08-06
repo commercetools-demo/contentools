@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import { ContentTypeState, ContentTypeData, DatasourceInfo } from '@commercetools-demo/cms-types';
 import {
   fetchContentTypesEndpoint,
@@ -8,7 +8,6 @@ import {
   getAvailableDatasourcesEndpoint,
   fetchContentTypeEndpoint,
 } from '../api';
-import { getAllContentTypesRenderers } from '@commercetools-demo/cms-content-type-registry';
 
 const initialState: ContentTypeState = {
   contentTypes: [],
@@ -248,10 +247,6 @@ export const useContentType = (baseURL: string) => {
     setState(prev => ({ ...prev, contentTypesMetaData }));
   };
 
-  const fetchContentTypesRenderers = async () => {
-    const contentTypesRenderers = await getAllContentTypesRenderers();
-    setState(prev => ({ ...prev, contentTypesRenderers }));
-  };
 
 
   return {
@@ -271,7 +266,6 @@ export const useContentType = (baseURL: string) => {
     removeContentType,
     clearError,
     fetchContentTypesMetaData,
-    fetchContentTypesRenderers,
     
     // Selectors
     getContentTypeByType,

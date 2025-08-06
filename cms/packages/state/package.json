@@ -13,7 +13,6 @@
   ],
   "dependencies": {
     "@babel/runtime-corejs3": "^7.28.0",
-    "@commercetools-demo/cms-content-type-registry": "workspace:*",
     "@commercetools-demo/cms-types": "workspace:*",
     "@emotion/react": "^11.14.0",
     "uuid": "^11.1.0"
