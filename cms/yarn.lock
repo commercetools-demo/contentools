@@ -1858,6 +1858,7 @@ __metadata:
   resolution: "@commercetools-demo/cms-content-types@workspace:packages/content-types"
   dependencies:
     "@babel/runtime-corejs3": "npm:^7.28.0"
+    "@commercetools-demo/cms-content-item-renderer": "workspace:*"
     "@commercetools-demo/cms-content-type-editor": "workspace:*"
     "@commercetools-demo/cms-property-editor": "workspace:*"
     "@commercetools-demo/cms-state": "workspace:*"
@@ -1877,6 +1878,7 @@ __metadata:
     "@commercetools-uikit/stamp": "npm:^20.2.1"
     "@commercetools-uikit/text": "npm:^20.2.2"
     "@commercetools-uikit/text-input": "npm:^20.2.2"
+    "@commercetools-uikit/view-switcher": "npm:^20.2.2"
     "@emotion/react": "npm:^11.14.0"
     "@types/add": "npm:^2"
     "@types/react": "npm:^19"
@@ -4888,6 +4890,24 @@ __metadata:
   peerDependencies:
     react: 19.x
   checksum: 10/3aac3bb32a3a91927298b9efc0fed9727716c8d316224a49a7495a7d13ad3ad65a6e627fd6c533481d6535779ce910f1739d78e390eda701506eae1440be5006
+  languageName: node
+  linkType: hard
+
+"@commercetools-uikit/view-switcher@npm:^20.2.2":
+  version: 20.2.2
+  resolution: "@commercetools-uikit/view-switcher@npm:20.2.2"
+  dependencies:
+    "@babel/runtime": "npm:^7.20.13"
+    "@babel/runtime-corejs3": "npm:^7.20.13"
+    "@commercetools-uikit/accessible-button": "npm:20.2.2"
+    "@commercetools-uikit/design-system": "npm:20.2.2"
+    "@commercetools-uikit/utils": "npm:20.2.2"
+    "@emotion/react": "npm:^11.10.5"
+    "@emotion/styled": "npm:^11.10.5"
+    lodash: "npm:4.17.21"
+  peerDependencies:
+    react: 19.x
+  checksum: 10/57304b512ae4dbfe214d371dd69dfdd7427824d7df194ba7df0ff7d442bdb7a7f9766e04fab94c5889d2a8f21b66b26fc1cbe14b00c40ff77b70a8b516007e8b
   languageName: node
   linkType: hard
 

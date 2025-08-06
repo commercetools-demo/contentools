@@ -11,59 +11,6 @@ import { DynamicComponentErrorBoundary } from './components/error-boundary';
 import { SecureDynamicComponentLoader } from './components/dynamic-component-loader';
 import { useStateContentType } from '@commercetools-demo/cms-state';
 
-//   private componentCache: Map<string, any>;
-
-//   constructor() {
-//     this.componentCache = new Map();
-//   }
-
-//   loadComponent(componentData: any, dependencies: any = {}) {
-//     const cacheKey = `${componentData.id}-${componentData.version}`;
-//     console.log('cacheKey', cacheKey);
-//     console.log('componentData', componentData);
-
-//     if (this.componentCache.has(cacheKey)) {
-//       console.log('cache hit');
-//       return this.componentCache.get(cacheKey);
-//     }
-
-//     try {
-//       // Create safe execution context
-//       const contextVars = {
-//         React: dependencies.React || React,
-//         ...dependencies
-//       };
-//       console.log('contextVars', contextVars);
-
-//       // Build parameter string and values
-//       const paramNames = Object.keys(contextVars);
-//       const paramValues = Object.values(contextVars);
-
-//       console.log('paramNames', paramNames);
-//       console.log('paramValues', paramValues);
-//       const componentFactory = new Function(
-//         'React',
-//         'return (' + componentData.transpiledCode + ')(React)'
-//       );
-//       const rickityComponent = componentFactory(React);
-//       console.log('rickityComponent', rickityComponent);
-
-//       this.componentCache.set(cacheKey, rickityComponent);
-//       return rickityComponent;
-//     } catch (error: any) {
-//       console.error('Component loading failed:', error);
-//       return this.getErrorComponent(error.message);
-//     }
-//   }
-
-//   getErrorComponent(message: string) {
-//     return () => React.createElement('div',
-//       { style: { color: 'red', border: '1px solid red', padding: '10px' } },
-//       `Component Error: ${message}`
-//     );
-//   }
-// }
-
 // Props interface
 export interface ComponentRendererProps {
   /** The content item to render */
@@ -121,9 +68,9 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = ({
         const contentType = await fetchContentType(component.type);
 
         const loadedComponent = await loader.loadComponent({
-          id: contentType.metadata.type,
-          version: contentType.id,
-          transpiledCode: contentType.code,
+          id: contentType.id,
+          version: contentType.key,
+          transpiledCode: contentType.code?.transpiledCode || '',
         });
 
         if (mounted) {
@@ -154,7 +101,7 @@ export const ComponentRenderer: React.FC<ComponentRendererProps> = ({
   }, [loader]);
 
   if (loading) {
-    return <Suspense fallback={<div>Loading...</div>}>BLLALALALA</Suspense>;
+    return <Suspense fallback={<div>Loading...</div>}>Loading</Suspense>;
   }
 
   if (error) {

@@ -93,7 +93,7 @@ export async function deletePageEndpoint(baseURL: string, key: string): Promise<
 /**
  * Fetch registry components
  */
-export async function fetchContentTypesEndpoint<T>(baseURL: string): Promise<ContentTypeData[]> {
+export async function fetchContentTypesEndpoint(baseURL: string): Promise<ContentTypeData[]> {
   const response = await fetch(`${baseURL}/content-type`);
 
   if (!response.ok) {
@@ -109,8 +109,9 @@ export async function fetchContentTypesEndpoint<T>(baseURL: string): Promise<Con
 export async function fetchContentTypeEndpoint<T>(
   baseURL: string,
   key: string
-): Promise<ApiResponse<T>> {
-  return fetchApi<T>(`${baseURL}/content-type/${key}`);
+): Promise<T> {
+   const response = await fetch(`${baseURL}/content-type/${key}`);
+   return response.json();
 }
 
 /**

@@ -8,7 +8,7 @@ import {
   getAvailableDatasourcesEndpoint,
   fetchContentTypeEndpoint,
 } from '../api';
-import { getAllContentTypesMetaData, getAllContentTypesRenderers } from '@commercetools-demo/cms-content-type-registry';
+import { getAllContentTypesRenderers } from '@commercetools-demo/cms-content-type-registry';
 
 const initialState: ContentTypeState = {
   contentTypes: [],
@@ -26,8 +26,26 @@ export const useContentType = (baseURL: string) => {
   const fetchContentTypes = useCallback(async () => {
     try {
       setState(prev => ({ ...prev, loading: true, error: null }));
-      const response = await fetchContentTypesEndpoint<ContentTypeData>(baseURL);
-      const contentTypes = response.map(item => item);
+      const response = await fetchContentTypesEndpoint(baseURL);
+      const contentTypes = response.map(item => {
+        try {
+          
+          const base64Code = atob(item.code?.transpiledCode || '');
+          const base64Text = atob(item.code?.text || '');
+          item.code = {
+            componentName: item.metadata.type,
+            transpiledCode: base64Code,
+            text: base64Text,
+          };
+        } catch (error) {
+          item.code = {
+            componentName: item.metadata.type,
+            transpiledCode: '',
+            text: '',
+          };
+        }
+        return item;
+      });
       
       setState(prev => ({
         ...prev,
@@ -50,9 +68,23 @@ export const useContentType = (baseURL: string) => {
     try {
       setState(prev => ({ ...prev, loading: true, error: null }));
       const response = await fetchContentTypeEndpoint<ContentTypeData>(baseURL, key);
-      const contentType = response.value;
+      try {
+        const base64Code = atob(response.code?.transpiledCode || '');
+        const base64Text = atob(response.code?.text || '');
+        response.code = {
+          componentName: response.metadata.type,
+          transpiledCode: base64Code,
+          text: base64Text,
+        };
+      } catch (error) {
+        response.code = {
+          componentName: response.metadata.type,
+          transpiledCode: '',
+          text: '',
+        };
+      }
       
-      return contentType;
+      return response;
     } catch (error) {
       setState(prev => ({
         ...prev,
@@ -91,7 +123,7 @@ export const useContentType = (baseURL: string) => {
       setState(prev => ({ ...prev, loading: true, error: null }));
       const response = await createContentTypeEndpoint<ContentTypeData>(
         baseURL,
-        contentType.metadata.type,
+        contentType.key,
         contentType
       );
       const newContentType = response.value;
@@ -143,6 +175,13 @@ export const useContentType = (baseURL: string) => {
   const updateContentType = useCallback(async (key: string, contentType: ContentTypeData) => {
     try {
       setState(prev => ({ ...prev, loading: true, error: null }));
+      const base64Code = btoa(contentType.code?.transpiledCode || '');
+      const base64Text = btoa(contentType.code?.text || '');
+      contentType.code = {
+        componentName: contentType.metadata.type,
+        transpiledCode: base64Code,
+        text: base64Text,
+      };
       const response = await updateContentTypeEndpoint<ContentTypeData>(baseURL, key, contentType);
       const updatedContentType = response.value;
       
@@ -203,7 +242,9 @@ export const useContentType = (baseURL: string) => {
   }, [state.availableDatasources]);
 
   const fetchContentTypesMetaData = async () => {
-    const contentTypesMetaData = await getAllContentTypesMetaData({ baseURL });
+    const contentTypes = await fetchContentTypes();
+    const contentTypesMetaData = contentTypes.map(ct => ct.metadata);
+
     setState(prev => ({ ...prev, contentTypesMetaData }));
   };
 

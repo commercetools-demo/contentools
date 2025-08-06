@@ -12,8 +12,10 @@ import { MediaFile } from '@commercetools-demo/cms-types';
 
 const HighlightedContainer = styled.div<{ $highlight: boolean }>`
   position: relative;
-  
-  ${({ $highlight }) => $highlight && `
+
+  ${({ $highlight }) =>
+    $highlight &&
+    `
     &::before {
       content: '';
       position: absolute;
@@ -60,7 +62,7 @@ const FileInputContainer = styled.div`
   border-radius: 4px;
   cursor: pointer;
   transition: border-color 0.3s ease;
-  
+
   &:hover {
     border-color: #2196f3;
   }
@@ -80,12 +82,13 @@ const MediaItem = styled.div<{ $selected: boolean }>`
   flex-direction: column;
   align-items: center;
   cursor: pointer;
-  border: 2px solid ${props => props.$selected ? '#2196f3' : 'transparent'};
+  border: 2px solid ${(props) => (props.$selected ? '#2196f3' : 'transparent')};
   padding: 8px;
   border-radius: 4px;
-  background-color: ${props => props.$selected ? 'rgba(33, 150, 243, 0.1)' : 'transparent'};
+  background-color: ${(props) =>
+    props.$selected ? 'rgba(33, 150, 243, 0.1)' : 'transparent'};
   transition: all 0.3s ease;
-  
+
   &:hover {
     border-color: #2196f3;
     background-color: rgba(33, 150, 243, 0.05);
@@ -176,59 +179,63 @@ export const FileField: React.FC<FileFieldProps> = ({
   extensions = [],
   onFieldChange,
 }) => {
-  const { fetchMedia, uploadMediaFile, files, pagination, hasPreviousPage, hasNextPage, loadPreviousPage, loadNextPage, loading, uploading, error: mediaLibraryError} = useStateMediaLibrary();
+  const {
+    fetchMedia,
+    uploadMediaFile,
+    files,
+    pagination,
+    hasPreviousPage,
+    hasNextPage,
+    loadPreviousPage,
+    loadNextPage,
+    loading,
+    uploading,
+    error: mediaLibraryError,
+  } = useStateMediaLibrary();
   const uploadModal = useModalState(false);
   const selectModal = useModalState(false);
-  
+
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [selectedMediaFile, setSelectedMediaFile] = useState<MediaFile | null>(null);
+  const [selectedMediaFile, setSelectedMediaFile] = useState<MediaFile | null>(
+    null
+  );
   const [fileTitle, setFileTitle] = useState('');
   const [fileDescription, setFileDescription] = useState('');
   const [error, setError] = useState<string | null>(null);
-  
+
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const hydratedUrl = `${baseURL}/${businessUnitKey}`;
 
-  // Load media library when select modal opens
-  useEffect(() => {
-    if (selectModal.isModalOpen) {
-      fetchMedia(hydratedUrl, extensions, 1, 20);
-    }
-  }, [selectModal.isModalOpen, extensions, fetchMedia]);
+  const handleOpenModal = useCallback(() => {
+    fetchMedia(hydratedUrl, extensions, 1, 20);
+    selectModal.openModal();
+  }, [selectModal]);
 
-  // Reset form when modals close
-  useEffect(() => {
-    if (!uploadModal.isModalOpen) {
-      setSelectedFile(null);
-      setFileTitle('');
-      setFileDescription('');
-      setError(null);
-    }
-  }, [uploadModal.isModalOpen]);
 
-  useEffect(() => {
-    if (!selectModal.isModalOpen) {
-      setSelectedMediaFile(null);
-    }
-  }, [selectModal.isModalOpen]);
 
-  const handleFileInputChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
 
-    // Validate file extension if specified
-    if (extensions.length > 0) {
-      const fileExtension = file.name.split('.').pop()?.toLowerCase();
-      if (!fileExtension || !extensions.includes(fileExtension)) {
-        setError(`File type not supported. Allowed types: ${extensions.join(', ')}`);
-        return;
+  const handleFileInputChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const file = event.target.files?.[0];
+      if (!file) return;
+
+      // Validate file extension if specified
+      if (extensions.length > 0) {
+        const fileExtension = file.name.split('.').pop()?.toLowerCase();
+        if (!fileExtension || !extensions.includes(fileExtension)) {
+          setError(
+            `File type not supported. Allowed types: ${extensions.join(', ')}`
+          );
+          return;
+        }
       }
-    }
 
-    setSelectedFile(file);
-    setError(null);
-  }, [extensions]);
+      setSelectedFile(file);
+      setError(null);
+    },
+    [extensions]
+  );
 
   const handleFileUpload = useCallback(async () => {
     if (!selectedFile) return;
@@ -257,7 +264,15 @@ export const FileField: React.FC<FileFieldProps> = ({
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Upload failed');
     }
-  }, [selectedFile, fileTitle, fileDescription, uploadMediaFile, onFieldChange, fieldKey, uploadModal]);
+  }, [
+    selectedFile,
+    fileTitle,
+    fileDescription,
+    uploadMediaFile,
+    onFieldChange,
+    fieldKey,
+    uploadModal,
+  ]);
 
   const handleMediaFileSelect = useCallback((file: MediaFile) => {
     setSelectedMediaFile(file);
@@ -289,35 +304,22 @@ export const FileField: React.FC<FileFieldProps> = ({
 
   const renderFilePreview = (file: MediaFile) => (
     <FilePreview>
-      {file.isImage && (
-        <FilePreviewImage
-          src={file.url}
-          alt={file.name}
-        />
-      )}
+      {file.isImage && <FilePreviewImage src={file.url} alt={file.name} />}
       <FilePreviewInfo>
         <Text.Detail isBold>{file.title || file.name}</Text.Detail>
-        {file.description && (
-          <Text.Detail>{file.description}</Text.Detail>
-        )}
+        {file.description && <Text.Detail>{file.description}</Text.Detail>}
         {file.size && (
-          <Text.Detail>
-            {Math.round(file.size / 1024)} KB
-          </Text.Detail>
+          <Text.Detail>{Math.round(file.size / 1024)} KB</Text.Detail>
         )}
       </FilePreviewInfo>
-      <SecondaryButton
-        label="Remove"
-        size="small"
-        onClick={handleRemoveFile}
-      />
+      <SecondaryButton label="Remove" size="small" onClick={handleRemoveFile} />
     </FilePreview>
   );
 
   const renderMediaGrid = () => (
     <>
       <MediaGrid>
-        {files.map(file => (
+        {files.map((file) => (
           <MediaItem
             key={file.url}
             $selected={selectedMediaFile?.url === file.url}
@@ -326,7 +328,10 @@ export const FileField: React.FC<FileFieldProps> = ({
           >
             <MediaThumbnail>
               {file.isImage ? (
-                <MediaThumbnailImage src={file.url} alt={file.title || file.name} />
+                <MediaThumbnailImage
+                  src={file.url}
+                  alt={file.title || file.name}
+                />
               ) : (
                 <FileIcon>📄</FileIcon>
               )}
@@ -335,7 +340,7 @@ export const FileField: React.FC<FileFieldProps> = ({
           </MediaItem>
         ))}
       </MediaGrid>
-      
+
       {pagination.totalPages > 1 && (
         <Pagination>
           <SecondaryButton
@@ -358,6 +363,22 @@ export const FileField: React.FC<FileFieldProps> = ({
     </>
   );
 
+    // Reset form when modals close
+    useEffect(() => {
+      if (!uploadModal.isModalOpen) {
+        setSelectedFile(null);
+        setFileTitle('');
+        setFileDescription('');
+        setError(null);
+      }
+    }, [uploadModal.isModalOpen]);
+  
+    useEffect(() => {
+      if (!selectModal.isModalOpen) {
+        setSelectedMediaFile(null);
+      }
+    }, [selectModal.isModalOpen]);
+
   return (
     <Spacings.Stack scale="xs">
       <FieldLabel
@@ -365,7 +386,7 @@ export const FileField: React.FC<FileFieldProps> = ({
         hasRequiredIndicator={required}
         htmlFor={fieldKey}
       />
-      
+
       <HighlightedContainer $highlight={highlight}>
         <Spacings.Stack scale="xs">
           {value ? (
@@ -378,17 +399,15 @@ export const FileField: React.FC<FileFieldProps> = ({
               />
               <SecondaryButton
                 label="Select from Library"
-                onClick={selectModal.openModal}
+                onClick={handleOpenModal}
               />
             </Spacings.Inline>
           )}
         </Spacings.Stack>
       </HighlightedContainer>
-      
+
       {validationError && (
-        <Text.Detail tone="negative">
-          {validationError}
-        </Text.Detail>
+        <Text.Detail tone="negative">{validationError}</Text.Detail>
       )}
 
       {/* Upload Modal */}
@@ -407,7 +426,7 @@ export const FileField: React.FC<FileFieldProps> = ({
               placeholder="Enter file title"
             />
           </Spacings.Stack>
-          
+
           <Spacings.Stack scale="s">
             <FieldLabel title="Description" />
             <TextInput
@@ -416,7 +435,7 @@ export const FileField: React.FC<FileFieldProps> = ({
               placeholder="Enter file description"
             />
           </Spacings.Stack>
-          
+
           <Spacings.Stack scale="s">
             <FieldLabel title="File" />
             <FileInputContainer onClick={handleFileInputClick}>
@@ -428,16 +447,18 @@ export const FileField: React.FC<FileFieldProps> = ({
               <FileInput
                 ref={fileInputRef}
                 type="file"
-                accept={extensions.length > 0 ? extensions.map(ext => `.${ext}`).join(',') : undefined}
+                accept={
+                  extensions.length > 0
+                    ? extensions.map((ext) => `.${ext}`).join(',')
+                    : undefined
+                }
                 onChange={handleFileInputChange}
               />
             </FileInputContainer>
           </Spacings.Stack>
-          
-          {error && (
-            <Text.Detail tone="critical">{error}</Text.Detail>
-          )}
-          
+
+          {error && <Text.Detail tone="critical">{error}</Text.Detail>}
+
           <ModalFooter>
             <SelectedFileInfo>
               {selectedFile && (
@@ -471,16 +492,20 @@ export const FileField: React.FC<FileFieldProps> = ({
             <Text.Detail>Loading media files...</Text.Detail>
           ) : files.length === 0 ? (
             <Text.Detail>
-              No files found{extensions.length > 0 ? ` with extensions: ${extensions.join(', ')}` : ''}.
+              No files found
+              {extensions.length > 0
+                ? ` with extensions: ${extensions.join(', ')}`
+                : ''}
+              .
             </Text.Detail>
           ) : (
             renderMediaGrid()
           )}
-          
+
           {mediaLibraryError && (
             <Text.Detail tone="critical">{mediaLibraryError}</Text.Detail>
           )}
-          
+
           <ModalFooter>
             <SelectedFileInfo>
               {selectedMediaFile && (
@@ -510,4 +535,4 @@ export const FileField: React.FC<FileFieldProps> = ({
       </Modal>
     </Spacings.Stack>
   );
-}; 
+};

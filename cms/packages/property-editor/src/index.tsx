@@ -40,9 +40,11 @@ interface FormValues {
 
 interface PropertyEditorProps {
   component: ContentItem;
+  metadata?: ContentTypeMetaData;
   baseURL: string;
   businessUnitKey: string;
   versionedContent?: ContentItem | null;
+  onChange: (component: ContentItem) => void;
   onComponentUpdated: (component: ContentItem) => void;
   onComponentDeleted?: (componentId: string) => void;
 }
@@ -50,14 +52,16 @@ interface PropertyEditorProps {
 const PropertyEditor: React.FC<PropertyEditorProps> = ({
   component,
   baseURL,
+  metadata: metadataProp,
   businessUnitKey,
   versionedContent = null,
+  onChange,
   onComponentUpdated,
   onComponentDeleted,
 }) => {
 
-  const { contentTypesMetaData } = useStateContentType();
-  const [metadata, setMetadata] = useState<ContentTypeMetaData | null>(null);
+  const { contentTypes } = useStateContentType();
+  const [metadata, setMetadata] = useState<ContentTypeMetaData | null>(metadataProp || null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -147,9 +151,9 @@ const PropertyEditor: React.FC<PropertyEditorProps> = ({
       setError(null);
 
       try {
-        const metadata =
-          contentTypesMetaData.find((m) => m.type === component.type) || null;
-        setMetadata(metadata);
+        const contentType =
+          contentTypes.find((ct) => ct.key === component.type) || null;
+        setMetadata(contentType?.metadata || null);
       } catch (err) {
         setError(
           `Failed to load component metadata: ${
@@ -162,8 +166,10 @@ const PropertyEditor: React.FC<PropertyEditorProps> = ({
       }
     };
 
-    fetchMetadata();
-  }, [component.type, contentTypesMetaData]);
+    if (!metadataProp) {
+      fetchMetadata();
+    }
+  }, [component.type, contentTypes, metadataProp]);
 
   const handleSubmit = useCallback(
     (values: FormValues) => {
@@ -199,6 +205,10 @@ const PropertyEditor: React.FC<PropertyEditorProps> = ({
       const handleFieldChange = useCallback(
         (fieldKey: string, fieldValue: any) => {
           formik.setFieldValue(`properties.${fieldKey}`, fieldValue);
+          onChange({
+            ...component,
+            properties: { ...component.properties, [fieldKey]: fieldValue },
+          });
         },
         [formik]
       );

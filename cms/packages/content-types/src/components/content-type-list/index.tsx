@@ -11,12 +11,12 @@ import {
 import PrimaryButton from '@commercetools-uikit/primary-button';
 import Spacings from '@commercetools-uikit/spacings';
 import styled from 'styled-components';
+import Text from '@commercetools-uikit/text';
 
 type Props = {
   items: (ContentTypeData & { id: string })[];
   baseURL: string;
   businessUnitKey: string;
-  loading: boolean;
   error: string | null;
   onCreateNew: () => void;
   onEdit: (item: ContentTypeData) => void;
@@ -32,25 +32,30 @@ const ContentTypeList = ({
   items,
   baseURL,
   businessUnitKey,
-  loading,
   error,
   onCreateNew,
   onEdit,
   onDelete,
 }: Props) => {
-  const columns: TColumn<ContentTypeData & { id: string }>[] = [
+  const columns: TColumn<ContentTypeData>[] = [
     {
       key: 'name',
       label: 'Name',
+      renderItem: (row: ContentTypeData) => (
+        <Text.Body>{row.metadata.name}</Text.Body>
+      ),
     },
     {
       key: 'type',
       label: 'Type',
+      renderItem: (row: ContentTypeData) => (
+        <Text.Body>{row.metadata.type}</Text.Body>
+      ),
     },
     {
       key: 'actions',
       label: 'Actions',
-      renderItem: (row: ContentTypeData & { id: string }) => (
+      renderItem: (row: ContentTypeData) => (
         <Spacings.Inline alignItems="center">
           <IconButton
             onClick={() => onEdit?.(row)}

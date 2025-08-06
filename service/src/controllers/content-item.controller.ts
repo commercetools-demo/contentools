@@ -165,8 +165,8 @@ export const getContentItems = async (
         `(key = "${item.key}" AND businessUnitKey = "${businessUnitKey}")`
     )
     .join(' OR ');
-  const contentStates =
-    await ContentStateController.getContentStatesWithWhereClause(whereClause);
+  const contentStates = whereClause ?
+    await ContentStateController.getContentStatesWithWhereClause(whereClause) : [];
   const contentItemsWithStates = contentItems.map((item) => {
     const states = contentStates.find((state) => state.key === item.key);
     return {

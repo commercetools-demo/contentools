@@ -1,8 +1,8 @@
 import { ContentItem } from '@commercetools-demo/cms-types';
 // import { ComponentRenderer } from '@commercetools-demo/cms-content-item-renderer';
 import React from 'react';
-// import { ComponentRenderer } from '@commercetools-demo/cms-content-item-renderer';
-import { ComponentPlayground } from '@commercetools-demo/cms-content-type-editor';
+import { ComponentRenderer } from '@commercetools-demo/cms-content-item-renderer';
+// import { ComponentPlayground } from '@commercetools-demo/cms-content-type-editor';
 
 type Props = {
   item: ContentItem;
@@ -22,13 +22,12 @@ const ContentItemPreview = ({
     return null;
   }
   return (
-    // <ComponentRenderer
-    //   component={item}
-    //   baseURL={hydratedBaseUrl}
-    //   locale={locale}
+    <ComponentRenderer
+      component={item}
+      baseURL={hydratedBaseUrl}
+      locale={locale}
       
-    // />
-    <ComponentPlayground onCodeChange={(e) => console.log(e)} componentName={"HeroBanner"} />
+    />
   );
 };
 

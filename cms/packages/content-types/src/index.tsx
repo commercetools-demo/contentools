@@ -1,7 +1,11 @@
 import { StateProvider } from '@commercetools-demo/cms-state';
 import ContentTypeRouter from './router';
-import { BrowserRouter as Router,  } from 'react-router-dom';
+import { BrowserRouter as Router } from 'react-router-dom';
 import React from 'react';
+
+// Export the new ContentTypeForm component
+export { default as ContentTypeForm } from './components/content-type-form';
+export { default as ContentTypes } from './components/content-types';
 
 const WrappedContentTypeApp = ({
   parentUrl,

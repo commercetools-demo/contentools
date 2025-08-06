@@ -1,4 +1,4 @@
-import { ContentTypeMetaData } from '@commercetools-demo/cms-types';
+import { ContentTypeData, ContentTypeMetaData } from '@commercetools-demo/cms-types';
 import { Modal, useModalState } from '@commercetools-demo/cms-ui-components';
 import React from 'react';
 import styles from './content-type-modal.module.css';
@@ -9,14 +9,15 @@ const ContentTypeNewModal: React.FC = () => {
   const history = useHistory();
   const match = useRouteMatch();
   const contentTypeModalState = useModalState(true);
-  const { contentTypesMetaData } = useStateContentType();
+  const { contentTypes } = useStateContentType();
+
   const handleClose = () => {
     contentTypeModalState.closeModal();
     history.goBack();
   };
 
-  const handleSelect = (contentTypeMetaData: ContentTypeMetaData) => {
-    history.push(`new-content-item/${contentTypeMetaData.type}`);
+  const handleSelect = (contentType: ContentTypeData) => {
+    history.push(`new-content-item/${contentType.key}`);
   };
 
   return (
@@ -27,20 +28,20 @@ const ContentTypeNewModal: React.FC = () => {
         size={80}
       >
         <div className={styles.contentTypeGrid}>
-          {contentTypesMetaData.map((metadata) => (
+          {contentTypes.map((contentType) => (
             <div
-              key={metadata.type}
+              key={contentType.key}
               className={styles.contentTypeCard}
-              onClick={() => handleSelect(metadata)}
+              onClick={() => handleSelect(contentType)}
             >
               <div className={styles.contentTypeIcon}>
-                {metadata.icon ? (
-                  <span>{metadata.icon}</span>
+                {contentType.metadata.icon ? (
+                  <span>{contentType.metadata.icon}</span>
                 ) : (
                   <i className="fas fa-file"></i>
                 )}
               </div>
-              <h3 className={styles.contentTypeName}>{metadata.name}</h3>
+              <h3 className={styles.contentTypeName}>{contentType.metadata.name}</h3>
             </div>
           ))}
         </div>

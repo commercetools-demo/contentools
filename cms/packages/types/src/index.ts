@@ -143,7 +143,8 @@ export interface ContentTypeData {
   code?: {
     componentName: string;
     transpiledCode: string;
-  }[];
+    text: string;
+  };
 }
 
 export interface ContentTypeState {

@@ -13,6 +13,7 @@
   ],
   "dependencies": {
     "@babel/runtime-corejs3": "^7.28.0",
+    "@commercetools-demo/cms-content-item-renderer": "workspace:*",
     "@commercetools-demo/cms-content-type-editor": "workspace:*",
     "@commercetools-demo/cms-property-editor": "workspace:*",
     "@commercetools-demo/cms-state": "workspace:*",
@@ -32,6 +33,7 @@
     "@commercetools-uikit/stamp": "^20.2.1",
     "@commercetools-uikit/text": "^20.2.2",
     "@commercetools-uikit/text-input": "^20.2.2",
+    "@commercetools-uikit/view-switcher": "^20.2.2",
     "@emotion/react": "^11.14.0",
     "add": "^2.0.6",
     "react-router-dom": "5.3.4",

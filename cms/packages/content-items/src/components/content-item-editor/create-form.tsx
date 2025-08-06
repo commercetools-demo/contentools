@@ -4,8 +4,13 @@ import Text from '@commercetools-uikit/text';
 import { useHistory, useParams } from 'react-router-dom';
 import PropertyEditor from '@commercetools-demo/cms-property-editor';
 import styled from 'styled-components';
-import { useStateContentItem } from '@commercetools-demo/cms-state';
+import {
+  useStateContentItem,
+  useStateContentType,
+} from '@commercetools-demo/cms-state';
 import { ContentItem } from '@commercetools-demo/cms-types';
+import ContentItemPreview from '../content-item-preview';
+import { useState } from 'react';
 
 type Props = {
   locale?: string;
@@ -35,6 +40,17 @@ const ContentItemEditorCreateForm = ({
   const history = useHistory();
 
   const { createContentItem, fetchContentItems } = useStateContentItem();
+  const { contentTypes } = useStateContentType();
+  const [item, setItem] = useState<ContentItem | null>({
+    businessUnitKey,
+    type: contentTypeKey || '',
+    id: '',
+    key: '',
+    name: '',
+    properties: {},
+  });
+
+  const contentType = contentTypes.find((ct) => ct.key === contentTypeKey);
 
   const hydratedUrl = baseURL + '/' + businessUnitKey;
 
@@ -52,7 +68,7 @@ const ContentItemEditorCreateForm = ({
     contentItemEditorState.closeModal();
   };
 
-  if (!contentTypeKey) {
+  if (!contentTypeKey || !item) {
     return null;
   }
 
@@ -71,36 +87,22 @@ const ContentItemEditorCreateForm = ({
               <PropertyEditor
                 baseURL={baseURL}
                 businessUnitKey={businessUnitKey}
+                onChange={(component) => setItem(component)}
                 onComponentUpdated={(component) =>
                   handleCreateContentItem(component)
                 }
                 onComponentDeleted={() => {}}
                 versionedContent={null}
-                component={{
-                  businessUnitKey,
-                  type: contentTypeKey,
-                  id: '',
-                  key: '',
-                  name: '',
-                  properties: {},
-                }}
+                component={item}
               />
             </StyledColumnDiv>
             <StyledColumnDiv>
-              <div className="content-item-edit-preview">
-                <Spacings.Stack scale="m">
-                  <Text.Subheadline as="h4">Content Preview</Text.Subheadline>
-                  <Text.Body>
-                    Previewing content item: {contentTypeKey}
-                  </Text.Body>
-                  <Text.Detail>Locale: {locale}</Text.Detail>
-                  <Text.Detail>
-                    This is a placeholder for the content preview component.
-                    You'll need to implement the actual preview rendering based
-                    on your content types.
-                  </Text.Detail>
-                </Spacings.Stack>
-              </div>
+              <ContentItemPreview
+                item={item}
+                baseURL={baseURL}
+                businessUnitKey={businessUnitKey}
+                locale={locale || 'en-US'}
+              />
             </StyledColumnDiv>
           </StyledRowDiv>
         </div>

@@ -37,7 +37,6 @@ const ContentTypesApp = ({
     fetchContentTypes,
     clearError,
     contentTypes,
-    loading,
     error,
     removeContentType,
   } = useStateContentType();
@@ -49,11 +48,11 @@ const ContentTypesApp = ({
   };
 
   const handleCreateNew = () => {
-    history.push(`new-content-item`);
+    history.push(`new-content-type`);
   };
 
   const handleEdit = (item: ContentTypeData) => {
-    history.push(`content-type/${item.metadata.type}`);
+    history.push(`content-type/${item.key}`);
   };
 
   // Load data on mount
@@ -66,7 +65,7 @@ const ContentTypesApp = ({
     clearError();
   };
 
-  if (loading) {
+  if (!contentTypes) {
     return <LoadingContainer>Loading...</LoadingContainer>;
   }
 
@@ -75,13 +74,11 @@ const ContentTypesApp = ({
     return <ErrorContainer>{error}</ErrorContainer>;
   }
 
-  console.log(contentTypes);
   return (
     <ContentTypeList
       items={contentTypes}
       baseURL={baseURL}
       businessUnitKey={businessUnitKey}
-      loading={loading}
       error={error}
       onCreateNew={handleCreateNew}
       onEdit={handleEdit}
