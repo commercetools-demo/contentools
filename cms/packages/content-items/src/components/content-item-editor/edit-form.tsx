@@ -55,7 +55,7 @@ const ContentItemEditorEditForm: React.FC<ContentItemEditorEditFormProps> = ({
   const { fetchStates, publish, revertToPublished, currentState } =
     useStateStateManagement();
   const {
-    fetchContentItem,
+    fetchRawContentItem,
     loading,
     fetchContentItems,
     clearError,
@@ -123,7 +123,7 @@ const ContentItemEditorEditForm: React.FC<ContentItemEditorEditFormProps> = ({
         key,
         contentType as 'content-items' | 'pages'
       ).then(() => {
-        fetchContentItem(hydratedUrl, key).then((item) => {
+        fetchRawContentItem(hydratedUrl, key).then((item) => {
           setItem(item);
         });
       });
@@ -199,12 +199,12 @@ const ContentItemEditorEditForm: React.FC<ContentItemEditorEditFormProps> = ({
 
   useEffect(() => {
     if (contentItemKey) {
-      fetchContentItem(hydratedUrl, contentItemKey).then((item) => {
+      fetchRawContentItem(hydratedUrl, contentItemKey).then((item) => {
         setItem(item);
         fetchStates(hydratedUrl, contentItemKey, 'content-items');
       });
     }
-  }, [fetchContentItem, hydratedUrl, contentItemKey]);
+  }, [fetchRawContentItem, hydratedUrl, contentItemKey]);
 
   if (!item || loading || !contentItemKey) {
     return null;

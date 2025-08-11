@@ -126,7 +126,7 @@ const resolveDatasourceProperties = async (
 
       const resolvedDatasource = await resolveDatasource(
         datasourceKey,
-        propertyValue
+        propertyValue.params
       );
 
       // Replace property value with resolved data
@@ -234,16 +234,13 @@ export const getPublishedContentItem = async (
  * @returns The content item with resolved datasource properties
  */
 export const getContentItem = async (
-  businessUnitKey: string,
   key: string
 ): Promise<ContentItem['value']> => {
   const contentItemController = new CustomObjectController(
     CONTENT_ITEM_CONTAINER
   );
   const contentItem = await contentItemController.getCustomObject(key);
-  const item = contentItem.value;
-  const resolvedContentItem = await resolveContentItemDatasource(item);
-  return resolvedContentItem;
+  return contentItem.value;
 };
 
 export const createContentItem = async (

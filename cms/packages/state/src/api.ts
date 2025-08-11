@@ -220,6 +220,21 @@ export async function fetchPreviewContentItemEndpoint<T>(
 }
 
 /**
+ * Fetch a single content item without resolving datasources
+ */
+export async function fetchRawContentItemEndpoint<T>(
+  baseURL: string,
+  key: string
+): Promise<T> {
+  const response = await fetch(`${baseURL}/content-items/${key}`, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  }).then((response) => response.json());
+  return response;
+}
+
+/**
  * Fetch a single content item
  */
 export async function fetchPublishedContentItemEndpoint<T>(

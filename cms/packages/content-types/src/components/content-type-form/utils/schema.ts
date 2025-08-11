@@ -64,4 +64,14 @@ const getDefaultValuePlaceholder = (type: PropertySchema['type']): string => {
   }
 };
 
-export { parseDefaultValue, formatDefaultValue, getDefaultValuePlaceholder };
+const isDefaultValueVisible = (type: PropertySchema['type']): boolean => {
+  switch (type) {
+    case 'file':
+    case 'datasource':
+      return false;
+    default:
+      return true;
+  }
+};
+
+export { parseDefaultValue, formatDefaultValue, getDefaultValuePlaceholder, isDefaultValueVisible };

@@ -1,19 +1,21 @@
-import React, { useState, useCallback } from 'react';
+import { useStateDatasource } from '@commercetools-demo/cms-state';
 import { ContentTypeData, PropertySchema } from '@commercetools-demo/cms-types';
-import Spacings from '@commercetools-uikit/spacings';
-import Text from '@commercetools-uikit/text';
-import Card from '@commercetools-uikit/card';
+import CheckboxInput from '@commercetools-uikit/checkbox-input';
+import FieldLabel from '@commercetools-uikit/field-label';
 import PrimaryButton from '@commercetools-uikit/primary-button';
 import SecondaryButton from '@commercetools-uikit/secondary-button';
+import Spacings from '@commercetools-uikit/spacings';
+import Text from '@commercetools-uikit/text';
 import TextInput from '@commercetools-uikit/text-input';
-import FieldLabel from '@commercetools-uikit/field-label';
-import CheckboxInput from '@commercetools-uikit/checkbox-input';
+import React, { useCallback, useState } from 'react';
 import styled from 'styled-components';
 import {
   formatDefaultValue,
   getDefaultValuePlaceholder,
+  isDefaultValueVisible,
   parseDefaultValue,
 } from '../utils/schema';
+import {SelectInput} from '@commercetools-demo/cms-ui-components';
 
 const SchemaBuilder = styled.div`
   border: 1px solid #ddd;
@@ -69,6 +71,16 @@ const AddPropertyForm = styled.div`
   background: #fafafa;
 `;
 
+const typeOptions = [
+  { value: 'string', label: 'String' },
+  { value: 'number', label: 'Number' },
+  { value: 'boolean', label: 'Boolean' },
+  { value: 'array', label: 'Array' },
+  { value: 'object', label: 'Object' },
+  { value: 'file', label: 'File' },
+  { value: 'datasource', label: 'Datasource' },
+];
+
 export interface SchemaTabProps {
   contentType: ContentTypeData;
   onContentTypeChange: (updates: Partial<ContentTypeData>) => void;
@@ -82,11 +94,14 @@ const SchemaTab: React.FC<SchemaTabProps> = ({
   baseURL,
   businessUnitKey,
 }) => {
+  const { datasources: availableDatasources } = useStateDatasource();
+  
   const [newProperty, setNewProperty] = useState({
     key: '',
     label: '',
     type: 'string' as PropertySchema['type'],
     defaultValue: '',
+    datasourceType: undefined as string | undefined,
   });
 
   const [expandedProperties, setExpandedProperties] = useState<Set<string>>(
@@ -112,14 +127,21 @@ const SchemaTab: React.FC<SchemaTabProps> = ({
   const handleAddProperty = useCallback(() => {
     if (!newProperty.key || !newProperty.label) return;
 
+    const propertySchema: PropertySchema = {
+      type: newProperty.type,
+      label: newProperty.label,
+      required: false,
+      order: Object.keys(contentType.metadata.propertySchema || {}).length,
+    };
+
+    // Add datasourceType if it's a datasource property
+    if (newProperty.type === 'datasource' && newProperty.datasourceType) {
+      propertySchema.datasourceType = newProperty.datasourceType;
+    }
+
     const updatedSchema = {
       ...contentType.metadata.propertySchema,
-      [newProperty.key]: {
-        type: newProperty.type,
-        label: newProperty.label,
-        required: false,
-        order: Object.keys(contentType.metadata.propertySchema || {}).length,
-      } as PropertySchema,
+      [newProperty.key]: propertySchema,
     };
 
     // Add default value to defaultProperties if provided
@@ -148,6 +170,7 @@ const SchemaTab: React.FC<SchemaTabProps> = ({
       label: '',
       type: 'string',
       defaultValue: '',
+      datasourceType: undefined,
     });
   }, [newProperty, contentType, onContentTypeChange]);
 
@@ -354,7 +377,7 @@ const SchemaTab: React.FC<SchemaTabProps> = ({
 
             <div>
               <FieldLabel title="Type" htmlFor="property-type" />
-              <select
+              <SelectInput
                 id="property-type"
                 value={newProperty.type}
                 onChange={(e) =>
@@ -363,46 +386,62 @@ const SchemaTab: React.FC<SchemaTabProps> = ({
                     type: e.target.value as PropertySchema['type'],
                   }))
                 }
-                style={{
-                  padding: '8px 12px',
-                  border: '1px solid #ddd',
-                  borderRadius: '4px',
-                  background: 'white',
-                }}
-              >
-                <option value="string">String</option>
-                <option value="number">Number</option>
-                <option value="boolean">Boolean</option>
-                <option value="array">Array</option>
-                <option value="object">Object</option>
-                <option value="file">File</option>
-                <option value="datasource">Datasource</option>
-              </select>
+                options={typeOptions}
+              />
             </div>
 
-            <div>
-              <FieldLabel
-                title="Default Value"
-                htmlFor="new-property-default"
-              />
-              <TextInput
-                id="new-property-default"
-                value={newProperty.defaultValue}
-                onChange={(e) =>
-                  setNewProperty((prev) => ({
-                    ...prev,
-                    defaultValue: e.target.value,
-                  }))
-                }
-                placeholder={getDefaultValuePlaceholder(newProperty.type)}
-              />
-            </div>
+            {isDefaultValueVisible(newProperty.type) && (
+              <div>
+                <FieldLabel
+                  title="Default Value"
+                  htmlFor="new-property-default"
+                />
+                <TextInput
+                  id="new-property-default"
+                  value={newProperty.defaultValue}
+                  onChange={(e) =>
+                    setNewProperty((prev) => ({
+                      ...prev,
+                      defaultValue: e.target.value,
+                    }))
+                  }
+                  placeholder={getDefaultValuePlaceholder(newProperty.type)}
+                />
+              </div>
+            )}
+
+            {newProperty.type === 'datasource' && (
+              <div>
+                <FieldLabel
+                  title="Datasource Type"
+                  htmlFor="new-property-datasource"
+                />
+                <SelectInput
+                  id="new-property-datasource"
+                  value={newProperty.datasourceType}
+                  onChange={(e) =>
+                    setNewProperty((prev) => ({
+                      ...prev,
+                      datasourceType: e.target.value as string,
+                    }))
+                  }
+                  options={availableDatasources.map((ds) => ({
+                    label: ds.name,
+                    value: ds.key,
+                  }))}
+                />
+              </div>
+            )}
 
             <PrimaryButton
               size="small"
               label="Add Property"
               onClick={handleAddProperty}
-              isDisabled={!newProperty.key || !newProperty.label}
+              isDisabled={
+                !newProperty.key || 
+                !newProperty.label || 
+                (newProperty.type === 'datasource' && !newProperty.datasourceType)
+              }
             />
           </AddPropertyForm>
         </Spacings.Stack>

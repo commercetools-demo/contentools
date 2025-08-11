@@ -47,7 +47,7 @@ contentItemRouter.get(
   async (req, res, next) => {
     try {
       const { key, businessUnitKey } = req.params;
-      const contentItem = await ContentItemController.getContentItem(businessUnitKey, key);
+      const contentItem = await ContentItemController.getContentItem(key);
 
       if (!contentItem) {
         throw new CustomError(404, 'Content item not found');

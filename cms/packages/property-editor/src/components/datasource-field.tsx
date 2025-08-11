@@ -1,10 +1,9 @@
-import React, { useCallback, useState, useEffect } from 'react';
+import React, { useCallback, useState, useEffect, useMemo } from 'react';
 import styled from 'styled-components';
 import Spacings from '@commercetools-uikit/spacings';
 import FieldLabel from '@commercetools-uikit/field-label';
 import SecondaryButton from '@commercetools-uikit/secondary-button';
 import Text from '@commercetools-uikit/text';
-import { DatasourceInfo } from '@commercetools-demo/cms-types';
 import { useStateDatasource } from '@commercetools-demo/cms-state';
 
 const HighlightedContainer = styled.div<{ $highlight: boolean }>`
@@ -48,19 +47,6 @@ const ParamInput = styled.input`
   }
 `;
 
-const DatasourceSelect = styled.select`
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 14px;
-
-  &:focus {
-    outline: none;
-    border-color: #0066cc;
-    box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.2);
-  }
-`;
 
 interface DatasourceFieldProps {
   fieldKey: string;
@@ -85,18 +71,15 @@ export const DatasourceField: React.FC<DatasourceFieldProps> = ({
   baseURL,
   onFieldChange,
 }) => {
-  const { datasources: availableDatasources } = useStateDatasource();
-  const [selectedDatasource, setSelectedDatasource] =
-    useState<DatasourceInfo | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const { datasources: availableDatasources, testDatasource } =
+    useStateDatasource();
 
-  // Set selected datasource when available datasources change
-  useEffect(() => {
-    if (availableDatasources.length > 0) {
-      setSelectedDatasource(availableDatasources[0]);
-    }
-  }, [availableDatasources]);
+  const [loading, setLoading] = useState(false);
+  const [testResult, setTestResult] = useState<any>(null);
+
+  const selectedDatasource = useMemo(() => {
+    return availableDatasources.find((ds) => ds.key === datasourceType);
+  }, [availableDatasources, datasourceType]);
 
   const handleParamChange = useCallback(
     (paramKey: string, paramValue: string) => {
@@ -112,52 +95,30 @@ export const DatasourceField: React.FC<DatasourceFieldProps> = ({
     [fieldKey, value, onFieldChange]
   );
 
-  const handleDatasourceChange = useCallback(
-    (datasourceKey: string) => {
-      const datasource = availableDatasources.find(
-        (ds) => ds.key === datasourceKey
-      );
-      if (datasource) {
-        setSelectedDatasource(datasource);
-        const newValue = {
-          datasource: datasourceKey,
-          params: {},
-        };
-        onFieldChange(fieldKey, newValue);
-      }
-    },
-    [availableDatasources, fieldKey, onFieldChange]
-  );
-
   const handleTestConnection = useCallback(async () => {
     if (!selectedDatasource) return;
 
     try {
       setLoading(true);
-      const response = await fetch(
-        `${baseURL}/api/datasources/${selectedDatasource.key}/test`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ params: value.params || {} }),
-        }
+      const data = await testDatasource(
+        selectedDatasource.key,
+        value.params || {}
       );
-
-      if (!response.ok) {
-        throw new Error('Connection test failed');
-      }
-
-      const result = await response.json();
-      console.log('Connection test result:', result);
-      setError(null);
+      setTestResult({
+        success: true,
+        message: 'Connection test successful',
+        data,
+      });
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Connection test failed');
+      setTestResult({
+        success: false,
+        message: 'Connection test failed',
+        data: undefined,
+      });
     } finally {
       setLoading(false);
     }
-  }, [baseURL, selectedDatasource, value.params]);
+  }, [selectedDatasource, value.params, testDatasource]);
 
   if (loading && !selectedDatasource) {
     return (
@@ -172,19 +133,6 @@ export const DatasourceField: React.FC<DatasourceFieldProps> = ({
     );
   }
 
-  if (error && !selectedDatasource) {
-    return (
-      <Spacings.Stack scale="xs">
-        <FieldLabel
-          title={label}
-          hasRequiredIndicator={required}
-          htmlFor={fieldKey}
-        />
-        <Text.Body tone="critical">{error}</Text.Body>
-      </Spacings.Stack>
-    );
-  }
-
   return (
     <Spacings.Stack scale="xs">
       <FieldLabel
@@ -194,27 +142,16 @@ export const DatasourceField: React.FC<DatasourceFieldProps> = ({
       />
       <HighlightedContainer $highlight={highlight}>
         <DatasourceConfig>
-          <Spacings.Stack scale="xs">
-            <div>
-              <Text.Detail isBold>Datasource</Text.Detail>
-              <DatasourceSelect
-                value={value.datasource || ''}
-                onChange={(e) => handleDatasourceChange(e.target.value)}
-              >
-                <option value="">Select a datasource</option>
-                {availableDatasources.map((ds) => (
-                  <option key={ds.key} value={ds.key}>
-                    {ds.name}
-                  </option>
-                ))}
-              </DatasourceSelect>
-            </div>
-
+          <Spacings.Stack scale="xs" alignItems="flex-start">
             {selectedDatasource && (
               <>
                 <Text.Detail isBold>Parameters</Text.Detail>
                 {selectedDatasource.params.map((param) => (
-                  <div key={param.key}>
+                  <Spacings.Stack
+                    scale="xs"
+                    key={param.key}
+                    alignItems="flex-start"
+                  >
                     <Text.Detail>
                       {param.key} ({param.type})
                       {param.required && (
@@ -229,7 +166,7 @@ export const DatasourceField: React.FC<DatasourceFieldProps> = ({
                         handleParamChange(param.key, e.target.value)
                       }
                     />
-                  </div>
+                  </Spacings.Stack>
                 ))}
 
                 <Spacings.Inline scale="s">
@@ -237,13 +174,17 @@ export const DatasourceField: React.FC<DatasourceFieldProps> = ({
                     label={loading ? 'Testing...' : 'Test Connection'}
                     onClick={handleTestConnection}
                     isDisabled={loading}
-                    size="small"
+                    size="10"
                   />
                 </Spacings.Inline>
               </>
             )}
 
-            {error && <Text.Detail tone="critical">{error}</Text.Detail>}
+            {testResult && (
+              <Text.Detail tone={testResult.success ? 'positive' : 'critical'}>
+                {testResult.message}
+              </Text.Detail>
+            )}
           </Spacings.Stack>
         </DatasourceConfig>
       </HighlightedContainer>
