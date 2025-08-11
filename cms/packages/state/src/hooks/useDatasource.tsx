@@ -3,6 +3,7 @@ import { DatasourceInfo } from '@commercetools-demo/cms-types';
 import {
   getAvailableDatasourcesEndpoint,
   getDatasourceByKeyEndpoint,
+  testDatasourceEndpoint,
 } from '../api';
 
 interface DatasourceState {
@@ -105,6 +106,18 @@ export const useDatasource = (baseURL: string) => {
     return state.datasources.map((ds) => ds.key);
   }, [state.datasources]);
 
+  const testDatasource = useCallback(
+    async (datasourceKey: string, params: Record<string, any>) => {
+      const response = await testDatasourceEndpoint<DatasourceInfo>(
+        baseURL,
+        datasourceKey,
+        params
+      );
+      return response;
+    },
+    [fetchDatasourceByKey]
+  );
+
   return {
     // State
     datasources: state.datasources,
@@ -115,6 +128,7 @@ export const useDatasource = (baseURL: string) => {
     fetchDatasources,
     fetchDatasourceByKey,
     clearError,
+    testDatasource,
 
     // Selectors
     getDatasourceByKey,

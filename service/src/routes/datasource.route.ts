@@ -2,6 +2,7 @@ import { Router, RequestHandler } from 'express';
 import { logger } from '../utils/logger.utils';
 import { CustomObjectController } from '../controllers/custom-object.controller';
 import { DATASOURCE_CONTAINER } from '../constants';
+import { resolveDatasource } from '../controllers/datasource-resolution.route';
 
 const datasourceController = new CustomObjectController(DATASOURCE_CONTAINER);
 const datasourceRouter = Router();
@@ -79,6 +80,22 @@ datasourceRouter.delete('/datasource/:key', async (req, res, next) => {
   } catch (error) {
     logger.error(
       `Failed to delete datasource object with key ${req.params.key}:`,
+      error
+    );
+    next(error);
+  }
+});
+
+datasourceRouter.post('/datasource/:key/test', async (req, res, next) => {
+  try {
+    const { key } = req.params;
+    const { params } = req.body;
+    const object = await datasourceController.getCustomObject(key);
+    const result = await resolveDatasource(key, params);
+    res.json(result);
+  } catch (error) {
+    logger.error(
+      `Failed to test datasource object with key ${req.params.key}:`,
       error
     );
     next(error);

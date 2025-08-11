@@ -312,6 +312,20 @@ export async function getDatasourceByKeyEndpoint<T>(
 }
 
 /**
+ * Test a datasource
+ */
+export async function testDatasourceEndpoint<T>(
+  baseURL: string,
+  key: string,
+  params: Record<string, any>
+): Promise<ApiResponse<T>> {
+  return fetchApi<T>(`${baseURL}/datasource/${key}/test`, {
+    method: 'POST',
+    body: JSON.stringify({ params }),
+  });
+}
+
+/**
  * Compile and upload TypeScript files to create a bundled JavaScript file
  *
  * @param baseURL Base URL for the API
