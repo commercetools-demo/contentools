@@ -6,7 +6,7 @@ import {
   ContentItem,
   GridRow,
   GridCell,
-} from '@commercetools-demo/cms-types';
+} from '@commercetools-demo/contentools-types';
 import { debounce } from '../utils/debounce';
 import {
   NUMBER_OF_COLUMNS,

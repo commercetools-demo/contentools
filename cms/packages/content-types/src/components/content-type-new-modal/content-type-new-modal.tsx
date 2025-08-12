@@ -1,11 +1,11 @@
 import {
   ContentTypeData,
   ContentTypeMetaData,
-} from '@commercetools-demo/cms-types';
-import { Modal, useModalState } from '@commercetools-demo/cms-ui-components';
+} from '@commercetools-demo/contentools-types';
+import { Modal, useModalState } from '@commercetools-demo/contentools-ui-components';
 import React from 'react';
 import { useHistory, useRouteMatch } from 'react-router-dom';
-import { useStateContentType } from '@commercetools-demo/cms-state';
+import { useStateContentType } from '@commercetools-demo/contentools-state';
 import ContentTypeForm from '../content-type-form';
 
 const ContentTypeNewModal: React.FC<{

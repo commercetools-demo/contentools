@@ -3,7 +3,7 @@ import {
   ContentTypeState,
   ContentTypeData,
   DatasourceInfo,
-} from '@commercetools-demo/cms-types';
+} from '@commercetools-demo/contentools-types';
 import {
   fetchContentTypesEndpoint,
   createContentTypeEndpoint,

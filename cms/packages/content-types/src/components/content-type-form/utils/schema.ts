@@ -1,4 +1,4 @@
-import { PropertySchema } from '@commercetools-demo/cms-types';
+import { PropertySchema } from '@commercetools-demo/contentools-types';
 
 const parseDefaultValue = (
   value: string,

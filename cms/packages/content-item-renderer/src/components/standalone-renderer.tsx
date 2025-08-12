@@ -1,4 +1,4 @@
-import { StateProvider } from "@commercetools-demo/cms-state";
+import { StateProvider } from "@commercetools-demo/contentools-state";
 import { ContentItemRendererProps } from "..";
 import ContentItemResolver from "./content-item-resolver";
 

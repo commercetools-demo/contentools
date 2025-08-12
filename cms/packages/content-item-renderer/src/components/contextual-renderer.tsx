@@ -1,4 +1,4 @@
-import { useStateContext } from "@commercetools-demo/cms-state";
+import { useStateContext } from "@commercetools-demo/contentools-state";
 import { ContentItemRendererProps } from "..";
 import ContentItemResolver from "./content-item-resolver";
 

@@ -1,6 +1,6 @@
-import { useStateVersion } from '@commercetools-demo/cms-state';
-import { ContentItemVersionInfo } from '@commercetools-demo/cms-types';
-import { Modal } from '@commercetools-demo/cms-ui-components';
+import { useStateVersion } from '@commercetools-demo/contentools-state';
+import { ContentItemVersionInfo } from '@commercetools-demo/contentools-types';
+import { Modal } from '@commercetools-demo/contentools-ui-components';
 import Card from '@commercetools-uikit/card';
 import PrimaryButton from '@commercetools-uikit/primary-button';
 import SecondaryButton from '@commercetools-uikit/secondary-button';

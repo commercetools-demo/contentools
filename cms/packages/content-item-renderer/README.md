@@ -5,7 +5,7 @@ A React component for dynamically rendering content items based on their content
 ## Installation
 
 ```bash
-npm install @commercetools-demo/cms-content-item-renderer
+npm install @commercetools-demo/contentools-content-item-renderer
 ```
 
 ## Prerequisites
@@ -13,8 +13,8 @@ npm install @commercetools-demo/cms-content-item-renderer
 **⚠️ Important**: This component can work with or without a `StateProvider`. If no StateProvider is present and a `baseURL` is provided, it will automatically wrap itself in a StateProvider.
 
 ```tsx
-import { StateProvider } from '@commercetools-demo/cms-state';
-import { ContentItemRenderer } from '@commercetools-demo/cms-content-item-renderer';
+import { StateProvider } from '@commercetools-demo/contentools-state';
+import { ContentItemRenderer } from '@commercetools-demo/contentools-content-item-renderer';
 
 // Option 1: With StateProvider (recommended for multiple components)
 function App() {
@@ -41,8 +41,8 @@ function App() {
 ### Basic Usage with Content Item Object
 
 ```tsx
-import { ContentItemRenderer } from '@commercetools-demo/cms-content-item-renderer';
-import { StateProvider } from '@commercetools-demo/cms-state';
+import { ContentItemRenderer } from '@commercetools-demo/contentools-content-item-renderer';
+import { StateProvider } from '@commercetools-demo/contentools-state';
 
 const MyApp = () => {
   const contentItem = {
@@ -69,7 +69,7 @@ const MyApp = () => {
 ### Usage with Item Key (Fetch from CMS)
 
 ```tsx
-import { ContentItemRenderer } from '@commercetools-demo/cms-content-item-renderer';
+import { ContentItemRenderer } from '@commercetools-demo/contentools-content-item-renderer';
 
 const MyApp = () => {
   return (
@@ -87,7 +87,7 @@ const MyApp = () => {
 ### Usage with Draft Content
 
 ```tsx
-import { ContentItemRenderer } from '@commercetools-demo/cms-content-item-renderer';
+import { ContentItemRenderer } from '@commercetools-demo/contentools-content-item-renderer';
 
 const MyApp = () => {
   return (
@@ -104,8 +104,8 @@ const MyApp = () => {
 ### With Error Handling
 
 ```tsx
-import { ContentItemRenderer } from '@commercetools-demo/cms-content-item-renderer';
-import { StateProvider } from '@commercetools-demo/cms-state';
+import { ContentItemRenderer } from '@commercetools-demo/contentools-content-item-renderer';
+import { StateProvider } from '@commercetools-demo/contentools-state';
 
 const MyApp = () => {
   const handleError = (error: Error) => {
@@ -189,8 +189,8 @@ The component handles various error scenarios:
 The `ContentItemRenderer` automatically handles StateProvider requirements:
 
 ```tsx
-import { StateProvider } from '@commercetools-demo/cms-state';
-import { ContentItemRenderer } from '@commercetools-demo/cms-content-item-renderer';
+import { StateProvider } from '@commercetools-demo/contentools-state';
+import { ContentItemRenderer } from '@commercetools-demo/contentools-content-item-renderer';
 
 // ✅ Option 1: With existing StateProvider (recommended for multiple CMS components)
 <StateProvider baseURL="https://your-cms-api.com">
@@ -224,8 +224,8 @@ When using `itemKey`, the component makes API calls to:
 
 ## Dependencies
 
-- `@commercetools-demo/cms-state` - For state management and API calls
-- `@commercetools-demo/cms-types` - For TypeScript type definitions
+- `@commercetools-demo/contentools-state` - For state management and API calls
+- `@commercetools-demo/contentools-types` - For TypeScript type definitions
 - `react` - React library (peer dependency)
 
 ## Browser Compatibility
@@ -241,12 +241,12 @@ If you're migrating from the previous `ComponentRenderer`:
 
 ```tsx
 // Old usage
-import { ComponentRenderer } from '@commercetools-demo/cms-content-item-renderer';
+import { ComponentRenderer } from '@commercetools-demo/contentools-content-item-renderer';
 
 <ComponentRenderer component={contentItem} />
 
 // New usage (backward compatible)
-import { ContentItemRenderer } from '@commercetools-demo/cms-content-item-renderer';
+import { ContentItemRenderer } from '@commercetools-demo/contentools-content-item-renderer';
 
 <ContentItemRenderer component={contentItem} />
 

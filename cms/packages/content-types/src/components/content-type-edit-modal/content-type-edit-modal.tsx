@@ -1,10 +1,10 @@
 import {
   ContentTypeData,
-} from '@commercetools-demo/cms-types';
-import { Modal, useModalState } from '@commercetools-demo/cms-ui-components';
+} from '@commercetools-demo/contentools-types';
+import { Modal, useModalState } from '@commercetools-demo/contentools-ui-components';
 import React, { useEffect, useState } from 'react';
 import { useHistory, useParams, useRouteMatch } from 'react-router-dom';
-import { useStateContentType } from '@commercetools-demo/cms-state';
+import { useStateContentType } from '@commercetools-demo/contentools-state';
 import ContentTypeForm from '../content-type-form';
 import styled from 'styled-components';
 

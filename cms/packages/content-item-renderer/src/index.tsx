@@ -1,4 +1,4 @@
-import { ContentItem } from '@commercetools-demo/cms-types';
+import { ContentItem } from '@commercetools-demo/contentools-types';
 import React from 'react';
 import ContentItemRendererErrorBoundary from './components/content-item-renderer-error-boundry';
 import ContextualRenderer from './components/contextual-renderer';

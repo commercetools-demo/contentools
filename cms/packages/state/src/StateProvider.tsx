@@ -7,7 +7,7 @@ import { useVersion } from './hooks/useVersion';
 import { useStateManagement } from './hooks/useStateManagement';
 import { useMediaLibrary } from './hooks/useMediaLibrary';
 import { useDatasource } from './hooks/useDatasource';
-import { VersionInfo } from '@commercetools-demo/cms-types';
+import { VersionInfo } from '@commercetools-demo/contentools-types';
 
 export interface StateContextValue<T extends VersionInfo> {
   // Pages

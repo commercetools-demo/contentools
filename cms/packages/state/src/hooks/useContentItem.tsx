@@ -3,7 +3,7 @@ import {
   ContentItem,
   ContentItemState,
   StateInfo,
-} from '@commercetools-demo/cms-types';
+} from '@commercetools-demo/contentools-types';
 import {
   fetchContentItemsEndpoint,
   fetchPreviewContentItemEndpoint,

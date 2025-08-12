@@ -1,6 +1,6 @@
-import { ContentItem } from '@commercetools-demo/cms-types';
+import { ContentItem } from '@commercetools-demo/contentools-types';
 import React from 'react';
-import { ContentItemRenderer } from '@commercetools-demo/cms-content-item-renderer';
+import { ContentItemRenderer } from '@commercetools-demo/contentools-content-item-renderer';
 import styled from 'styled-components';
 
 const StyledContentItemPreview = styled.div`

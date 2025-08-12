@@ -1,5 +1,5 @@
-import { ComponentPlayground } from '@commercetools-demo/cms-content-type-editor';
-import { ContentTypeData } from '@commercetools-demo/cms-types';
+import { ComponentPlayground } from '@commercetools-demo/contentools-content-type-editor';
+import { ContentTypeData } from '@commercetools-demo/contentools-types';
 import Card from '@commercetools-uikit/card';
 import Spacings from '@commercetools-uikit/spacings';
 import Text from '@commercetools-uikit/text';

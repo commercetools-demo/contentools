@@ -1,4 +1,4 @@
-import { ContentTypeData } from '@commercetools-demo/cms-types';
+import { ContentTypeData } from '@commercetools-demo/contentools-types';
 import Card from '@commercetools-uikit/card';
 import PrimaryButton from '@commercetools-uikit/primary-button';
 import SecondaryButton from '@commercetools-uikit/secondary-button';

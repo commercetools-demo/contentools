@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { DatasourceInfo } from '@commercetools-demo/cms-types';
+import { DatasourceInfo } from '@commercetools-demo/contentools-types';
 import {
   getAvailableDatasourcesEndpoint,
   getDatasourceByKeyEndpoint,

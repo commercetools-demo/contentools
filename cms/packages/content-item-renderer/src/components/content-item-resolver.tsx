@@ -1,8 +1,8 @@
 import {
   useStateContentItem,
-} from '@commercetools-demo/cms-state';
+} from '@commercetools-demo/contentools-state';
 import { ContentItemRendererProps } from '..';
-import { ContentItem } from '@commercetools-demo/cms-types';
+import { ContentItem } from '@commercetools-demo/contentools-types';
 import { useEffect, useState } from 'react';
 import ComponentRenderer from '../content-renderer';
 

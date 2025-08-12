@@ -1,5 +1,5 @@
-import { useStateContentType } from '@commercetools-demo/cms-state';
-import { ContentItem, StateInfo } from '@commercetools-demo/cms-types';
+import { useStateContentType } from '@commercetools-demo/contentools-state';
+import { ContentItem, StateInfo } from '@commercetools-demo/contentools-types';
 import DataTable, { TColumn, TRow } from '@commercetools-uikit/data-table';
 import IconButton from '@commercetools-uikit/icon-button';
 import {

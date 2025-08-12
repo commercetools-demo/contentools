@@ -1,19 +1,19 @@
 {
-  "name": "@commercetools-demo/cms-state",
+  "name": "@commercetools-demo/contentools-state",
   "description": "State for the Commercetools platform",
   "version": "0.0.2",
   "license": "MIT",
   "publishConfig": {
     "access": "public"
   },
-  "main": "dist/commercetools-demo-cms-state.cjs.js",
-  "module": "dist/commercetools-demo-cms-state.esm.js",
+  "main": "dist/commercetools-demo-contentools-state.cjs.js",
+  "module": "dist/commercetools-demo-contentools-state.esm.js",
   "files": [
     "dist"
   ],
   "dependencies": {
     "@babel/runtime-corejs3": "^7.28.0",
-    "@commercetools-demo/cms-types": "workspace:*",
+    "@commercetools-demo/contentools-types": "workspace:*",
     "@emotion/react": "^11.14.0",
     "uuid": "^11.1.0"
   },

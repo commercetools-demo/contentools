@@ -1,14 +1,14 @@
-import PropertyEditor from '@commercetools-demo/cms-property-editor';
+import PropertyEditor from '@commercetools-demo/contentools-property-editor';
 import {
   useStateContentItem,
   useStateStateManagement,
   useStateVersion,
-} from '@commercetools-demo/cms-state';
+} from '@commercetools-demo/contentools-state';
 import {
   ContentItem,
   ContentItemVersionInfo,
-} from '@commercetools-demo/cms-types';
-import { Modal, useModalState } from '@commercetools-demo/cms-ui-components';
+} from '@commercetools-demo/contentools-types';
+import { Modal, useModalState } from '@commercetools-demo/contentools-ui-components';
 import Spacings from '@commercetools-uikit/spacings';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';

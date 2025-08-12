@@ -1,5 +1,5 @@
-import { useStateContentItem } from '@commercetools-demo/cms-state';
-import { ContentItem } from '@commercetools-demo/cms-types';
+import { useStateContentItem } from '@commercetools-demo/contentools-state';
+import { ContentItem } from '@commercetools-demo/contentools-types';
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { ContentItemList } from '../content-item-list/content-item-list';
@@ -7,7 +7,7 @@ import styles from './index.module.css';
 import {
   ConfirmationModal,
   useModalState,
-} from '@commercetools-demo/cms-ui-components';
+} from '@commercetools-demo/contentools-ui-components';
 import LoadingSpinner from '@commercetools-uikit/loading-spinner';
 import styled from 'styled-components';
 import Text from '@commercetools-uikit/text';

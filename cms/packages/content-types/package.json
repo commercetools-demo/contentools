@@ -1,24 +1,25 @@
 {
-  "name": "@commercetools-demo/cms-content-types",
+  "name": "@commercetools-demo/contentools-content-types",
   "description": "Content types CMS",
   "version": "0.0.2",
   "license": "MIT",
   "publishConfig": {
     "access": "public"
   },
-  "main": "dist/commercetools-demo-cms-content-types.cjs.js",
-  "module": "dist/commercetools-demo-cms-content-types.esm.js",
+  "main": "dist/commercetools-demo-contentools-content-types.cjs.js",
+  "module": "dist/commercetools-demo-contentools-content-types.esm.js",
+  "types": "dist/commercetools-demo-contentools-content-types.cjs.d.ts",
   "files": [
     "dist"
   ],
   "dependencies": {
     "@babel/runtime-corejs3": "^7.28.0",
-    "@commercetools-demo/cms-content-item-renderer": "workspace:*",
-    "@commercetools-demo/cms-content-type-editor": "workspace:*",
-    "@commercetools-demo/cms-property-editor": "workspace:*",
-    "@commercetools-demo/cms-state": "workspace:*",
-    "@commercetools-demo/cms-types": "workspace:*",
-    "@commercetools-demo/cms-ui-components": "workspace:*",
+    "@commercetools-demo/contentools-content-item-renderer": "workspace:*",
+    "@commercetools-demo/contentools-content-type-editor": "workspace:*",
+    "@commercetools-demo/contentools-property-editor": "workspace:*",
+    "@commercetools-demo/contentools-state": "workspace:*",
+    "@commercetools-demo/contentools-types": "workspace:*",
+    "@commercetools-demo/contentools-ui-components": "workspace:*",
     "@commercetools-uikit/card": "^20.2.2",
     "@commercetools-uikit/checkbox-input": "^20.2.2",
     "@commercetools-uikit/data-table": "^20.2.1",

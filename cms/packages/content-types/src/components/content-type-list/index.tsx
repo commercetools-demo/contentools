@@ -1,4 +1,4 @@
-import { ContentTypeData } from '@commercetools-demo/cms-types';
+import { ContentTypeData } from '@commercetools-demo/contentools-types';
 import DataTable, { TColumn } from '@commercetools-uikit/data-table';
 import IconButton from '@commercetools-uikit/icon-button';
 import { BinLinearIcon, EditIcon } from '@commercetools-uikit/icons';

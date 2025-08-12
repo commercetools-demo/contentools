@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { MediaLibraryResult, MediaFile } from '@commercetools-demo/cms-types';
+import { MediaLibraryResult, MediaFile } from '@commercetools-demo/contentools-types';
 import { fetchMediaLibrary, uploadFile } from '../api';
 
 interface MediaLibraryState {

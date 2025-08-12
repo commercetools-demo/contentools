@@ -1,13 +1,13 @@
-import { useStateContentType } from '@commercetools-demo/cms-state';
+import { useStateContentType } from '@commercetools-demo/contentools-state';
 import React, { useEffect, useState } from 'react';
 import ContentTypeList from '../content-type-list';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
-import { ContentTypeData } from '@commercetools-demo/cms-types';
+import { ContentTypeData } from '@commercetools-demo/contentools-types';
 import {
   ConfirmationModal,
   useModalState,
-} from '@commercetools-demo/cms-ui-components';
+} from '@commercetools-demo/contentools-ui-components';
 import Text from '@commercetools-uikit/text';
 import LoadingSpinner from '@commercetools-uikit/loading-spinner';
 

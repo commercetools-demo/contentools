@@ -4,7 +4,7 @@ import Spacings from '@commercetools-uikit/spacings';
 import FieldLabel from '@commercetools-uikit/field-label';
 import SecondaryButton from '@commercetools-uikit/secondary-button';
 import Text from '@commercetools-uikit/text';
-import { useStateDatasource } from '@commercetools-demo/cms-state';
+import { useStateDatasource } from '@commercetools-demo/contentools-state';
 
 const HighlightedContainer = styled.div<{ $highlight: boolean }>`
   position: relative;

@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { EditorState } from '@commercetools-demo/cms-types';
+import { EditorState } from '@commercetools-demo/contentools-types';
 
 const initialState: EditorState = {
   selectedComponentId: null,

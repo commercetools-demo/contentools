@@ -4,7 +4,7 @@ import Spacings from '@commercetools-uikit/spacings';
 import FieldLabel from '@commercetools-uikit/field-label';
 import Text from '@commercetools-uikit/text';
 import SecondaryButton from '@commercetools-uikit/secondary-button';
-import {MultilineTextInput} from '@commercetools-demo/cms-ui-components';
+import {MultilineTextInput} from '@commercetools-demo/contentools-ui-components';
 
 const Container = styled.div`
   width: 100%;

@@ -7,7 +7,7 @@ import {
   VersionState,
   ContentItemVersionInfo,
   PageVersionInfo,
-} from '@commercetools-demo/cms-types';
+} from '@commercetools-demo/contentools-types';
 import {
   fetchVersionsEndpoint,
   saveVersionEndpoint,

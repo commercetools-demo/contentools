@@ -9,7 +9,7 @@ import {
   StateInfo,
   MediaLibraryResult,
   ContentTypeData,
-} from '@commercetools-demo/cms-types';
+} from '@commercetools-demo/contentools-types';
 
 /**
  * Generic fetch function for making API calls

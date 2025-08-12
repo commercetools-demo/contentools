@@ -1,13 +1,13 @@
 {
-  "name": "@commercetools-demo/cms-ui-components",
+  "name": "@commercetools-demo/contentools-ui-components",
   "description": "Shared UI components for CMS",
   "version": "0.0.1",
   "license": "MIT",
   "publishConfig": {
     "access": "public"
   },
-  "main": "dist/commercetools-demo-cms-ui-components.cjs.js",
-  "module": "dist/commercetools-demo-cms-ui-components.esm.js",
+  "main": "dist/commercetools-demo-contentools-ui-components.cjs.js",
+  "module": "dist/commercetools-demo-contentools-ui-components.esm.js",
   "files": [
     "dist"
   ],

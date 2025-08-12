@@ -1,5 +1,5 @@
-import { useStateDatasource } from '@commercetools-demo/cms-state';
-import { ContentTypeData, PropertySchema } from '@commercetools-demo/cms-types';
+import { useStateDatasource } from '@commercetools-demo/contentools-state';
+import { ContentTypeData, PropertySchema } from '@commercetools-demo/contentools-types';
 import CheckboxInput from '@commercetools-uikit/checkbox-input';
 import FieldLabel from '@commercetools-uikit/field-label';
 import PrimaryButton from '@commercetools-uikit/primary-button';
@@ -15,7 +15,7 @@ import {
   isDefaultValueVisible,
   parseDefaultValue,
 } from '../utils/schema';
-import {SelectInput} from '@commercetools-demo/cms-ui-components';
+import {SelectInput} from '@commercetools-demo/contentools-ui-components';
 
 const SchemaBuilder = styled.div`
   border: 1px solid #ddd;

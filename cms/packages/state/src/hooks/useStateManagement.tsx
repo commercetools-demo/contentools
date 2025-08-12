@@ -5,7 +5,7 @@ import {
   ContentItemStates,
   PageStates,
   StateManagementState,
-} from '@commercetools-demo/cms-types';
+} from '@commercetools-demo/contentools-types';
 import {
   getStatesEndpoint,
   saveDraftEndpoint,

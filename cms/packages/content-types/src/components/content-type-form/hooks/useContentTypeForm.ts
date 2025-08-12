@@ -2,7 +2,7 @@ import { useState, useCallback, useMemo } from 'react';
 import {
   ContentTypeData,
   ContentTypeMetaData,
-} from '@commercetools-demo/cms-types';
+} from '@commercetools-demo/contentools-types';
 
 const createDefaultContentType = (): ContentTypeData =>
   ({

@@ -1,5 +1,5 @@
 import React from 'react';
-import { ContentTypeData } from '@commercetools-demo/cms-types';
+import { ContentTypeData } from '@commercetools-demo/contentools-types';
 import Spacings from '@commercetools-uikit/spacings';
 import Text from '@commercetools-uikit/text';
 import TextInput from '@commercetools-uikit/text-input';

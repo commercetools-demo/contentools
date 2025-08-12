@@ -5,8 +5,8 @@ import {
   ContentItem,
   ContentTypeMetaData,
   PropertySchema,
-} from '@commercetools-demo/cms-types';
-import { useStateContentType } from '@commercetools-demo/cms-state';
+} from '@commercetools-demo/contentools-types';
+import { useStateContentType } from '@commercetools-demo/contentools-state';
 import styled from 'styled-components';
 import Spacings from '@commercetools-uikit/spacings';
 import Text from '@commercetools-uikit/text';
@@ -21,7 +21,7 @@ import { FileField } from './components/file-field';
 import { WysiwygField } from './components/wysiwyg-field';
 import { DatasourceField } from './components/datasource-field';
 import { ObjectField } from './components/object-field';
-import { ConfirmationModal } from '@commercetools-demo/cms-ui-components';
+import { ConfirmationModal } from '@commercetools-demo/contentools-ui-components';
 
 const PropertyEditorContainer = styled.div`
   padding: 20px 0;

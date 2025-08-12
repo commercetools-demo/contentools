@@ -1636,14 +1636,26 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@commercetools-demo/cms-content-item-renderer@workspace:*, @commercetools-demo/cms-content-item-renderer@workspace:packages/content-item-renderer":
+"@commercetools-demo/contentools-content-items@link:../packages/content-items::locator=plain-react-test%40workspace%3Aplain-react-test":
   version: 0.0.0-use.local
-  resolution: "@commercetools-demo/cms-content-item-renderer@workspace:packages/content-item-renderer"
+  resolution: "@commercetools-demo/contentools-content-items@link:../packages/content-items::locator=plain-react-test%40workspace%3Aplain-react-test"
+  languageName: node
+  linkType: soft
+
+"@commercetools-demo/contentools-content-types@link:../packages/content-types::locator=plain-react-test%40workspace%3Aplain-react-test":
+  version: 0.0.0-use.local
+  resolution: "@commercetools-demo/contentools-content-types@link:../packages/content-types::locator=plain-react-test%40workspace%3Aplain-react-test"
+  languageName: node
+  linkType: soft
+
+"@commercetools-demo/contentools-content-item-renderer@workspace:*, @commercetools-demo/contentools-content-item-renderer@workspace:packages/content-item-renderer":
+  version: 0.0.0-use.local
+  resolution: "@commercetools-demo/contentools-content-item-renderer@workspace:packages/content-item-renderer"
   dependencies:
     "@babel/runtime-corejs3": "npm:^7.28.0"
-    "@commercetools-demo/cms-state": "workspace:*"
-    "@commercetools-demo/cms-types": "workspace:*"
-    "@commercetools-demo/cms-ui-components": "workspace:*"
+    "@commercetools-demo/contentools-state": "workspace:*"
+    "@commercetools-demo/contentools-types": "workspace:*"
+    "@commercetools-demo/contentools-ui-components": "workspace:*"
     "@emotion/react": "npm:^11.14.0"
     "@types/react": "npm:^19"
     styled-components: "npm:^6.1.19"
@@ -1655,23 +1667,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@commercetools-demo/cms-content-items@link:../packages/content-items::locator=plain-react-test%40workspace%3Aplain-react-test":
+"@commercetools-demo/contentools-content-items@workspace:packages/content-items":
   version: 0.0.0-use.local
-  resolution: "@commercetools-demo/cms-content-items@link:../packages/content-items::locator=plain-react-test%40workspace%3Aplain-react-test"
-  languageName: node
-  linkType: soft
-
-"@commercetools-demo/cms-content-items@workspace:packages/content-items":
-  version: 0.0.0-use.local
-  resolution: "@commercetools-demo/cms-content-items@workspace:packages/content-items"
+  resolution: "@commercetools-demo/contentools-content-items@workspace:packages/content-items"
   dependencies:
     "@babel/runtime-corejs3": "npm:^7.28.0"
-    "@commercetools-demo/cms-content-item-renderer": "workspace:*"
-    "@commercetools-demo/cms-content-type-editor": "workspace:*"
-    "@commercetools-demo/cms-property-editor": "workspace:*"
-    "@commercetools-demo/cms-state": "workspace:*"
-    "@commercetools-demo/cms-types": "workspace:*"
-    "@commercetools-demo/cms-ui-components": "workspace:*"
+    "@commercetools-demo/contentools-content-item-renderer": "workspace:*"
+    "@commercetools-demo/contentools-content-type-editor": "workspace:*"
+    "@commercetools-demo/contentools-property-editor": "workspace:*"
+    "@commercetools-demo/contentools-state": "workspace:*"
+    "@commercetools-demo/contentools-types": "workspace:*"
+    "@commercetools-demo/contentools-ui-components": "workspace:*"
     "@commercetools-uikit/card": "npm:^20.2.2"
     "@commercetools-uikit/checkbox-input": "npm:^20.2.2"
     "@commercetools-uikit/data-table": "npm:^20.2.1"
@@ -1704,13 +1710,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@commercetools-demo/cms-content-type-editor@workspace:*, @commercetools-demo/cms-content-type-editor@workspace:packages/content-type-editor":
+"@commercetools-demo/contentools-content-type-editor@workspace:*, @commercetools-demo/contentools-content-type-editor@workspace:packages/content-type-editor":
   version: 0.0.0-use.local
-  resolution: "@commercetools-demo/cms-content-type-editor@workspace:packages/content-type-editor"
+  resolution: "@commercetools-demo/contentools-content-type-editor@workspace:packages/content-type-editor"
   dependencies:
     "@babel/runtime-corejs3": "npm:^7.28.0"
     "@babel/standalone": "npm:^7.28.2"
-    "@commercetools-demo/cms-types": "workspace:*"
+    "@commercetools-demo/contentools-types": "workspace:*"
     "@commercetools-uikit/loading-spinner": "npm:^20.2.2"
     "@emotion/react": "npm:^11.14.0"
     "@monaco-editor/react": "npm:^4.7.0"
@@ -1726,23 +1732,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@commercetools-demo/cms-content-types@link:../packages/content-types::locator=plain-react-test%40workspace%3Aplain-react-test":
+"@commercetools-demo/contentools-content-types@workspace:packages/content-types":
   version: 0.0.0-use.local
-  resolution: "@commercetools-demo/cms-content-types@link:../packages/content-types::locator=plain-react-test%40workspace%3Aplain-react-test"
-  languageName: node
-  linkType: soft
-
-"@commercetools-demo/cms-content-types@workspace:packages/content-types":
-  version: 0.0.0-use.local
-  resolution: "@commercetools-demo/cms-content-types@workspace:packages/content-types"
+  resolution: "@commercetools-demo/contentools-content-types@workspace:packages/content-types"
   dependencies:
     "@babel/runtime-corejs3": "npm:^7.28.0"
-    "@commercetools-demo/cms-content-item-renderer": "workspace:*"
-    "@commercetools-demo/cms-content-type-editor": "workspace:*"
-    "@commercetools-demo/cms-property-editor": "workspace:*"
-    "@commercetools-demo/cms-state": "workspace:*"
-    "@commercetools-demo/cms-types": "workspace:*"
-    "@commercetools-demo/cms-ui-components": "workspace:*"
+    "@commercetools-demo/contentools-content-item-renderer": "workspace:*"
+    "@commercetools-demo/contentools-content-type-editor": "workspace:*"
+    "@commercetools-demo/contentools-property-editor": "workspace:*"
+    "@commercetools-demo/contentools-state": "workspace:*"
+    "@commercetools-demo/contentools-types": "workspace:*"
+    "@commercetools-demo/contentools-ui-components": "workspace:*"
     "@commercetools-uikit/card": "npm:^20.2.2"
     "@commercetools-uikit/checkbox-input": "npm:^20.2.2"
     "@commercetools-uikit/data-table": "npm:^20.2.1"
@@ -1775,14 +1775,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@commercetools-demo/cms-property-editor@workspace:*, @commercetools-demo/cms-property-editor@workspace:packages/property-editor":
+"@commercetools-demo/contentools-property-editor@workspace:*, @commercetools-demo/contentools-property-editor@workspace:packages/property-editor":
   version: 0.0.0-use.local
-  resolution: "@commercetools-demo/cms-property-editor@workspace:packages/property-editor"
+  resolution: "@commercetools-demo/contentools-property-editor@workspace:packages/property-editor"
   dependencies:
     "@babel/runtime-corejs3": "npm:^7.28.0"
-    "@commercetools-demo/cms-state": "workspace:*"
-    "@commercetools-demo/cms-types": "workspace:*"
-    "@commercetools-demo/cms-ui-components": "workspace:*"
+    "@commercetools-demo/contentools-state": "workspace:*"
+    "@commercetools-demo/contentools-types": "workspace:*"
+    "@commercetools-demo/contentools-ui-components": "workspace:*"
     "@commercetools-uikit/card": "npm:^20.2.2"
     "@commercetools-uikit/checkbox-input": "npm:^20.2.2"
     "@commercetools-uikit/data-table": "npm:^20.2.1"
@@ -1813,12 +1813,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@commercetools-demo/cms-state@workspace:*, @commercetools-demo/cms-state@workspace:packages/state":
+"@commercetools-demo/contentools-state@workspace:*, @commercetools-demo/contentools-state@workspace:packages/state":
   version: 0.0.0-use.local
-  resolution: "@commercetools-demo/cms-state@workspace:packages/state"
+  resolution: "@commercetools-demo/contentools-state@workspace:packages/state"
   dependencies:
     "@babel/runtime-corejs3": "npm:^7.28.0"
-    "@commercetools-demo/cms-types": "workspace:*"
+    "@commercetools-demo/contentools-types": "workspace:*"
     "@emotion/react": "npm:^11.14.0"
     "@types/react": "npm:^19"
     uuid: "npm:^11.1.0"
@@ -1828,15 +1828,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@commercetools-demo/cms-types@workspace:*, @commercetools-demo/cms-types@workspace:packages/types":
+"@commercetools-demo/contentools-types@workspace:*, @commercetools-demo/contentools-types@workspace:packages/types":
   version: 0.0.0-use.local
-  resolution: "@commercetools-demo/cms-types@workspace:packages/types"
+  resolution: "@commercetools-demo/contentools-types@workspace:packages/types"
   languageName: unknown
   linkType: soft
 
-"@commercetools-demo/cms-ui-components@workspace:*, @commercetools-demo/cms-ui-components@workspace:packages/ui-components":
+"@commercetools-demo/contentools-ui-components@workspace:*, @commercetools-demo/contentools-ui-components@workspace:packages/ui-components":
   version: 0.0.0-use.local
-  resolution: "@commercetools-demo/cms-ui-components@workspace:packages/ui-components"
+  resolution: "@commercetools-demo/contentools-ui-components@workspace:packages/ui-components"
   dependencies:
     "@babel/runtime-corejs3": "npm:^7.28.0"
     "@commercetools-uikit/card": "npm:^20.2.2"
@@ -1859,9 +1859,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@commercetools-demo/cms@workspace:.":
+"@commercetools-demo/contentools@workspace:.":
   version: 0.0.0-use.local
-  resolution: "@commercetools-demo/cms@workspace:."
+  resolution: "@commercetools-demo/contentools@workspace:."
   dependencies:
     "@babel/core": "npm:^7.22.17"
     "@babel/preset-env": "npm:^7.28.0"
@@ -14344,8 +14344,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "plain-react-test@workspace:plain-react-test"
   dependencies:
-    "@commercetools-demo/cms-content-items": "link:../packages/content-items"
-    "@commercetools-demo/cms-content-types": "link:../packages/content-types"
+    "@commercetools-demo/contentools-content-items": "link:../packages/content-items"
+    "@commercetools-demo/contentools-content-types": "link:../packages/content-types"
     "@emotion/react": "npm:^11.14.0"
     "@testing-library/dom": "npm:^10.4.0"
     "@testing-library/jest-dom": "npm:^6.6.3"

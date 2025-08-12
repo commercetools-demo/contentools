@@ -1,5 +1,5 @@
-import { useStateContentType } from '@commercetools-demo/cms-state';
-import { ContentItem } from '@commercetools-demo/cms-types';
+import { useStateContentType } from '@commercetools-demo/contentools-state';
+import { ContentItem } from '@commercetools-demo/contentools-types';
 import React, { Suspense, useEffect, useMemo, useState } from 'react';
 import { SecureDynamicComponentLoader } from './components/dynamic-component-loader';
 import { DynamicComponentErrorBoundary } from './components/error-boundary';
