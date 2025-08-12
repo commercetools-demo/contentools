@@ -172,13 +172,13 @@ const ContentItemEditorEditForm: React.FC<ContentItemEditorEditFormProps> = ({
 
   const handleFetchVersions = useCallback(async () => {
     if (item?.key) {
-      const fetchedVersions = await fetchVersions(
+      await fetchVersions(
         hydratedUrl,
         item.key,
         'content-items'
       );
     }
-  }, [fetchVersions, item, hydratedUrl]);
+  }, [fetchVersions, item?.key, hydratedUrl]);
 
   const handleClose = () => {
     contentItemEditorState.closeModal();
@@ -195,7 +195,7 @@ const ContentItemEditorEditForm: React.FC<ContentItemEditorEditFormProps> = ({
 
   useEffect(() => {
     handleFetchVersions();
-  }, [handleFetchVersions, item]);
+  }, [handleFetchVersions]);
 
   useEffect(() => {
     if (contentItemKey) {

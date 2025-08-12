@@ -75,7 +75,7 @@ const typeOptions = [
   { value: 'string', label: 'String' },
   { value: 'number', label: 'Number' },
   { value: 'boolean', label: 'Boolean' },
-  { value: 'array', label: 'Array' },
+  // { value: 'array', label: 'Array' },
   { value: 'object', label: 'Object' },
   { value: 'file', label: 'File' },
   { value: 'datasource', label: 'Datasource' },

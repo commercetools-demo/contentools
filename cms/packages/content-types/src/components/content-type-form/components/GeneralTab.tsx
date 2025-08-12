@@ -68,7 +68,7 @@ const GeneralTab: React.FC<GeneralTabProps> = ({
         <FormField>
           <FieldLabel
             title="Component Type"
-            hint="Technical type identifier"
+            hint="Technical type identifier, no spaces or special characters"
             htmlFor="content-type-type"
           />
           <TextInput
@@ -83,7 +83,7 @@ const GeneralTab: React.FC<GeneralTabProps> = ({
         <FormField>
           <FieldLabel
             title="Icon"
-            hint="Icon name or URL for this content type"
+            hint="Icon/Emoji for this content type"
             htmlFor="content-type-icon"
           />
           <TextInput

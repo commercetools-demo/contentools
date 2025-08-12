@@ -20,6 +20,7 @@ import { ArrayField } from './components/array-field';
 import { FileField } from './components/file-field';
 import { WysiwygField } from './components/wysiwyg-field';
 import { DatasourceField } from './components/datasource-field';
+import { ObjectField } from './components/object-field';
 import { ConfirmationModal } from '@commercetools-demo/cms-ui-components';
 
 const PropertyEditorContainer = styled.div`
@@ -79,7 +80,14 @@ const PropertyEditor: React.FC<PropertyEditorProps> = ({
           JSON.stringify(component.properties[key])
         );
       }
-    );
+    ).concat(Object.keys(component.properties || {}).filter(
+      (key) => {
+        return (
+          JSON.stringify(versionedContent.properties[key]) !==
+          JSON.stringify(component.properties[key])
+        );
+      }
+    )).filter((key, index, self) => self.indexOf(key) === index);
 
     return [...nameDiff, ...propertyDiff];
   }, [versionedContent, component]);
@@ -134,6 +142,11 @@ const PropertyEditor: React.FC<PropertyEditorProps> = ({
             break;
           case 'datasource':
             propertiesSchema[key] = Yup.object().required(
+              `${field.label} is required`
+            );
+            break;
+          case 'object':
+            propertiesSchema[key] = Yup.mixed().required(
               `${field.label} is required`
             );
             break;
@@ -278,6 +291,8 @@ const PropertyEditor: React.FC<PropertyEditorProps> = ({
               validationError={errorString}
             />
           );
+        case 'object':
+          return <ObjectField {...commonProps} value={value || {}} key={key} />;
         default:
           return (
             <Spacings.Stack scale="s" key={key}>
@@ -336,7 +351,7 @@ const PropertyEditor: React.FC<PropertyEditorProps> = ({
                   highlight={diff.includes('name')}
                   required
                   onFieldChange={useCallback(
-                    (key: string, value: string) =>
+                    (_key: string, value: string) =>
                       formik.setFieldValue('name', value),
                     [formik]
                   )}

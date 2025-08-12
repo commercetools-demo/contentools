@@ -48,7 +48,7 @@ const VersionHistorySidebar: React.FC<VersionHistorySidebarProps> = ({
                 <Spacings.Stack scale="xs">
                   {/* <Text.Detail>Version {version.version}</Text.Detail> */}
                   <Text.Caption>
-                    {new Date(version.timestamp).toLocaleDateString()}
+                    {new Date(version.timestamp).toLocaleString()}
                   </Text.Caption>
                   {/* {version.createdBy && (
                     <Text.Caption>by {version.createdBy}</Text.Caption>
