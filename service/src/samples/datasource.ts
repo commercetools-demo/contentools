@@ -1,4 +1,4 @@
-[
+export default [
     {
         "container": "datasource",
         "key": "product-by-sku",
@@ -18,7 +18,7 @@
         "container": "datasource",
         "key": "products-by-sku",
         "value": {
-            "name": "Get Product by SKU",
+            "name": "Get Products by SKU",
             "key": "products-by-sku",
             "params": [
                 {
