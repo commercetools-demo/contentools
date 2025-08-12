@@ -52,6 +52,7 @@
     "@commercetools-frontend/eslint-config-mc-app": "24.0.0",
     "@manypkg/cli": "0.24.0",
     "@preconstruct/cli": "2.8.10",
+    "@types/add": "^2",
     "@types/babel__preset-env": "^7",
     "@types/node": "^22.13.1",
     "@types/prettier": "^2.7.3",

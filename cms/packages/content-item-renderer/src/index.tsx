@@ -1,14 +1,20 @@
-import { useStateContentType } from '@commercetools-demo/cms-state';
 import { ContentItem } from '@commercetools-demo/cms-types';
-import React, { Suspense, useEffect, useMemo, useState } from 'react';
-import { SecureDynamicComponentLoader } from './components/dynamic-component-loader';
-import { DynamicComponentErrorBoundary } from './components/error-boundary';
+import React from 'react';
+import ContentItemRendererErrorBoundary from './components/content-item-renderer-error-boundry';
+import ContextualRenderer from './components/contextual-renderer';
+import StandaloneRenderer from './components/standalone-renderer';
 
-export interface ComponentRendererProps {
-  /** The content item to render */
-  component: ContentItem;
+export interface ContentItemRendererProps {
+  /** The content item to render (required if itemKey is not provided) */
+  component?: ContentItem;
+  /** The key of the content item to fetch and render (required if component is not provided) */
+  itemKey?: string;
+  /** Whether to render the draft version of the content item */
+  isDraft?: boolean;
   /** Base URL for API calls (optional) */
   baseURL?: string;
+  /** The key of the business unit to fetch the content item from (optional) */
+  businessUnitKey?: string;
   /** Locale for rendering (optional) */
   locale?: string;
   /** Additional CSS class name */
@@ -24,107 +30,24 @@ export interface ComponentRendererProps {
 }
 
 /**
- * ComponentRenderer - Renders content items as React components
- *
- * This component takes a ContentItem and dynamically renders the appropriate
- * React component based on the content type. It replaces the previous web
- * component implementation with a pure React approach.
+ * Main entry point for the content item renderer package.
+ * 
+ * This component automatically detects whether a StateProvider context is available:
+ * - If StateProvider context exists: renders ComponentRenderer directly with all props
+ * - If StateProvider context is missing: wraps ComponentRenderer in StateProvider
+ * 
+ * This ensures backward compatibility and ease of use for consumers.
  */
-export const ComponentRenderer: React.FC<ComponentRendererProps> = ({
-  component,
-  baseURL = '',
-  locale = 'en-US',
-  className,
-  style,
-  // loading = false,
-  // error = null,
-  onError,
-}) => {
-  const { fetchContentType } = useStateContentType();
-  const [Component, setComponent] = useState<any>(null);
-
-  // Create loader instance with useMemo to prevent recreation
-  const loader = useMemo(() => new SecureDynamicComponentLoader(), []);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    let mounted = true;
-
-    async function loadComponent() {
-      try {
-        setLoading(true);
-        setError(null);
-
-        const contentType = await fetchContentType(component.type);
-
-        const loadedComponent = await loader.loadComponent({
-          id: contentType.id,
-          version: contentType.key,
-          transpiledCode: contentType.code?.transpiledCode || '',
-        });
-
-        if (mounted) {
-          setComponent(() => loadedComponent);
-        }
-      } catch (err: any) {
-        if (mounted) {
-          setError(err.message);
-          if (onError) onError(err);
-        }
-      } finally {
-        if (mounted) {
-          setLoading(false);
-        }
-      }
-    }
-
-    loadComponent();
-
-    return () => {
-      mounted = false;
-    };
-  }, [loader, onError]);
-  useEffect(() => {
-    return () => {
-      loader.clearCache();
-    };
-  }, [loader]);
-
-  if (loading) {
-    return <Suspense fallback={<div>Loading...</div>}>Loading</Suspense>;
-  }
-
-  if (error) {
-    return (
-      <div
-        style={{
-          padding: '20px',
-          border: '2px solid #ff6b6b',
-          borderRadius: '8px',
-          backgroundColor: '#ffe0e0',
-          color: '#d63031',
-        }}
-      >
-        <h3>Failed to Load Component</h3>
-        <p>Component ID: {12}</p>
-        <p>Error: {error}</p>
-      </div>
-    );
-  }
-
-  if (!Component) {
-    return <div>Component not found</div>;
-  }
-
+export const ContentItemRenderer: React.FC<ContentItemRendererProps> = (props) => {
   return (
-    <DynamicComponentErrorBoundary componentId={component.id} onError={onError}>
-      <Suspense fallback={<div>Loading...</div>}>
-        <Component {...component.properties} />
-      </Suspense>
-    </DynamicComponentErrorBoundary>
+    <ContentItemRendererErrorBoundary 
+      fallback={<StandaloneRenderer {...props} />}
+    >
+      <ContextualRenderer {...props} />
+    </ContentItemRendererErrorBoundary>
   );
 };
 
-// Default export
-export default ComponentRenderer;
+
+// Default export is the smart wrapper component
+export default ContentItemRenderer;

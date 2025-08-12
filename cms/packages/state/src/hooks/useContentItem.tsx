@@ -11,6 +11,7 @@ import {
   updateContentItemEndpoint,
   deleteContentItemEndpoint,
   fetchRawContentItemEndpoint,
+  fetchPublishedContentItemEndpoint,
 } from '../api';
 
 const initialState: ContentItemState = {
@@ -109,6 +110,36 @@ export const useContentItem = () => {
             error instanceof Error
               ? error.message
               : 'Failed to fetch content item',
+        }));
+        throw error;
+      }
+    },
+    []
+  );
+
+  const fetchPublishedContentItem = useCallback(
+    async (hydratedUrl: string, key: string) => {
+      try {
+        setState((prev) => ({ ...prev, loading: true, error: null }));
+        const item = await fetchPublishedContentItemEndpoint<ContentItem>(
+          hydratedUrl,
+          key
+        );
+
+        setState((prev) => ({
+          ...prev,
+          loading: false,
+        }));
+
+        return item;
+      } catch (error) {
+        setState((prev) => ({
+          ...prev,
+          loading: false,
+          error:
+            error instanceof Error
+              ? error.message
+              : 'Failed to fetch published content item',
         }));
         throw error;
       }
@@ -301,6 +332,7 @@ export const useContentItem = () => {
     fetchContentItems,
     fetchContentItem,
     fetchRawContentItem,
+    fetchPublishedContentItem,
     createContentItem,
     updateContentItem,
     deleteContentItem,

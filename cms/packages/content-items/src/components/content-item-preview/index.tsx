@@ -1,6 +1,6 @@
 import { ContentItem } from '@commercetools-demo/cms-types';
 import React from 'react';
-import { ComponentRenderer } from '@commercetools-demo/cms-content-item-renderer';
+import { ContentItemRenderer } from '@commercetools-demo/cms-content-item-renderer';
 import styled from 'styled-components';
 
 const StyledContentItemPreview = styled.div`
@@ -30,7 +30,7 @@ const ContentItemPreview = ({
   }
   return (
     <StyledContentItemPreview>
-      <ComponentRenderer
+      <ContentItemRenderer
         component={item}
         baseURL={hydratedBaseUrl}
         locale={locale}
