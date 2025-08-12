@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@commercetools-demo/cms-content-items": "link:../packages/content-items",
+    "@commercetools-demo/contentools-content-items": "link:../packages/content-items",
+    "@commercetools-demo/contentools-content-types": "link:../packages/content-types",
     "@emotion/react": "^11.14.0",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
