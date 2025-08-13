@@ -1,6 +1,6 @@
 {
   "name": "@commercetools-demo/contentools",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "CMS for the Commercetools platform",
   "keywords": [
     "javascript",

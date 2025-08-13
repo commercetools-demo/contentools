@@ -1,7 +1,7 @@
 {
   "name": "@commercetools-demo/contentools-content-types",
   "description": "Content types CMS",
-  "version": "0.0.2",
+  "version": "1.0.0",
   "license": "MIT",
   "publishConfig": {
     "access": "public"
