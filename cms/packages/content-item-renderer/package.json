@@ -1,7 +1,7 @@
 {
   "name": "@commercetools-demo/contentools-content-item-renderer",
   "description": "Content item renderer",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "license": "MIT",
   "publishConfig": {
     "access": "public"
@@ -14,9 +14,9 @@
   ],
   "dependencies": {
     "@babel/runtime-corejs3": "^7.28.0",
-    "@commercetools-demo/contentools-state": "workspace:*",
-    "@commercetools-demo/contentools-types": "workspace:*",
-    "@commercetools-demo/contentools-ui-components": "workspace:*",
+    "@commercetools-demo/contentools-state": "workspace:^",
+    "@commercetools-demo/contentools-types": "workspace:^",
+    "@commercetools-demo/contentools-ui-components": "workspace:^",
     "@emotion/react": "^11.14.0",
     "styled-components": "^6.1.19"
   },

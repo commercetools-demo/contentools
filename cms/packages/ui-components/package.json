@@ -1,7 +1,7 @@
 {
   "name": "@commercetools-demo/contentools-ui-components",
   "description": "Shared UI components for CMS",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "license": "MIT",
   "publishConfig": {
     "access": "public"

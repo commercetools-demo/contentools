@@ -16,7 +16,12 @@ NC='\033[0m' # No Color
 PACKAGES=(
     "cms/packages/content-item-renderer"
     "cms/packages/content-types"
-    "cms/packages/content-items"
+    "cms/packages/content-items",
+    "cms/packages/content-type-editor",
+    "cms/packages/property-editor",
+    "cms/packages/state",
+    "cms/packages/types",
+    "cms/packages/ui-components"
 )
 
 # Package names for output
@@ -24,6 +29,11 @@ PACKAGE_NAMES=(
     "@commercetools-demo/contentools-content-item-renderer"
     "@commercetools-demo/contentools-content-types"
     "@commercetools-demo/contentools-content-items"
+    "@commercetools-demo/contentools-content-type-editor"
+    "@commercetools-demo/contentools-property-editor"
+    "@commercetools-demo/contentools-state"
+    "@commercetools-demo/contentools-types"
+    "@commercetools-demo/contentools-ui-components"
 )
 
 echo -e "${BLUE}🚀 Starting package publication process...${NC}"
@@ -94,7 +104,7 @@ publish_package() {
     
     # Publish to npm
     echo -e "${YELLOW}Publishing to npmjs...${NC}"
-    if npm publish; then
+    if yarn npm publish; then
         echo -e "${GREEN}✅ Successfully published ${package_name}@${current_version}${NC}"
     else
         echo -e "${RED}❌ Failed to publish ${package_name}${NC}"
