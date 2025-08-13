@@ -16,11 +16,11 @@ NC='\033[0m' # No Color
 PACKAGES=(
     "cms/packages/content-item-renderer"
     "cms/packages/content-types"
-    "cms/packages/content-items",
-    "cms/packages/content-type-editor",
-    "cms/packages/property-editor",
-    "cms/packages/state",
-    "cms/packages/types",
+    "cms/packages/content-items"
+    "cms/packages/content-type-editor"
+    "cms/packages/property-editor"
+    "cms/packages/state"
+    "cms/packages/types"
     "cms/packages/ui-components"
 )
 
@@ -102,12 +102,22 @@ publish_package() {
     local current_version=$(node -p "require('./package.json').version")
     echo -e "${YELLOW}Current version: ${current_version}${NC}"
     
-    # Publish to npm
-    echo -e "${YELLOW}Publishing to npmjs...${NC}"
-    if yarn npm publish; then
-        echo -e "${GREEN}✅ Successfully published ${package_name}@${current_version}${NC}"
+    # Pack with Yarn to rewrite workspace: ranges, then publish the tarball with npm
+    echo -e "${YELLOW}Packing with Yarn (rewriting workspace: deps)...${NC}"
+    TARBALL="$(mktemp -t package.XXXXXX).tgz"
+    if yarn pack --filename "$TARBALL"; then
+        echo -e "${YELLOW}Publishing ${TARBALL} to npmjs...${NC}"
+        if npm publish "${TARBALL}"; then
+            echo -e "${GREEN}✅ Successfully published ${package_name}@${current_version}${NC}"
+        else
+            echo -e "${RED}❌ Failed to publish ${package_name}${NC}"
+            rm -f "${TARBALL}" || true
+            cd - > /dev/null
+            return 1
+        fi
+        rm -f "${TARBALL}" || true
     else
-        echo -e "${RED}❌ Failed to publish ${package_name}${NC}"
+        echo -e "${RED}❌ Yarn pack failed for ${package_name}${NC}"
         cd - > /dev/null
         return 1
     fi
@@ -155,7 +165,7 @@ main() {
     check_npm_auth
     
     # Check git status
-    check_git_status
+    # check_git_status
     
     # Confirm publication
     confirm_publication
