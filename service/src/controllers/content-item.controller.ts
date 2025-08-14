@@ -155,17 +155,17 @@ export const getContentItems = async (
   if (criteria) {
     contentItemWhereClause += ` AND ${criteria}`;
   }
-  const contentItems = await contentItemController.getCustomObjects(
-    contentItemWhereClause
-  ).then((items) => {
-    return items.map((item) => ({
-      ...item,
-      value: {
-        ...item.value,
-        id: item.id,
-      },
-    }));
-  });
+  const contentItems = await contentItemController
+    .getCustomObjects(contentItemWhereClause)
+    .then((items) => {
+      return items.map((item) => ({
+        ...item,
+        value: {
+          ...item.value,
+          id: item.id,
+        },
+      }));
+    });
 
   const whereClause = contentItems
     ?.map(
@@ -173,8 +173,9 @@ export const getContentItems = async (
         `(key = "${item.key}" AND businessUnitKey = "${businessUnitKey}")`
     )
     .join(' OR ');
-  const contentStates = whereClause ?
-    await ContentStateController.getContentStatesWithWhereClause(whereClause) : [];
+  const contentStates = whereClause
+    ? await ContentStateController.getContentStatesWithWhereClause(whereClause)
+    : [];
   const contentItemsWithStates = contentItems.map((item) => {
     const states = contentStates.find((state) => state.key === item.key);
     return {
@@ -228,6 +229,66 @@ export const getPublishedContentItem = async (
   return undefined;
 };
 
+export const queryPublishedContentItem = async (
+  businessUnitKey: string,
+  query: string
+): Promise<ContentItem['value'] | undefined> => {
+  const contentItemController = new CustomObjectController(
+    CONTENT_ITEM_CONTAINER
+  );
+
+  const contentItems = await contentItemController.getCustomObjects(
+    `value(${query} AND businessUnitKey = "${businessUnitKey}")`
+  );
+
+  if (contentItems.length === 0) {
+    return undefined;
+  }
+
+  const contentStates =
+    await ContentStateController.getContentStatesWithWhereClause(
+      `key = "${contentItems[0].key}" AND businessUnitKey = "${businessUnitKey}"`
+    );
+
+  if (contentStates.length > 0) {
+    if (contentStates[0].states.published) {
+      return resolveContentItemDatasource(contentStates[0].states.published);
+    }
+  }
+
+  return resolveContentItemDatasource(contentItems[0].value);
+};
+
+export const queryContentItem = async (
+  businessUnitKey: string,
+  query: string
+): Promise<ContentItem['value'] | undefined> => {
+  const contentItemController = new CustomObjectController(
+    CONTENT_ITEM_CONTAINER
+  );
+
+  const contentItems = await contentItemController.getCustomObjects(
+    `value(${query} AND businessUnitKey = "${businessUnitKey}")`
+  );
+
+  if (contentItems.length === 0) {
+    return undefined;
+  }
+
+  const contentStates =
+    await ContentStateController.getContentStatesWithWhereClause(
+      `key = "${contentItems[0].key}" AND businessUnitKey = "${businessUnitKey}"`
+    );
+
+  if (contentStates.length > 0) {
+    if (contentStates[0].states.draft) {
+      return resolveContentItemDatasource(contentStates[0].states.draft);
+    }
+  }
+
+  return resolveContentItemDatasource(contentItems[0].value);
+};
+
 /**
  * Get a content item by key and resolve any datasource properties
  * @param key The content item key
@@ -263,7 +324,7 @@ export const createContentItem = async (
     businessUnitKey,
     key,
     item
-  );  
+  );
   return object;
 };
 
@@ -285,9 +346,8 @@ export const updateContentItem = async (
     businessUnitKey,
     key,
     item
-  );  
+  );
   return object;
-
 };
 
 export const deleteContentItem = async (

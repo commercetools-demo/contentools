@@ -16,7 +16,8 @@ contentItemRouter.get(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { businessUnitKey } = req.params;
-      const contentItems = await ContentItemController.getContentItems(businessUnitKey);
+      const contentItems =
+        await ContentItemController.getContentItems(businessUnitKey);
 
       res.json(contentItems);
     } catch (error) {
@@ -30,7 +31,8 @@ contentItemRouter.get(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { businessUnitKey, contentType } = req.params;
-      const contentItems = await ContentItemController.getContentItems(businessUnitKey,
+      const contentItems = await ContentItemController.getContentItems(
+        businessUnitKey,
         `value(type = "${contentType}")`
       );
 
@@ -69,7 +71,10 @@ contentItemRouter.get(
     try {
       const { key, businessUnitKey } = req.params;
 
-      const object = await ContentItemController.getPublishedContentItem(businessUnitKey, key);
+      const object = await ContentItemController.getPublishedContentItem(
+        businessUnitKey,
+        key
+      );
       if (!object) {
         throw new CustomError(404, 'Content item not found');
       }
@@ -77,6 +82,64 @@ contentItemRouter.get(
     } catch (error) {
       logger.error(
         `Failed to get published content with key ${req.params.key}:`,
+        error
+      );
+      next(error);
+    }
+  }
+);
+
+contentItemRouter.post(
+  '/:businessUnitKey/published/content-items/query',
+  async (req, res, next) => {
+    try {
+      const { businessUnitKey } = req.params;
+      const { query } = req.body;
+
+      if (!query) {
+        throw new CustomError(400, 'Query is required in the request body');
+      }
+
+      const object = await ContentItemController.queryPublishedContentItem(
+        businessUnitKey,
+        query
+      );
+      if (!object) {
+        throw new CustomError(404, 'Content item not found');
+      }
+      res.json(object);
+    } catch (error) {
+      logger.error(
+        `Failed to query published content with query ${req.body.query}:`,
+        error
+      );
+      next(error);
+    }
+  }
+);
+
+contentItemRouter.post(
+  '/:businessUnitKey/preview/content-items/query',
+  async (req, res, next) => {
+    try {
+      const { businessUnitKey } = req.params;
+      const { query } = req.body;
+
+      if (!query) {
+        throw new CustomError(400, 'Query is required in the request body');
+      }
+
+      const object = await ContentItemController.queryContentItem(
+        businessUnitKey,
+        query
+      );
+      if (!object) {
+        throw new CustomError(404, 'Content item not found');
+      }
+      res.json(object);
+    } catch (error) {
+      logger.error(
+        `Failed to query content with query ${req.body.query}:`,
         error
       );
       next(error);
@@ -92,8 +155,11 @@ contentItemRouter.get(
       logger.info(
         `Getting preview for content item ${key} in business unit ${businessUnitKey}`
       );
-      const object = await ContentItemController.getContentItemWithStates(businessUnitKey, key);
-      
+      const object = await ContentItemController.getContentItemWithStates(
+        businessUnitKey,
+        key
+      );
+
       res.json(object);
     } catch (error) {
       logger.error(
@@ -120,7 +186,10 @@ contentItemRouter.post('/:businessUnitKey/content-items', (async (
         .json({ error: 'Value is required in the request body' });
     }
 
-    const object = await ContentItemController.createContentItem(businessUnitKey, value);
+    const object = await ContentItemController.createContentItem(
+      businessUnitKey,
+      value
+    );
     res.status(201).json(object);
   } catch (error) {
     logger.error(
@@ -145,7 +214,11 @@ contentItemRouter.put('/:businessUnitKey/content-items/:key', (async (
         .status(400)
         .json({ error: 'Value is required in the request body' });
     }
-    const object = await ContentItemController.updateContentItem(businessUnitKey, key, value);
+    const object = await ContentItemController.updateContentItem(
+      businessUnitKey,
+      key,
+      value
+    );
     res.json(object);
   } catch (error) {
     logger.error(
