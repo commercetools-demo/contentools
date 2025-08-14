@@ -19,10 +19,10 @@ import { ContentItemRendererProps } from '.';
  */
 const ComponentRenderer: React.FC<
   PropsWithChildren<
-    Pick<
+    Required<Pick<
       ContentItemRendererProps,
       'baseURL' | 'component' | 'locale' | 'className' | 'style' | 'onError'
-    >
+    >>
   >
 > = ({
   component,

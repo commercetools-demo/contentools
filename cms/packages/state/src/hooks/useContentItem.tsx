@@ -325,14 +325,17 @@ export const useContentItem = () => {
 
   const queryContentItem = useCallback(
     async (hydratedUrl: string, query: string) => {
-      return await queryContentItemEndpoint(hydratedUrl, query);
+      return await queryContentItemEndpoint<ContentItem>(hydratedUrl, query);
     },
     []
   );
 
   const queryPublishedContentItem = useCallback(
     async (hydratedUrl: string, query: string) => {
-      return await queryPublishedContentItemEndpoint(hydratedUrl, query);
+      return await queryPublishedContentItemEndpoint<ContentItem>(
+        hydratedUrl,
+        query
+      );
     },
     []
   );

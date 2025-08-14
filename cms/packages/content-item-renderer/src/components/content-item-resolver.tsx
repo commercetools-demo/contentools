@@ -1,7 +1,7 @@
 import { useStateContentItem } from '@commercetools-demo/contentools-state';
 import { ContentItemRendererProps } from '..';
 import { ContentItem } from '@commercetools-demo/contentools-types';
-import { PropsWithChildren, useEffect, useState } from 'react';
+import { PropsWithChildren, useEffect, useMemo, useState } from 'react';
 import ComponentRenderer from '../content-renderer';
 
 const ContentItemResolver: React.FC<
@@ -21,9 +21,16 @@ const ContentItemResolver: React.FC<
     useState<ContentItem | null>(component || null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { fetchPublishedContentItem, fetchContentItem, queryContentItem, queryPublishedContentItem } = useStateContentItem();
+  const {
+    fetchPublishedContentItem,
+    fetchContentItem,
+    queryContentItem,
+    queryPublishedContentItem,
+  } = useStateContentItem();
 
-  const hydratedUrl = baseURL + '/' + businessUnitKey;
+  const hydratedUrl = useMemo(() => {
+    return baseURL + '/' + businessUnitKey;
+  }, [baseURL, businessUnitKey]);
 
   // Validate props
   if (!component && !itemKey && !query) {
@@ -91,8 +98,8 @@ const ContentItemResolver: React.FC<
             throw new Error('BaseURL is required to fetch content item');
           }
           const fetchedItem = isDraft
-            ? await queryContentItem(hydratedUrl, query)
-            : await queryPublishedContentItem(hydratedUrl, query);
+            ? await queryContentItem(hydratedUrl, query!)
+            : await queryPublishedContentItem(hydratedUrl, query!);
 
           if (mounted) {
             setResolvedComponent(fetchedItem);
@@ -117,7 +124,7 @@ const ContentItemResolver: React.FC<
     }
 
     return undefined; // Return undefined for all other cases
-  }, [component, itemKey, baseURL, onError]);
+  }, [component, itemKey, baseURL, hydratedUrl, onError]);
 
   // Show loading state while fetching
   if (loading) {
