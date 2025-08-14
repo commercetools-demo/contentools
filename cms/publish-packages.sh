@@ -165,7 +165,7 @@ main() {
     check_npm_auth
     
     # Check git status
-    # check_git_status
+    check_git_status
     
     # Confirm publication
     confirm_publication

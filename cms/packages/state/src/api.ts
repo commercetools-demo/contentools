@@ -220,6 +220,23 @@ export async function fetchPreviewContentItemEndpoint<T>(
 }
 
 /**
+ * Query a single content item
+ */
+export async function queryContentItemEndpoint<T>(
+  baseURL: string,
+  query: string
+): Promise<T> {
+  const response = await fetch(`${baseURL}/preview/content-items/query`, {
+    method: 'POST',
+    body: JSON.stringify({ query }),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  }).then((response) => response.json());
+  return response;
+}
+
+/**
  * Fetch a single content item without resolving datasources
  */
 export async function fetchRawContentItemEndpoint<T>(
@@ -242,6 +259,23 @@ export async function fetchPublishedContentItemEndpoint<T>(
   key: string
 ): Promise<T> {
   const response = await fetch(`${baseURL}/published/content-items/${key}`, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  }).then((response) => response.json());
+  return response;
+}
+
+/**
+ * Query a single content item
+ */
+export async function queryPublishedContentItemEndpoint<T>(
+  baseURL: string,
+  query: string
+): Promise<T> {
+  const response = await fetch(`${baseURL}/published/content-items/query`, {
+    method: 'POST',
+    body: JSON.stringify({ query }),
     headers: {
       'Content-Type': 'application/json',
     },

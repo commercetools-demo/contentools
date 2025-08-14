@@ -1,27 +1,14 @@
 import { useStateContentType } from '@commercetools-demo/contentools-state';
-import { ContentItem } from '@commercetools-demo/contentools-types';
-import React, { Suspense, useEffect, useMemo, useState } from 'react';
+import React, {
+  PropsWithChildren,
+  Suspense,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { SecureDynamicComponentLoader } from './components/dynamic-component-loader';
 import { DynamicComponentErrorBoundary } from './components/error-boundary';
-
-export interface ComponentRendererProps {
-  /** The content item to render */
-  component: ContentItem;
-  /** Base URL for API calls (optional) */
-  baseURL?: string;
-  /** Locale for rendering (optional) */
-  locale?: string;
-  /** Additional CSS class name */
-  className?: string;
-  /** Additional styles */
-  style?: React.CSSProperties;
-  /** Show loading state */
-  loading?: boolean;
-  /** Custom error message */
-  error?: string | null;
-  /** Callback when component fails to render */
-  onError?: (error: Error) => void;
-}
+import { ContentItemRendererProps } from '.';
 
 /**
  * ComponentRenderer - Renders content items as React components
@@ -30,13 +17,21 @@ export interface ComponentRendererProps {
  * React component based on the content type. It replaces the previous web
  * component implementation with a pure React approach.
  */
-const ComponentRenderer: React.FC<ComponentRendererProps> = ({
+const ComponentRenderer: React.FC<
+  PropsWithChildren<
+    Pick<
+      ContentItemRendererProps,
+      'baseURL' | 'component' | 'locale' | 'className' | 'style' | 'onError'
+    >
+  >
+> = ({
   component,
   baseURL = '',
   locale = 'en-US',
   className,
   style,
   onError,
+  children,
 }) => {
   const { fetchContentType } = useStateContentType();
   const [Component, setComponent] = useState<any>(null);
@@ -90,36 +85,31 @@ const ComponentRenderer: React.FC<ComponentRendererProps> = ({
   }, [loader]);
 
   if (loading) {
-    return <Suspense fallback={<div>Loading...</div>}>Loading</Suspense>;
+    return <Suspense fallback={null}></Suspense>;
   }
 
   if (error) {
-    return (
-      <div
-        style={{
-          padding: '20px',
-          border: '2px solid #ff6b6b',
-          borderRadius: '8px',
-          backgroundColor: '#ffe0e0',
-          color: '#d63031',
-        }}
-      >
-        <h3>Failed to Load Component</h3>
-        <p>Component ID: {component.id}</p>
-        <p>Error: {error}</p>
-      </div>
-    );
+    console.error(error);
+    return children;
   }
 
   if (!Component) {
-    return <div>Component not found</div>;
+    console.error('Component not found');
+    return children;
   }
 
   return (
     <div className={className} style={style}>
-      <DynamicComponentErrorBoundary componentId={component.id} onError={onError}>
-        <Suspense fallback={<div>Loading...</div>}>
-          <Component {...component.properties} locale={locale} baseURL={baseURL} />
+      <DynamicComponentErrorBoundary
+        componentId={component.id}
+        onError={onError}
+      >
+        <Suspense fallback={null}>
+          <Component
+            {...component.properties}
+            locale={locale}
+            baseURL={baseURL}
+          />
         </Suspense>
       </DynamicComponentErrorBoundary>
     </div>

@@ -1636,6 +1636,12 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@commercetools-demo/contentools-content-item-renderer@link:../packages/content-item-renderer::locator=plain-react-test%40workspace%3Aplain-react-test":
+  version: 0.0.0-use.local
+  resolution: "@commercetools-demo/contentools-content-item-renderer@link:../packages/content-item-renderer::locator=plain-react-test%40workspace%3Aplain-react-test"
+  languageName: node
+  linkType: soft
+
 "@commercetools-demo/contentools-content-item-renderer@workspace:^, @commercetools-demo/contentools-content-item-renderer@workspace:packages/content-item-renderer":
   version: 0.0.0-use.local
   resolution: "@commercetools-demo/contentools-content-item-renderer@workspace:packages/content-item-renderer"
@@ -14294,6 +14300,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "plain-react-test@workspace:plain-react-test"
   dependencies:
+    "@commercetools-demo/contentools-content-item-renderer": "link:../packages/content-item-renderer"
     "@commercetools-demo/contentools-content-items": "link:../packages/content-items"
     "@commercetools-demo/contentools-content-types": "link:../packages/content-types"
     "@emotion/react": "npm:^11.14.0"

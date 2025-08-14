@@ -12,6 +12,8 @@ import {
   deleteContentItemEndpoint,
   fetchRawContentItemEndpoint,
   fetchPublishedContentItemEndpoint,
+  queryContentItemEndpoint,
+  queryPublishedContentItemEndpoint,
 } from '../api';
 
 const initialState: ContentItemState = {
@@ -321,6 +323,20 @@ export const useContentItem = () => {
     [state.states]
   );
 
+  const queryContentItem = useCallback(
+    async (hydratedUrl: string, query: string) => {
+      return await queryContentItemEndpoint(hydratedUrl, query);
+    },
+    []
+  );
+
+  const queryPublishedContentItem = useCallback(
+    async (hydratedUrl: string, query: string) => {
+      return await queryPublishedContentItemEndpoint(hydratedUrl, query);
+    },
+    []
+  );
+
   return {
     // State
     items: state.items,
@@ -331,6 +347,8 @@ export const useContentItem = () => {
     // Actions
     fetchContentItems,
     fetchContentItem,
+    queryContentItem,
+    queryPublishedContentItem,
     fetchRawContentItem,
     fetchPublishedContentItem,
     createContentItem,

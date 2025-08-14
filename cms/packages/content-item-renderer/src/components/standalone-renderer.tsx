@@ -1,8 +1,9 @@
+import React, { PropsWithChildren } from "react";
 import { StateProvider } from "@commercetools-demo/contentools-state";
 import { ContentItemRendererProps } from "..";
 import ContentItemResolver from "./content-item-resolver";
 
-const StandaloneRenderer: React.FC<ContentItemRendererProps> = (props) => {
+const StandaloneRenderer: React.FC<PropsWithChildren<ContentItemRendererProps>> = (props) => {
     if (!props.baseURL) {
       return null;
     }

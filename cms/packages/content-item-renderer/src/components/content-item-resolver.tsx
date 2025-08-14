@@ -1,16 +1,17 @@
-import {
-  useStateContentItem,
-} from '@commercetools-demo/contentools-state';
+import { useStateContentItem } from '@commercetools-demo/contentools-state';
 import { ContentItemRendererProps } from '..';
 import { ContentItem } from '@commercetools-demo/contentools-types';
-import { useEffect, useState } from 'react';
+import { PropsWithChildren, useEffect, useState } from 'react';
 import ComponentRenderer from '../content-renderer';
 
-const ContentItemResolver: React.FC<ContentItemRendererProps> = (props) => {
+const ContentItemResolver: React.FC<
+  PropsWithChildren<ContentItemRendererProps>
+> = (props) => {
   const {
     isDraft,
     component,
     itemKey,
+    query,
     baseURL,
     businessUnitKey,
     onError,
@@ -20,26 +21,30 @@ const ContentItemResolver: React.FC<ContentItemRendererProps> = (props) => {
     useState<ContentItem | null>(component || null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { fetchPublishedContentItem, fetchContentItem } = useStateContentItem();
+  const { fetchPublishedContentItem, fetchContentItem, queryContentItem, queryPublishedContentItem } = useStateContentItem();
 
   const hydratedUrl = baseURL + '/' + businessUnitKey;
 
   // Validate props
-  if (!component && !itemKey) {
+  if (!component && !itemKey && !query) {
     throw new Error(
-      'ContentItemRenderer requires either component or itemKey prop'
+      'ContentItemRenderer requires either component or itemKey or query prop'
     );
   }
 
-  if (component && itemKey) {
+  if (component && itemKey && query) {
     console.warn(
-      'ContentItemRenderer: Both component and itemKey provided. Using component prop.'
+      'ContentItemRenderer: Both component and itemKey and query provided. Using component prop.'
     );
   }
 
   // Effect to fetch content item by itemKey if needed
   useEffect(() => {
-    if (!component && itemKey && baseURL) {
+    if (component) {
+      // If component is provided directly, use it
+      setResolvedComponent(component);
+      return;
+    } else if (!component && itemKey && baseURL) {
       let mounted = true;
 
       async function fetchContentItemByKey() {
@@ -74,10 +79,41 @@ const ContentItemResolver: React.FC<ContentItemRendererProps> = (props) => {
       return () => {
         mounted = false;
       };
-    } else if (component) {
-      // If component is provided directly, use it
-      setResolvedComponent(component);
-      return; // No cleanup needed
+    } else if (!component && !itemKey && query && baseURL) {
+      let mounted = true;
+
+      async function fetchContentItemByQuery() {
+        try {
+          setLoading(true);
+          setError(null);
+
+          if (!baseURL) {
+            throw new Error('BaseURL is required to fetch content item');
+          }
+          const fetchedItem = isDraft
+            ? await queryContentItem(hydratedUrl, query)
+            : await queryPublishedContentItem(hydratedUrl, query);
+
+          if (mounted) {
+            setResolvedComponent(fetchedItem);
+          }
+        } catch (err: any) {
+          if (mounted) {
+            setError(err.message);
+            if (onError) onError(err);
+          }
+        } finally {
+          if (mounted) {
+            setLoading(false);
+          }
+        }
+      }
+
+      fetchContentItemByQuery();
+
+      return () => {
+        mounted = false;
+      };
     }
 
     return undefined; // Return undefined for all other cases
@@ -85,10 +121,10 @@ const ContentItemResolver: React.FC<ContentItemRendererProps> = (props) => {
 
   // Show loading state while fetching
   if (loading) {
-    return <div>Loading content item...</div>;
+    return null;
   }
 
-// Show error state if fetch failed
+  // Show error state if fetch failed
   if (error) {
     console.error('Error:', error);
     return null;

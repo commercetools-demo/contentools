@@ -1,8 +1,9 @@
+import React, { PropsWithChildren } from "react";
 import { useStateContext } from "@commercetools-demo/contentools-state";
 import { ContentItemRendererProps } from "..";
 import ContentItemResolver from "./content-item-resolver";
 
-const ContextualRenderer: React.FC<ContentItemRendererProps> = (props) => {
+const ContextualRenderer: React.FC<PropsWithChildren<ContentItemRendererProps>> = (props) => {
     // Always call the hook - this follows React's Rules of Hooks
     const context = useStateContext();
     

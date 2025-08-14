@@ -1,5 +1,5 @@
 import { ContentItem } from '@commercetools-demo/contentools-types';
-import React from 'react';
+import React, { PropsWithChildren } from 'react';
 import ContentItemRendererErrorBoundary from './components/content-item-renderer-error-boundry';
 import ContextualRenderer from './components/contextual-renderer';
 import StandaloneRenderer from './components/standalone-renderer';
@@ -9,6 +9,8 @@ export interface ContentItemRendererProps {
   component?: ContentItem;
   /** The key of the content item to fetch and render (required if component is not provided) */
   itemKey?: string;
+  /** The query to fetch the content item from (required if itemKey and component is not provided) */
+  query?: string;
   /** Whether to render the draft version of the content item */
   isDraft?: boolean;
   /** Base URL for API calls (optional) */
@@ -38,7 +40,7 @@ export interface ContentItemRendererProps {
  * 
  * This ensures backward compatibility and ease of use for consumers.
  */
-export const ContentItemRenderer: React.FC<ContentItemRendererProps> = (props) => {
+export const ContentItemRenderer: React.FC<PropsWithChildren<ContentItemRendererProps>> = (props) => {
   return (
     <ContentItemRendererErrorBoundary 
       fallback={<StandaloneRenderer {...props} />}
