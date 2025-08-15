@@ -1,18 +1,4 @@
 deployAs:
-  - name: mc-app
-    applicationType: merchant-center-custom-application
-    configuration:
-      standardConfiguration:
-        - key: CUSTOM_APPLICATION_ID
-          description: The ID of the custom application.
-        - key: APPLICATION_URL
-          description: The URL of the custom application.
-        - key: CLOUD_IDENTIFIER
-          description: The cloud identifier.
-        - key: ENTRY_POINT_URI_PATH
-          description: The entry point URI path.
-        - key: ASSETS_URL
-          description: The assets URL.
   - name: service
     applicationType: service
     scripts:

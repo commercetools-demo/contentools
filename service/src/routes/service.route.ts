@@ -9,6 +9,7 @@ import contentItemVersionRouter from './content-item-version.route';
 import contentItemStateRouter from './content-item-state.route';
 import pageVersionRouter from './page-version.route';
 import pageStateRouter from './page-state.route';
+import healthRouter from './health.route';
 
 const serviceRouter = Router();
 
@@ -22,5 +23,6 @@ serviceRouter.use('/', contentItemVersionRouter);
 serviceRouter.use('/', contentItemStateRouter);
 serviceRouter.use('/', pageVersionRouter);
 serviceRouter.use('/', pageStateRouter);
+serviceRouter.use('/', healthRouter);
 
 export default serviceRouter;

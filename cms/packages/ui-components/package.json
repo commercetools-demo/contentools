@@ -1,0 +1,37 @@
+{
+  "name": "@commercetools-demo/contentools-ui-components",
+  "description": "Shared UI components for CMS",
+  "version": "1.0.1",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "dist/commercetools-demo-contentools-ui-components.cjs.js",
+  "module": "dist/commercetools-demo-contentools-ui-components.esm.js",
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "@babel/runtime-corejs3": "^7.28.0",
+    "@commercetools-uikit/card": "^20.2.2",
+    "@commercetools-uikit/flat-button": "^20.2.1",
+    "@commercetools-uikit/icon-button": "^20.2.1",
+    "@commercetools-uikit/icons": "^20.2.1",
+    "@commercetools-uikit/loading-spinner": "^20.2.2",
+    "@commercetools-uikit/primary-button": "^20.2.2",
+    "@commercetools-uikit/secondary-button": "^20.2.2",
+    "@commercetools-uikit/spacings": "^20.2.1",
+    "@commercetools-uikit/text": "^20.2.2",
+    "@emotion/react": "^11.14.0",
+    "styled-components": "^6.1.19"
+  },
+  "devDependencies": {
+    "@types/react": "^19"
+  },
+  "peerDependencies": {
+    "@emotion/react": ">=11.0.0",
+    "react": ">=19.0.0",
+    "react-dom": ">=19.0.0",
+    "styled-components": ">=5.0.0"
+  }
+}

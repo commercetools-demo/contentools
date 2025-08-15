@@ -1,0 +1,49 @@
+{
+  "name": "@commercetools-demo/contentools-property-editor",
+  "description": "Property editor for content items",
+  "version": "1.0.2",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "dist/commercetools-demo-contentools-property-editor.cjs.js",
+  "module": "dist/commercetools-demo-contentools-property-editor.esm.js",
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "@babel/runtime-corejs3": "^7.28.0",
+    "@commercetools-demo/contentools-state": "workspace:^",
+    "@commercetools-demo/contentools-types": "workspace:^",
+    "@commercetools-demo/contentools-ui-components": "workspace:^",
+    "@commercetools-uikit/card": "^20.2.2",
+    "@commercetools-uikit/checkbox-input": "^20.2.2",
+    "@commercetools-uikit/data-table": "^20.2.1",
+    "@commercetools-uikit/field-label": "^20.2.2",
+    "@commercetools-uikit/flat-button": "^20.2.1",
+    "@commercetools-uikit/icon-button": "^20.2.1",
+    "@commercetools-uikit/icons": "^20.2.1",
+    "@commercetools-uikit/number-input": "^20.2.2",
+    "@commercetools-uikit/primary-button": "^20.2.1",
+    "@commercetools-uikit/secondary-button": "^20.2.2",
+    "@commercetools-uikit/spacings": "^20.2.1",
+    "@commercetools-uikit/stamp": "^20.2.1",
+    "@commercetools-uikit/text": "^20.2.2",
+    "@commercetools-uikit/text-input": "^20.2.2",
+    "@emotion/react": "^11.14.0",
+    "add": "^2.0.6",
+    "formik": "^2.4.6",
+    "styled-components": "^6.1.19",
+    "yup": "^1.6.1"
+  },
+  "devDependencies": {
+    "@types/add": "^2",
+    "@types/react": "^19"
+  },
+  "peerDependencies": {
+    "@emotion/react": ">=11.0.0",
+    "react": ">=19.0.0",
+    "react-dom": ">=19.0.0",
+    "styled-components": ">=5.0.0"
+  }
+}

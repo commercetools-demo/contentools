@@ -1,0 +1,27 @@
+{
+  "name": "@commercetools-demo/contentools-state",
+  "description": "State for the Commercetools platform",
+  "version": "1.0.4",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "dist/commercetools-demo-contentools-state.cjs.js",
+  "module": "dist/commercetools-demo-contentools-state.esm.js",
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "@babel/runtime-corejs3": "^7.28.0",
+    "@commercetools-demo/contentools-types": "workspace:^",
+    "@emotion/react": "^11.14.0",
+    "uuid": "^11.1.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19"
+  },
+  "peerDependencies": {
+    "@emotion/react": ">=11.0.0",
+    "react": ">=19.0.0"
+  }
+}
