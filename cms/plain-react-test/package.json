@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@commercetools-demo/contentools-content-item-renderer": "link:../packages/content-item-renderer",
     "@commercetools-demo/contentools-content-items": "link:../packages/content-items",
     "@commercetools-demo/contentools-content-types": "link:../packages/content-types",
     "@emotion/react": "^11.14.0",
