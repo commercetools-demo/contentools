@@ -51,9 +51,9 @@ const ContentItemEditorEditForm: React.FC<ContentItemEditorEditFormProps> = ({
   const [contentVersion, setContentVersion] =
     useState<ContentItemVersionInfo | null>(null);
   const [item, setItem] = useState<ContentItem | null>(null);
-  const { fetchVersions, versions } = useStateVersion<ContentItemVersionInfo>();
+  const { fetchVersions, versions } = useStateVersion<ContentItemVersionInfo>()!;
   const { fetchStates, publish, revertToPublished, currentState } =
-    useStateStateManagement();
+    useStateStateManagement()!;
   const {
     fetchRawContentItem,
     loading,

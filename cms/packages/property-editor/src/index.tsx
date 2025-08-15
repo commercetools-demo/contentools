@@ -73,21 +73,22 @@ const PropertyEditor: React.FC<PropertyEditorProps> = ({
     if (!versionedContent) return [];
 
     const nameDiff = versionedContent.name !== component.name ? ['name'] : [];
-    const propertyDiff = Object.keys(versionedContent.properties || {}).filter(
-      (key) => {
+    const propertyDiff = Object.keys(versionedContent.properties || {})
+      .filter((key) => {
         return (
           JSON.stringify(versionedContent.properties[key]) !==
           JSON.stringify(component.properties[key])
         );
-      }
-    ).concat(Object.keys(component.properties || {}).filter(
-      (key) => {
-        return (
-          JSON.stringify(versionedContent.properties[key]) !==
-          JSON.stringify(component.properties[key])
-        );
-      }
-    )).filter((key, index, self) => self.indexOf(key) === index);
+      })
+      .concat(
+        Object.keys(component.properties || {}).filter((key) => {
+          return (
+            JSON.stringify(versionedContent.properties[key]) !==
+            JSON.stringify(component.properties[key])
+          );
+        })
+      )
+      .filter((key, index, self) => self.indexOf(key) === index);
 
     return [...nameDiff, ...propertyDiff];
   }, [versionedContent, component]);
@@ -351,8 +352,13 @@ const PropertyEditor: React.FC<PropertyEditorProps> = ({
                   highlight={diff.includes('name')}
                   required
                   onFieldChange={useCallback(
-                    (_key: string, value: string) =>
-                      formik.setFieldValue('name', value),
+                    (_key: string, value: string) => {
+                      formik.setFieldValue('name', value);
+                      onChange({
+                        ...component,
+                        name: value,
+                      });
+                    },
                     [formik]
                   )}
                   error={
