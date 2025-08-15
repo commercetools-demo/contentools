@@ -19,10 +19,10 @@ import { ContentItemRendererProps } from '.';
  */
 const ComponentRenderer: React.FC<
   PropsWithChildren<
-    Required<Pick<
+    Pick<
       ContentItemRendererProps,
       'baseURL' | 'component' | 'locale' | 'className' | 'style' | 'onError'
-    >>
+    >
   >
 > = ({
   component,
@@ -72,12 +72,13 @@ const ComponentRenderer: React.FC<
       }
     }
 
-    loadComponent();
-
+    if (component?.type) {
+      loadComponent();
+    }
     return () => {
       mounted = false;
     };
-  }, [component.type, fetchContentType, loader, onError]);
+  }, [component?.type, fetchContentType, loader, onError]);
   useEffect(() => {
     return () => {
       loader.clearCache();
@@ -101,12 +102,12 @@ const ComponentRenderer: React.FC<
   return (
     <div className={className} style={style}>
       <DynamicComponentErrorBoundary
-        componentId={component.id}
+        componentId={component?.id || ''}
         onError={onError}
       >
         <Suspense fallback={null}>
           <Component
-            {...component.properties}
+            {...(component && component.properties)}
             locale={locale}
             baseURL={baseURL}
           />

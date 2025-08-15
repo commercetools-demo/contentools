@@ -11,10 +11,10 @@ import { VersionInfo } from '@commercetools-demo/contentools-types';
 
 export interface StateContextValue<T extends VersionInfo> {
   // Pages
-  pages: ReturnType<typeof usePages>;
+  pages?: ReturnType<typeof usePages>;
 
   // Editor
-  editor: ReturnType<typeof useEditor>;
+  editor?: ReturnType<typeof useEditor>;
 
   // Content Types
   contentType: ReturnType<typeof useContentType>;
@@ -23,16 +23,16 @@ export interface StateContextValue<T extends VersionInfo> {
   contentItem: ReturnType<typeof useContentItem>;
 
   // Versions
-  version: ReturnType<typeof useVersion<T>>;
+  version?: ReturnType<typeof useVersion<T>>;
 
   // State Management (draft/published)
-  stateManagement: ReturnType<typeof useStateManagement>;
+  stateManagement?: ReturnType<typeof useStateManagement>;
 
   // Media Library
-  mediaLibrary: ReturnType<typeof useMediaLibrary>;
+  mediaLibrary?: ReturnType<typeof useMediaLibrary>;
 
   // Datasource
-  datasource: ReturnType<typeof useDatasource>;
+  datasource?: ReturnType<typeof useDatasource>;
 
   // Base URL
   baseURL: string;
@@ -43,21 +43,26 @@ const StateContext = createContext<StateContextValue<VersionInfo> | null>(null);
 export interface StateProviderProps {
   children: ReactNode;
   baseURL: string;
+
+  // Minimal
+  minimal?: boolean;
 }
 
 export const StateProvider = <T extends VersionInfo>({
   children,
   baseURL,
+  minimal = false,
 }: StateProviderProps) => {
   // Initialize all hooks
-  const pages = usePages(baseURL);
-  const editor = useEditor();
   const contentType = useContentType(baseURL);
   const contentItem = useContentItem();
-  const version = useVersion<T>(baseURL);
-  const stateManagement = useStateManagement(baseURL);
-  const mediaLibrary = useMediaLibrary();
-  const datasource = useDatasource(baseURL);
+  // Initialize Full 
+  const pages = !minimal ? usePages(baseURL) : undefined;
+  const editor = !minimal ? useEditor() : undefined;
+  const version = !minimal ? useVersion<T>(baseURL) : undefined;
+  const stateManagement = !minimal ? useStateManagement(baseURL) : undefined;
+  const mediaLibrary = !minimal ? useMediaLibrary() : undefined;
+  const datasource = !minimal ? useDatasource(baseURL) : undefined;
 
   const contextValue: StateContextValue<T> = {
     pages,
@@ -72,8 +77,10 @@ export const StateProvider = <T extends VersionInfo>({
   };
 
   useEffect(() => {
-    contentType.fetchContentTypes();
-    datasource.fetchDatasources();
+    if (!minimal) {
+      contentType?.fetchContentTypes();
+      datasource?.fetchDatasources();
+    }
   }, [baseURL]);
 
   return (

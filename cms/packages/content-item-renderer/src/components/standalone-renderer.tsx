@@ -9,7 +9,7 @@ const StandaloneRenderer: React.FC<PropsWithChildren<ContentItemRendererProps>> 
     }
   
     return (
-      <StateProvider baseURL={props.baseURL}>
+      <StateProvider baseURL={props.baseURL} minimal={true}>
         <ContentItemResolver {...props} />
       </StateProvider>
     );

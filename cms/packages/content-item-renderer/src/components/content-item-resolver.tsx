@@ -1,7 +1,13 @@
 import { useStateContentItem } from '@commercetools-demo/contentools-state';
 import { ContentItemRendererProps } from '..';
 import { ContentItem } from '@commercetools-demo/contentools-types';
-import { PropsWithChildren, useEffect, useMemo, useState } from 'react';
+import {
+  PropsWithChildren,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import ComponentRenderer from '../content-renderer';
 
 const ContentItemResolver: React.FC<
@@ -45,86 +51,62 @@ const ContentItemResolver: React.FC<
     );
   }
 
+  const fetchContentItemByKey = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      if (!hydratedUrl) {
+        throw new Error('BaseURL is required to fetch content item');
+      }
+      const fetchedItem = isDraft
+        ? await fetchContentItem(hydratedUrl, itemKey!)
+        : await fetchPublishedContentItem(hydratedUrl, itemKey!);
+
+      setResolvedComponent(fetchedItem);
+    } catch (err: any) {
+      setError(err.message);
+      if (onError) onError(err);
+    } finally {
+      setLoading(false);
+    }
+  }, [hydratedUrl, itemKey]);
+
+  const fetchContentItemByQuery = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      if (!hydratedUrl) {
+        throw new Error('BaseURL is required to fetch content item');
+      }
+      const fetchedItem = isDraft
+        ? await queryContentItem(hydratedUrl, query!)
+        : await queryPublishedContentItem(hydratedUrl, query!);
+
+      setResolvedComponent(fetchedItem);
+    } catch (err: any) {
+      setError(err.message);
+      if (onError) onError(err);
+    } finally {
+      setLoading(false);
+    }
+  }, [hydratedUrl, query]);
+
   // Effect to fetch content item by itemKey if needed
   useEffect(() => {
     if (component) {
       // If component is provided directly, use it
       setResolvedComponent(component);
       return;
-    } else if (!component && itemKey && baseURL) {
-      let mounted = true;
-
-      async function fetchContentItemByKey() {
-        try {
-          setLoading(true);
-          setError(null);
-
-          if (!baseURL) {
-            throw new Error('BaseURL is required to fetch content item');
-          }
-          const fetchedItem = isDraft
-            ? await fetchContentItem(hydratedUrl, itemKey!)
-            : await fetchPublishedContentItem(hydratedUrl, itemKey!);
-
-          if (mounted) {
-            setResolvedComponent(fetchedItem);
-          }
-        } catch (err: any) {
-          if (mounted) {
-            setError(err.message);
-            if (onError) onError(err);
-          }
-        } finally {
-          if (mounted) {
-            setLoading(false);
-          }
-        }
-      }
-
+    } else if (!component && itemKey && hydratedUrl) {
       fetchContentItemByKey();
-
-      return () => {
-        mounted = false;
-      };
-    } else if (!component && !itemKey && query && baseURL) {
-      let mounted = true;
-
-      async function fetchContentItemByQuery() {
-        try {
-          setLoading(true);
-          setError(null);
-
-          if (!baseURL) {
-            throw new Error('BaseURL is required to fetch content item');
-          }
-          const fetchedItem = isDraft
-            ? await queryContentItem(hydratedUrl, query!)
-            : await queryPublishedContentItem(hydratedUrl, query!);
-
-          if (mounted) {
-            setResolvedComponent(fetchedItem);
-          }
-        } catch (err: any) {
-          if (mounted) {
-            setError(err.message);
-            if (onError) onError(err);
-          }
-        } finally {
-          if (mounted) {
-            setLoading(false);
-          }
-        }
-      }
-
+    } else if (!component && !itemKey && query && hydratedUrl) {
       fetchContentItemByQuery();
-
-      return () => {
-        mounted = false;
-      };
     }
 
     return undefined; // Return undefined for all other cases
-  }, [component, itemKey, baseURL, hydratedUrl, onError]);
+  }, [component, itemKey, query, hydratedUrl]);
 
   // Show loading state while fetching
   if (loading) {
