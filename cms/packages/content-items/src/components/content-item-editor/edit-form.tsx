@@ -13,9 +13,9 @@ import Spacings from '@commercetools-uikit/spacings';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import ContentItemPreview from '../content-item-preview';
 import ContentItemActions from './content-item-actions';
 import VersionHistorySidebar from './version-history-sidebar';
+import PropertyEditorPreview from '../property-editor-preview';
 
 const StyledRowDiv = styled.div`
   display: flex;
@@ -254,7 +254,7 @@ const ContentItemEditorEditForm: React.FC<ContentItemEditorEditFormProps> = ({
               </StyledColumnDiv>
 
               <StyledColumnDiv>
-                <ContentItemPreview
+                <PropertyEditorPreview
                   item={item}
                   baseURL={baseURL}
                   businessUnitKey={businessUnitKey}

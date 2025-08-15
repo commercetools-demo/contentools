@@ -1,16 +1,15 @@
-import { Modal, useModalState } from '@commercetools-demo/contentools-ui-components';
-import Spacings from '@commercetools-uikit/spacings';
-import Text from '@commercetools-uikit/text';
-import { useHistory, useParams } from 'react-router-dom';
 import PropertyEditor from '@commercetools-demo/contentools-property-editor';
-import styled from 'styled-components';
 import {
   useStateContentItem,
   useStateContentType,
 } from '@commercetools-demo/contentools-state';
 import { ContentItem } from '@commercetools-demo/contentools-types';
-import ContentItemPreview from '../content-item-preview';
+import { Modal, useModalState } from '@commercetools-demo/contentools-ui-components';
+import Spacings from '@commercetools-uikit/spacings';
 import { useState } from 'react';
+import { useHistory, useParams } from 'react-router-dom';
+import styled from 'styled-components';
+import PropertyEditorPreview from '../property-editor-preview';
 
 type Props = {
   locale?: string;
@@ -97,7 +96,7 @@ const ContentItemEditorCreateForm = ({
               />
             </StyledColumnDiv>
             <StyledColumnDiv>
-              <ContentItemPreview
+              <PropertyEditorPreview
                 item={item}
                 baseURL={baseURL}
                 businessUnitKey={businessUnitKey}
