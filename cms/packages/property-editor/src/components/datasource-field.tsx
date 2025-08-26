@@ -73,7 +73,7 @@ export const DatasourceField: React.FC<DatasourceFieldProps> = ({
   onFieldChange,
 }) => {
   const { datasources: availableDatasources, testDatasource } =
-    useStateDatasource();
+    useStateDatasource()!;
 
   const [loading, setLoading] = useState(false);
   const [testResult, setTestResult] = useState<any>(null);

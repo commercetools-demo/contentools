@@ -1647,13 +1647,13 @@ __metadata:
   resolution: "@commercetools-demo/contentools-content-item-renderer@workspace:packages/content-item-renderer"
   dependencies:
     "@babel/runtime-corejs3": "npm:^7.28.0"
-    "@commercetools-demo/contentools-state": "workspace:^"
     "@commercetools-demo/contentools-types": "workspace:^"
     "@commercetools-demo/contentools-ui-components": "workspace:^"
     "@emotion/react": "npm:^11.14.0"
     "@types/react": "npm:^19"
     styled-components: "npm:^6.1.19"
   peerDependencies:
+    "@commercetools-demo/contentools-state": ">=1.0.4"
     "@emotion/react": ">=11.0.0"
     react: ">=19.0.0"
     react-dom: ">=19.0.0"
@@ -1675,7 +1675,6 @@ __metadata:
     "@commercetools-demo/contentools-content-item-renderer": "workspace:^"
     "@commercetools-demo/contentools-content-type-editor": "workspace:^"
     "@commercetools-demo/contentools-property-editor": "workspace:^"
-    "@commercetools-demo/contentools-state": "workspace:^"
     "@commercetools-demo/contentools-types": "workspace:^"
     "@commercetools-demo/contentools-ui-components": "workspace:^"
     "@commercetools-uikit/card": "npm:^20.2.2"
@@ -1701,6 +1700,49 @@ __metadata:
     react-router-dom: "npm:5.3.4"
     styled-components: "npm:^6.1.19"
   peerDependencies:
+    "@commercetools-demo/contentools-state": ">=1.0.4"
+    "@emotion/react": ">=11.0.0"
+    react: ">=19.0.0"
+    react-dom: ">=19.0.0"
+    react-router-dom: ">=5.0.0"
+    styled-components: ">=5.0.0"
+  languageName: unknown
+  linkType: soft
+
+"@commercetools-demo/contentools-content-pages@link:../packages/content-pages::locator=plain-react-test%40workspace%3Aplain-react-test":
+  version: 0.0.0-use.local
+  resolution: "@commercetools-demo/contentools-content-pages@link:../packages/content-pages::locator=plain-react-test%40workspace%3Aplain-react-test"
+  languageName: node
+  linkType: soft
+
+"@commercetools-demo/contentools-content-pages@workspace:packages/content-pages":
+  version: 0.0.0-use.local
+  resolution: "@commercetools-demo/contentools-content-pages@workspace:packages/content-pages"
+  dependencies:
+    "@babel/runtime-corejs3": "npm:^7.28.0"
+    "@commercetools-demo/contentools-property-editor": "workspace:^"
+    "@commercetools-demo/contentools-types": "workspace:^"
+    "@commercetools-demo/contentools-ui-components": "workspace:^"
+    "@commercetools-uikit/card": "npm:^20.2.2"
+    "@commercetools-uikit/data-table": "npm:^20.2.1"
+    "@commercetools-uikit/field-label": "npm:^20.2.2"
+    "@commercetools-uikit/flat-button": "npm:^20.2.1"
+    "@commercetools-uikit/icon-button": "npm:^20.2.1"
+    "@commercetools-uikit/icons": "npm:^20.2.1"
+    "@commercetools-uikit/loading-spinner": "npm:^20.2.2"
+    "@commercetools-uikit/primary-button": "npm:^20.2.1"
+    "@commercetools-uikit/secondary-button": "npm:^20.2.2"
+    "@commercetools-uikit/spacings": "npm:^20.2.1"
+    "@commercetools-uikit/text": "npm:^20.2.2"
+    "@commercetools-uikit/text-input": "npm:^20.2.2"
+    "@emotion/react": "npm:^11.14.0"
+    "@types/react": "npm:^19"
+    "@types/react-grid-layout": "npm:^1.3.5"
+    react-grid-layout: "npm:^1.4.4"
+    react-router-dom: "npm:5.3.4"
+    styled-components: "npm:^6.1.19"
+  peerDependencies:
+    "@commercetools-demo/contentools-state": ">=1.0.4"
     "@emotion/react": ">=11.0.0"
     react: ">=19.0.0"
     react-dom: ">=19.0.0"
@@ -1745,7 +1787,6 @@ __metadata:
     "@commercetools-demo/contentools-content-item-renderer": "workspace:^"
     "@commercetools-demo/contentools-content-type-editor": "workspace:^"
     "@commercetools-demo/contentools-property-editor": "workspace:^"
-    "@commercetools-demo/contentools-state": "workspace:^"
     "@commercetools-demo/contentools-types": "workspace:^"
     "@commercetools-demo/contentools-ui-components": "workspace:^"
     "@commercetools-uikit/card": "npm:^20.2.2"
@@ -1771,6 +1812,7 @@ __metadata:
     react-router-dom: "npm:5.3.4"
     styled-components: "npm:^6.1.19"
   peerDependencies:
+    "@commercetools-demo/contentools-state": ">=1.0.4"
     "@emotion/react": ">=11.0.0"
     react: ">=19.0.0"
     react-dom: ">=19.0.0"
@@ -1784,7 +1826,6 @@ __metadata:
   resolution: "@commercetools-demo/contentools-property-editor@workspace:packages/property-editor"
   dependencies:
     "@babel/runtime-corejs3": "npm:^7.28.0"
-    "@commercetools-demo/contentools-state": "workspace:^"
     "@commercetools-demo/contentools-types": "workspace:^"
     "@commercetools-demo/contentools-ui-components": "workspace:^"
     "@commercetools-uikit/card": "npm:^20.2.2"
@@ -1809,6 +1850,7 @@ __metadata:
     styled-components: "npm:^6.1.19"
     yup: "npm:^1.6.1"
   peerDependencies:
+    "@commercetools-demo/contentools-state": ">=1.0.4"
     "@emotion/react": ">=11.0.0"
     react: ">=19.0.0"
     react-dom: ">=19.0.0"
@@ -1816,7 +1858,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@commercetools-demo/contentools-state@workspace:^, @commercetools-demo/contentools-state@workspace:packages/state":
+"@commercetools-demo/contentools-state@workspace:packages/state":
   version: 0.0.0-use.local
   resolution: "@commercetools-demo/contentools-state@workspace:packages/state"
   dependencies:
@@ -5545,6 +5587,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/react-grid-layout@npm:^1.3.5":
+  version: 1.3.5
+  resolution: "@types/react-grid-layout@npm:1.3.5"
+  dependencies:
+    "@types/react": "npm:*"
+  checksum: 10/21599054dfa977ed8445b1ab3198a842531cb36bd620564c3f8a469688cbea051149eb644a99b2f8f6d02f8d9909a6145668f385781b5647601e9663de216946
+  languageName: node
+  linkType: hard
+
 "@types/react-is@npm:^19.0.0":
   version: 19.0.0
   resolution: "@types/react-is@npm:19.0.0"
@@ -7587,6 +7638,13 @@ __metadata:
     strip-ansi: "npm:^6.0.1"
     wrap-ansi: "npm:^7.0.0"
   checksum: 10/eaa5561aeb3135c2cddf7a3b3f562fc4238ff3b3fc666869ef2adf264be0f372136702f16add9299087fb1907c2e4ec5dbfe83bd24bce815c70a80c6c1a2e950
+  languageName: node
+  linkType: hard
+
+"clsx@npm:^2.1.1":
+  version: 2.1.1
+  resolution: "clsx@npm:2.1.1"
+  checksum: 10/cdfb57fa6c7649bbff98d9028c2f0de2f91c86f551179541cf784b1cfdc1562dcb951955f46d54d930a3879931a980e32a46b598acaea274728dbe068deca919
   languageName: node
   linkType: hard
 
@@ -9832,6 +9890,13 @@ __metadata:
   version: 1.3.0
   resolution: "fast-diff@npm:1.3.0"
   checksum: 10/9e57415bc69cd6efcc720b3b8fe9fdaf42dcfc06f86f0f45378b1fa512598a8aac48aa3928c8751d58e2f01bb4ba4f07e4f3d9bc0d57586d45f1bd1e872c6cde
+  languageName: node
+  linkType: hard
+
+"fast-equals@npm:^4.0.3":
+  version: 4.0.3
+  resolution: "fast-equals@npm:4.0.3"
+  checksum: 10/04c1ff47b79923314e9b63ec6c81beeaa5e3b9588ec230ee6aff7ece725ff834a72abf627055055127bd0f53ae8a92cc04c3a6e187783fd932dbef743f9b13bf
   languageName: node
   linkType: hard
 
@@ -14299,6 +14364,7 @@ __metadata:
   dependencies:
     "@commercetools-demo/contentools-content-item-renderer": "link:../packages/content-item-renderer"
     "@commercetools-demo/contentools-content-items": "link:../packages/content-items"
+    "@commercetools-demo/contentools-content-pages": "link:../packages/content-pages"
     "@commercetools-demo/contentools-content-types": "link:../packages/content-types"
     "@emotion/react": "npm:^11.14.0"
     "@testing-library/dom": "npm:^10.4.0"
@@ -15390,7 +15456,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:^15.6.0, prop-types@npm:^15.6.2, prop-types@npm:^15.8.1":
+"prop-types@npm:15.x, prop-types@npm:^15.6.0, prop-types@npm:^15.6.2, prop-types@npm:^15.8.1":
   version: 15.8.1
   resolution: "prop-types@npm:15.8.1"
   dependencies:
@@ -15600,6 +15666,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-draggable@npm:^4.0.3, react-draggable@npm:^4.4.6":
+  version: 4.5.0
+  resolution: "react-draggable@npm:4.5.0"
+  dependencies:
+    clsx: "npm:^2.1.1"
+    prop-types: "npm:^15.8.1"
+  peerDependencies:
+    react: ">= 16.3.0"
+    react-dom: ">= 16.3.0"
+  checksum: 10/fd4080a082fad199103c6978c8a78c80154a0205dbd14ca2c7bb75634132a6afd83a3e4669f2d8fe54efe68569ef24a992439183289d83e71030b0a1791d3476
+  languageName: node
+  linkType: hard
+
 "react-error-overlay@npm:^6.0.11":
   version: 6.1.0
   resolution: "react-error-overlay@npm:6.1.0"
@@ -15620,6 +15699,23 @@ __metadata:
   peerDependencies:
     react: ^16.8.0 || ^17.0.0 || ^18.0.0
   checksum: 10/55d6365af5b2aeaa0f2d80808dfa96114367e63849821b7ea277d193d4f6b1fce020e9754d4527ebc7f8628c5333f19dae38fc7b7956f69d5f640ac28b37ab0f
+  languageName: node
+  linkType: hard
+
+"react-grid-layout@npm:^1.4.4":
+  version: 1.5.2
+  resolution: "react-grid-layout@npm:1.5.2"
+  dependencies:
+    clsx: "npm:^2.1.1"
+    fast-equals: "npm:^4.0.3"
+    prop-types: "npm:^15.8.1"
+    react-draggable: "npm:^4.4.6"
+    react-resizable: "npm:^3.0.5"
+    resize-observer-polyfill: "npm:^1.5.1"
+  peerDependencies:
+    react: ">= 16.3.0"
+    react-dom: ">= 16.3.0"
+  checksum: 10/0b2ed84b8b7eeebfd30671a879c84b7873830354389bcec98f38efccf51c2e78115bf76b19a77d5b07e139478ba7cc26593e122a0e5e71487ad8ad2b6af55629
   languageName: node
   linkType: hard
 
@@ -15696,6 +15792,18 @@ __metadata:
   version: 0.11.0
   resolution: "react-refresh@npm:0.11.0"
   checksum: 10/1275699e2edc39dbced9bdb00e2e167e3a2868e0c8ae117ba9551556368cfe70453068e5209240d827122aad5504a64c59a24b9b9a2a0ab932472c8750203ea3
+  languageName: node
+  linkType: hard
+
+"react-resizable@npm:^3.0.5":
+  version: 3.0.5
+  resolution: "react-resizable@npm:3.0.5"
+  dependencies:
+    prop-types: "npm:15.x"
+    react-draggable: "npm:^4.0.3"
+  peerDependencies:
+    react: ">= 16.3"
+  checksum: 10/745fad6ac827857b3a80d1d648b8d6723aa72fc17d5410a01707073f3d37b4adf6e0354dfe3cc33dee34d6e546a3fbd5603ef73e385dfc5218a425a39bf96275
   languageName: node
   linkType: hard
 
@@ -16096,6 +16204,13 @@ __metadata:
   version: 1.0.0
   resolution: "requires-port@npm:1.0.0"
   checksum: 10/878880ee78ccdce372784f62f52a272048e2d0827c29ae31e7f99da18b62a2b9463ea03a75f277352f4697c100183debb0532371ad515a2d49d4bfe596dd4c20
+  languageName: node
+  linkType: hard
+
+"resize-observer-polyfill@npm:^1.5.1":
+  version: 1.5.1
+  resolution: "resize-observer-polyfill@npm:1.5.1"
+  checksum: 10/e10ee50cd6cf558001de5c6fb03fee15debd011c2f694564b71f81742eef03fb30d6c2596d1d5bf946d9991cb692fcef529b7bd2e4057041377ecc9636c753ce
   languageName: node
   linkType: hard
 

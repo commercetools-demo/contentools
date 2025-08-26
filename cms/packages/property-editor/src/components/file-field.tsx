@@ -191,7 +191,7 @@ export const FileField: React.FC<FileFieldProps> = ({
     loading,
     uploading,
     error: mediaLibraryError,
-  } = useStateMediaLibrary();
+  } = useStateMediaLibrary()!;
   const uploadModal = useModalState(false);
   const selectModal = useModalState(false);
 
