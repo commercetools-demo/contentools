@@ -108,10 +108,14 @@ const PagesNew: React.FC<Props> = ({
     console.log(values);
 
     try {
-      const newPage = await createEmptyPage(hydratedUrl, {
-        name: values.name,
-        route: values.route,
-      }, businessUnitKey);
+      const newPage = await createEmptyPage(
+        hydratedUrl,
+        {
+          name: values.name,
+          route: values.route,
+        },
+        businessUnitKey
+      );
 
       // Navigate to edit mode
       // Note: We'll use the route as key for now, this should be the actual page key in real implementation

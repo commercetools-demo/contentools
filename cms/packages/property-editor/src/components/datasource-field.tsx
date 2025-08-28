@@ -48,7 +48,6 @@ const ParamInput = styled.input`
   }
 `;
 
-
 interface DatasourceFieldProps {
   fieldKey: string;
   label: string;

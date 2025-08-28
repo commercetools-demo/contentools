@@ -33,23 +33,24 @@ export interface ContentItemRendererProps {
 
 /**
  * Main entry point for the content item renderer package.
- * 
+ *
  * This component automatically detects whether a StateProvider context is available:
  * - If StateProvider context exists: renders ComponentRenderer directly with all props
  * - If StateProvider context is missing: wraps ComponentRenderer in StateProvider
- * 
+ *
  * This ensures backward compatibility and ease of use for consumers.
  */
-export const ContentItemRenderer: React.FC<PropsWithChildren<ContentItemRendererProps>> = (props) => {
+export const ContentItemRenderer: React.FC<
+  PropsWithChildren<ContentItemRendererProps>
+> = (props) => {
   return (
-    <ContentItemRendererErrorBoundary 
+    <ContentItemRendererErrorBoundary
       fallback={<StandaloneRenderer {...props} />}
     >
       <ContextualRenderer {...props} />
     </ContentItemRendererErrorBoundary>
   );
 };
-
 
 // Default export is the smart wrapper component
 export default ContentItemRenderer;

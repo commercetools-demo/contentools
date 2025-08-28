@@ -36,7 +36,7 @@ const MainContent = styled.div<{ sidebarOpen: boolean }>`
   display: flex;
   flex-direction: column;
   transition: margin-right 0.3s ease;
-  margin-right: ${props => props.sidebarOpen ? '400px' : '0'};
+  margin-right: ${(props) => (props.sidebarOpen ? '400px' : '0')};
 `;
 
 const Header = styled.div`
@@ -68,7 +68,7 @@ const BackButton = styled.button`
   cursor: pointer;
   font-size: 14px;
   text-decoration: none;
-  
+
   &:hover {
     text-decoration: underline;
   }
@@ -89,7 +89,7 @@ const SaveBar = styled.div<{ visible: boolean }>`
   background: #333;
   color: white;
   padding: 16px 24px;
-  display: ${props => props.visible ? 'flex' : 'none'};
+  display: ${(props) => (props.visible ? 'flex' : 'none')};
   justify-content: space-between;
   align-items: center;
   z-index: 1000;
@@ -104,7 +104,7 @@ const PagesEdit: React.FC<Props> = ({
   parentUrl,
   baseURL,
   businessUnitKey,
-  locale
+  locale,
 }) => {
   const history = useHistory();
   const { pageKey } = useParams<RouteParams>();
@@ -116,12 +116,16 @@ const PagesEdit: React.FC<Props> = ({
     fetchPage,
     setCurrentPage,
     updatePage,
-    clearUnsavedChanges
+    clearUnsavedChanges,
   } = useStatePages()!;
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [selectedComponentId, setSelectedComponentId] = useState<string | null>(null);
-  const [sidebarView, setSidebarView] = useState<'component-library' | 'page-settings' | 'component-editor'>('component-library');
+  const [selectedComponentId, setSelectedComponentId] = useState<string | null>(
+    null
+  );
+  const [sidebarView, setSidebarView] = useState<
+    'component-library' | 'page-settings' | 'component-editor'
+  >('component-library');
 
   const hydratedUrl = `${baseURL}/${businessUnitKey}`;
 
@@ -133,7 +137,9 @@ const PagesEdit: React.FC<Props> = ({
 
   const handleBack = () => {
     if (unsavedChanges) {
-      const confirmLeave = window.confirm('You have unsaved changes. Are you sure you want to leave?');
+      const confirmLeave = window.confirm(
+        'You have unsaved changes. Are you sure you want to leave?'
+      );
       if (!confirmLeave) return;
     }
     history.push(`/${parentUrl}`);
@@ -185,7 +191,14 @@ const PagesEdit: React.FC<Props> = ({
   if (loading) {
     return (
       <Container>
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: '100vh',
+          }}
+        >
           <LoadingSpinner />
         </div>
       </Container>
@@ -202,10 +215,7 @@ const PagesEdit: React.FC<Props> = ({
               <Text.Body tone="critical">
                 {error || 'The requested page could not be found.'}
               </Text.Body>
-              <SecondaryButton
-                label="Back to Pages"
-                onClick={handleBack}
-              />
+              <SecondaryButton label="Back to Pages" onClick={handleBack} />
             </Spacings.Stack>
           </Card>
         </div>
@@ -218,15 +228,15 @@ const PagesEdit: React.FC<Props> = ({
       <MainContent sidebarOpen={sidebarOpen}>
         <Header>
           <HeaderLeft>
-            <BackButton onClick={handleBack}>
-              ← Back to Pages
-            </BackButton>
+            <BackButton onClick={handleBack}>← Back to Pages</BackButton>
             <div>
               <Text.Subheadline>{currentPage.name}</Text.Subheadline>
-              <Text.Detail tone="secondary">Route: {currentPage.route}</Text.Detail>
+              <Text.Detail tone="secondary">
+                Route: {currentPage.route}
+              </Text.Detail>
             </div>
           </HeaderLeft>
-          
+
           <HeaderRight>
             <SecondaryButton
               label="Components"
@@ -267,14 +277,8 @@ const PagesEdit: React.FC<Props> = ({
       <SaveBar visible={unsavedChanges}>
         <Text.Body>You have unsaved changes</Text.Body>
         <SaveBarActions>
-          <SecondaryButton
-            label="Discard"
-            onClick={handleDiscard}
-          />
-          <PrimaryButton
-            label="Save Changes"
-            onClick={handleSave}
-          />
+          <SecondaryButton label="Discard" onClick={handleDiscard} />
+          <PrimaryButton label="Save Changes" onClick={handleSave} />
         </SaveBarActions>
       </SaveBar>
     </Container>

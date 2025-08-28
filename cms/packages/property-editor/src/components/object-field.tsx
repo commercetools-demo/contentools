@@ -4,7 +4,7 @@ import Spacings from '@commercetools-uikit/spacings';
 import FieldLabel from '@commercetools-uikit/field-label';
 import Text from '@commercetools-uikit/text';
 import SecondaryButton from '@commercetools-uikit/secondary-button';
-import {MultilineTextInput} from '@commercetools-demo/contentools-ui-components';
+import { MultilineTextInput } from '@commercetools-demo/contentools-ui-components';
 
 const Container = styled.div`
   width: 100%;
@@ -78,7 +78,7 @@ export const ObjectField: React.FC<ObjectFieldProps> = ({
     (event: React.ChangeEvent<HTMLTextAreaElement>) => {
       const newValue = event.target.value;
       setTextValue(newValue);
-      
+
       // Try to parse and update the actual value
       try {
         const parsed = JSON.parse(newValue);
@@ -94,43 +94,49 @@ export const ObjectField: React.FC<ObjectFieldProps> = ({
   const beautifyJson = useCallback(() => {
     try {
       let cleanedText = textValue;
-      
+
       // Fix common JSON mistakes
       // 1. Replace single quotes with double quotes (but not inside strings)
       cleanedText = cleanedText.replace(/'/g, '"');
-      
+
       // 2. Add quotes around unquoted keys
-      cleanedText = cleanedText.replace(/([{,]\s*)([a-zA-Z_$][a-zA-Z0-9_$]*)\s*:/g, '$1"$2":');
-      
+      cleanedText = cleanedText.replace(
+        /([{,]\s*)([a-zA-Z_$][a-zA-Z0-9_$]*)\s*:/g,
+        '$1"$2":'
+      );
+
       // 3. Try to parse and format
       const parsed = JSON.parse(cleanedText);
       const formatted = JSON.stringify(parsed, null, 2);
-      
+
       setTextValue(formatted);
       onFieldChange(fieldKey, parsed);
     } catch (parseError) {
       // If we still can't parse, try to fix more issues
       try {
         let fixedText = textValue;
-        
+
         // More aggressive fixes
         // Replace single quotes with double quotes
         fixedText = fixedText.replace(/'/g, '"');
-        
+
         // Fix unquoted keys (more comprehensive)
-        fixedText = fixedText.replace(/([{,]\s*)([a-zA-Z_$][a-zA-Z0-9_$]*)\s*:/g, '$1"$2":');
-        
+        fixedText = fixedText.replace(
+          /([{,]\s*)([a-zA-Z_$][a-zA-Z0-9_$]*)\s*:/g,
+          '$1"$2":'
+        );
+
         // Fix trailing commas
         fixedText = fixedText.replace(/,(\s*[}\]])/g, '$1');
-        
+
         // Fix missing commas between properties
         fixedText = fixedText.replace(/"\s*\n\s*"/g, '",\n"');
         fixedText = fixedText.replace(/}\s*\n\s*"/g, '},\n"');
         fixedText = fixedText.replace(/]\s*\n\s*"/g, '],\n"');
-        
+
         const parsed = JSON.parse(fixedText);
         const formatted = JSON.stringify(parsed, null, 2);
-        
+
         setTextValue(formatted);
         onFieldChange(fieldKey, parsed);
       } catch (secondError) {
@@ -171,7 +177,7 @@ export const ObjectField: React.FC<ObjectFieldProps> = ({
           placeholder="Enter JSON object..."
         />
       </HighlightedContainer>
-      
+
       <ActionsContainer>
         <SecondaryButton
           label="Beautify JSON"
@@ -180,8 +186,10 @@ export const ObjectField: React.FC<ObjectFieldProps> = ({
           iconLeft={<span>✨</span>}
         />
       </ActionsContainer>
-      
-      {displayError && <Text.Detail tone="negative">{displayError}</Text.Detail>}
+
+      {displayError && (
+        <Text.Detail tone="negative">{displayError}</Text.Detail>
+      )}
     </Container>
   );
 };

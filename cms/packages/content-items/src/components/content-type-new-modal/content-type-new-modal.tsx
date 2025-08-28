@@ -2,7 +2,10 @@ import {
   ContentTypeData,
   ContentTypeMetaData,
 } from '@commercetools-demo/contentools-types';
-import { Modal, useModalState } from '@commercetools-demo/contentools-ui-components';
+import {
+  Modal,
+  useModalState,
+} from '@commercetools-demo/contentools-ui-components';
 import React from 'react';
 import { useHistory, useRouteMatch } from 'react-router-dom';
 import { useStateContentType } from '@commercetools-demo/contentools-state';

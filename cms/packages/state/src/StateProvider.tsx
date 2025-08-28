@@ -56,7 +56,7 @@ export const StateProvider = <T extends VersionInfo>({
   // Initialize all hooks
   const contentType = useContentType(baseURL);
   const contentItem = useContentItem();
-  // Initialize Full 
+  // Initialize Full
   const pages = !minimal ? usePages(baseURL) : undefined;
   const editor = !minimal ? useEditor() : undefined;
   const version = !minimal ? useVersion<T>(baseURL) : undefined;

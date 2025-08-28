@@ -1,8 +1,5 @@
 import IconButton from '@commercetools-uikit/icon-button';
-import {
-  ClockIcon,
-  ListWithSearchIcon
-} from '@commercetools-uikit/icons';
+import { ClockIcon, ListWithSearchIcon } from '@commercetools-uikit/icons';
 import PrimaryActionDropdown, {
   Option,
 } from '@commercetools-uikit/primary-action-dropdown';

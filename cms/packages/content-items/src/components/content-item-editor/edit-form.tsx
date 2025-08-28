@@ -8,7 +8,10 @@ import {
   ContentItem,
   ContentItemVersionInfo,
 } from '@commercetools-demo/contentools-types';
-import { Modal, useModalState } from '@commercetools-demo/contentools-ui-components';
+import {
+  Modal,
+  useModalState,
+} from '@commercetools-demo/contentools-ui-components';
 import Spacings from '@commercetools-uikit/spacings';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
@@ -51,7 +54,8 @@ const ContentItemEditorEditForm: React.FC<ContentItemEditorEditFormProps> = ({
   const [contentVersion, setContentVersion] =
     useState<ContentItemVersionInfo | null>(null);
   const [item, setItem] = useState<ContentItem | null>(null);
-  const { fetchVersions, versions } = useStateVersion<ContentItemVersionInfo>()!;
+  const { fetchVersions, versions } =
+    useStateVersion<ContentItemVersionInfo>()!;
   const { fetchStates, publish, revertToPublished, currentState } =
     useStateStateManagement()!;
   const {
@@ -172,11 +176,7 @@ const ContentItemEditorEditForm: React.FC<ContentItemEditorEditFormProps> = ({
 
   const handleFetchVersions = useCallback(async () => {
     if (item?.key) {
-      await fetchVersions(
-        hydratedUrl,
-        item.key,
-        'content-items'
-      );
+      await fetchVersions(hydratedUrl, item.key, 'content-items');
     }
   }, [fetchVersions, item?.key, hydratedUrl]);
 

@@ -4,7 +4,10 @@ import {
   useStateContentType,
 } from '@commercetools-demo/contentools-state';
 import { ContentItem } from '@commercetools-demo/contentools-types';
-import { Modal, useModalState } from '@commercetools-demo/contentools-ui-components';
+import {
+  Modal,
+  useModalState,
+} from '@commercetools-demo/contentools-ui-components';
 import Spacings from '@commercetools-uikit/spacings';
 import { useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';

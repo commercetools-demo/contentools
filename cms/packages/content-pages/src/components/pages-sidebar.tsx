@@ -25,7 +25,7 @@ const SidebarContainer = styled.div<{ isOpen: boolean }>`
   width: 400px;
   background: white;
   border-left: 1px solid #e0e0e0;
-  transform: translateX(${props => props.isOpen ? '0' : '100%'});
+  transform: translateX(${(props) => (props.isOpen ? '0' : '100%')});
   transition: transform 0.3s ease;
   z-index: 1000;
   display: flex;
@@ -53,7 +53,7 @@ const CloseButton = styled.button`
   font-size: 18px;
   cursor: pointer;
   color: #666;
-  
+
   &:hover {
     color: #333;
   }
@@ -72,7 +72,7 @@ const ComponentItem = styled.div`
   cursor: pointer;
   background: white;
   transition: all 0.2s;
-  
+
   &:hover {
     border-color: #007acc;
     background: #f0f8ff;
@@ -87,7 +87,7 @@ const PagesSidebar: React.FC<Props> = ({
   onClose,
   baseURL,
   businessUnitKey,
-  locale
+  locale,
 }) => {
   const renderContent = () => {
     switch (view) {
@@ -98,7 +98,7 @@ const PagesSidebar: React.FC<Props> = ({
             <Text.Body tone="secondary">
               Drag components to add them to your page
             </Text.Body>
-            
+
             <ComponentLibraryGrid>
               <ComponentItem>
                 <Spacings.Stack scale="xs">
@@ -108,7 +108,7 @@ const PagesSidebar: React.FC<Props> = ({
                   </Text.Detail>
                 </Spacings.Stack>
               </ComponentItem>
-              
+
               <ComponentItem>
                 <Spacings.Stack scale="xs">
                   <Text.Subheadline as="h4">Rich Text</Text.Subheadline>
@@ -117,7 +117,7 @@ const PagesSidebar: React.FC<Props> = ({
                   </Text.Detail>
                 </Spacings.Stack>
               </ComponentItem>
-              
+
               <ComponentItem>
                 <Spacings.Stack scale="xs">
                   <Text.Subheadline as="h4">Product Slider</Text.Subheadline>
@@ -126,7 +126,7 @@ const PagesSidebar: React.FC<Props> = ({
                   </Text.Detail>
                 </Spacings.Stack>
               </ComponentItem>
-              
+
               <ComponentItem>
                 <Spacings.Stack scale="xs">
                   <Text.Subheadline as="h4">Website Logo</Text.Subheadline>
@@ -146,7 +146,7 @@ const PagesSidebar: React.FC<Props> = ({
             <Text.Body tone="secondary">
               Configure page properties and metadata
             </Text.Body>
-            
+
             {/* Page settings form would go here */}
             <Text.Body>
               Page settings configuration will be implemented here.
@@ -156,16 +156,14 @@ const PagesSidebar: React.FC<Props> = ({
 
       case 'component-editor':
         if (!selectedComponentId || !page) {
-          return (
-            <Text.Body>No component selected</Text.Body>
-          );
+          return <Text.Body>No component selected</Text.Body>;
         }
 
-        const selectedComponent = page.components.find(c => c.id === selectedComponentId);
+        const selectedComponent = page.components.find(
+          (c) => c.id === selectedComponentId
+        );
         if (!selectedComponent) {
-          return (
-            <Text.Body>Component not found</Text.Body>
-          );
+          return <Text.Body>Component not found</Text.Body>;
         }
 
         return (
@@ -186,9 +184,7 @@ const PagesSidebar: React.FC<Props> = ({
         );
 
       default:
-        return (
-          <Text.Body>Unknown view</Text.Body>
-        );
+        return <Text.Body>Unknown view</Text.Body>;
     }
   };
 
@@ -211,10 +207,8 @@ const PagesSidebar: React.FC<Props> = ({
         <Text.Subheadline as="h2">{getTitle()}</Text.Subheadline>
         <CloseButton onClick={onClose}>×</CloseButton>
       </SidebarHeader>
-      
-      <SidebarContent>
-        {renderContent()}
-      </SidebarContent>
+
+      <SidebarContent>{renderContent()}</SidebarContent>
     </SidebarContainer>
   );
 };

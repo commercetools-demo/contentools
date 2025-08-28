@@ -48,7 +48,10 @@ const fetchPageApi = async (baseUrl: string, key: string): Promise<Page> => {
   }
 };
 
-const createPageApi = async (hydratedUrl: string, page: Omit<Page, 'key'>): Promise<Page> => {
+const createPageApi = async (
+  hydratedUrl: string,
+  page: Omit<Page, 'key'>
+): Promise<Page> => {
   try {
     const data = await createPageEndpoint(hydratedUrl, page);
     return data.value;
@@ -113,11 +116,11 @@ export const usePages = (baseUrl: string) => {
   const fetchPages = useCallback(async (hydratedUrl: string) => {
     try {
       const pagesFromApi = await fetchPagesApi(hydratedUrl);
-        setState((prev) => ({
-          ...prev,
-          pages: pagesFromApi,
-          loading: false,
-        }));
+      setState((prev) => ({
+        ...prev,
+        pages: pagesFromApi,
+        loading: false,
+      }));
     } catch (error) {
       setState((prev) => ({
         ...prev,
@@ -150,32 +153,27 @@ export const usePages = (baseUrl: string) => {
     }
   }, [baseUrl]);
 
-  const fetchPage = useCallback(
-    async (hydratedUrl: string, key: string) => {
-      try {
-        setState((prev) => ({ ...prev, loading: true, error: null }));
-        const page = await fetchPageApi(hydratedUrl, key);
+  const fetchPage = useCallback(async (hydratedUrl: string, key: string) => {
+    try {
+      setState((prev) => ({ ...prev, loading: true, error: null }));
+      const page = await fetchPageApi(hydratedUrl, key);
 
-        setState((prev) => ({
-          ...prev,
-          currentPage: page,
-          loading: false,
-        }));
+      setState((prev) => ({
+        ...prev,
+        currentPage: page,
+        loading: false,
+      }));
 
-        return page;
-      } catch (error) {
-        setState((prev) => ({
-          ...prev,
-          loading: false,
-          error:
-            error instanceof Error ? error.message : 'Failed to fetch page',
-        }));
-        throw error;
-      }
-    },
-    []
-  );
-
+      return page;
+    } catch (error) {
+      setState((prev) => ({
+        ...prev,
+        loading: false,
+        error: error instanceof Error ? error.message : 'Failed to fetch page',
+      }));
+      throw error;
+    }
+  }, []);
 
   const updatePage = useCallback(
     async (page: Page) => {
@@ -239,8 +237,11 @@ export const usePages = (baseUrl: string) => {
   }, []);
 
   const createEmptyPage = useCallback(
-    async (hydratedUrl: string, page: Pick<Page, 'name' | 'route'>, businessUnitKey: string): Promise<Page> => {
-
+    async (
+      hydratedUrl: string,
+      page: Pick<Page, 'name' | 'route'>,
+      businessUnitKey: string
+    ): Promise<Page> => {
       const newPage: Omit<Page, 'key'> = {
         name: page.name,
         route: page.route,
@@ -250,7 +251,6 @@ export const usePages = (baseUrl: string) => {
         components: [],
       };
       const createdPage = await createPageApi(hydratedUrl, newPage);
-
 
       setState((prev) => ({
         ...prev,
@@ -377,7 +377,11 @@ export const usePages = (baseUrl: string) => {
   );
 
   const updateComponentInCurrentPage = useCallback(
-    (componentId: string, updates: Partial<ContentItem>, businessUnitKey: string) => {
+    (
+      componentId: string,
+      updates: Partial<ContentItem>,
+      businessUnitKey: string
+    ) => {
       setState((prev) => {
         if (!prev.currentPage) return prev;
 

@@ -1,8 +1,8 @@
-import React from "react";
+import React from 'react';
 
 class ContentItemRendererErrorBoundary extends React.Component<
-  { 
-    children: React.ReactNode; 
+  {
+    children: React.ReactNode;
     fallback: React.ReactNode;
   },
   { hasError: boolean }
@@ -17,7 +17,10 @@ class ContentItemRendererErrorBoundary extends React.Component<
   }
 
   componentDidCatch(error: Error) {
-    console.warn('ContentItemRenderer context error (expected if no StateProvider):', error.message);
+    console.warn(
+      'ContentItemRenderer context error (expected if no StateProvider):',
+      error.message
+    );
   }
 
   render() {

@@ -24,23 +24,24 @@ const GridContainer = styled.div`
   .react-grid-layout {
     position: relative;
   }
-  
+
   .react-grid-item {
     transition: all 200ms ease;
     transition-property: left, top;
   }
-  
+
   .react-grid-item.cssTransforms {
     transition-property: transform;
   }
-  
+
   .react-grid-item > .react-resizable-handle {
     position: absolute;
     width: 20px;
     height: 20px;
     bottom: 0;
     right: 0;
-    background: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNiIgaGVpZ2h0PSI2IiB2aWV3Qm94PSIwIDAgNiA2IiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8ZG90cyBmaWxsPSIjOTk5IiBkPSJtMTUgMTJjMCAxLjA1LS44NSAyLTIgMnMtMi0uOTUtMi0yIC44NS0yIDItMiAyIC45NSAyIDJ6bTAgNGMwIDEuMDUtLjg1IDItMiAycy0yLS45NS0yLTIgLjg1LTIgMi0yIDIgLjk1IDIgMnoiLz4KPHN2Zz4K') no-repeat;
+    background: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNiIgaGVpZ2h0PSI2IiB2aWV3Qm94PSIwIDAgNiA2IiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8ZG90cyBmaWxsPSIjOTk5IiBkPSJtMTUgMTJjMCAxLjA1LS44NSAyLTIgMnMtMi0uOTUtMi0yIC44NS0yIDItMiAyIC45NSAyIDJ6bTAgNGMwIDEuMDUtLjg1IDItMiAycy0yLS45NS0yLTIgLjg1LTIgMi0yIDIgLjk1IDIgMnoiLz4KPHN2Zz4K')
+      no-repeat;
     background-position: bottom right;
     padding: 0 3px 3px 0;
     background-repeat: no-repeat;
@@ -53,13 +54,13 @@ const GridContainer = styled.div`
 const ComponentWrapper = styled.div<{ selected: boolean }>`
   width: 100%;
   height: 100%;
-  border: 2px solid ${props => props.selected ? '#007acc' : 'transparent'};
+  border: 2px solid ${(props) => (props.selected ? '#007acc' : 'transparent')};
   border-radius: 4px;
   cursor: pointer;
   transition: border-color 0.2s;
-  
+
   &:hover {
-    border-color: ${props => props.selected ? '#007acc' : '#e0e0e0'};
+    border-color: ${(props) => (props.selected ? '#007acc' : '#e0e0e0')};
   }
 `;
 
@@ -100,15 +101,17 @@ const PagesGridLayout: React.FC<Props> = ({
   onComponentSelect,
   baseURL,
   businessUnitKey,
-  locale
+  locale,
 }) => {
   const [currentBreakpoint, setCurrentBreakpoint] = useState('lg');
-  const [compactType, setCompactType] = useState<'vertical' | 'horizontal' | null>('vertical');
+  const [compactType, setCompactType] = useState<
+    'vertical' | 'horizontal' | null
+  >('vertical');
 
   // Convert page layout to react-grid-layout format
   const generateLayout = useCallback((): Layout[] => {
     const layout: Layout[] = [];
-    
+
     page.layout.rows.forEach((row, rowIndex) => {
       row.cells.forEach((cell, cellIndex) => {
         if (cell.componentId) {
@@ -119,12 +122,12 @@ const PagesGridLayout: React.FC<Props> = ({
             w: cell.colSpan * 2,
             h: 2,
             minW: 2,
-            minH: 2
+            minH: 2,
           });
         }
       });
     });
-    
+
     return layout;
   }, [page.layout]);
 
@@ -140,7 +143,7 @@ const PagesGridLayout: React.FC<Props> = ({
 
   const renderComponent = (component: ContentItem) => {
     const isSelected = selectedComponentId === component.id;
-    
+
     return (
       <ComponentWrapper
         key={component.id}
@@ -151,11 +154,12 @@ const PagesGridLayout: React.FC<Props> = ({
           <Spacings.Stack scale="s">
             <Text.Subheadline as="h4">{component.name}</Text.Subheadline>
             <Text.Detail tone="secondary">Type: {component.type}</Text.Detail>
-            {component.properties && Object.keys(component.properties).length > 0 && (
-              <Text.Detail tone="secondary">
-                {Object.keys(component.properties).length} properties
-              </Text.Detail>
-            )}
+            {component.properties &&
+              Object.keys(component.properties).length > 0 && (
+                <Text.Detail tone="secondary">
+                  {Object.keys(component.properties).length} properties
+                </Text.Detail>
+              )}
           </Spacings.Stack>
         </ComponentCard>
       </ComponentWrapper>
@@ -167,7 +171,7 @@ const PagesGridLayout: React.FC<Props> = ({
     md: generateLayout(),
     sm: generateLayout(),
     xs: generateLayout(),
-    xxs: generateLayout()
+    xxs: generateLayout(),
   };
 
   if (!page.components || page.components.length === 0) {
@@ -179,13 +183,13 @@ const PagesGridLayout: React.FC<Props> = ({
             No components yet. Add components from the sidebar.
           </Text.Detail>
         </GridControls>
-        
+
         <EmptyGridMessage>
           <Spacings.Stack scale="m">
             <Text.Headline as="h3">Empty Page</Text.Headline>
             <Text.Body tone="secondary">
-              This page doesn't have any components yet. Use the component library 
-              to add your first component.
+              This page doesn't have any components yet. Use the component
+              library to add your first component.
             </Text.Body>
             <PrimaryButton
               label="Open Component Library"
@@ -203,16 +207,21 @@ const PagesGridLayout: React.FC<Props> = ({
         <div>
           <Text.Subheadline as="h3">Page Layout</Text.Subheadline>
           <Text.Detail tone="secondary">
-            Breakpoint: {currentBreakpoint} | Components: {page.components.length}
+            Breakpoint: {currentBreakpoint} | Components:{' '}
+            {page.components.length}
           </Text.Detail>
         </div>
-        
+
         <div>
           <label>
             Compact Type:
-            <select 
-              value={compactType || 'none'} 
-              onChange={(e) => setCompactType(e.target.value === 'none' ? null : e.target.value as any)}
+            <select
+              value={compactType || 'none'}
+              onChange={(e) =>
+                setCompactType(
+                  e.target.value === 'none' ? null : (e.target.value as any)
+                )
+              }
               style={{ marginLeft: '8px' }}
             >
               <option value="none">None</option>
@@ -239,7 +248,7 @@ const PagesGridLayout: React.FC<Props> = ({
           margin={[16, 16]}
           containerPadding={[0, 0]}
         >
-          {page.components.map(component => renderComponent(component))}
+          {page.components.map((component) => renderComponent(component))}
         </ResponsiveGridLayout>
       </GridContainer>
     </>
