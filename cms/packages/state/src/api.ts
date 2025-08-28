@@ -38,11 +38,11 @@ export async function fetchApi<T>(
 /**
  * Fetch a single custom object
  */
-export async function fetchPageEndpoint<T>(
+export async function fetchPageEndpoint(
   baseURL: string,
   key: string
-): Promise<ApiResponse<T>> {
-  return fetchApi<T>(`${baseURL}/pages/${key}`);
+): Promise<ApiResponse<Page>> {
+  return fetchApi<Page>(`${baseURL}/pages/${key}`);
 }
 
 /**
@@ -79,11 +79,11 @@ export async function updatePageEndpoint<T>(
 /**
  * Create a custom object
  */
-export async function createPageEndpoint<T extends { key: string }>(
+export async function createPageEndpoint(
   baseURL: string,
-  data: T
-): Promise<ApiResponse<T>> {
-  return fetchApi<T>(`${baseURL}/pages/${data.key}`, {
+  data: Omit<Page, 'key'>
+): Promise<ApiResponse<Page>> {
+  return fetchApi<Page>(`${baseURL}/pages`, {
     method: 'POST',
     body: JSON.stringify({ value: data }),
   });

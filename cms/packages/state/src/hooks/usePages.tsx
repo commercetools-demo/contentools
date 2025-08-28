@@ -27,7 +27,6 @@ const initialState: PagesState = {
   loading: false,
   error: null,
   unsavedChanges: false,
-  businessUnitKey: '',
 };
 
 // Helper functions for API calls
@@ -42,16 +41,16 @@ const fetchPagesApi = async (baseUrl: string): Promise<Page[]> => {
 
 const fetchPageApi = async (baseUrl: string, key: string): Promise<Page> => {
   try {
-    const data = await fetchPageEndpoint<Page>(baseUrl, key);
+    const data = await fetchPageEndpoint(baseUrl, key);
     return data.value;
   } catch (error) {
     throw new Error(`Failed to fetch page with key: ${key}`);
   }
 };
 
-const createPageApi = async (baseUrl: string, page: Page): Promise<Page> => {
+const createPageApi = async (hydratedUrl: string, page: Omit<Page, 'key'>): Promise<Page> => {
   try {
-    const data = await createPageEndpoint<Page>(baseUrl, page);
+    const data = await createPageEndpoint(hydratedUrl, page);
     return data.value;
   } catch (error) {
     throw new Error('Failed to create page');
@@ -111,28 +110,18 @@ export const usePages = (baseUrl: string) => {
   );
 
   // Actions
-  const fetchPages = useCallback(async (businessUnitKey: string) => {
+  const fetchPages = useCallback(async (hydratedUrl: string) => {
     try {
-      setState((prev) => ({ ...prev, loading: true, error: null }));
-
-      // First try to get from session storage
-      const storageKey = `${LOCAL_STORAGE_KEY_PREFIX}_${businessUnitKey}`;
-      const storedPages = sessionStorage.getItem(storageKey);
-      const pagesFromStorage = storedPages
-        ? (JSON.parse(storedPages) as Page[])
-        : null;
-
-      setState((prev) => ({
-        ...prev,
-        pages: pagesFromStorage || [],
-        businessUnitKey,
-        loading: false,
-      }));
+      const pagesFromApi = await fetchPagesApi(hydratedUrl);
+        setState((prev) => ({
+          ...prev,
+          pages: pagesFromApi,
+          loading: false,
+        }));
     } catch (error) {
       setState((prev) => ({
         ...prev,
         pages: [],
-        businessUnitKey,
         loading: false,
         error: error instanceof Error ? error.message : 'Failed to fetch pages',
       }));
@@ -162,10 +151,10 @@ export const usePages = (baseUrl: string) => {
   }, [baseUrl]);
 
   const fetchPage = useCallback(
-    async (key: string) => {
+    async (hydratedUrl: string, key: string) => {
       try {
         setState((prev) => ({ ...prev, loading: true, error: null }));
-        const page = await fetchPageApi(baseUrl, key);
+        const page = await fetchPageApi(hydratedUrl, key);
 
         setState((prev) => ({
           ...prev,
@@ -184,34 +173,9 @@ export const usePages = (baseUrl: string) => {
         throw error;
       }
     },
-    [baseUrl]
+    []
   );
 
-  const createPage = useCallback(
-    async (page: Page) => {
-      try {
-        setState((prev) => ({ ...prev, loading: true, error: null }));
-        const createdPage = await createPageApi(baseUrl, page);
-
-        setState((prev) => ({
-          ...prev,
-          pages: [...prev.pages, createdPage],
-          loading: false,
-        }));
-
-        return createdPage;
-      } catch (error) {
-        setState((prev) => ({
-          ...prev,
-          loading: false,
-          error:
-            error instanceof Error ? error.message : 'Failed to create page',
-        }));
-        throw error;
-      }
-    },
-    [baseUrl]
-  );
 
   const updatePage = useCallback(
     async (page: Page) => {
@@ -275,35 +239,36 @@ export const usePages = (baseUrl: string) => {
   }, []);
 
   const createEmptyPage = useCallback(
-    (name: string, route: string, businessUnitKey: string) => {
-      const newPage: Page = {
-        key: `page-${uuidv4()}`,
-        name,
-        uuid: uuidv4(),
-        route,
-        businessUnitKey,
+    async (hydratedUrl: string, page: Pick<Page, 'name' | 'route'>, businessUnitKey: string): Promise<Page> => {
+
+      const newPage: Omit<Page, 'key'> = {
+        name: page.name,
+        route: page.route,
         layout: {
           rows: [createEmptyGridRow()],
         },
         components: [],
       };
+      const createdPage = await createPageApi(hydratedUrl, newPage);
+
 
       setState((prev) => ({
         ...prev,
-        pages: [...prev.pages, newPage],
-        currentPage: newPage,
+        pages: [...prev.pages, createdPage],
+        currentPage: createdPage,
         unsavedChanges: true,
-        businessUnitKey,
       }));
 
       // Save to session storage
-      saveToSessionStorage([...state.pages, newPage], businessUnitKey);
+      saveToSessionStorage([...state.pages, createdPage], businessUnitKey);
+
+      return createdPage;
     },
     [state.pages, saveToSessionStorage]
   );
 
   const updateCurrentPage = useCallback(
-    (updates: Partial<Page>) => {
+    (updates: Partial<Page>, businessUnitKey: string) => {
       setState((prev) => {
         if (!prev.currentPage) return prev;
 
@@ -313,7 +278,7 @@ export const usePages = (baseUrl: string) => {
         );
 
         // Save to session storage
-        saveToSessionStorage(updatedPages, prev.businessUnitKey);
+        saveToSessionStorage(updatedPages, businessUnitKey);
 
         return {
           ...prev,
@@ -327,7 +292,7 @@ export const usePages = (baseUrl: string) => {
   );
 
   const addRowToCurrentPage = useCallback(
-    (rowIndex?: number) => {
+    (rowIndex: number | undefined, businessUnitKey: string) => {
       setState((prev) => {
         if (!prev.currentPage) return prev;
 
@@ -346,7 +311,7 @@ export const usePages = (baseUrl: string) => {
         );
 
         // Save to session storage
-        saveToSessionStorage(updatedPages, prev.businessUnitKey);
+        saveToSessionStorage(updatedPages, businessUnitKey);
 
         return {
           ...prev,
@@ -360,7 +325,7 @@ export const usePages = (baseUrl: string) => {
   );
 
   const removeRowFromCurrentPage = useCallback(
-    (rowId: string) => {
+    (rowId: string, businessUnitKey: string) => {
       setState((prev) => {
         if (!prev.currentPage) return prev;
 
@@ -373,7 +338,7 @@ export const usePages = (baseUrl: string) => {
         );
 
         // Save to session storage
-        saveToSessionStorage(updatedPages, prev.businessUnitKey);
+        saveToSessionStorage(updatedPages, businessUnitKey);
 
         return {
           ...prev,
@@ -387,7 +352,7 @@ export const usePages = (baseUrl: string) => {
   );
 
   const addComponentToCurrentPage = useCallback(
-    (component: ContentItem) => {
+    (component: ContentItem, businessUnitKey: string) => {
       setState((prev) => {
         if (!prev.currentPage) return prev;
 
@@ -398,7 +363,7 @@ export const usePages = (baseUrl: string) => {
         );
 
         // Save to session storage
-        saveToSessionStorage(updatedPages, prev.businessUnitKey);
+        saveToSessionStorage(updatedPages, businessUnitKey);
 
         return {
           ...prev,
@@ -412,7 +377,7 @@ export const usePages = (baseUrl: string) => {
   );
 
   const updateComponentInCurrentPage = useCallback(
-    (componentId: string, updates: Partial<ContentItem>) => {
+    (componentId: string, updates: Partial<ContentItem>, businessUnitKey: string) => {
       setState((prev) => {
         if (!prev.currentPage) return prev;
 
@@ -425,7 +390,7 @@ export const usePages = (baseUrl: string) => {
         );
 
         // Save to session storage
-        saveToSessionStorage(updatedPages, prev.businessUnitKey);
+        saveToSessionStorage(updatedPages, businessUnitKey);
 
         return {
           ...prev,
@@ -439,7 +404,7 @@ export const usePages = (baseUrl: string) => {
   );
 
   const removeComponentFromCurrentPage = useCallback(
-    (componentId: string) => {
+    (componentId: string, businessUnitKey: string) => {
       setState((prev) => {
         if (!prev.currentPage) return prev;
 
@@ -452,7 +417,7 @@ export const usePages = (baseUrl: string) => {
         );
 
         // Save to session storage
-        saveToSessionStorage(updatedPages, prev.businessUnitKey);
+        saveToSessionStorage(updatedPages, businessUnitKey);
 
         return {
           ...prev,
@@ -480,13 +445,11 @@ export const usePages = (baseUrl: string) => {
     loading: state.loading,
     error: state.error,
     unsavedChanges: state.unsavedChanges,
-    businessUnitKey: state.businessUnitKey,
 
     // Actions
     fetchPages,
     syncPagesWithApi,
     fetchPage,
-    createPage,
     updatePage,
     deletePage,
     setCurrentPage,
