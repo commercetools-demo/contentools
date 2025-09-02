@@ -14,7 +14,7 @@ import {
   fetchPublishedContentItemEndpoint,
   queryContentItemEndpoint,
   queryPublishedContentItemEndpoint,
-} from '../api';
+} from '../api/content-item';
 
 const initialState: ContentItemState = {
   items: [],
@@ -30,7 +30,7 @@ export const useContentItem = () => {
   const fetchContentItems = useCallback(async (hydratedUrl: string) => {
     try {
       setState((prev) => ({ ...prev, loading: true, error: null }));
-      const result = await fetchContentItemsEndpoint<ContentItem>(hydratedUrl);
+      const result = await fetchContentItemsEndpoint(hydratedUrl);
 
       const items = result.map((item) => item.value);
       const states = result.reduce((acc, item) => {
@@ -63,7 +63,7 @@ export const useContentItem = () => {
     async (hydratedUrl: string, key: string) => {
       try {
         setState((prev) => ({ ...prev, loading: true, error: null }));
-        const item = await fetchPreviewContentItemEndpoint<ContentItem>(
+        const item = await fetchPreviewContentItemEndpoint(
           hydratedUrl,
           key
         );
@@ -93,7 +93,7 @@ export const useContentItem = () => {
     async (hydratedUrl: string, key: string) => {
       try {
         setState((prev) => ({ ...prev, loading: true, error: null }));
-        const item = await fetchRawContentItemEndpoint<ContentItem>(
+        const item = await fetchRawContentItemEndpoint(
           hydratedUrl,
           key
         );
@@ -123,7 +123,7 @@ export const useContentItem = () => {
     async (hydratedUrl: string, key: string) => {
       try {
         setState((prev) => ({ ...prev, loading: true, error: null }));
-        const item = await fetchPublishedContentItemEndpoint<ContentItem>(
+        const item = await fetchPublishedContentItemEndpoint(
           hydratedUrl,
           key
         );
@@ -154,7 +154,7 @@ export const useContentItem = () => {
       try {
         setState((prev) => ({ ...prev, loading: true, error: null }));
 
-        const createdItem = await createContentItemEndpoint<ContentItem>(
+        const createdItem = await createContentItemEndpoint(
           hydratedUrl,
           item
         );
@@ -185,7 +185,7 @@ export const useContentItem = () => {
     async (hydratedUrl: string, key: string, item: ContentItem) => {
       try {
         setState((prev) => ({ ...prev, loading: true, error: null }));
-        const updatedItem = await updateContentItemEndpoint<ContentItem>(
+        const updatedItem = await updateContentItemEndpoint(
           hydratedUrl,
           key,
           item
@@ -325,14 +325,14 @@ export const useContentItem = () => {
 
   const queryContentItem = useCallback(
     async (hydratedUrl: string, query: string) => {
-      return await queryContentItemEndpoint<ContentItem>(hydratedUrl, query);
+      return await queryContentItemEndpoint(hydratedUrl, query);
     },
     []
   );
 
   const queryPublishedContentItem = useCallback(
     async (hydratedUrl: string, query: string) => {
-      return await queryPublishedContentItemEndpoint<ContentItem>(
+      return await queryPublishedContentItemEndpoint(
         hydratedUrl,
         query
       );

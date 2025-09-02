@@ -10,7 +10,7 @@ import {
   getStatesEndpoint,
   publishEndpoint,
   revertDraftEndpoint,
-} from '../api';
+} from '../api/state';
 
 const initialState: StateManagementState = {
   states: {},

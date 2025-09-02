@@ -8,7 +8,7 @@ import {
 import { useCallback, useState } from 'react';
 import {
   fetchVersionsEndpoint
-} from '../api';
+} from '../api/version';
 
 export function useVersion<T extends ContentItemVersionInfo | PageVersionInfo>(
 ) {
