@@ -20,15 +20,26 @@ const PagesRouter = ({
   const match = useRouteMatch();
 
   return (
-    <Switch>
-      <Route path="/" exact>
-        <PagesList
-          parentUrl={parentUrl}
-          baseURL={baseURL}
-          businessUnitKey={businessUnitKey}
-          locale={locale}
-        />
-      </Route>
+    <>
+      <Switch>
+        <Route path="/" exact>
+          <PagesList
+            parentUrl={parentUrl}
+            baseURL={baseURL}
+            businessUnitKey={businessUnitKey}
+            locale={locale}
+          />
+        </Route>
+        <Route path={`/edit/:pageKey`} exact>
+          <PagesEdit
+            parentUrl={parentUrl}
+            baseURL={baseURL}
+            businessUnitKey={businessUnitKey}
+            locale={locale}
+          />
+        </Route>
+      </Switch>
+
       <Route path={`/new`} exact>
         <PagesNew
           parentUrl={parentUrl}
@@ -37,15 +48,7 @@ const PagesRouter = ({
           locale={locale}
         />
       </Route>
-      <Route path={`/edit/:pageKey`} exact>
-        <PagesEdit
-          parentUrl={parentUrl}
-          baseURL={baseURL}
-          businessUnitKey={businessUnitKey}
-          locale={locale}
-        />
-      </Route>
-    </Switch>
+    </>
   );
 };
 

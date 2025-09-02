@@ -22,16 +22,6 @@ interface Props {
   locale: string;
 }
 
-const Container = styled.div`
-  padding: 20px;
-  max-width: 600px;
-  margin: 0 auto;
-`;
-
-const Header = styled.div`
-  margin-bottom: 24px;
-`;
-
 const FormContainer = styled.div`
   padding: 24px;
 `;
@@ -43,18 +33,6 @@ const Actions = styled.div`
   margin-top: 24px;
 `;
 
-const BackButton = styled.button`
-  background: none;
-  border: none;
-  color: #007acc;
-  cursor: pointer;
-  font-size: 14px;
-  text-decoration: none;
-
-  &:hover {
-    text-decoration: underline;
-  }
-`;
 
 type FormValues = {
   name: string;
@@ -77,8 +55,6 @@ const PagesNew: React.FC<Props> = ({
     name: '',
     route: '',
   };
-
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   const handleBack = () => {
     history.push(`/${parentUrl}`);
@@ -105,7 +81,6 @@ const PagesNew: React.FC<Props> = ({
   };
 
   const handleSubmit = async (values: FormValues) => {
-    console.log(values);
 
     try {
       const newPage = await createEmptyPage(
@@ -116,10 +91,10 @@ const PagesNew: React.FC<Props> = ({
         },
         businessUnitKey
       );
+      // console.log('newPage', newPage);
+      // pageModalState.closeModal();
 
-      // Navigate to edit mode
-      // Note: We'll use the route as key for now, this should be the actual page key in real implementation
-      history.push(`/${parentUrl}/edit/${newPage.key}`);
+      history.push(`/edit/${newPage.key}`);
     } catch (error) {
       console.error('Failed to create page:', error);
       // Handle error - could show a toast or error message

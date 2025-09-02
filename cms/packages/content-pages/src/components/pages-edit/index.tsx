@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
-import { useStatePages } from '@commercetools-demo/contentools-state';
+import { useStatePages, useStateEditor } from '@commercetools-demo/contentools-state';
 import Spacings from '@commercetools-uikit/spacings';
 import Text from '@commercetools-uikit/text';
 import PrimaryButton from '@commercetools-uikit/primary-button';
@@ -8,10 +8,12 @@ import SecondaryButton from '@commercetools-uikit/secondary-button';
 import IconButton from '@commercetools-uikit/icon-button';
 import Card from '@commercetools-uikit/card';
 import LoadingSpinner from '@commercetools-uikit/loading-spinner';
-import { Modal } from '@commercetools-demo/contentools-ui-components';
+import { useModalState } from '@commercetools-demo/contentools-ui-components';
 import { GridIcon, GearIcon } from '@commercetools-uikit/icons';
 import styled from 'styled-components';
-import PagesSidebar from './pages-sidebar';
+import ComponentLibraryModal from './component-library-modal';
+import PageSettingsModal from './page-settings-modal';
+import ComponentEditorModal from './component-editor-modal';
 import PagesGridLayout from './pages-grid-layout';
 
 interface Props {
@@ -31,12 +33,10 @@ const Container = styled.div`
   overflow: hidden;
 `;
 
-const MainContent = styled.div<{ sidebarOpen: boolean }>`
+const MainContent = styled.div`
   flex: 1;
   display: flex;
   flex-direction: column;
-  transition: margin-right 0.3s ease;
-  margin-right: ${(props) => (props.sidebarOpen ? '400px' : '0')};
 `;
 
 const Header = styled.div`
@@ -114,20 +114,28 @@ const PagesEdit: React.FC<Props> = ({
     error,
     unsavedChanges,
     fetchPage,
-    setCurrentPage,
     updatePage,
+    deletePage,
     clearUnsavedChanges,
   } = useStatePages()!;
 
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [selectedComponentId, setSelectedComponentId] = useState<string | null>(
+  const editorState = useStateEditor();
+  const draggingComponentType = editorState?.draggingComponentType;
+
+  const [selectedContentItemKey, setSelectedContentItemKey] = useState<string | null>(
     null
   );
-  const [sidebarView, setSidebarView] = useState<
-    'component-library' | 'page-settings' | 'component-editor'
-  >('component-library');
+
+  // Modal states
+  const componentLibraryModal = useModalState();
+  const pageSettingsModal = useModalState();
+  const componentEditorModal = useModalState();
 
   const hydratedUrl = `${baseURL}/${businessUnitKey}`;
+
+  const handleDeletePage = async (key: string) => {
+    await deletePage(hydratedUrl, key);
+  };
 
   useEffect(() => {
     if (pageKey) {
@@ -148,7 +156,7 @@ const PagesEdit: React.FC<Props> = ({
   const handleSave = async () => {
     if (currentPage) {
       try {
-        await updatePage(currentPage);
+        await updatePage(hydratedUrl, currentPage);
         clearUnsavedChanges();
       } catch (error) {
         console.error('Failed to save page:', error);
@@ -159,33 +167,30 @@ const PagesEdit: React.FC<Props> = ({
 
   const handleDiscard = () => {
     if (pageKey) {
-      fetchPage(pageKey); // Refetch to reset changes
+      fetchPage(hydratedUrl, pageKey); // Refetch to reset changes
       clearUnsavedChanges();
     }
   };
 
-  const handleComponentSelect = (componentId: string | null) => {
-    setSelectedComponentId(componentId);
-    if (componentId) {
-      setSidebarView('component-editor');
-      setSidebarOpen(true);
+  const handleComponentSelect = (contentItemKey: string | null) => {
+    setSelectedContentItemKey(contentItemKey);
+    if (contentItemKey) {
+      componentEditorModal.openModal();
     }
   };
 
   const handleOpenComponentLibrary = () => {
-    setSidebarView('component-library');
-    setSidebarOpen(true);
+    componentLibraryModal.openModal();
   };
 
   const handleOpenPageSettings = () => {
-    setSelectedComponentId(null);
-    setSidebarView('page-settings');
-    setSidebarOpen(true);
+    setSelectedContentItemKey(null);
+    pageSettingsModal.openModal();
   };
 
-  const handleCloseSidebar = () => {
-    setSidebarOpen(false);
-    setSelectedComponentId(null);
+  const handleCloseComponentEditor = () => {
+    componentEditorModal.closeModal();
+    setSelectedContentItemKey(null);
   };
 
   if (loading) {
@@ -225,7 +230,7 @@ const PagesEdit: React.FC<Props> = ({
 
   return (
     <Container>
-      <MainContent sidebarOpen={sidebarOpen}>
+      <MainContent>
         <Header>
           <HeaderLeft>
             <BackButton onClick={handleBack}>← Back to Pages</BackButton>
@@ -254,24 +259,37 @@ const PagesEdit: React.FC<Props> = ({
         <EditorContent>
           <PagesGridLayout
             page={currentPage}
-            selectedComponentId={selectedComponentId}
+            selectedContentItemKey={selectedContentItemKey}
             onComponentSelect={handleComponentSelect}
             baseURL={baseURL}
             businessUnitKey={businessUnitKey}
             locale={locale}
+            activeComponentType={draggingComponentType}
           />
         </EditorContent>
       </MainContent>
 
-      <PagesSidebar
-        isOpen={sidebarOpen}
-        view={sidebarView}
+      {/* Modal Components */}
+      <ComponentLibraryModal
+        isOpen={componentLibraryModal.isModalOpen}
+        onClose={componentLibraryModal.closeModal}
+      />
+
+      <PageSettingsModal
+        isOpen={pageSettingsModal.isModalOpen}
+        onClose={pageSettingsModal.closeModal}
+        currentPage={currentPage}
+        deletePage={handleDeletePage}
+        parentUrl={parentUrl}
+      />
+
+      <ComponentEditorModal
+        isOpen={componentEditorModal.isModalOpen}
+        onClose={handleCloseComponentEditor}
         page={currentPage}
-        selectedComponentId={selectedComponentId}
-        onClose={handleCloseSidebar}
+        selectedContentItemKey={selectedContentItemKey}
         baseURL={baseURL}
         businessUnitKey={businessUnitKey}
-        locale={locale}
       />
 
       <SaveBar visible={unsavedChanges}>

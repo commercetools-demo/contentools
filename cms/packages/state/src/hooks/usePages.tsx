@@ -84,7 +84,7 @@ const createEmptyGridRow = (): GridRow => {
   for (let i = 0; i < NUMBER_OF_COLUMNS; i++) {
     cells.push({
       id: uuidv4(),
-      componentId: null,
+      contentItemKey: null,
       colSpan: 1,
     });
   }
@@ -175,39 +175,35 @@ export const usePages = (baseUrl: string) => {
     }
   }, []);
 
-  const updatePage = useCallback(
-    async (page: Page) => {
-      try {
-        setState((prev) => ({ ...prev, loading: true, error: null }));
-        const updatedPage = await updatePageApi(baseUrl, page);
+  const updatePage = useCallback(async (hydratedUrl: string, page: Page) => {
+    try {
+      setState((prev) => ({ ...prev, loading: true, error: null }));
+      const updatedPage = await updatePageApi(hydratedUrl, page);
 
-        setState((prev) => ({
-          ...prev,
-          pages: prev.pages.map((p) => (p.key === page.key ? updatedPage : p)),
-          currentPage:
-            prev.currentPage?.key === page.key ? updatedPage : prev.currentPage,
-          loading: false,
-        }));
+      setState((prev) => ({
+        ...prev,
+        pages: prev.pages.map((p) => (p.key === page.key ? updatedPage : p)),
+        currentPage:
+          prev.currentPage?.key === page.key ? updatedPage : prev.currentPage,
+        loading: false,
+      }));
 
-        return updatedPage;
-      } catch (error) {
-        setState((prev) => ({
-          ...prev,
-          loading: false,
-          error:
-            error instanceof Error ? error.message : 'Failed to update page',
-        }));
-        throw error;
-      }
-    },
-    [baseUrl]
-  );
+      return updatedPage;
+    } catch (error) {
+      setState((prev) => ({
+        ...prev,
+        loading: false,
+        error: error instanceof Error ? error.message : 'Failed to update page',
+      }));
+      throw error;
+    }
+  }, []);
 
   const deletePage = useCallback(
-    async (key: string) => {
+    async (hydratedUrl: string, key: string) => {
       try {
         setState((prev) => ({ ...prev, loading: true, error: null }));
-        await deletePageApi(baseUrl, key);
+        await deletePageApi(hydratedUrl, key);
 
         setState((prev) => ({
           ...prev,
@@ -225,7 +221,7 @@ export const usePages = (baseUrl: string) => {
         throw error;
       }
     },
-    [baseUrl]
+    []
   );
 
   // Local actions
@@ -352,28 +348,29 @@ export const usePages = (baseUrl: string) => {
   );
 
   const addComponentToCurrentPage = useCallback(
-    (component: ContentItem, businessUnitKey: string) => {
-      setState((prev) => {
-        if (!prev.currentPage) return prev;
+    async (hydratedUrl: string, componentType: string, rowId: string, cellId: string) => {
+      if (!state.currentPage) return;
+      const newComponent = {
+        type: componentType,
+        key: `page-item-${uuidv4()}`,
+        name: 'New Component',
+        properties: {},
+      } as ContentItem;
+      const components = [...state.currentPage.components, newComponent];
+      const layout = { ...state.currentPage.layout };
+      const row = layout.rows.find((row) => row.id === rowId);
+      if (row) {
+        const cell = row.cells.find((cell) => cell.id === cellId);
+        if (cell) {
+          cell.contentItemKey = newComponent.key;
+        }
+      }
+      const page = { ...state.currentPage, components };
 
-        const components = [...prev.currentPage.components, component];
-        const updatedPage = { ...prev.currentPage, components };
-        const updatedPages = prev.pages.map((p) =>
-          p.key === prev.currentPage!.key ? updatedPage : p
-        );
-
-        // Save to session storage
-        saveToSessionStorage(updatedPages, businessUnitKey);
-
-        return {
-          ...prev,
-          pages: updatedPages,
-          currentPage: updatedPage,
-          unsavedChanges: true,
-        };
-      });
+      const updatedPage = await updatePage(hydratedUrl, page);
+      return updatedPage;
     },
-    [saveToSessionStorage]
+    [saveToSessionStorage, state.currentPage]
   );
 
   const updateComponentInCurrentPage = useCallback(

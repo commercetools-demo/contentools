@@ -78,7 +78,7 @@ export interface PageStates {
 
 export interface GridCell {
   id: string;
-  componentId: string | null;
+  contentItemKey: string | null;
   colSpan: number;
 }
 
