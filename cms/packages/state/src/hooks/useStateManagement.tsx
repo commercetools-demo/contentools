@@ -8,7 +8,6 @@ import {
 } from '@commercetools-demo/contentools-types';
 import {
   getStatesEndpoint,
-  saveDraftEndpoint,
   publishEndpoint,
   revertDraftEndpoint,
 } from '../api';
@@ -16,7 +15,6 @@ import {
 const initialState: StateManagementState = {
   states: {},
   currentState: null,
-  contentType: 'content-items',
   loading: false,
   error: null,
 };
@@ -36,7 +34,7 @@ function determineCurrentState(states: {
   return null;
 }
 
-export const useStateManagement = (baseURL: string) => {
+export const useStateManagement = () => {
   const [state, setState] = useState<StateManagementState>(initialState);
 
   // Actions
@@ -59,7 +57,6 @@ export const useStateManagement = (baseURL: string) => {
         setState((prev) => ({
           ...prev,
           states,
-          contentType,
           currentState: determineCurrentState(states),
           loading: false,
         }));
@@ -71,46 +68,6 @@ export const useStateManagement = (baseURL: string) => {
           loading: false,
           error:
             error instanceof Error ? error.message : 'Failed to fetch states',
-        }));
-        throw error;
-      }
-    },
-    []
-  );
-
-  const saveDraft = useCallback(
-    async (
-      hydratedUrl: string,
-      item: ContentItem | Page,
-      key: string,
-      contentType: 'content-items' | 'pages'
-    ) => {
-      try {
-        setState((prev) => ({ ...prev, loading: true, error: null }));
-        const result = await saveDraftEndpoint<ContentItem | Page>(
-          hydratedUrl,
-          contentType,
-          key,
-          item
-        );
-
-        const states = result.states;
-
-        setState((prev) => ({
-          ...prev,
-          states,
-          contentType,
-          currentState: determineCurrentState(states),
-          loading: false,
-        }));
-
-        return states;
-      } catch (error) {
-        setState((prev) => ({
-          ...prev,
-          loading: false,
-          error:
-            error instanceof Error ? error.message : 'Failed to save draft',
         }));
         throw error;
       }
@@ -141,7 +98,6 @@ export const useStateManagement = (baseURL: string) => {
         setState((prev) => ({
           ...prev,
           states,
-          contentType,
           currentState: determineCurrentState(states),
           loading: false,
         }));
@@ -181,7 +137,6 @@ export const useStateManagement = (baseURL: string) => {
         setState((prev) => ({
           ...prev,
           states,
-          contentType,
           currentState: determineCurrentState(states),
           loading: false,
         }));
@@ -202,90 +157,22 @@ export const useStateManagement = (baseURL: string) => {
     []
   );
 
-  const setContentType = useCallback(
-    (contentType: 'content-items' | 'pages') => {
-      setState((prev) => ({
-        ...prev,
-        contentType,
-      }));
-    },
-    []
-  );
 
   const clearError = useCallback(() => {
     setState((prev) => ({ ...prev, error: null }));
   }, []);
 
-  const clearStates = useCallback(() => {
-    setState((prev) => ({
-      ...prev,
-      states: {},
-      currentState: null,
-    }));
-  }, []);
-
-  // Selectors
-  const hasChanges = useCallback(() => {
-    return state.currentState === 'draft' || state.currentState === 'both';
-  }, [state.currentState]);
-
-  const isPublished = useCallback(() => {
-    return state.currentState === 'published' || state.currentState === 'both';
-  }, [state.currentState]);
-
-  const isDraft = useCallback(() => {
-    return state.currentState === 'draft' || state.currentState === 'both';
-  }, [state.currentState]);
-
-  const getDraftState = useCallback(() => {
-    return state.states.draft || null;
-  }, [state.states]);
-
-  const getPublishedState = useCallback(() => {
-    return state.states.published || null;
-  }, [state.states]);
-
-  const getStateInfo = useCallback(() => {
-    return {
-      currentState: state.currentState,
-      hasChanges: hasChanges(),
-      isPublished: isPublished(),
-      isDraft: isDraft(),
-      draft: getDraftState(),
-      published: getPublishedState(),
-    };
-  }, [
-    state.currentState,
-    hasChanges,
-    isPublished,
-    isDraft,
-    getDraftState,
-    getPublishedState,
-  ]);
-
   return {
     // State
     states: state.states,
     currentState: state.currentState,
-    contentType: state.contentType,
     loading: state.loading,
     error: state.error,
 
     // Actions
     fetchStates,
-    saveDraft,
     publish,
     revertToPublished,
-    setContentType,
     clearError,
-    clearStates,
-
-    // Selectors
-    hasChanges,
-    isPublished,
-    isDraft,
-    getDraftState,
-    getPublishedState,
-    getStateInfo,
   };
 };

@@ -31,8 +31,6 @@ export interface ContentItemState {
 
 export interface VersionState<T> {
   versions: T[];
-  selectedVersion: T | null;
-  contentType: 'content-items' | 'pages';
   loading: boolean;
   error: string | null;
 }
@@ -43,7 +41,6 @@ export interface StateManagementState {
     published?: ContentItem | Page;
   };
   currentState: 'draft' | 'published' | 'both' | null;
-  contentType: 'content-items' | 'pages';
   loading: boolean;
   error: string | null;
 }
