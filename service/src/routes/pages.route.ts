@@ -135,7 +135,6 @@ pagesRouter.delete(
     try {
       const { businessUnitKey, key, rowId } = req.params;
       const object = await PageController.removeRowFromPage(businessUnitKey, key, rowId);
-      console.log('object >>>>', object);
       res.status(200).json(object);
     } catch (error) {
       logger.error(

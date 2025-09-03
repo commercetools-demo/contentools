@@ -118,7 +118,7 @@ export class CustomObjectController {
   deleteCustomObject = async (key: string) => {
     try {
       const apiRoot = createApiRoot();
-      await apiRoot
+      return apiRoot
         .customObjects()
         .withContainerAndKey({ container: this.container, key })
         .delete()

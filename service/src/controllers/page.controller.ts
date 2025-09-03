@@ -86,7 +86,6 @@ const createEmptyGridRow = (): GridRow => {
 export const resolveContentItemsInPageDatasource = async (
   page: Page['value'] | ResolvedPage['value']
 ): Promise<ResolvedPage['value']> => {
-
   const allComponents = await Promise.all(
     page.components.map(async (component) => {
       if (!component.obj) {
@@ -162,7 +161,9 @@ export const getPageWithStates = async (
     if (pageStates[0].states.draft) {
       return resolveContentItemsInPageDatasource(pageStates[0].states.draft);
     } else if (pageStates[0].states.published) {
-      return resolveContentItemsInPageDatasource(pageStates[0].states.published);
+      return resolveContentItemsInPageDatasource(
+        pageStates[0].states.published
+      );
     }
   }
 
@@ -316,13 +317,17 @@ export const deletePage = async (
 
   const page = await pageController.getCustomObject(key);
 
-  await Promise.all(
-    page.value.components
-      .filter((component: any) => !!component)
-      .map(async (component: ContentItemReference) => {
-        return pageItemsController.deleteCustomObjectById(component.id);
-      })
-  );
+  try {
+    await Promise.all(
+      page.value.components
+        .filter((component: any) => !!component)
+        .map(async (component: ContentItemReference) => {
+          return pageItemsController.deleteCustomObjectById(component.id);
+        })
+    );
+  } catch (error) {
+    console.warn('Error deleting content items', error);
+  }
   await pageController.deleteCustomObject(key);
   await PageStateController.deleteStates(businessUnitKey, key);
   await PageVersionController.deleteVersions(businessUnitKey, key);
@@ -379,7 +384,6 @@ export const addContentItemToPage = async (
     },
   };
 
-
   const updatedPage = await updatePage(businessUnitKey, pageKey, newPage.value);
 
   return updatedPage;
@@ -397,13 +401,35 @@ export const removeRowFromPage = async (
   if (!row) {
     throw new CustomError(400, 'Row not found');
   }
-  const contentItems = row.cells.map((cell: GridCell) => cell.contentItemKey).filter((contentItemKey: string) => !!contentItemKey);
-  const contentItemsController = new CustomObjectController(PAGE_ITEMS_CONTAINER);
-  await Promise.all(contentItems.map((contentItemKey: string) => contentItemsController.deleteCustomObject(contentItemKey)));
+  const contentItems = row.cells
+    .map((cell: GridCell) => cell.contentItemKey)
+    .filter((contentItemKey: string) => !!contentItemKey);
+  const contentItemsController = new CustomObjectController(
+    PAGE_ITEMS_CONTAINER
+  );
+  const deletedContentItems = await Promise.all(
+    contentItems.map((contentItemKey: string) =>
+      contentItemsController
+        .deleteCustomObject(contentItemKey)
+        .then((result) => result.body)
+    )
+  );
+
   newLayout.rows = newLayout.rows.filter((row: GridRow) => row.id !== rowId);
+  const newComponents = page.value.components.filter(
+    (component: ContentItemReference) =>
+      !deletedContentItems.some(
+        (deletedContentItem: ContentItemReference) =>
+          deletedContentItem.id === component.id
+      )
+  );
   const newPage = {
     ...page,
-    value: { ...page.value, layout: newLayout },
+    value: {
+      ...page.value,
+      layout: newLayout,
+      components: newComponents,
+    },
   };
   const updatedPage = await updatePage(businessUnitKey, pageKey, newPage.value);
   return updatedPage;
