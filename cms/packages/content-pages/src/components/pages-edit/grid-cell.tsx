@@ -11,9 +11,6 @@ const NUMBER_OF_COLUMNS = 12;
 interface GridCellProps {
   cellId: string;
   rowId: string;
-  baseURL: string;
-  businessUnitKey: string;
-  locale: string;
   contentItem: ContentItem | null;
   colSpan: number;
   selected: boolean;
@@ -23,6 +20,7 @@ interface GridCellProps {
   onIncreaseWidth: (cellId: string) => void;
   onDecreaseWidth: (cellId: string) => void;
   activeComponentType?: any;
+  onComponentToCurrentPage: (cellId: string) => Promise<void>;
 }
 
 const CellContainer = styled.div<{ colWidth: number; selected: boolean; readonly?: boolean }>`
@@ -111,10 +109,6 @@ const EmptyText = styled.span`
 
 const GridCell: React.FC<GridCellProps> = ({
   cellId,
-  rowId,
-  baseURL,
-  businessUnitKey,
-  locale,
   colSpan,
   contentItem,
   selected,
@@ -123,12 +117,10 @@ const GridCell: React.FC<GridCellProps> = ({
   onCellClick,
   onIncreaseWidth,
   onDecreaseWidth,
-  activeComponentType,
+  onComponentToCurrentPage,
 }) => {
-  const { addComponentToCurrentPage } = useStatePages()!;
   const colWidth = (colSpan / NUMBER_OF_COLUMNS) * 100;
   const hasComponent = !!contentItem;
-  const hydratedUrl = `${baseURL}/${businessUnitKey}`;
 
   const handleClick = () => {
     if (!readonly) {
@@ -147,7 +139,7 @@ const GridCell: React.FC<GridCellProps> = ({
   };
 
   const handleDragOver = (e: React.DragEvent) => {
-    if (readonly || hasComponent || !activeComponentType) return;
+    if (readonly || hasComponent) return;
     
     e.preventDefault();
     e.stopPropagation();
@@ -161,14 +153,14 @@ const GridCell: React.FC<GridCellProps> = ({
   };
 
   const handleDrop = async (e: React.DragEvent) => {
-    if (readonly || hasComponent || !activeComponentType) return;
+    if (readonly || hasComponent) return;
     
     e.preventDefault();
     e.stopPropagation();
     e.currentTarget.classList.remove('drag-over');
    
     // add the new component to the page
-    await addComponentToCurrentPage(hydratedUrl, activeComponentType, rowId, cellId);
+    await onComponentToCurrentPage(cellId);
   };
 
   const isIncreaseDisabled = () => {
@@ -202,7 +194,6 @@ const GridCell: React.FC<GridCellProps> = ({
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
-      data-row-id={rowId}
       data-cell-id={cellId}
       data-component-id={contentItem?.id || ''}
     >
@@ -210,8 +201,6 @@ const GridCell: React.FC<GridCellProps> = ({
         <ComponentCard>
           <Spacings.Stack scale="s">
             <Text.Subheadline as="h4">{contentItem?.name}</Text.Subheadline>
-            <Text.Detail tone="secondary">Type: {contentItem?.type}</Text.Detail>
-            
           </Spacings.Stack>
         </ComponentCard>
       ) : !readonly ? (

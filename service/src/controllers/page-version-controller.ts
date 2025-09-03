@@ -1,28 +1,28 @@
 import { v4 as uuidv4 } from 'uuid';
 import { CustomObjectController } from './custom-object.controller';
-import { CONTENT_ITEM_VERSION_CONTAINER, MAX_VERSIONS } from '../constants';
+import { PAGE_VERSION_CONTAINER, MAX_VERSIONS, CONTENT_PAGE_CONTAINER } from '../constants';
 import CustomError from '../errors/custom.error';
 
-export interface ContentItemVersion {
+export interface PageVersion {
   key: string;
   businessUnitKey: string;
   versions: any[];
 }
 
-export const getContentVersions = async (
+export const getPageVersions = async (
   businessUnitKey: string,
   key: string
-): Promise<ContentItemVersion> => {
-  const contentVersionController = new CustomObjectController(
-    CONTENT_ITEM_VERSION_CONTAINER
+): Promise<PageVersion> => {
+  const pageVersionController = new CustomObjectController(
+    PAGE_VERSION_CONTAINER
   );
   try {
     const versionKey = `${businessUnitKey}_${key}`;
 
-    const contentVersions = await contentVersionController.getCustomObject(
+    const pageVersions = await pageVersionController.getCustomObject(
       versionKey
     );
-    return contentVersions.value;
+    return pageVersions.value;
   } catch (error) {
     if ((error as any).statusCode === 404) {
       return {
@@ -36,23 +36,13 @@ export const getContentVersions = async (
   }
 };
 
-// TODO: Remove
-export const getContentVersion = async (
-  businessUnitKey: string,
-  key: string,
-  versionId: string
-): Promise<ContentItemVersion> => {
-  const versions = await getContentVersions(businessUnitKey, key);
-  return versions.versions.find((version) => version.id === versionId);
-};
-
 export const createContentVersion = async (
   businessUnitKey: string,
   key: string,
   value: any
-): Promise<ContentItemVersion> => {
+): Promise<PageVersion> => {
   const versionKey = `${businessUnitKey}_${key}`;
-  const existingVersions = await getContentVersions(businessUnitKey, key);
+  const existingVersions = await getPageVersions(businessUnitKey, key);
 
   const newVersion = {
     ...value,
@@ -62,8 +52,8 @@ export const createContentVersion = async (
 
   existingVersions.versions.unshift(newVersion);
 
-  const contentVersionController = new CustomObjectController(
-    CONTENT_ITEM_VERSION_CONTAINER
+  const pageVersionController = new CustomObjectController(
+    PAGE_VERSION_CONTAINER
   );
 
   if (existingVersions.versions.length > MAX_VERSIONS) {
@@ -72,11 +62,11 @@ export const createContentVersion = async (
       MAX_VERSIONS
     );
   }
-  const contentVersion = await contentVersionController.updateCustomObject(
+  const pageVersion = await pageVersionController.updateCustomObject(
     versionKey,
     existingVersions
   );
-  return contentVersion.value;
+  return pageVersion.value;
 };
 
 export const deleteVersions = async (
@@ -84,8 +74,8 @@ export const deleteVersions = async (
   key: string
 ): Promise<void> => {
   const versionKey = `${businessUnitKey}_${key}`;
-  const contentVersionController = new CustomObjectController(
-    CONTENT_ITEM_VERSION_CONTAINER
+  const pageVersionController = new CustomObjectController(
+    PAGE_VERSION_CONTAINER
   );
-  await contentVersionController.deleteCustomObject(versionKey);
+  await pageVersionController.deleteCustomObject(versionKey);
 };

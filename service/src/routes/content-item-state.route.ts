@@ -41,24 +41,6 @@ contentItemStateRouter.get(
   }
 );
 
-// Save draft state
-contentItemStateRouter.put(
-  '/:businessUnitKey/content-items/:key/states/draft',
-  (async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const state = await ContentStateController.createDraftState(
-        req.params.businessUnitKey,
-        req.params.key,
-        req.body
-      );
-      res.json(state);
-    } catch (error) {
-      logger.error('Failed to save draft state:', error);
-      next(error);
-    }
-  }) as RequestHandler
-);
-
 // Publish state (move draft to published)
 contentItemStateRouter.put(
   '/:businessUnitKey/content-items/:key/states/published',

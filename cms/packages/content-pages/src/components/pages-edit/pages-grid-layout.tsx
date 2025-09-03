@@ -1,28 +1,14 @@
-import React, { useState, useCallback } from 'react';
 import { Page } from '@commercetools-demo/contentools-types';
 import Text from '@commercetools-uikit/text';
+import React, { useCallback, useState } from 'react';
 import styled from 'styled-components';
 import GridRow from './grid-row';
-
-/**
- * Refactored PagesGridLayout component that renders a custom grid system
- * instead of react-grid-layout. The grid is structured as:
- * 
- * - Page contains layout with rows
- * - Each row contains cells with configurable column spans
- * - Each cell can contain a component or be empty (droppable)
- * - Cells are expandable/shrinkable with +/- controls
- * - Follows 12-column grid system from constants
- */
 
 interface Props {
   page: Page;
   selectedContentItemKey: string | null;
   onComponentSelect: (componentId: string | null) => void;
-  baseURL: string;
-  businessUnitKey: string;
-  locale: string;
-  activeComponentType?: string | null;
+  onComponentToCurrentPage: (rowId: string, cellId: string) => Promise<void>;
 }
 
 const GridContainer = styled.div`
@@ -40,37 +26,29 @@ const EmptyGridMessage = styled.div`
   margin: 40px 0;
 `;
 
-const GridControls = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 16px;
-  padding: 16px;
-  background: white;
-  border-radius: 4px;
-  border: 1px solid #e0e0e0;
-`;
-
 const PagesGridLayout: React.FC<Props> = ({
   page,
   selectedContentItemKey,
   onComponentSelect,
-  baseURL,
-  businessUnitKey,
-  locale,
-  activeComponentType = null,
+  onComponentToCurrentPage,
 }) => {
-  const [selectedCell, setSelectedCell] = useState<{ rowId: string; cellId: string } | null>(null);
+  const [selectedCell, setSelectedCell] = useState<{
+    rowId: string;
+    cellId: string;
+  } | null>(null);
 
   // Sync selectedCell with selectedComponentId
-  const handleCellClick = useCallback((rowId: string, cellId: string, contentItemKey?: string) => {
-    setSelectedCell({ rowId, cellId });
-    if (contentItemKey) {
-      onComponentSelect(contentItemKey);
-    } else {
-      onComponentSelect(null);
-    }
-  }, [onComponentSelect]);
+  const handleCellClick = useCallback(
+    (rowId: string, cellId: string, contentItemKey?: string) => {
+      setSelectedCell({ rowId, cellId });
+      if (contentItemKey) {
+        onComponentSelect(contentItemKey);
+      } else {
+        onComponentSelect(null);
+      }
+    },
+    [onComponentSelect]
+  );
 
   // Update selectedCell when selectedComponentId changes externally
   React.useEffect(() => {
@@ -104,19 +82,8 @@ const PagesGridLayout: React.FC<Props> = ({
     console.log('Decrease width:', { rowId, cellId });
   }, []);
 
-
-
   return (
     <>
-      <GridControls>
-        <div>
-          <Text.Subheadline as="h4">Page Layout</Text.Subheadline>
-          <Text.Detail tone="secondary">
-            Rows: {page.layout.rows.length} | Components: {page.components.length}
-          </Text.Detail>
-        </div>
-      </GridControls>
-
       {page.layout.rows.length === 0 ? (
         <EmptyGridMessage>
           <Text.Subheadline as="h4">No layout rows found</Text.Subheadline>
@@ -130,9 +97,6 @@ const PagesGridLayout: React.FC<Props> = ({
             <GridRow
               key={row.id}
               row={row}
-              baseURL={baseURL}
-              businessUnitKey={businessUnitKey}
-              locale={locale}
               rowIndex={index}
               components={page.components}
               selectedCell={selectedCell}
@@ -140,7 +104,7 @@ const PagesGridLayout: React.FC<Props> = ({
               onRemoveRow={handleRemoveRow}
               onIncreaseWidth={handleIncreaseWidth}
               onDecreaseWidth={handleDecreaseWidth}
-              activeComponentType={activeComponentType}
+              onComponentToCurrentPage={onComponentToCurrentPage}
             />
           ))}
         </GridContainer>

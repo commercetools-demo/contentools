@@ -1,0 +1,401 @@
+import { v4 as uuidv4 } from 'uuid';
+import {
+  CONTENT_PAGE_CONTAINER,
+  NUMBER_OF_COLUMNS,
+  PAGE_ITEMS_CONTAINER,
+} from '../constants';
+import * as PageStateController from './page-state-controller';
+import * as PageVersionController from './page-version-controller';
+import { CustomObjectController } from './custom-object.controller';
+import {
+  ContentItem,
+  resolveContentItemDatasource,
+} from './content-item.controller';
+import CustomError from '../errors/custom.error';
+import { mapPageContentItems } from '../mappers/page';
+
+export interface ContentItemReference {
+  id: string;
+  key?: string;
+  typeId: string;
+  obj?: ContentItem;
+}
+
+export interface GridCell {
+  id: string;
+  contentItemKey: string | null;
+  colSpan: number;
+}
+
+export interface GridRow {
+  id: string;
+  cells: GridCell[];
+}
+
+export interface Layout {
+  rows: GridRow[];
+}
+
+export interface Page {
+  id: string;
+  version: number;
+  container: string;
+  key: string;
+  value: {
+    key: string;
+    name: string;
+    route: string;
+    layout: Layout;
+    components: ContentItemReference[];
+  };
+  [key: string]: any;
+}
+
+export interface ResolvedPage {
+  id: string;
+  version: number;
+  container: string;
+  key: string;
+  value: {
+    key: string;
+    name: string;
+    route: string;
+    layout: Layout;
+    components: ContentItem[];
+  };
+  [key: string]: any;
+}
+
+const createEmptyGridRow = (): GridRow => {
+  const cells: GridCell[] = [];
+
+  for (let i = 0; i < NUMBER_OF_COLUMNS; i++) {
+    cells.push({
+      id: uuidv4(),
+      contentItemKey: null,
+      colSpan: 1,
+    });
+  }
+
+  return {
+    id: uuidv4(),
+    cells,
+  };
+};
+
+export const resolveContentItemsInPageDatasource = async (
+  page: Page['value'] | ResolvedPage['value']
+): Promise<ResolvedPage['value']> => {
+
+  console.log('page >>>>', JSON.stringify(page, null, 2));
+  const allComponents = await Promise.all(
+    page.components.map(async (component) => {
+      if (!component.obj) {
+        return component.obj;
+      }
+      const contentItem = await resolveContentItemDatasource(
+        component.obj.value
+      );
+      return contentItem;
+    })
+  );
+  return {
+    ...page,
+    components: allComponents,
+  };
+};
+
+export const getPages = async (
+  businessUnitKey: string,
+  criteria?: string
+): Promise<Page[]> => {
+  const pageController = new CustomObjectController(CONTENT_PAGE_CONTAINER);
+  let contentItemWhereClause = `value(businessUnitKey = "${businessUnitKey}")`;
+  if (criteria) {
+    contentItemWhereClause += ` AND ${criteria}`;
+  }
+  const contentItems = await pageController
+    .getCustomObjects(contentItemWhereClause)
+    .then((items) => {
+      return items.map((item) => ({
+        ...item,
+        value: {
+          ...item.value,
+          id: item.id,
+        },
+      }));
+    });
+
+  const whereClause = contentItems
+    ?.map(
+      (item) =>
+        `(key = "${item.key}" AND businessUnitKey = "${businessUnitKey}")`
+    )
+    .join(' OR ');
+  const pageStates = whereClause
+    ? await PageStateController.getPageStatesWithWhereClause(whereClause)
+    : [];
+  const pageWithStates = contentItems.map((item) => {
+    const states = pageStates.find((state) => state.key === item.key);
+    return {
+      ...item,
+      states: states?.states || {},
+    };
+  });
+
+  return pageWithStates;
+};
+
+export const getPageWithStates = async (
+  businessUnitKey: string,
+  key: string
+): Promise<ResolvedPage['value']> => {
+  const pageController = new CustomObjectController(CONTENT_PAGE_CONTAINER);
+  const page = await pageController.getCustomObject(key, [
+    'value.components[*]',
+  ]);
+  const item = page.value;
+  const pageStates = await PageStateController.getPageStatesWithWhereClause(
+    `key = "${key}" AND businessUnitKey = "${businessUnitKey}"`,
+    ['value.states.draft.components[*]', 'value.states.published.components[*]']
+  );
+  if (pageStates.length > 0) {
+    if (pageStates[0].states.draft) {
+      return resolveContentItemsInPageDatasource(pageStates[0].states.draft);
+    } else if (pageStates[0].states.published) {
+      return resolveContentItemsInPageDatasource(pageStates[0].states.published);
+    }
+  }
+
+  return resolveContentItemsInPageDatasource(item);
+};
+
+export const getPublishedContentItem = async (
+  businessUnitKey: string,
+  key: string
+): Promise<ResolvedPage['value'] | undefined> => {
+  const contentStates = await PageStateController.getPageStatesWithWhereClause(
+    `key = "${key}" AND businessUnitKey = "${businessUnitKey}"`,
+    ['value.components[*]']
+  );
+
+  if (contentStates.length > 0) {
+    if (contentStates[0].states.published) {
+      return resolveContentItemsInPageDatasource(
+        contentStates[0].states.published
+      );
+    }
+  }
+
+  return undefined;
+};
+
+export const queryPublishedPage = async (
+  businessUnitKey: string,
+  query: string
+): Promise<ResolvedPage['value'] | undefined> => {
+  const pageController = new CustomObjectController(CONTENT_PAGE_CONTAINER);
+
+  const pages = await pageController.getCustomObjects(
+    `value(${query} AND businessUnitKey = "${businessUnitKey}")`,
+    ['value.components[*]']
+  );
+
+  if (pages.length === 0) {
+    return undefined;
+  }
+
+  const contentStates = await PageStateController.getPageStatesWithWhereClause(
+    `key = "${pages[0].key}" AND businessUnitKey = "${businessUnitKey}"`,
+    ['value.components[*]']
+  );
+
+  if (contentStates.length > 0) {
+    if (contentStates[0].states.published) {
+      return resolveContentItemsInPageDatasource(
+        contentStates[0].states.published
+      );
+    }
+  }
+
+  return resolveContentItemsInPageDatasource(pages[0].value);
+};
+
+export const queryPage = async (
+  businessUnitKey: string,
+  query: string
+): Promise<ResolvedPage['value'] | undefined> => {
+  const pageController = new CustomObjectController(CONTENT_PAGE_CONTAINER);
+
+  const pages = await pageController.getCustomObjects(
+    `value(${query} AND businessUnitKey = "${businessUnitKey}")`
+  );
+
+  if (pages.length === 0) {
+    return undefined;
+  }
+
+  const contentStates = await PageStateController.getPageStatesWithWhereClause(
+    `key = "${pages[0].key}" AND businessUnitKey = "${businessUnitKey}"`,
+    ['value.components[*]']
+  );
+
+  if (contentStates.length > 0) {
+    if (contentStates[0].states.draft) {
+      return resolveContentItemsInPageDatasource(contentStates[0].states.draft);
+    }
+  }
+
+  return resolveContentItemsInPageDatasource(pages[0].value);
+};
+
+/**
+ * Get a page by key and resolve any datasource properties
+ * @param key The content item key
+ * @returns The page with resolved datasource properties
+ */
+export const getPage = async (key: string): Promise<ResolvedPage> => {
+  const pageController = new CustomObjectController(CONTENT_PAGE_CONTAINER);
+  const page = await pageController.getCustomObject(key, [
+    'value.components[*]',
+  ]);
+  return mapPageContentItems(page);
+};
+
+export const createPage = async (
+  businessUnitKey: string,
+  item: Page['value']
+): Promise<Page> => {
+  const key = `page-${uuidv4()}`;
+  const pageController = new CustomObjectController(CONTENT_PAGE_CONTAINER);
+
+  const page = {
+    ...item,
+    businessUnitKey,
+    key,
+    layout: {
+      rows: [createEmptyGridRow()],
+    },
+    components: [],
+  };
+
+  const object = await pageController.createCustomObject(key, page);
+
+  await PageStateController.createDraftState(businessUnitKey, key, page);
+  await PageVersionController.createContentVersion(businessUnitKey, key, page);
+  return object;
+};
+
+export const updatePage = async (
+  businessUnitKey: string,
+  key: string,
+  item: Page['value']
+): Promise<ResolvedPage> => {
+  const contentItemController = new CustomObjectController(
+    CONTENT_PAGE_CONTAINER
+  );
+  const page = {
+    ...item,
+    businessUnitKey,
+  };
+
+  const object = await contentItemController.updateCustomObject(key, page, [
+    'value.components[*]',
+  ]);
+  await PageStateController.createDraftState(businessUnitKey, key, page);
+  await PageVersionController.createContentVersion(businessUnitKey, key, page);
+  return mapPageContentItems(object);
+};
+
+export const deletePage = async (
+  businessUnitKey: string,
+  key: string
+): Promise<void> => {
+  const pageController = new CustomObjectController(CONTENT_PAGE_CONTAINER);
+
+  const pageItemsController = new CustomObjectController(PAGE_ITEMS_CONTAINER);
+
+  const page = await pageController.getCustomObject(key);
+
+  console.log('page >>>>', page);
+  console.log('page.value >>>>', page.value.components);
+
+  await Promise.all(
+    page.value.components
+      .filter((component: any) => !!component)
+      .map(async (component: ContentItemReference) => {
+        return pageItemsController.deleteCustomObjectById(component.id);
+      })
+  );
+  await pageController.deleteCustomObject(key);
+  await PageStateController.deleteStates(businessUnitKey, key);
+  await PageVersionController.deleteVersions(businessUnitKey, key);
+};
+
+export const addRowToPage = async (
+  businessUnitKey: string,
+  pageKey: string
+): Promise<void> => {
+  const pageController = new CustomObjectController(CONTENT_PAGE_CONTAINER);
+};
+
+// removeRowFromCurrentPage
+
+// remove content item
+
+export const addContentItemToPage = async (
+  businessUnitKey: string,
+  pageKey: string,
+  contentItemKey: string,
+  rowId: string,
+  cellId: string
+): Promise<ResolvedPage> => {
+  const pageController = new CustomObjectController(CONTENT_PAGE_CONTAINER);
+
+  const page = await pageController.getCustomObject(pageKey);
+
+  console.log('page >>>>', page);
+  const newLayout = JSON.parse(JSON.stringify(page.value.layout));
+  const row = newLayout.rows.find((row: GridRow) => row.id === rowId);
+  if (!row) {
+    throw new CustomError(400, 'Row not found');
+  }
+  const cell = row.cells.find((cell: GridCell) => cell.id === cellId);
+  if (!cell) {
+    throw new CustomError(400, 'Cell not found');
+  }
+  const contentItemController = new CustomObjectController(
+    PAGE_ITEMS_CONTAINER
+  );
+  const key = `page-item-${uuidv4()}`;
+
+  const item = {
+    type: contentItemKey,
+    key,
+    name: 'New Component',
+    businessUnitKey,
+    properties: {},
+  };
+
+  const contentItem = await contentItemController.createCustomObject(key, item);
+
+  cell.contentItemKey = contentItem.key;
+
+  const newPage = {
+    ...page,
+    value: {
+      ...page.value,
+      components: [
+        ...page.value.components,
+        { id: contentItem.id, typeId: 'key-value-document' },
+      ] as ContentItemReference[],
+      layout: newLayout,
+    },
+  };
+
+  console.log('newPage >>>>', newPage);
+
+  const updatedPage = await updatePage(businessUnitKey, pageKey, newPage.value);
+
+  return updatedPage;
+};

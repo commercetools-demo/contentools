@@ -1,18 +1,15 @@
 import { Router, RequestHandler } from 'express';
 import { logger } from '../utils/logger.utils';
-import { CustomObjectController } from '../controllers/custom-object.controller';
-import { v4 as uuidv4 } from 'uuid';
+import * as PageController from '../controllers/page.controller';
+import CustomError from '../errors/custom.error';
 
 const pagesRouter = Router();
-const MAIN_CONTAINER = process.env.MAIN_CONTAINER || 'default';
-const businessUnitController = new CustomObjectController(MAIN_CONTAINER);
 
 pagesRouter.get('/:businessUnitKey/pages', async (req, res, next) => {
   try {
     const { businessUnitKey } = req.params;
-    const objects = await businessUnitController.getCustomObjects(
-      `value(businessUnitKey = "${businessUnitKey}")`
-    );
+
+    const objects = await PageController.getPages(businessUnitKey);
     res.json(objects);
   } catch (error) {
     logger.error('Failed to get custom objects:', error);
@@ -22,8 +19,11 @@ pagesRouter.get('/:businessUnitKey/pages', async (req, res, next) => {
 
 pagesRouter.get('/:businessUnitKey/pages/:key', async (req, res, next) => {
   try {
-    const { key } = req.params;
-    const object = await businessUnitController.getCustomObject(key);
+    const { businessUnitKey, key } = req.params;
+    const object = await PageController.getPageWithStates(businessUnitKey, key);
+    if (!object) {
+      throw new CustomError(404, 'Page not found');
+    }
     res.json(object);
   } catch (error) {
     logger.error(
@@ -38,19 +38,13 @@ pagesRouter.post('/:businessUnitKey/pages', (async (req, res, next) => {
   try {
     const { businessUnitKey } = req.params;
     const { value } = req.body;
-    const key = `page-${uuidv4()}`;
 
     if (!value) {
-      return res
-        .status(400)
-        .json({ error: 'Value is required in the request body' });
+      throw new CustomError(400, 'Value is required in the request body');
     }
 
-    const object = await businessUnitController.createCustomObject(key, {
-      ...value,
-      key,
-      businessUnitKey,
-    });
+    const object = await PageController.createPage(businessUnitKey, value);
+
     res.status(201).json(object);
   } catch (error) {
     logger.error(
@@ -72,10 +66,7 @@ pagesRouter.put('/:businessUnitKey/pages/:key', (async (req, res, next) => {
         .json({ error: 'Value is required in the request body' });
     }
 
-    const object = await businessUnitController.updateCustomObject(key, {
-      ...value,
-      businessUnitKey,
-    });
+    const object = await PageController.updatePage(businessUnitKey, key, value);
     res.json(object);
   } catch (error) {
     logger.error(
@@ -88,8 +79,8 @@ pagesRouter.put('/:businessUnitKey/pages/:key', (async (req, res, next) => {
 
 pagesRouter.delete('/:businessUnitKey/pages/:key', async (req, res, next) => {
   try {
-    const { key } = req.params;
-    await businessUnitController.deleteCustomObject(key);
+    const { businessUnitKey, key } = req.params;
+    await PageController.deletePage(businessUnitKey, key);
     res.status(204).send();
   } catch (error) {
     logger.error(
@@ -99,5 +90,21 @@ pagesRouter.delete('/:businessUnitKey/pages/:key', async (req, res, next) => {
     next(error);
   }
 });
+
+pagesRouter.post('/:businessUnitKey/pages/:key/components', async (req, res, next) => {
+  try {
+    const { businessUnitKey, key } = req.params;
+    const { componentType, rowId, cellId } = req.body;
+    const object = await PageController.addContentItemToPage(businessUnitKey, key, componentType, rowId, cellId);
+    res.status(201).json(object);
+  } catch (error) {
+    logger.error(
+      `Failed to add component to page with key ${req.params.key}:`,
+      error
+    );
+    next(error);
+  }
+});
+
 
 export default pagesRouter;

@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { ContentItem } from '@commercetools-demo/contentools-types';
 import styled from 'styled-components';
 import GridCell from './grid-cell';
+import IconButton from '@commercetools-uikit/icon-button';
+import { BinLinearIcon } from '@commercetools-uikit/icons';
 
 interface GridCellData {
   id: string;
@@ -16,9 +18,6 @@ interface GridRowData {
 
 interface GridRowProps {
   row: GridRowData;
-  baseURL: string;
-  businessUnitKey: string;
-  locale: string;
   rowIndex: number;
   components: ContentItem[];
   selectedCell: { rowId: string; cellId: string } | null;
@@ -27,7 +26,7 @@ interface GridRowProps {
   onRemoveRow: (rowId: string) => void;
   onIncreaseWidth: (rowId: string, cellId: string) => void;
   onDecreaseWidth: (rowId: string, cellId: string) => void;
-  activeComponentType?: any;
+  onComponentToCurrentPage: (rowId: string, cellId: string) => Promise<void>;
 }
 
 const RowContent = styled.div`
@@ -36,52 +35,34 @@ const RowContent = styled.div`
   overflow-x: auto;
   display: flex;
   position: relative;
-  gap: 15px;
+  gap: 5px;
 `;
 
 const RowHeader = styled.div`
-  background: rgba(0, 0, 0, 0.05);
-  padding: 5px 10px;
   font-size: 12px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
 `;
 
-const RemoveButton = styled.button`
-  background: none;
-  border: none;
-  color: #e74c3c;
-  cursor: pointer;
-  font-size: 16px;
-  padding: 4px 8px;
-  border-radius: 4px;
-  
-  &:hover {
-    background: rgba(231, 76, 60, 0.1);
-  }
-`;
+
 
 const GridRow: React.FC<GridRowProps> = ({
   row,
-  baseURL,
-  businessUnitKey,
-  locale,
   rowIndex,
   components,
   selectedCell,
   readonly = false,
+  onComponentToCurrentPage,
   onCellClick,
   onRemoveRow,
   onIncreaseWidth,
   onDecreaseWidth,
-  activeComponentType,
 }) => {
-  const getComponentForCell = (contentItemKey: string | null): ContentItem | undefined => {
+  const getComponentForCell = useCallback((contentItemKey: string | null): ContentItem | undefined => {
     if (!contentItemKey) return undefined;
-    return components.find(c => c.key === contentItemKey);
-  };
+    return components.find(c => c?.key === contentItemKey);
+  }, [components, row]);
 
   const isSelected = (cellId: string): boolean => {
     return !!(
@@ -109,18 +90,22 @@ const GridRow: React.FC<GridRowProps> = ({
     onDecreaseWidth(row.id, cellId);
   };
 
+  const handleComponentToCurrentPage = (cellId: string) => {
+    return onComponentToCurrentPage(row.id, cellId);
+  };
+
 
   return (
     <div data-row-id={row.id}>
       {!readonly && (
         <RowHeader>
           <span>Row {rowIndex + 1}</span>
-          <RemoveButton 
+          <IconButton 
             onClick={handleRemoveRow} 
             title="Remove row"
-          >
-            ✕
-          </RemoveButton>
+            label="Remove row"
+            icon={<BinLinearIcon  color='primary'  size='small'/>}
+           />
         </RowHeader>
       )}
       
@@ -133,9 +118,6 @@ const GridRow: React.FC<GridRowProps> = ({
               key={cell.id}
               cellId={cell.id}
               rowId={row.id}
-              baseURL={baseURL}
-              businessUnitKey={businessUnitKey}
-              locale={locale}
               colSpan={cell.colSpan}
               contentItem={contentItem ?? null}
               selected={isSelected(cell.id)}
@@ -144,7 +126,7 @@ const GridRow: React.FC<GridRowProps> = ({
               onCellClick={handleCellClick}
               onIncreaseWidth={handleIncreaseWidth}
               onDecreaseWidth={handleDecreaseWidth}
-              activeComponentType={activeComponentType}
+              onComponentToCurrentPage={handleComponentToCurrentPage}
             />
           );
         })}

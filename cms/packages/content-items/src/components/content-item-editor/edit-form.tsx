@@ -8,6 +8,7 @@ import {
   ContentItem,
   ContentItemVersionInfo,
 } from '@commercetools-demo/contentools-types';
+import VersionHistorySidebar from '@commercetools-demo/contentools-version-history';
 import {
   Modal,
   useModalState,
@@ -17,7 +18,6 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import ContentItemActions from './content-item-actions';
-import VersionHistorySidebar from './version-history-sidebar';
 import PropertyEditorPreview from '../property-editor-preview';
 
 const StyledRowDiv = styled.div`

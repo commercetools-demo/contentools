@@ -6,15 +6,12 @@ import {
   RequestHandler,
 } from 'express';
 import { logger } from '../utils/logger.utils';
-import { CustomObjectController } from '../controllers/custom-object.controller';
+import * as PageStateController from '../controllers/page-state-controller';
 import CustomError from '../errors/custom.error';
 
 const pageStateRouter = Router();
-export const PAGE_STATE_CONTAINER =
-  process.env.PAGE_STATE_CONTAINER || 'page-state';
-const stateController = new CustomObjectController(PAGE_STATE_CONTAINER);
 
-// Get states for a page
+// Get states for a content item
 pageStateRouter.get(
   '/:businessUnitKey/pages/:key/states',
   async (req: Request, res: Response, next: NextFunction) => {
@@ -23,8 +20,8 @@ pageStateRouter.get(
       const stateKey = `${businessUnitKey}_${key}`;
 
       try {
-        const object = await stateController.getCustomObject(stateKey);
-        res.json(object.value);
+        const object = await PageStateController.getState(stateKey);
+        res.json(object);
       } catch (error) {
         // If not found, return empty states object
         if ((error as any).statusCode === 404) {
@@ -34,9 +31,7 @@ pageStateRouter.get(
             states: {},
           });
         } else {
-          const statusCode = (error as any).statusCode || 500;
-          const message = (error as any).message || 'Internal server error';
-          throw new CustomError(statusCode, message);
+          throw new CustomError(500, 'Failed to get states');
         }
       }
     } catch (error) {
@@ -46,145 +41,46 @@ pageStateRouter.get(
   }
 );
 
-// Save draft state
-pageStateRouter.put('/:businessUnitKey/pages/:key/states/draft', (async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const { businessUnitKey, key } = req.params;
-    const stateKey = `${businessUnitKey}_${key}`;
-    const { value } = req.body;
-
-    if (!value) {
-      return res
-        .status(400)
-        .json({ error: 'Value is required in the request body' });
-    }
-
-    let existingStates;
-    try {
-      const existingObject = await stateController.getCustomObject(stateKey);
-      existingStates = existingObject.value;
-    } catch (error) {
-      // Create if not exists
-      if ((error as any).statusCode === 404) {
-        existingStates = {
-          key,
-          businessUnitKey,
-          states: {},
-        };
-      } else {
-        const statusCode = (error as any).statusCode || 500;
-        const message = (error as any).message || 'Internal server error';
-        throw new CustomError(statusCode, message);
-      }
-    }
-
-    // Update draft state
-    existingStates.states.draft = value;
-
-    const object = await stateController.updateCustomObject(
-      stateKey,
-      existingStates
-    );
-    res.json(object.value);
-  } catch (error) {
-    logger.error('Failed to save draft state:', error);
-    next(error);
-  }
-}) as RequestHandler);
-
 // Publish state (move draft to published)
-pageStateRouter.put('/:businessUnitKey/pages/:key/states/published', (async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const { businessUnitKey, key } = req.params;
-    const stateKey = `${businessUnitKey}_${key}`;
-    const { value } = req.body;
-
-    if (!value) {
-      return res
-        .status(400)
-        .json({ error: 'Value is required in the request body' });
-    }
-
-    let existingStates;
+pageStateRouter.put(
+  '/:businessUnitKey/pages/:key/states/published',
+  (async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const existingObject = await stateController.getCustomObject(stateKey);
-      existingStates = existingObject.value;
+      const { clearDraft } = req.query;
+      const { businessUnitKey, key } = req.params;
+      const { value } = req.body;
+
+      const state = await PageStateController.createPublishedState(
+        businessUnitKey,
+        key,
+        value,
+        clearDraft === 'true'
+      );
+      res.json(state);
     } catch (error) {
-      // Create if not exists
-      if ((error as any).statusCode === 404) {
-        existingStates = {
-          key,
-          businessUnitKey,
-          states: {},
-        };
-      } else {
-        const statusCode = (error as any).statusCode || 500;
-        const message = (error as any).message || 'Internal server error';
-        throw new CustomError(statusCode, message);
-      }
+      logger.error('Failed to publish state:', error);
+      next(error);
     }
-
-    // Update published state
-    existingStates.states.published = value;
-
-    // If requested specifically, also remove draft state
-    if (req.query.clearDraft === 'true') {
-      existingStates.states.draft = undefined;
-    }
-
-    const object = await stateController.updateCustomObject(
-      stateKey,
-      existingStates
-    );
-    res.json(object.value);
-  } catch (error) {
-    logger.error('Failed to publish state:', error);
-    next(error);
-  }
-}) as RequestHandler);
+  }) as RequestHandler
+);
 
 // Delete draft state (revert to published)
-pageStateRouter.delete('/:businessUnitKey/pages/:key/states/draft', (async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const { businessUnitKey, key } = req.params;
-    const stateKey = `${businessUnitKey}_${key}`;
-
+pageStateRouter.delete(
+  '/:businessUnitKey/pages/:key/states/draft',
+  (async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const existingObject = await stateController.getCustomObject(stateKey);
-      const existingStates = existingObject.value;
+      const { businessUnitKey, key } = req.params;
 
-      // Remove draft
-      existingStates.states.draft = undefined;
-
-      const object = await stateController.updateCustomObject(
-        stateKey,
-        existingStates
+      const state = await PageStateController.deleteDraftState(
+        businessUnitKey,
+        key
       );
-      res.json(object.value);
+      res.json(state);
     } catch (error) {
-      if ((error as any).statusCode === 404) {
-        return res.status(404).json({ error: 'State not found' });
-      }
-      const statusCode = (error as any).statusCode || 500;
-      const message = (error as any).message || 'Internal server error';
-      throw new CustomError(statusCode, message);
+      logger.error('Failed to delete draft state:', error);
+      next(error);
     }
-  } catch (error) {
-    logger.error('Failed to delete draft state:', error);
-    next(error);
-  }
-}) as RequestHandler);
+  }) as RequestHandler
+);
 
 export default pageStateRouter;

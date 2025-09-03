@@ -56,7 +56,7 @@ export interface Datasource {
   [key: string]: any;
 }
 
-const resolveContentItemDatasource = async (
+export const resolveContentItemDatasource = async (
   contentItem: ContentItem['value']
 ): Promise<ContentItem['value']> => {
   const contentTypeController = new CustomObjectController(
@@ -140,6 +140,7 @@ const resolveDatasourceProperties = async (
       );
     }
   }
+
 
   return clonedContentItem;
 };

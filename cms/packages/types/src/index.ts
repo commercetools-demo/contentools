@@ -88,6 +88,12 @@ export interface Layout {
   rows: GridRow[];
 }
 
+export interface ContentItemReferences {
+  id: string;
+  typeId: string;
+  obj?: ContentItem;
+}
+
 export interface Page {
   key: string;
   name: string;
@@ -95,7 +101,6 @@ export interface Page {
   layout: Layout;
   components: ContentItem[];
 }
-
 export interface PagesState {
   pages: Page[];
   currentPage: Page | null;

@@ -168,6 +168,7 @@ const PropertyEditor: React.FC<PropertyEditorProps> = ({
       try {
         const contentType =
           contentTypes.find((ct) => ct.key === component.type) || null;
+        console.log('contentType >>>>', contentTypes);
         setMetadata(contentType?.metadata || null);
       } catch (err) {
         setError(

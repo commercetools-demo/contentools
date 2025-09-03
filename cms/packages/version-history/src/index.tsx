@@ -25,7 +25,7 @@ const VersionHistorySidebar: React.FC<VersionHistorySidebarProps> = ({
   onSelectionCancelled,
   onClose,
 }) => {
-  const { versions } = useStateVersion<ContentItemVersionInfo>();
+  const { versions } = useStateVersion<ContentItemVersionInfo>()!;
 
   return (
     <Modal

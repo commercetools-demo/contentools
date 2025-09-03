@@ -68,9 +68,8 @@ const ComponentLibraryModal: React.FC<Props> = ({ isOpen, onClose }) => {
   }, [isOpen, contentTypes, loading, fetchContentTypes]);
 
   const handleDragStart = (contentType: ContentTypeData) => {
-    console.log('handleDragStart', contentType);
     setDraggingItemId(contentType.id);
-    setDraggingComponentType?.(contentType.metadata.type);
+    setDraggingComponentType?.(contentType.key);
     // Close modal after a short delay to allow drag to start
     setTimeout(() => {
       onClose();

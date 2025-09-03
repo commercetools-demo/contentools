@@ -1,6 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
-import { useStatePages, useStateEditor } from '@commercetools-demo/contentools-state';
+import {
+  useStatePages,
+  useStateEditor,
+  useStateStateManagement,
+  useStateVersion,
+} from '@commercetools-demo/contentools-state';
 import Spacings from '@commercetools-uikit/spacings';
 import Text from '@commercetools-uikit/text';
 import PrimaryButton from '@commercetools-uikit/primary-button';
@@ -9,12 +14,15 @@ import IconButton from '@commercetools-uikit/icon-button';
 import Card from '@commercetools-uikit/card';
 import LoadingSpinner from '@commercetools-uikit/loading-spinner';
 import { useModalState } from '@commercetools-demo/contentools-ui-components';
-import { GridIcon, GearIcon } from '@commercetools-uikit/icons';
+import { GridIcon, GearIcon, BackIcon } from '@commercetools-uikit/icons';
 import styled from 'styled-components';
 import ComponentLibraryModal from './component-library-modal';
 import PageSettingsModal from './page-settings-modal';
 import ComponentEditorModal from './component-editor-modal';
 import PagesGridLayout from './pages-grid-layout';
+import { PageVersionInfo } from '@commercetools-demo/contentools-types';
+import VersionHistorySidebar from '@commercetools-demo/contentools-version-history';
+import PageGridActions from './page-grid-actions';
 
 interface Props {
   parentUrl: string;
@@ -74,6 +82,30 @@ const BackButton = styled.button`
   }
 `;
 
+const ContainerHeader = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 16px 24px;
+  border-bottom: 1px solid #e0e0e0;
+  background-color: #f5f5f5;
+`;
+
+const ContainerHeaderContent = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;
+
+const Breadcrumb = styled.span`
+  color: #666;
+  font-size: 14px;
+  &:after {
+    content: ' › ';
+    margin: 0 4px;
+  }
+`;
+
 const EditorContent = styled.div`
   flex: 1;
   overflow: auto;
@@ -112,19 +144,31 @@ const PagesEdit: React.FC<Props> = ({
     currentPage,
     loading,
     error,
-    unsavedChanges,
     fetchPage,
     updatePage,
     deletePage,
-    clearUnsavedChanges,
+    addComponentToCurrentPage,
+    // clearUnsavedChanges,
   } = useStatePages()!;
 
   const editorState = useStateEditor();
+
+  const { fetchStates, publish, revertToPublished, currentState } =
+    useStateStateManagement()!;
+  const { fetchVersions, versions } = useStateVersion<PageVersionInfo>()!;
   const draggingComponentType = editorState?.draggingComponentType;
 
-  const [selectedContentItemKey, setSelectedContentItemKey] = useState<string | null>(
+  const versionHistoryState = useModalState();
+
+  const [selectedVersionId, setSelectedVersionId] = useState<string | null>(
     null
   );
+  const [contentVersion, setContentVersion] = useState<PageVersionInfo | null>(
+    null
+  );
+  const [selectedContentItemKey, setSelectedContentItemKey] = useState<
+    string | null
+  >(null);
 
   // Modal states
   const componentLibraryModal = useModalState();
@@ -137,39 +181,8 @@ const PagesEdit: React.FC<Props> = ({
     await deletePage(hydratedUrl, key);
   };
 
-  useEffect(() => {
-    if (pageKey) {
-      fetchPage(hydratedUrl, pageKey);
-    }
-  }, [pageKey, fetchPage, history, parentUrl]);
-
   const handleBack = () => {
-    if (unsavedChanges) {
-      const confirmLeave = window.confirm(
-        'You have unsaved changes. Are you sure you want to leave?'
-      );
-      if (!confirmLeave) return;
-    }
-    history.push(`/${parentUrl}`);
-  };
-
-  const handleSave = async () => {
-    if (currentPage) {
-      try {
-        await updatePage(hydratedUrl, currentPage);
-        clearUnsavedChanges();
-      } catch (error) {
-        console.error('Failed to save page:', error);
-        // Handle error - could show a toast
-      }
-    }
-  };
-
-  const handleDiscard = () => {
-    if (pageKey) {
-      fetchPage(hydratedUrl, pageKey); // Refetch to reset changes
-      clearUnsavedChanges();
-    }
+    history.push(`/`);
   };
 
   const handleComponentSelect = (contentItemKey: string | null) => {
@@ -192,6 +205,95 @@ const PagesEdit: React.FC<Props> = ({
     componentEditorModal.closeModal();
     setSelectedContentItemKey(null);
   };
+
+  const handleComponentToCurrentPage = async (
+    rowId: string,
+    cellId: string
+  ) => {
+    await addComponentToCurrentPage(
+      hydratedUrl,
+      draggingComponentType,
+      rowId,
+      cellId
+    );
+    handleFetchStatesAndVersions();
+  };
+
+  const handleFetchStatesAndVersions = useCallback(() => {
+    if (pageKey) {
+      fetchStates(hydratedUrl, pageKey, 'pages');
+      fetchVersions(hydratedUrl, pageKey, 'pages');
+    }
+  }, [pageKey, fetchStates, hydratedUrl]);
+
+  const handleCloseVersionHistory = () => {
+    versionHistoryState.closeModal();
+  };
+
+  const handleOpenVersionHistory = () => {
+    versionHistoryState.openModal();
+  };
+
+  const handleJson = (isPreview: boolean = false) => {
+    window.open(
+      `${baseURL}/${businessUnitKey}/${
+        isPreview ? 'preview/' : 'published/'
+      }pages/${pageKey}`,
+      '_blank'
+    );
+  };
+
+  const handleRevert = async () => {
+    if (currentPage?.key) {
+      await revertToPublished(hydratedUrl, currentPage.key, 'pages').then(
+        () => {
+          fetchPage(hydratedUrl, pageKey).then(() => {
+            handleFetchStatesAndVersions();
+          });
+        }
+      );
+      setContentVersion(null);
+      setSelectedVersionId(null);
+    }
+  };
+
+  const handlePublish = async () => {
+    if (currentPage?.key) {
+      await publish(hydratedUrl, currentPage, currentPage.key, 'pages', true);
+      fetchPage(hydratedUrl, pageKey);
+    }
+  };
+
+  const handleVersionSelected = (versionId: string) => {
+    setSelectedVersionId(versionId);
+    const selectedVersion = versions.find((v) => v.id === versionId);
+    if (selectedVersion) {
+      setContentVersion(selectedVersion);
+    }
+  };
+
+  const handleApplyVersion = async (versionId: string) => {
+    const selectedVersion = versions.find((v) => v.id === versionId);
+    if (selectedVersion && currentPage?.key) {
+      // await updatePage(hydratedUrl,  selectedVersion);
+      setSelectedVersionId(null);
+      setContentVersion(null);
+    }
+  };
+
+  const handleSelectionCancelled = () => {
+    setSelectedVersionId(null);
+    setContentVersion(null);
+    handleCloseVersionHistory();
+  };
+
+  useEffect(() => {
+    if (pageKey) {
+      fetchPage(hydratedUrl, pageKey).then(() => {
+        handleFetchStatesAndVersions();
+      });
+    }
+  }, [pageKey, fetchPage, parentUrl]);
 
   if (loading) {
     return (
@@ -231,40 +333,39 @@ const PagesEdit: React.FC<Props> = ({
   return (
     <Container>
       <MainContent>
-        <Header>
-          <HeaderLeft>
-            <BackButton onClick={handleBack}>← Back to Pages</BackButton>
-            <div>
-              <Text.Subheadline>{currentPage.name}</Text.Subheadline>
-              <Text.Detail tone="secondary">
-                Route: {currentPage.route}
-              </Text.Detail>
-            </div>
-          </HeaderLeft>
-
-          <HeaderRight>
-            <SecondaryButton
-              label="Components"
-              iconLeft={<GridIcon />}
-              onClick={handleOpenComponentLibrary}
-            />
-            <IconButton
-              icon={<GearIcon />}
-              label="Page Settings"
-              onClick={handleOpenPageSettings}
-            />
-          </HeaderRight>
-        </Header>
+        <ContainerHeader>
+          <IconButton
+            icon={<BackIcon />}
+            label="Back to Pages"
+            onClick={handleBack}
+            size="medium"
+          />
+          <ContainerHeaderContent>
+            <Breadcrumb>Pages</Breadcrumb>
+            <Text.Subheadline as="h4">{currentPage.name}</Text.Subheadline>
+          </ContainerHeaderContent>
+        </ContainerHeader>
 
         <EditorContent>
+          <PageGridActions
+            showVersionHistory={versionHistoryState.isModalOpen}
+            onToggleVersionHistory={() =>
+              versionHistoryState.isModalOpen
+                ? handleCloseVersionHistory()
+                : handleOpenVersionHistory()
+            }
+            onTogglePageSettings={handleOpenPageSettings}
+            onTogglePageLibrary={handleOpenComponentLibrary}
+            currentState={currentState}
+            onViewJson={handleJson}
+            onRevert={handleRevert}
+            onPublish={handlePublish}
+          />
           <PagesGridLayout
             page={currentPage}
             selectedContentItemKey={selectedContentItemKey}
             onComponentSelect={handleComponentSelect}
-            baseURL={baseURL}
-            businessUnitKey={businessUnitKey}
-            locale={locale}
-            activeComponentType={draggingComponentType}
+            onComponentToCurrentPage={handleComponentToCurrentPage}
           />
         </EditorContent>
       </MainContent>
@@ -292,13 +393,14 @@ const PagesEdit: React.FC<Props> = ({
         businessUnitKey={businessUnitKey}
       />
 
-      <SaveBar visible={unsavedChanges}>
-        <Text.Body>You have unsaved changes</Text.Body>
-        <SaveBarActions>
-          <SecondaryButton label="Discard" onClick={handleDiscard} />
-          <PrimaryButton label="Save Changes" onClick={handleSave} />
-        </SaveBarActions>
-      </SaveBar>
+      <VersionHistorySidebar
+        isVisible={versionHistoryState.isModalOpen}
+        selectedVersionId={selectedVersionId}
+        onVersionSelected={handleVersionSelected}
+        onApplyVersion={handleApplyVersion}
+        onSelectionCancelled={handleSelectionCancelled}
+        onClose={handleCloseVersionHistory}
+      />
     </Container>
   );
 };

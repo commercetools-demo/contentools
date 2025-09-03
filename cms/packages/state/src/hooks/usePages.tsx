@@ -1,25 +1,22 @@
-import { useState, useCallback } from 'react';
-import { v4 as uuidv4 } from 'uuid';
 import {
+  ContentItem,
   Page,
   PagesState,
-  ContentItem,
-  GridRow,
-  GridCell,
 } from '@commercetools-demo/contentools-types';
-import { debounce } from '../utils/debounce';
+import { useCallback, useState } from 'react';
 import {
-  NUMBER_OF_COLUMNS,
-  LOCAL_STORAGE_KEY_PREFIX,
-  DEBOUNCE_DELAY,
-} from '../utils/constants';
-import {
-  fetchPagesEndpoint,
-  fetchPageEndpoint,
+  addComponentToPageApi,
   createPageEndpoint,
-  updatePageEndpoint,
   deletePageEndpoint,
-} from '../api';
+  fetchPageEndpoint,
+  fetchPagesEndpoint,
+  updatePageEndpoint,
+} from '../api/page';
+import {
+  DEBOUNCE_DELAY,
+  LOCAL_STORAGE_KEY_PREFIX
+} from '../utils/constants';
+import { debounce } from '../utils/debounce';
 
 const initialState: PagesState = {
   pages: [],
@@ -42,7 +39,7 @@ const fetchPagesApi = async (baseUrl: string): Promise<Page[]> => {
 const fetchPageApi = async (baseUrl: string, key: string): Promise<Page> => {
   try {
     const data = await fetchPageEndpoint(baseUrl, key);
-    return data.value;
+    return data;
   } catch (error) {
     throw new Error(`Failed to fetch page with key: ${key}`);
   }
@@ -50,7 +47,7 @@ const fetchPageApi = async (baseUrl: string, key: string): Promise<Page> => {
 
 const createPageApi = async (
   hydratedUrl: string,
-  page: Omit<Page, 'key'>
+  page: Omit<Page, 'key' | 'layout' | 'components'>
 ): Promise<Page> => {
   try {
     const data = await createPageEndpoint(hydratedUrl, page);
@@ -78,22 +75,7 @@ const deletePageApi = async (baseUrl: string, key: string): Promise<void> => {
 };
 
 // Helper functions
-const createEmptyGridRow = (): GridRow => {
-  const cells: GridCell[] = [];
 
-  for (let i = 0; i < NUMBER_OF_COLUMNS; i++) {
-    cells.push({
-      id: uuidv4(),
-      contentItemKey: null,
-      colSpan: 1,
-    });
-  }
-
-  return {
-    id: uuidv4(),
-    cells,
-  };
-};
 
 export const usePages = (baseUrl: string) => {
   const [state, setState] = useState<PagesState>(initialState);
@@ -238,13 +220,9 @@ export const usePages = (baseUrl: string) => {
       page: Pick<Page, 'name' | 'route'>,
       businessUnitKey: string
     ): Promise<Page> => {
-      const newPage: Omit<Page, 'key'> = {
+      const newPage: Omit<Page, 'key' | 'layout' | 'components'> = {
         name: page.name,
         route: page.route,
-        layout: {
-          rows: [createEmptyGridRow()],
-        },
-        components: [],
       };
       const createdPage = await createPageApi(hydratedUrl, newPage);
 
@@ -292,6 +270,8 @@ export const usePages = (baseUrl: string) => {
       setState((prev) => {
         if (!prev.currentPage) return prev;
 
+        // call addRowToPage
+
         const newRow = createEmptyGridRow();
         const layout = { ...prev.currentPage.layout };
 
@@ -328,6 +308,8 @@ export const usePages = (baseUrl: string) => {
         const layout = { ...prev.currentPage.layout };
         layout.rows = layout.rows.filter((row) => row.id !== rowId);
 
+        // call removeRowFromPage
+
         const updatedPage = { ...prev.currentPage, layout };
         const updatedPages = prev.pages.map((p) =>
           p.key === prev.currentPage!.key ? updatedPage : p
@@ -348,26 +330,15 @@ export const usePages = (baseUrl: string) => {
   );
 
   const addComponentToCurrentPage = useCallback(
-    async (hydratedUrl: string, componentType: string, rowId: string, cellId: string) => {
+    async (hydratedUrl: string, componentType: string | null | undefined, rowId: string, cellId: string) => {
       if (!state.currentPage) return;
-      const newComponent = {
-        type: componentType,
-        key: `page-item-${uuidv4()}`,
-        name: 'New Component',
-        properties: {},
-      } as ContentItem;
-      const components = [...state.currentPage.components, newComponent];
-      const layout = { ...state.currentPage.layout };
-      const row = layout.rows.find((row) => row.id === rowId);
-      if (row) {
-        const cell = row.cells.find((cell) => cell.id === cellId);
-        if (cell) {
-          cell.contentItemKey = newComponent.key;
-        }
-      }
-      const page = { ...state.currentPage, components };
-
-      const updatedPage = await updatePage(hydratedUrl, page);
+      if (!componentType) return;
+      const updatedPage = await addComponentToPageApi(hydratedUrl, state.currentPage.key,componentType, rowId, cellId);
+      setState((prev) => ({
+        ...prev,
+        currentPage: updatedPage.value,
+        unsavedChanges: true,
+      }));
       return updatedPage;
     },
     [saveToSessionStorage, state.currentPage]
@@ -381,6 +352,7 @@ export const usePages = (baseUrl: string) => {
     ) => {
       setState((prev) => {
         if (!prev.currentPage) return prev;
+        // use direct api call to update content item
 
         const components = prev.currentPage.components.map((c) =>
           c.id === componentId ? { ...c, ...updates } : c
@@ -408,6 +380,8 @@ export const usePages = (baseUrl: string) => {
     (componentId: string, businessUnitKey: string) => {
       setState((prev) => {
         if (!prev.currentPage) return prev;
+
+        // remove content item
 
         const components = prev.currentPage.components.filter(
           (c) => c.id !== componentId

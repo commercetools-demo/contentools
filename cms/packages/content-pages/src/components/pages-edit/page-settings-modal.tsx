@@ -36,7 +36,7 @@ const PageSettingsModal: React.FC<Props> = ({
       await deletePage(currentPage.key);
       
       // Navigate to parent URL after successful deletion
-      history.push(`/${parentUrl}`);
+      history.push(`/`);
       onClose();
     } catch (error) {
       console.error('Failed to delete page:', error);
