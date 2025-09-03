@@ -45,7 +45,9 @@ const RowHeader = styled.div`
   align-items: center;
 `;
 
-
+const StyledGridRow = styled.div`
+  padding: 10px;
+`;
 
 const GridRow: React.FC<GridRowProps> = ({
   row,
@@ -96,7 +98,7 @@ const GridRow: React.FC<GridRowProps> = ({
 
 
   return (
-    <div data-row-id={row.id}>
+    <StyledGridRow data-row-id={row.id}>
       {!readonly && (
         <RowHeader>
           <span>Row {rowIndex + 1}</span>
@@ -131,7 +133,7 @@ const GridRow: React.FC<GridRowProps> = ({
           );
         })}
       </RowContent>
-    </div>
+    </StyledGridRow>
   );
 };
 

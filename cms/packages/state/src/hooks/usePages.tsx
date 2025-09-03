@@ -6,10 +6,12 @@ import {
 import { useCallback, useState } from 'react';
 import {
   addComponentToPageApi,
+  addRowToPageApi,
   createPageEndpoint,
   deletePageEndpoint,
   fetchPageEndpoint,
   fetchPagesEndpoint,
+  removeRowFromPageApi,
   updatePageEndpoint,
 } from '../api/page';
 import {
@@ -266,67 +268,32 @@ export const usePages = (baseUrl: string) => {
   );
 
   const addRowToCurrentPage = useCallback(
-    (rowIndex: number | undefined, businessUnitKey: string) => {
-      setState((prev) => {
-        if (!prev.currentPage) return prev;
-
-        // call addRowToPage
-
-        const newRow = createEmptyGridRow();
-        const layout = { ...prev.currentPage.layout };
-
-        if (rowIndex !== undefined) {
-          layout.rows.splice(rowIndex + 1, 0, newRow);
-        } else {
-          layout.rows.push(newRow);
-        }
-
-        const updatedPage = { ...prev.currentPage, layout };
-        const updatedPages = prev.pages.map((p) =>
-          p.key === prev.currentPage!.key ? updatedPage : p
-        );
-
-        // Save to session storage
-        saveToSessionStorage(updatedPages, businessUnitKey);
-
-        return {
-          ...prev,
-          pages: updatedPages,
-          currentPage: updatedPage,
-          unsavedChanges: true,
-        };
-      });
+    async (hydratedUrl: string) => {
+      if (!state.currentPage) return;
+      const updatedPage = await addRowToPageApi(hydratedUrl, state.currentPage.key);
+      console.log('updatedPage >>>>', updatedPage);
+      setState((prev) => ({
+        ...prev,
+        currentPage: updatedPage.value,
+        unsavedChanges: true,
+      }));
+      return updatedPage;
     },
-    [saveToSessionStorage]
+    [saveToSessionStorage, state]
   );
 
   const removeRowFromCurrentPage = useCallback(
-    (rowId: string, businessUnitKey: string) => {
-      setState((prev) => {
-        if (!prev.currentPage) return prev;
-
-        const layout = { ...prev.currentPage.layout };
-        layout.rows = layout.rows.filter((row) => row.id !== rowId);
-
-        // call removeRowFromPage
-
-        const updatedPage = { ...prev.currentPage, layout };
-        const updatedPages = prev.pages.map((p) =>
-          p.key === prev.currentPage!.key ? updatedPage : p
-        );
-
-        // Save to session storage
-        saveToSessionStorage(updatedPages, businessUnitKey);
-
-        return {
-          ...prev,
-          pages: updatedPages,
-          currentPage: updatedPage,
-          unsavedChanges: true,
-        };
-      });
+    async (hydratedUrl: string, rowId: string) => {
+      if (!state.currentPage) return;
+      const updatedPage = await removeRowFromPageApi(hydratedUrl, state.currentPage.key, rowId);
+      setState((prev) => ({
+        ...prev,
+        currentPage: updatedPage.value,
+        unsavedChanges: true,
+      }));
+      return updatedPage;
     },
-    [saveToSessionStorage]
+    [saveToSessionStorage, state.currentPage]
   );
 
   const addComponentToCurrentPage = useCallback(

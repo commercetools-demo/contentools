@@ -98,3 +98,28 @@ export async function fetchPageEndpoint(
       body: JSON.stringify({ componentType, rowId, cellId }),
     });
   }
+
+  /**
+   * Remove a row from a page
+   */
+  export async function removeRowFromPageApi(
+    baseURL: string,
+    key: string,
+    rowId: string
+  ): Promise<ApiResponse<Page>> {
+    return fetchApi<Page>(`${baseURL}/pages/${key}/rows/${rowId}`, {
+      method: 'DELETE',
+    });
+  }
+
+  /**
+   * Add a row to a page
+   */
+  export async function addRowToPageApi(
+    baseURL: string,
+    key: string
+  ): Promise<ApiResponse<Page>> {
+    return fetchApi<Page>(`${baseURL}/pages/${key}/rows`, {
+      method: 'POST',
+    });
+  }

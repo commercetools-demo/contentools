@@ -87,7 +87,6 @@ export const resolveContentItemsInPageDatasource = async (
   page: Page['value'] | ResolvedPage['value']
 ): Promise<ResolvedPage['value']> => {
 
-  console.log('page >>>>', JSON.stringify(page, null, 2));
   const allComponents = await Promise.all(
     page.components.map(async (component) => {
       if (!component.obj) {
@@ -317,9 +316,6 @@ export const deletePage = async (
 
   const page = await pageController.getCustomObject(key);
 
-  console.log('page >>>>', page);
-  console.log('page.value >>>>', page.value.components);
-
   await Promise.all(
     page.value.components
       .filter((component: any) => !!component)
@@ -331,15 +327,6 @@ export const deletePage = async (
   await PageStateController.deleteStates(businessUnitKey, key);
   await PageVersionController.deleteVersions(businessUnitKey, key);
 };
-
-export const addRowToPage = async (
-  businessUnitKey: string,
-  pageKey: string
-): Promise<void> => {
-  const pageController = new CustomObjectController(CONTENT_PAGE_CONTAINER);
-};
-
-// removeRowFromCurrentPage
 
 // remove content item
 
@@ -354,7 +341,6 @@ export const addContentItemToPage = async (
 
   const page = await pageController.getCustomObject(pageKey);
 
-  console.log('page >>>>', page);
   const newLayout = JSON.parse(JSON.stringify(page.value.layout));
   const row = newLayout.rows.find((row: GridRow) => row.id === rowId);
   if (!row) {
@@ -393,9 +379,48 @@ export const addContentItemToPage = async (
     },
   };
 
-  console.log('newPage >>>>', newPage);
 
   const updatedPage = await updatePage(businessUnitKey, pageKey, newPage.value);
 
+  return updatedPage;
+};
+
+export const removeRowFromPage = async (
+  businessUnitKey: string,
+  pageKey: string,
+  rowId: string
+): Promise<ResolvedPage> => {
+  const pageController = new CustomObjectController(CONTENT_PAGE_CONTAINER);
+  const page = await pageController.getCustomObject(pageKey);
+  const newLayout = JSON.parse(JSON.stringify(page.value.layout));
+  const row = newLayout.rows.find((row: GridRow) => row.id === rowId);
+  if (!row) {
+    throw new CustomError(400, 'Row not found');
+  }
+  const contentItems = row.cells.map((cell: GridCell) => cell.contentItemKey).filter((contentItemKey: string) => !!contentItemKey);
+  const contentItemsController = new CustomObjectController(PAGE_ITEMS_CONTAINER);
+  await Promise.all(contentItems.map((contentItemKey: string) => contentItemsController.deleteCustomObject(contentItemKey)));
+  newLayout.rows = newLayout.rows.filter((row: GridRow) => row.id !== rowId);
+  const newPage = {
+    ...page,
+    value: { ...page.value, layout: newLayout },
+  };
+  const updatedPage = await updatePage(businessUnitKey, pageKey, newPage.value);
+  return updatedPage;
+};
+
+export const addRowToPage = async (
+  businessUnitKey: string,
+  pageKey: string
+): Promise<ResolvedPage> => {
+  const pageController = new CustomObjectController(CONTENT_PAGE_CONTAINER);
+  const page = await pageController.getCustomObject(pageKey);
+  const newLayout = JSON.parse(JSON.stringify(page.value.layout));
+  newLayout.rows.push(createEmptyGridRow());
+  const newPage = {
+    ...page,
+    value: { ...page.value, layout: newLayout },
+  };
+  const updatedPage = await updatePage(businessUnitKey, pageKey, newPage.value);
   return updatedPage;
 };

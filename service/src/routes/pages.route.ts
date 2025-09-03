@@ -91,20 +91,77 @@ pagesRouter.delete('/:businessUnitKey/pages/:key', async (req, res, next) => {
   }
 });
 
-pagesRouter.post('/:businessUnitKey/pages/:key/components', async (req, res, next) => {
-  try {
-    const { businessUnitKey, key } = req.params;
-    const { componentType, rowId, cellId } = req.body;
-    const object = await PageController.addContentItemToPage(businessUnitKey, key, componentType, rowId, cellId);
-    res.status(201).json(object);
-  } catch (error) {
-    logger.error(
-      `Failed to add component to page with key ${req.params.key}:`,
-      error
-    );
-    next(error);
+pagesRouter.post(
+  '/:businessUnitKey/pages/:key/components',
+  async (req, res, next) => {
+    try {
+      const { businessUnitKey, key } = req.params;
+      const { componentType, rowId, cellId } = req.body;
+      const object = await PageController.addContentItemToPage(
+        businessUnitKey,
+        key,
+        componentType,
+        rowId,
+        cellId
+      );
+      res.status(201).json(object);
+    } catch (error) {
+      logger.error(
+        `Failed to add component to page with key ${req.params.key}:`,
+        error
+      );
+      next(error);
+    }
   }
-});
+);
 
+// pagesRouter.delete('/:businessUnitKey/pages/:key/components/:rowId', async (req, res, next) => {
+//   try {
+//     const { businessUnitKey, key, rowId } = req.params;
+//     await PageController.removeContentItemFromPage(businessUnitKey, key, rowId);
+//     res.status(204).send();
+//   } catch (error) {
+//     logger.error(
+//       `Failed to remove component from page with key ${req.params.key}:`,
+//       error
+//     );
+//     next(error);
+//   }
+// });
+
+pagesRouter.delete(
+  '/:businessUnitKey/pages/:key/rows/:rowId',
+  async (req, res, next) => {
+    try {
+      const { businessUnitKey, key, rowId } = req.params;
+      const object = await PageController.removeRowFromPage(businessUnitKey, key, rowId);
+      console.log('object >>>>', object);
+      res.status(200).json(object);
+    } catch (error) {
+      logger.error(
+        `Failed to remove row from page with key ${req.params.key}:`,
+        error
+      );
+      next(error);
+    }
+  }
+);
+
+pagesRouter.post(
+  '/:businessUnitKey/pages/:key/rows',
+  async (req, res, next) => {
+    try {
+      const { businessUnitKey, key } = req.params;
+      const object = await PageController.addRowToPage(businessUnitKey, key);
+      res.status(201).json(object);
+    } catch (error) {
+      logger.error(
+        `Failed to add row to page with key ${req.params.key}:`,
+        error
+      );
+      next(error);
+    }
+  }
+);
 
 export default pagesRouter;

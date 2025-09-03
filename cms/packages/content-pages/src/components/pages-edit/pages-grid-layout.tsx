@@ -1,11 +1,13 @@
-import { Page } from '@commercetools-demo/contentools-types';
+import { useStatePages } from '@commercetools-demo/contentools-state';
 import Text from '@commercetools-uikit/text';
 import React, { useCallback, useState } from 'react';
 import styled from 'styled-components';
 import GridRow from './grid-row';
+import { themes } from '@commercetools-uikit/design-system';
 
 interface Props {
-  page: Page;
+  baseURL: string;
+  businessUnitKey: string;
   selectedContentItemKey: string | null;
   onComponentSelect: (componentId: string | null) => void;
   onComponentToCurrentPage: (rowId: string, cellId: string) => Promise<void>;
@@ -15,6 +17,20 @@ const GridContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 20px;
+  & > div {
+    &:nth-child(2n+1) {
+      background: ${themes.default.colorNeutral98};
+      &:hover {
+        background: ${themes.default.colorNeutral85};
+      }
+    }
+    &:nth-child(2n) {
+      background: ${themes.default.colorNeutral95};
+      &:hover {
+        background: ${themes.default.colorNeutral85};
+      }
+    }
+  }
 `;
 
 const EmptyGridMessage = styled.div`
@@ -27,11 +43,14 @@ const EmptyGridMessage = styled.div`
 `;
 
 const PagesGridLayout: React.FC<Props> = ({
-  page,
+  baseURL,
+  businessUnitKey,
   selectedContentItemKey,
   onComponentSelect,
   onComponentToCurrentPage,
 }) => {
+  const { currentPage: page, removeRowFromCurrentPage } = useStatePages()!;
+  const hydratedUrl = `${baseURL}/${businessUnitKey}`;
   const [selectedCell, setSelectedCell] = useState<{
     rowId: string;
     cellId: string;
@@ -54,7 +73,7 @@ const PagesGridLayout: React.FC<Props> = ({
   React.useEffect(() => {
     if (selectedContentItemKey) {
       // Find the cell that contains this component
-      for (const row of page.layout.rows) {
+      for (const row of page?.layout.rows || []) {
         for (const cell of row.cells) {
           if (cell.contentItemKey === selectedContentItemKey) {
             setSelectedCell({ rowId: row.id, cellId: cell.id });
@@ -65,12 +84,12 @@ const PagesGridLayout: React.FC<Props> = ({
     } else {
       setSelectedCell(null);
     }
-  }, [selectedContentItemKey, page.layout.rows]);
+  }, [selectedContentItemKey, page?.layout.rows]);
 
   const handleRemoveRow = useCallback((rowId: string) => {
     // This would dispatch an action to remove the row from the page layout
-    console.log('Remove row:', rowId);
-  }, []);
+    removeRowFromCurrentPage(hydratedUrl, rowId);
+  }, [hydratedUrl, removeRowFromCurrentPage]);
 
   const handleIncreaseWidth = useCallback((rowId: string, cellId: string) => {
     // This would dispatch an action to increase cell width
@@ -84,7 +103,7 @@ const PagesGridLayout: React.FC<Props> = ({
 
   return (
     <>
-      {page.layout.rows.length === 0 ? (
+      {page?.layout.rows.length === 0 ? (
         <EmptyGridMessage>
           <Text.Subheadline as="h4">No layout rows found</Text.Subheadline>
           <Text.Detail tone="secondary">
@@ -93,7 +112,7 @@ const PagesGridLayout: React.FC<Props> = ({
         </EmptyGridMessage>
       ) : (
         <GridContainer>
-          {page.layout.rows.map((row, index) => (
+          {page?.layout.rows.map((row, index) => (
             <GridRow
               key={row.id}
               row={row}

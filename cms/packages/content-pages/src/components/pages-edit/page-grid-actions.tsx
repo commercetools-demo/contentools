@@ -1,5 +1,5 @@
 import IconButton from '@commercetools-uikit/icon-button';
-import { ClockIcon, GearIcon, GridIcon, ListWithSearchIcon } from '@commercetools-uikit/icons';
+import { ClockIcon, GearIcon, GridIcon, ListWithSearchIcon, SubdirectoryArrowIcon } from '@commercetools-uikit/icons';
 import PrimaryActionDropdown, {
   Option,
 } from '@commercetools-uikit/primary-action-dropdown';
@@ -19,6 +19,7 @@ interface PageGridActionsProps {
   onToggleVersionHistory: () => void;
   onTogglePageSettings: () => void;
   onTogglePageLibrary: () => void;
+  onAddRow: () => void;
   currentState: 'draft' | 'published' | 'both' | null;
   onViewJson: (isPreview: boolean) => void;
   onRevert: () => void;
@@ -30,6 +31,7 @@ const PageGridActions: React.FC<PageGridActionsProps> = ({
   onToggleVersionHistory,
   onTogglePageSettings,
   onTogglePageLibrary,
+  onAddRow,
   currentState,
   onViewJson,
   onRevert,
@@ -75,6 +77,12 @@ const PageGridActions: React.FC<PageGridActionsProps> = ({
             label="Page Library"
             onClick={onTogglePageLibrary}
             icon={<GridIcon />}
+          />
+          <IconButton
+            size="30"
+            label="Add Row"
+            onClick={onAddRow}
+            icon={<SubdirectoryArrowIcon />}
           />
         </Spacings.Inline>
 

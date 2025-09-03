@@ -47,41 +47,6 @@ const MainContent = styled.div`
   flex-direction: column;
 `;
 
-const Header = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px 24px;
-  border-bottom: 1px solid #e0e0e0;
-  background: white;
-  z-index: 100;
-`;
-
-const HeaderLeft = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 16px;
-`;
-
-const HeaderRight = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-`;
-
-const BackButton = styled.button`
-  background: none;
-  border: none;
-  color: #007acc;
-  cursor: pointer;
-  font-size: 14px;
-  text-decoration: none;
-
-  &:hover {
-    text-decoration: underline;
-  }
-`;
-
 const ContainerHeader = styled.div`
   display: flex;
   align-items: center;
@@ -113,24 +78,6 @@ const EditorContent = styled.div`
   background: #f8f9fa;
 `;
 
-const SaveBar = styled.div<{ visible: boolean }>`
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: #333;
-  color: white;
-  padding: 16px 24px;
-  display: ${(props) => (props.visible ? 'flex' : 'none')};
-  justify-content: space-between;
-  align-items: center;
-  z-index: 1000;
-`;
-
-const SaveBarActions = styled.div`
-  display: flex;
-  gap: 12px;
-`;
 
 const PagesEdit: React.FC<Props> = ({
   parentUrl,
@@ -147,6 +94,8 @@ const PagesEdit: React.FC<Props> = ({
     fetchPage,
     updatePage,
     deletePage,
+    addRowToCurrentPage,
+    removeRowFromCurrentPage,
     addComponentToCurrentPage,
     // clearUnsavedChanges,
   } = useStatePages()!;
@@ -287,6 +236,10 @@ const PagesEdit: React.FC<Props> = ({
     handleCloseVersionHistory();
   };
 
+  const handleAddRow = () => {
+    addRowToCurrentPage(hydratedUrl);
+  };
+
   useEffect(() => {
     if (pageKey) {
       fetchPage(hydratedUrl, pageKey).then(() => {
@@ -360,9 +313,11 @@ const PagesEdit: React.FC<Props> = ({
             onViewJson={handleJson}
             onRevert={handleRevert}
             onPublish={handlePublish}
+            onAddRow={handleAddRow}
           />
           <PagesGridLayout
-            page={currentPage}
+            baseURL={baseURL}
+            businessUnitKey={businessUnitKey}
             selectedContentItemKey={selectedContentItemKey}
             onComponentSelect={handleComponentSelect}
             onComponentToCurrentPage={handleComponentToCurrentPage}
