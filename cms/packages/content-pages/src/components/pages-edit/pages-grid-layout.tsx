@@ -1,6 +1,6 @@
 import { useStatePages } from '@commercetools-demo/contentools-state';
 import Text from '@commercetools-uikit/text';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import GridRow from './grid-row';
 import { themes } from '@commercetools-uikit/design-system';
@@ -49,7 +49,7 @@ const PagesGridLayout: React.FC<Props> = ({
   onComponentSelect,
   onComponentToCurrentPage,
 }) => {
-  const { currentPage: page, removeRowFromCurrentPage } = useStatePages()!;
+  const { currentPage: page, removeRowFromCurrentPage, updateCellSpanInCurrentPage } = useStatePages()!;
   const hydratedUrl = `${baseURL}/${businessUnitKey}`;
   const [selectedCell, setSelectedCell] = useState<{
     rowId: string;
@@ -69,37 +69,43 @@ const PagesGridLayout: React.FC<Props> = ({
     [onComponentSelect]
   );
 
-  // Update selectedCell when selectedComponentId changes externally
-  React.useEffect(() => {
-    if (selectedContentItemKey) {
-      // Find the cell that contains this component
-      for (const row of page?.layout.rows || []) {
-        for (const cell of row.cells) {
-          if (cell.contentItemKey === selectedContentItemKey) {
-            setSelectedCell({ rowId: row.id, cellId: cell.id });
-            return;
-          }
-        }
-      }
-    } else {
-      setSelectedCell(null);
-    }
-  }, [selectedContentItemKey, page?.layout.rows]);
+
 
   const handleRemoveRow = useCallback((rowId: string) => {
     // This would dispatch an action to remove the row from the page layout
     removeRowFromCurrentPage(hydratedUrl, rowId);
   }, [hydratedUrl, removeRowFromCurrentPage]);
 
-  const handleIncreaseWidth = useCallback((rowId: string, cellId: string) => {
-    // This would dispatch an action to increase cell width
-    console.log('Increase width:', { rowId, cellId });
+  const handleIncreaseWidth = useCallback((rowId: string, cellId: string, colSpan: number) => {
+    updateCellSpanInCurrentPage(hydratedUrl,rowId, cellId, {
+      colSpan,
+      shouldRemoveEmptyCell: true,
+    });
   }, []);
 
-  const handleDecreaseWidth = useCallback((rowId: string, cellId: string) => {
-    // This would dispatch an action to decrease cell width
-    console.log('Decrease width:', { rowId, cellId });
+  const handleDecreaseWidth = useCallback((rowId: string, cellId: string, colSpan: number) => {
+    updateCellSpanInCurrentPage(hydratedUrl,rowId, cellId, {
+      colSpan,
+      shouldAddEmptyCell: true,
+    });
   }, []);
+
+    // Update selectedCell when selectedComponentId changes externally
+    useEffect(() => {
+      if (selectedContentItemKey) {
+        // Find the cell that contains this component
+        for (const row of page?.layout.rows || []) {
+          for (const cell of row.cells) {
+            if (cell.contentItemKey === selectedContentItemKey) {
+              setSelectedCell({ rowId: row.id, cellId: cell.id });
+              return;
+            }
+          }
+        }
+      } else {
+        setSelectedCell(null);
+      }
+    }, [selectedContentItemKey, page?.layout.rows]);
 
   return (
     <>

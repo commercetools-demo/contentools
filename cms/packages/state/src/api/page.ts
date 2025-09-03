@@ -123,3 +123,20 @@ export async function fetchPageEndpoint(
       method: 'POST',
     });
   }
+
+  /**
+   * Update a cell span in a page
+   */
+  export async function updateCellSpanInPageApi(
+    baseURL: string,
+    key: string,
+    rowId: string,
+    cellId: string,
+    updates: { colSpan: number, shouldRemoveEmptyCell?: boolean, shouldAddEmptyCell?: boolean }
+  ): Promise<ApiResponse<Page>> {
+    return fetchApi<Page>(`${baseURL}/pages/${key}/rows/${rowId}/cells/${cellId}`, {
+      method: 'PUT',
+      body: JSON.stringify({updates}),
+    });
+  }
+  

@@ -450,3 +450,98 @@ export const addRowToPage = async (
   const updatedPage = await updatePage(businessUnitKey, pageKey, newPage.value);
   return updatedPage;
 };
+
+export const updateCellSpanInPage = async (
+  businessUnitKey: string,
+  pageKey: string,
+  rowId: string,
+  cellId: string,
+  updates: {
+    colSpan: number;
+    shouldRemoveEmptyCell?: boolean;
+    shouldAddEmptyCell?: boolean;
+  }
+): Promise<ResolvedPage> => {
+  console.log('updateCellSpanInPage', { businessUnitKey, pageKey, rowId, cellId, updates });
+  const pageController = new CustomObjectController(CONTENT_PAGE_CONTAINER);
+  const page = await pageController.getCustomObject(pageKey);
+  const newLayout = JSON.parse(JSON.stringify(page.value.layout));
+  
+  console.log('newLayout', newLayout.rows[0].cells);
+
+  const rowIndex = newLayout.rows.findIndex(
+    (row: any) => row.id === rowId
+  );
+  if (rowIndex !== -1) {
+    const row = newLayout.rows[rowIndex];
+    const cellIndex = row.cells.findIndex((cell: any) => cell.id === cellId);
+
+    if (cellIndex !== -1) {
+      // Get the old span to calculate the difference
+      const oldSpan = row.cells[cellIndex].colSpan;
+      const spanDifference = updates.colSpan - oldSpan;
+
+      // Update the cell's span
+      row.cells[cellIndex].colSpan = updates.colSpan;
+
+      // If we're increasing the span and should remove empty cells
+      if (spanDifference > 0 && updates.shouldRemoveEmptyCell) {
+        // Find empty cells (cells with no component)
+        const emptyCells = row.cells
+          .map((cell: any, idx: any) => ({ cell, idx }))
+          .filter((item: any) => !item.cell.contentItemKey && item.idx !== cellIndex);
+
+        // Remove empty cells with accumulated colSpan up to span difference
+        if (emptyCells.length > 0) {
+          const cellsToRemove: { cell: any; idx: number }[] = [];
+          let accumulatedSpan = 0;
+
+          // Accumulate cells until their colSpan sum reaches spanDifference
+          for (const item of emptyCells) {
+            const cellColSpan = item.cell.colSpan || 1;
+            if (accumulatedSpan + cellColSpan <= spanDifference) {
+              cellsToRemove.push(item);
+              accumulatedSpan += cellColSpan;
+            }
+            
+            // Stop when we've accumulated enough span
+            if (accumulatedSpan >= spanDifference) {
+              break;
+            }
+          }
+
+          // Sort in reverse order to avoid index shifting when removing
+          cellsToRemove.sort((a: any, b: any) => b.idx - a.idx);
+
+          // Remove cells
+          for (const { idx } of cellsToRemove) {
+            row.cells.splice(idx, 1);
+          }
+        }
+      }
+
+      // If we're decreasing the span and should add empty cells
+      if (spanDifference < 0 && updates.shouldAddEmptyCell) {
+        // Create new empty cells
+        const newCells = Array(-spanDifference)
+          .fill(0)
+          .map(() => ({
+            id: uuidv4(),
+            contentItemKey: null,
+            colSpan: 1,
+          }));
+
+        // Add them after the current cell
+        row.cells.splice(cellIndex + 1, 0, ...newCells);
+      }
+
+    }
+
+  }
+  const newPage = {
+    ...page,
+    value: { ...page.value, layout: newLayout },
+  };
+  const updatedPage = await updatePage(businessUnitKey, pageKey, newPage.value);
+  return updatedPage;
+};

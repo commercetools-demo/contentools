@@ -1,12 +1,11 @@
-import { useStatePages } from '@commercetools-demo/contentools-state';
 import { ContentItem } from '@commercetools-demo/contentools-types';
+import { NUMBER_OF_COLUMNS } from '@commercetools-demo/contentools-state';
 import Card from '@commercetools-uikit/card';
 import Spacings from '@commercetools-uikit/spacings';
 import Text from '@commercetools-uikit/text';
-import React from 'react';
+import React, { useMemo } from 'react';
 import styled from 'styled-components';
 
-const NUMBER_OF_COLUMNS = 12;
 
 interface GridCellProps {
   cellId: string;
@@ -16,9 +15,10 @@ interface GridCellProps {
   selected: boolean;
   readonly?: boolean;
   rowCells: Array<{ id: string; contentItemKey: string | null; colSpan: number }>;
+  isIncreaseDisabled: boolean;
   onCellClick: (cellId: string, contentItemKey?: string) => void;
-  onIncreaseWidth: (cellId: string) => void;
-  onDecreaseWidth: (cellId: string) => void;
+  onIncreaseWidth: (cellId: string, colSpan: number) => void;
+  onDecreaseWidth: (cellId: string, colSpan: number) => void;
   activeComponentType?: any;
   onComponentToCurrentPage: (cellId: string) => Promise<void>;
 }
@@ -117,6 +117,7 @@ const GridCell: React.FC<GridCellProps> = ({
   onCellClick,
   onIncreaseWidth,
   onDecreaseWidth,
+  isIncreaseDisabled,
   onComponentToCurrentPage,
 }) => {
   const colWidth = (colSpan / NUMBER_OF_COLUMNS) * 100;
@@ -130,12 +131,12 @@ const GridCell: React.FC<GridCellProps> = ({
 
   const handleIncreaseWidth = (e: React.MouseEvent) => {
     e.stopPropagation();
-    onIncreaseWidth(cellId);
+    onIncreaseWidth(cellId, colSpan + 1);
   };
 
   const handleDecreaseWidth = (e: React.MouseEvent) => {
     e.stopPropagation();
-    onDecreaseWidth(cellId);
+    onDecreaseWidth(cellId, colSpan - 1);
   };
 
   const handleDragOver = (e: React.DragEvent) => {
@@ -163,21 +164,9 @@ const GridCell: React.FC<GridCellProps> = ({
     await onComponentToCurrentPage(cellId);
   };
 
-  const isIncreaseDisabled = () => {
-    if (readonly || colSpan >= NUMBER_OF_COLUMNS) return true;
-    
-    // Count empty cells (cells without components) excluding current cell
-    const emptyCells = rowCells.filter(c => !c.contentItemKey && c.id !== cellId);
-    
-    // If no empty cells to remove, disable increase
-    if (emptyCells.length === 0) return true;
-    
-    return false;
-  };
-
-  const isDecreaseDisabled = () => {
+  const isDecreaseDisabled = useMemo(() => {
     return readonly || colSpan <= 1;
-  };
+  }, [readonly, colSpan]);
 
   // In readonly mode, only render cells with components
   if (readonly && !hasComponent) {
@@ -211,14 +200,14 @@ const GridCell: React.FC<GridCellProps> = ({
         <CellResize className="cell-resize">
           <ResizeButton
             onClick={handleDecreaseWidth}
-            disabled={isDecreaseDisabled()}
+            disabled={isDecreaseDisabled }
             title="Decrease width"
           >
             -
           </ResizeButton>
           <ResizeButton
             onClick={handleIncreaseWidth}
-            disabled={isIncreaseDisabled()}
+            disabled={isIncreaseDisabled || colSpan >= NUMBER_OF_COLUMNS}
             title="Increase width"
           >
             +

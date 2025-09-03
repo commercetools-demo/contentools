@@ -1,10 +1,10 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { ContentItem } from '@commercetools-demo/contentools-types';
 import styled from 'styled-components';
 import GridCell from './grid-cell';
 import IconButton from '@commercetools-uikit/icon-button';
 import { BinLinearIcon } from '@commercetools-uikit/icons';
-
+import { NUMBER_OF_COLUMNS } from '@commercetools-demo/contentools-state';
 interface GridCellData {
   id: string;
   contentItemKey: string | null;
@@ -24,8 +24,8 @@ interface GridRowProps {
   readonly?: boolean;
   onCellClick: (rowId: string, cellId: string, componentId?: string) => void;
   onRemoveRow: (rowId: string) => void;
-  onIncreaseWidth: (rowId: string, cellId: string) => void;
-  onDecreaseWidth: (rowId: string, cellId: string) => void;
+  onIncreaseWidth: (rowId: string, cellId: string, colSpan: number) => void;
+  onDecreaseWidth: (rowId: string, cellId: string, colSpan: number) => void;
   onComponentToCurrentPage: (rowId: string, cellId: string) => Promise<void>;
 }
 
@@ -74,6 +74,11 @@ const GridRow: React.FC<GridRowProps> = ({
     );
   };
 
+  const isIncreaseDisabled = useMemo(() => {
+    return row.cells.reduce((acc, cell) => acc + cell.colSpan, 0) > NUMBER_OF_COLUMNS || !row.cells.some(cell => cell.colSpan === 1);
+  }, [row.cells]);
+
+
   const handleCellClick = (cellId: string, contentItemKey?: string) => {
     onCellClick(row.id, cellId, contentItemKey);
   };
@@ -84,12 +89,12 @@ const GridRow: React.FC<GridRowProps> = ({
     }
   };
 
-  const handleIncreaseWidth = (cellId: string) => {
-    onIncreaseWidth(row.id, cellId);
+  const handleIncreaseWidth = (cellId: string, colSpan: number) => {
+    onIncreaseWidth(row.id, cellId, colSpan);
   };
 
-  const handleDecreaseWidth = (cellId: string) => {
-    onDecreaseWidth(row.id, cellId);
+  const handleDecreaseWidth = (cellId: string, colSpan: number) => {
+    onDecreaseWidth(row.id, cellId, colSpan);
   };
 
   const handleComponentToCurrentPage = (cellId: string) => {
@@ -129,6 +134,7 @@ const GridRow: React.FC<GridRowProps> = ({
               onIncreaseWidth={handleIncreaseWidth}
               onDecreaseWidth={handleDecreaseWidth}
               onComponentToCurrentPage={handleComponentToCurrentPage}
+              isIncreaseDisabled={isIncreaseDisabled}
             />
           );
         })}

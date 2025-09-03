@@ -12,6 +12,7 @@ import {
   fetchPageEndpoint,
   fetchPagesEndpoint,
   removeRowFromPageApi,
+  updateCellSpanInPageApi,
   updatePageEndpoint,
 } from '../api/page';
 import {
@@ -311,6 +312,19 @@ export const usePages = (baseUrl: string) => {
     [saveToSessionStorage, state.currentPage]
   );
 
+  const updateCellSpanInCurrentPage = useCallback(
+    async (hydratedUrl: string, rowId: string, cellId: string, updates: { colSpan: number, shouldRemoveEmptyCell?: boolean, shouldAddEmptyCell?: boolean }) => {
+      if (!state.currentPage) return;
+      const updatedPage = await updateCellSpanInPageApi(hydratedUrl, state.currentPage.key, rowId, cellId, updates);
+      setState((prev) => ({
+        ...prev,
+        currentPage: updatedPage.value,
+        unsavedChanges: true,
+      }));
+      return updatedPage;
+    }, [saveToSessionStorage, state.currentPage]
+  );
+
   const updateComponentInCurrentPage = useCallback(
     (
       componentId: string,
@@ -402,6 +416,7 @@ export const usePages = (baseUrl: string) => {
     addComponentToCurrentPage,
     updateComponentInCurrentPage,
     removeComponentFromCurrentPage,
+    updateCellSpanInCurrentPage,
     clearError,
     clearUnsavedChanges,
   };

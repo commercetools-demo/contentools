@@ -163,4 +163,25 @@ pagesRouter.post(
   }
 );
 
+pagesRouter.put(
+  '/:businessUnitKey/pages/:key/rows/:rowId/cells/:cellId',
+  async (req, res, next) => {
+    try {
+      const { businessUnitKey, key, rowId, cellId } = req.params;
+      const { updates } = req.body;
+
+      const object = await PageController.updateCellSpanInPage(businessUnitKey, key, rowId, cellId, updates);
+      res.status(200).json(object);
+    } catch (error) {
+      logger.error(
+        `Failed to update cell span in page with key ${req.params.key}:`,
+        error
+      );
+
+      next(error);
+    }
+  }
+);
+
+
 export default pagesRouter;
