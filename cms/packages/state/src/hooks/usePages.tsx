@@ -11,14 +11,13 @@ import {
   deletePageEndpoint,
   fetchPageEndpoint,
   fetchPagesEndpoint,
+  removeComponentFromPageApi,
   removeRowFromPageApi,
   updateCellSpanInPageApi,
+  updateComponentInPageApi,
   updatePageEndpoint,
 } from '../api/page';
-import {
-  DEBOUNCE_DELAY,
-  LOCAL_STORAGE_KEY_PREFIX
-} from '../utils/constants';
+import { DEBOUNCE_DELAY, LOCAL_STORAGE_KEY_PREFIX } from '../utils/constants';
 import { debounce } from '../utils/debounce';
 
 const initialState: PagesState = {
@@ -78,7 +77,6 @@ const deletePageApi = async (baseUrl: string, key: string): Promise<void> => {
 };
 
 // Helper functions
-
 
 export const usePages = (baseUrl: string) => {
   const [state, setState] = useState<PagesState>(initialState);
@@ -184,30 +182,26 @@ export const usePages = (baseUrl: string) => {
     }
   }, []);
 
-  const deletePage = useCallback(
-    async (hydratedUrl: string, key: string) => {
-      try {
-        setState((prev) => ({ ...prev, loading: true, error: null }));
-        await deletePageApi(hydratedUrl, key);
+  const deletePage = useCallback(async (hydratedUrl: string, key: string) => {
+    try {
+      setState((prev) => ({ ...prev, loading: true, error: null }));
+      await deletePageApi(hydratedUrl, key);
 
-        setState((prev) => ({
-          ...prev,
-          pages: prev.pages.filter((p) => p.key !== key),
-          currentPage: prev.currentPage?.key === key ? null : prev.currentPage,
-          loading: false,
-        }));
-      } catch (error) {
-        setState((prev) => ({
-          ...prev,
-          loading: false,
-          error:
-            error instanceof Error ? error.message : 'Failed to delete page',
-        }));
-        throw error;
-      }
-    },
-    []
-  );
+      setState((prev) => ({
+        ...prev,
+        pages: prev.pages.filter((p) => p.key !== key),
+        currentPage: prev.currentPage?.key === key ? null : prev.currentPage,
+        loading: false,
+      }));
+    } catch (error) {
+      setState((prev) => ({
+        ...prev,
+        loading: false,
+        error: error instanceof Error ? error.message : 'Failed to delete page',
+      }));
+      throw error;
+    }
+  }, []);
 
   // Local actions
   const setCurrentPage = useCallback((key: string) => {
@@ -271,7 +265,10 @@ export const usePages = (baseUrl: string) => {
   const addRowToCurrentPage = useCallback(
     async (hydratedUrl: string) => {
       if (!state.currentPage) return;
-      const updatedPage = await addRowToPageApi(hydratedUrl, state.currentPage.key);
+      const updatedPage = await addRowToPageApi(
+        hydratedUrl,
+        state.currentPage.key
+      );
       console.log('updatedPage >>>>', updatedPage);
       setState((prev) => ({
         ...prev,
@@ -286,7 +283,11 @@ export const usePages = (baseUrl: string) => {
   const removeRowFromCurrentPage = useCallback(
     async (hydratedUrl: string, rowId: string) => {
       if (!state.currentPage) return;
-      const updatedPage = await removeRowFromPageApi(hydratedUrl, state.currentPage.key, rowId);
+      const updatedPage = await removeRowFromPageApi(
+        hydratedUrl,
+        state.currentPage.key,
+        rowId
+      );
       setState((prev) => ({
         ...prev,
         currentPage: updatedPage.value,
@@ -298,10 +299,21 @@ export const usePages = (baseUrl: string) => {
   );
 
   const addComponentToCurrentPage = useCallback(
-    async (hydratedUrl: string, componentType: string | null | undefined, rowId: string, cellId: string) => {
+    async (
+      hydratedUrl: string,
+      componentType: string | null | undefined,
+      rowId: string,
+      cellId: string
+    ) => {
       if (!state.currentPage) return;
       if (!componentType) return;
-      const updatedPage = await addComponentToPageApi(hydratedUrl, state.currentPage.key,componentType, rowId, cellId);
+      const updatedPage = await addComponentToPageApi(
+        hydratedUrl,
+        state.currentPage.key,
+        componentType,
+        rowId,
+        cellId
+      );
       setState((prev) => ({
         ...prev,
         currentPage: updatedPage.value,
@@ -313,77 +325,73 @@ export const usePages = (baseUrl: string) => {
   );
 
   const updateCellSpanInCurrentPage = useCallback(
-    async (hydratedUrl: string, rowId: string, cellId: string, updates: { colSpan: number, shouldRemoveEmptyCell?: boolean, shouldAddEmptyCell?: boolean }) => {
+    async (
+      hydratedUrl: string,
+      rowId: string,
+      cellId: string,
+      updates: {
+        colSpan: number;
+        shouldRemoveEmptyCell?: boolean;
+        shouldAddEmptyCell?: boolean;
+      }
+    ) => {
       if (!state.currentPage) return;
-      const updatedPage = await updateCellSpanInPageApi(hydratedUrl, state.currentPage.key, rowId, cellId, updates);
+      const updatedPage = await updateCellSpanInPageApi(
+        hydratedUrl,
+        state.currentPage.key,
+        rowId,
+        cellId,
+        updates
+      );
       setState((prev) => ({
         ...prev,
         currentPage: updatedPage.value,
         unsavedChanges: true,
       }));
       return updatedPage;
-    }, [saveToSessionStorage, state.currentPage]
+    },
+    [saveToSessionStorage, state.currentPage]
   );
 
   const updateComponentInCurrentPage = useCallback(
-    (
-      componentId: string,
-      updates: Partial<ContentItem>,
-      businessUnitKey: string
+    async (
+      hydratedUrl: string,
+      contentItemKey: string,
+      updates: Partial<ContentItem>
     ) => {
-      setState((prev) => {
-        if (!prev.currentPage) return prev;
-        // use direct api call to update content item
-
-        const components = prev.currentPage.components.map((c) =>
-          c.id === componentId ? { ...c, ...updates } : c
-        );
-        const updatedPage = { ...prev.currentPage, components };
-        const updatedPages = prev.pages.map((p) =>
-          p.key === prev.currentPage!.key ? updatedPage : p
-        );
-
-        // Save to session storage
-        saveToSessionStorage(updatedPages, businessUnitKey);
-
-        return {
-          ...prev,
-          pages: updatedPages,
-          currentPage: updatedPage,
-          unsavedChanges: true,
-        };
-      });
+      if (!state.currentPage) return;
+      const updatedPage = await updateComponentInPageApi(
+        hydratedUrl,
+        state.currentPage.key,
+        contentItemKey,
+        updates
+      );
+      setState((prev) => ({
+        ...prev,
+        currentPage: updatedPage.value,
+        unsavedChanges: true,
+      }));
+      return updatedPage;
     },
-    [saveToSessionStorage]
+    [saveToSessionStorage, state.currentPage]
   );
 
   const removeComponentFromCurrentPage = useCallback(
-    (componentId: string, businessUnitKey: string) => {
-      setState((prev) => {
-        if (!prev.currentPage) return prev;
-
-        // remove content item
-
-        const components = prev.currentPage.components.filter(
-          (c) => c.id !== componentId
-        );
-        const updatedPage = { ...prev.currentPage, components };
-        const updatedPages = prev.pages.map((p) =>
-          p.key === prev.currentPage!.key ? updatedPage : p
-        );
-
-        // Save to session storage
-        saveToSessionStorage(updatedPages, businessUnitKey);
-
-        return {
-          ...prev,
-          pages: updatedPages,
-          currentPage: updatedPage,
-          unsavedChanges: true,
-        };
-      });
+    async (hydratedUrl: string, contentItemKey: string) => {
+      if (!state.currentPage) return;
+      const updatedPage = await removeComponentFromPageApi(
+        hydratedUrl,
+        state.currentPage.key,
+        contentItemKey
+      );
+      setState((prev) => ({
+        ...prev,
+        currentPage: updatedPage.value,
+        unsavedChanges: true,
+      }));
+      return updatedPage;
     },
-    [saveToSessionStorage]
+    [saveToSessionStorage, state.currentPage]
   );
 
   const clearError = useCallback(() => {

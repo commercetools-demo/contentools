@@ -8,6 +8,8 @@ import {
 import { logger } from '../utils/logger.utils';
 import * as PageStateController from '../controllers/page-state-controller';
 import CustomError from '../errors/custom.error';
+import { CustomObjectController } from '../controllers/custom-object.controller';
+import { CONTENT_PAGE_CONTAINER } from '../constants';
 
 const pageStateRouter = Router();
 
@@ -42,45 +44,55 @@ pageStateRouter.get(
 );
 
 // Publish state (move draft to published)
-pageStateRouter.put(
-  '/:businessUnitKey/pages/:key/states/published',
-  (async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const { clearDraft } = req.query;
-      const { businessUnitKey, key } = req.params;
-      const { value } = req.body;
+pageStateRouter.put('/:businessUnitKey/pages/:key/states/published', (async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { clearDraft } = req.query;
+    const { businessUnitKey, key } = req.params;
+    const pageController = new CustomObjectController(CONTENT_PAGE_CONTAINER);
+    const page = await pageController.getCustomObject(key);
+    const item = page.value;
+    
+    console.log('item >> ', item);
+    
 
-      const state = await PageStateController.createPublishedState(
-        businessUnitKey,
-        key,
-        value,
-        clearDraft === 'true'
-      );
-      res.json(state);
-    } catch (error) {
-      logger.error('Failed to publish state:', error);
-      next(error);
-    }
-  }) as RequestHandler
-);
+    const state = await PageStateController.createPublishedState(
+      businessUnitKey,
+      key,
+      item,
+      clearDraft === 'true'
+    );
+
+    console.log('state >> ', state);
+    
+    res.json(state);
+  } catch (error) {
+    logger.error('Failed to publish state:', error);
+    next(error);
+  }
+}) as RequestHandler);
 
 // Delete draft state (revert to published)
-pageStateRouter.delete(
-  '/:businessUnitKey/pages/:key/states/draft',
-  (async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const { businessUnitKey, key } = req.params;
+pageStateRouter.delete('/:businessUnitKey/pages/:key/states/draft', (async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { businessUnitKey, key } = req.params;
 
-      const state = await PageStateController.deleteDraftState(
-        businessUnitKey,
-        key
-      );
-      res.json(state);
-    } catch (error) {
-      logger.error('Failed to delete draft state:', error);
-      next(error);
-    }
-  }) as RequestHandler
-);
+    const state = await PageStateController.deleteDraftState(
+      businessUnitKey,
+      key
+    );
+    res.json(state);
+  } catch (error) {
+    logger.error('Failed to delete draft state:', error);
+    next(error);
+  }
+}) as RequestHandler);
 
 export default pageStateRouter;

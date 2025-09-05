@@ -144,6 +144,52 @@ export const getPages = async (
   return pageWithStates;
 };
 
+export const getPublishedPage = async (
+  businessUnitKey: string,
+  key: string
+): Promise<ResolvedPage['value'] | undefined> => {
+  const pageController = new CustomObjectController(CONTENT_PAGE_CONTAINER);
+  const page = await pageController.getCustomObject(key, [
+    'value.components[*]',
+  ]);
+  const item = page.value;
+  const pageStates = await PageStateController.getPageStatesWithWhereClause(
+    `key = "${key}" AND businessUnitKey = "${businessUnitKey}"`,
+    ['value.states.draft.components[*]', 'value.states.published.components[*]']
+  );
+  if (pageStates.length > 0) {
+    if (pageStates[0].states.published) {
+      return resolveContentItemsInPageDatasource(
+        pageStates[0].states.published
+      );
+    }
+  }
+
+  return undefined;
+};
+
+export const getPreviewPage = async (
+  businessUnitKey: string,
+  key: string
+): Promise<ResolvedPage['value'] | undefined> => {
+  const pageController = new CustomObjectController(CONTENT_PAGE_CONTAINER);
+  const page = await pageController.getCustomObject(key, [
+    'value.components[*]',
+  ]);
+  const item = page.value;
+  const pageStates = await PageStateController.getPageStatesWithWhereClause(
+    `key = "${key}" AND businessUnitKey = "${businessUnitKey}"`,
+    ['value.states.draft.components[*]', 'value.states.published.components[*]']
+  );
+  if (pageStates.length > 0) {
+    if (pageStates[0].states.draft) {
+      return resolveContentItemsInPageDatasource(pageStates[0].states.draft);
+    }
+  }
+
+  return undefined;
+};
+
 export const getPageWithStates = async (
   businessUnitKey: string,
   key: string
@@ -159,36 +205,24 @@ export const getPageWithStates = async (
   );
   if (pageStates.length > 0) {
     if (pageStates[0].states.draft) {
-      return resolveContentItemsInPageDatasource(pageStates[0].states.draft);
+      return mapPageContentItems({
+        ...page,
+        value: pageStates[0].states.draft,
+      }).value;
     } else if (pageStates[0].states.published) {
-      return resolveContentItemsInPageDatasource(
-        pageStates[0].states.published
-      );
+      return mapPageContentItems({
+        ...page,
+        value: pageStates[0].states.published,
+      }).value;
     }
   }
 
-  return resolveContentItemsInPageDatasource(item);
+  return mapPageContentItems({
+    ...page,
+    value: item,
+  }).value;
 };
 
-export const getPublishedContentItem = async (
-  businessUnitKey: string,
-  key: string
-): Promise<ResolvedPage['value'] | undefined> => {
-  const contentStates = await PageStateController.getPageStatesWithWhereClause(
-    `key = "${key}" AND businessUnitKey = "${businessUnitKey}"`,
-    ['value.components[*]']
-  );
-
-  if (contentStates.length > 0) {
-    if (contentStates[0].states.published) {
-      return resolveContentItemsInPageDatasource(
-        contentStates[0].states.published
-      );
-    }
-  }
-
-  return undefined;
-};
 
 export const queryPublishedPage = async (
   businessUnitKey: string,
@@ -462,16 +496,11 @@ export const updateCellSpanInPage = async (
     shouldAddEmptyCell?: boolean;
   }
 ): Promise<ResolvedPage> => {
-  console.log('updateCellSpanInPage', { businessUnitKey, pageKey, rowId, cellId, updates });
   const pageController = new CustomObjectController(CONTENT_PAGE_CONTAINER);
   const page = await pageController.getCustomObject(pageKey);
   const newLayout = JSON.parse(JSON.stringify(page.value.layout));
-  
-  console.log('newLayout', newLayout.rows[0].cells);
 
-  const rowIndex = newLayout.rows.findIndex(
-    (row: any) => row.id === rowId
-  );
+  const rowIndex = newLayout.rows.findIndex((row: any) => row.id === rowId);
   if (rowIndex !== -1) {
     const row = newLayout.rows[rowIndex];
     const cellIndex = row.cells.findIndex((cell: any) => cell.id === cellId);
@@ -489,7 +518,9 @@ export const updateCellSpanInPage = async (
         // Find empty cells (cells with no component)
         const emptyCells = row.cells
           .map((cell: any, idx: any) => ({ cell, idx }))
-          .filter((item: any) => !item.cell.contentItemKey && item.idx !== cellIndex);
+          .filter(
+            (item: any) => !item.cell.contentItemKey && item.idx !== cellIndex
+          );
 
         // Remove empty cells with accumulated colSpan up to span difference
         if (emptyCells.length > 0) {
@@ -503,7 +534,7 @@ export const updateCellSpanInPage = async (
               cellsToRemove.push(item);
               accumulatedSpan += cellColSpan;
             }
-            
+
             // Stop when we've accumulated enough span
             if (accumulatedSpan >= spanDifference) {
               break;
@@ -534,13 +565,92 @@ export const updateCellSpanInPage = async (
         // Add them after the current cell
         row.cells.splice(cellIndex + 1, 0, ...newCells);
       }
-
     }
-
   }
   const newPage = {
     ...page,
     value: { ...page.value, layout: newLayout },
+  };
+  const updatedPage = await updatePage(businessUnitKey, pageKey, newPage.value);
+  return updatedPage;
+};
+
+export const updateComponentInPage = async (
+  businessUnitKey: string,
+  pageKey: string,
+  contentItemKey: string,
+  updates: Partial<ContentItem>
+): Promise<ResolvedPage> => {
+  const pageController = new CustomObjectController(CONTENT_PAGE_CONTAINER);
+  const page = await pageController.getCustomObject(pageKey, [
+    'value.components[*]',
+  ]);
+
+  if (
+    !page.value.components.some(
+      (component: ContentItemReference) => component.obj?.key === contentItemKey
+    )
+  ) {
+    throw new CustomError(400, 'Component not found');
+  }
+
+  const pageItemController = new CustomObjectController(PAGE_ITEMS_CONTAINER);
+
+  await pageItemController.updateCustomObject(contentItemKey, {
+    ...updates,
+    businessUnitKey,
+  });
+  const newPage = await getPage(pageKey);
+  await PageStateController.createDraftState(businessUnitKey, pageKey, newPage.value);
+  await PageVersionController.createContentVersion(businessUnitKey, pageKey, newPage.value);
+  return newPage;
+};
+
+export const removeComponentFromPage = async (
+  businessUnitKey: string,
+  pageKey: string,
+  contentItemKey: string
+): Promise<ResolvedPage> => {
+  const pageController = new CustomObjectController(CONTENT_PAGE_CONTAINER);
+  const page = await pageController.getCustomObject(pageKey, [
+    'value.components[*]',
+  ]);
+  const newLayout = JSON.parse(JSON.stringify(page.value.layout));
+
+  if (
+    !page.value.components.some(
+      (component: ContentItemReference) => component.obj?.key === contentItemKey
+    )
+  ) {
+    throw new CustomError(400, 'Component not found');
+  }
+
+  const rowIndex = newLayout.rows.findIndex((row: GridRow) =>
+    row.cells.some((cell: GridCell) => cell.contentItemKey === contentItemKey)
+  );
+  if (rowIndex === -1) {
+    throw new CustomError(400, 'Component not found in row');
+  }
+  const row = newLayout.rows[rowIndex];
+  const cellIndex = row.cells.findIndex(
+    (cell: GridCell) => cell.contentItemKey === contentItemKey
+  );
+  if (cellIndex === -1) {
+    throw new CustomError(400, 'Component not found in cell');
+  }
+  row.cells[cellIndex].contentItemKey = null;
+
+  const pageItemController = new CustomObjectController(PAGE_ITEMS_CONTAINER);
+  const deletedPageItem = await pageItemController
+    .deleteCustomObject(contentItemKey)
+    .then((result) => result.body);
+
+  const newComponents = page.value.components.filter(
+    (component: ContentItemReference) => component.id !== deletedPageItem.id
+  );
+  const newPage = {
+    ...page,
+    value: { ...page.value, components: newComponents, layout: newLayout },
   };
   const updatedPage = await updatePage(businessUnitKey, pageKey, newPage.value);
   return updatedPage;

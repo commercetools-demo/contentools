@@ -209,7 +209,8 @@ const PagesEdit: React.FC<Props> = ({
   const handlePublish = async () => {
     if (currentPage?.key) {
       await publish(hydratedUrl, currentPage, currentPage.key, 'pages', true);
-      fetchPage(hydratedUrl, pageKey);
+      fetchStates(hydratedUrl, currentPage.key, 'pages');
+      fetchVersions(hydratedUrl, currentPage.key, 'pages');
     }
   };
 
@@ -342,7 +343,6 @@ const PagesEdit: React.FC<Props> = ({
       <ComponentEditorModal
         isOpen={componentEditorModal.isModalOpen}
         onClose={handleCloseComponentEditor}
-        page={currentPage}
         selectedContentItemKey={selectedContentItemKey}
         baseURL={baseURL}
         businessUnitKey={businessUnitKey}

@@ -45,9 +45,10 @@ interface PropertyEditorProps {
   baseURL: string;
   businessUnitKey: string;
   versionedContent?: ContentItem | null;
+  showDeleteButton?: boolean;
   onChange: (component: ContentItem) => void;
   onComponentUpdated: (component: ContentItem) => void;
-  onComponentDeleted?: (componentId: string) => void;
+  onComponentDeleted?: (componentKey: string) => void;
 }
 
 const PropertyEditor: React.FC<PropertyEditorProps> = ({
@@ -56,6 +57,7 @@ const PropertyEditor: React.FC<PropertyEditorProps> = ({
   metadata: metadataProp,
   businessUnitKey,
   versionedContent = null,
+  showDeleteButton = false,
   onChange,
   onComponentUpdated,
   onComponentDeleted,
@@ -201,7 +203,7 @@ const PropertyEditor: React.FC<PropertyEditorProps> = ({
 
   const handleDelete = useCallback(() => {
     if (onComponentDeleted) {
-      onComponentDeleted(component.id);
+      onComponentDeleted(component.key);
       setShowDeleteConfirm(false);
     }
   }, [component.id, onComponentDeleted]);
@@ -381,6 +383,13 @@ const PropertyEditor: React.FC<PropertyEditorProps> = ({
                     label="Save Changes"
                     isDisabled={!formik.isValid}
                   />
+                  {showDeleteButton && (
+                    <PrimaryButton
+                      label="Delete"
+                      tone='critical'
+                      onClick={() => setShowDeleteConfirm(true)}
+                    />
+                  )}
                 </ActionsContainer>
               </Spacings.Stack>
             </Card>
@@ -403,13 +412,6 @@ const PropertyEditor: React.FC<PropertyEditorProps> = ({
               Are you sure you want to delete the component "{component.name}"?
               This action cannot be undone.
             </Text.Body>
-            <Spacings.Inline scale="s" justifyContent="flex-end">
-              <SecondaryButton
-                label="Cancel"
-                onClick={() => setShowDeleteConfirm(false)}
-              />
-              <PrimaryButton label="Delete" onClick={handleDelete} />
-            </Spacings.Inline>
           </Spacings.Stack>
         </ConfirmationModal>
       )}
