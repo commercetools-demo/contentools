@@ -6,12 +6,19 @@ import {
   RequestHandler,
 } from 'express';
 import { logger } from '../utils/logger.utils';
-import * as PageStateController from '../controllers/page-state-controller';
+import { withDependencies, StateControllerDependencies } from '../controllers/content-state-controller';
 import CustomError from '../errors/custom.error';
 import { CustomObjectController } from '../controllers/custom-object.controller';
-import { CONTENT_PAGE_CONTAINER } from '../constants';
+import { CONTENT_PAGE_CONTAINER, PAGE_STATE_CONTAINER } from '../constants';
+import { PageState } from '../controllers/page.controller';
+
 
 const pageStateRouter = Router();
+const dependencies: StateControllerDependencies = {
+  CONTENT_CONTAINER: CONTENT_PAGE_CONTAINER,
+  CONTENT_STATE_CONTAINER: PAGE_STATE_CONTAINER,
+};
+const PageStateController = withDependencies<PageState>(dependencies);
 
 // Get states for a content item
 pageStateRouter.get(

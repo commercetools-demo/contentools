@@ -6,10 +6,17 @@ import {
   RequestHandler,
 } from 'express';
 import { logger } from '../utils/logger.utils';
-import * as ContentStateController from '../controllers/content-state-controller';
+import {StateControllerDependencies, withDependencies} from '../controllers/content-state-controller';
 import CustomError from '../errors/custom.error';
+import { CONTENT_ITEM_CONTAINER, CONTENT_ITEM_STATE_CONTAINER } from '../constants';
+import { ContentItemState } from '../controllers/content-item.controller';
 
 const contentItemStateRouter = Router();
+const dependencies: StateControllerDependencies = {
+  CONTENT_CONTAINER: CONTENT_ITEM_CONTAINER,
+  CONTENT_STATE_CONTAINER: CONTENT_ITEM_STATE_CONTAINER,
+};
+const ContentStateController = withDependencies<ContentItemState>(dependencies);
 
 // Get states for a content item
 contentItemStateRouter.get(

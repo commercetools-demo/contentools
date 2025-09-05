@@ -1,11 +1,14 @@
 import { v4 as uuidv4 } from 'uuid';
 import {
   CONTENT_PAGE_CONTAINER,
+  MAX_VERSIONS,
   NUMBER_OF_COLUMNS,
   PAGE_ITEMS_CONTAINER,
+  PAGE_STATE_CONTAINER,
+  PAGE_VERSION_CONTAINER,
 } from '../constants';
-import * as PageStateController from './page-state-controller';
-import * as PageVersionController from './page-version-controller';
+import { withDependencies as withContentStateDependencies } from './content-state-controller';
+import { withDependencies as withContentVersionDependencies } from './content-version-controller';
 import { CustomObjectController } from './custom-object.controller';
 import {
   ContentItem,
@@ -14,6 +17,17 @@ import {
 import CustomError from '../errors/custom.error';
 import { mapPageContentItems } from '../mappers/page';
 
+export interface PageVersion {
+  key: string;
+  businessUnitKey: string;
+  versions: Array<Page['value']>;
+}
+
+export interface PageState {
+  key: string;
+  businessUnitKey: string;
+  states: Record<string, Page['value'] | undefined>;
+}
 export interface ContentItemReference {
   id: string;
   typeId: string;
@@ -102,6 +116,16 @@ export const resolveContentItemsInPageDatasource = async (
   };
 };
 
+const PageStateController = withContentStateDependencies<PageState>({
+  CONTENT_CONTAINER: CONTENT_PAGE_CONTAINER,
+  CONTENT_STATE_CONTAINER: PAGE_STATE_CONTAINER,
+});
+
+const PageVersionController = withContentVersionDependencies<PageVersion>({
+  CONTENT_VERSION_CONTAINER: PAGE_VERSION_CONTAINER,
+  MAX_VERSIONS: MAX_VERSIONS,
+});
+
 export const getPages = async (
   businessUnitKey: string,
   criteria?: string
@@ -130,7 +154,7 @@ export const getPages = async (
     )
     .join(' OR ');
   const pageStates = whereClause
-    ? await PageStateController.getPageStatesWithWhereClause(whereClause)
+    ? await PageStateController.getContentStatesWithWhereClause(whereClause)
     : [];
   const pageWithStates = contentItems.map((item) => {
     const states = pageStates.find((state) => state.key === item.key);
@@ -152,7 +176,7 @@ export const getPublishedPage = async (
     'value.components[*]',
   ]);
   const item = page.value;
-  const pageStates = await PageStateController.getPageStatesWithWhereClause(
+  const pageStates = await PageStateController.getContentStatesWithWhereClause(
     `key = "${key}" AND businessUnitKey = "${businessUnitKey}"`,
     ['value.states.draft.components[*]', 'value.states.published.components[*]']
   );
@@ -176,7 +200,7 @@ export const getPreviewPage = async (
     'value.components[*]',
   ]);
   const item = page.value;
-  const pageStates = await PageStateController.getPageStatesWithWhereClause(
+  const pageStates = await PageStateController.getContentStatesWithWhereClause(
     `key = "${key}" AND businessUnitKey = "${businessUnitKey}"`,
     ['value.states.draft.components[*]', 'value.states.published.components[*]']
   );
@@ -198,7 +222,7 @@ export const getPageWithStates = async (
     'value.components[*]',
   ]);
   const item = page.value;
-  const pageStates = await PageStateController.getPageStatesWithWhereClause(
+  const pageStates = await PageStateController.getContentStatesWithWhereClause(
     `key = "${key}" AND businessUnitKey = "${businessUnitKey}"`,
     ['value.states.draft.components[*]', 'value.states.published.components[*]']
   );
@@ -222,7 +246,6 @@ export const getPageWithStates = async (
   }).value;
 };
 
-
 export const queryPublishedPage = async (
   businessUnitKey: string,
   query: string
@@ -238,10 +261,11 @@ export const queryPublishedPage = async (
     return undefined;
   }
 
-  const contentStates = await PageStateController.getPageStatesWithWhereClause(
-    `key = "${pages[0].key}" AND businessUnitKey = "${businessUnitKey}"`,
-    ['value.components[*]']
-  );
+  const contentStates =
+    await PageStateController.getContentStatesWithWhereClause(
+      `key = "${pages[0].key}" AND businessUnitKey = "${businessUnitKey}"`,
+      ['value.components[*]']
+    );
 
   if (contentStates.length > 0) {
     if (contentStates[0].states.published) {
@@ -268,10 +292,11 @@ export const queryPage = async (
     return undefined;
   }
 
-  const contentStates = await PageStateController.getPageStatesWithWhereClause(
-    `key = "${pages[0].key}" AND businessUnitKey = "${businessUnitKey}"`,
-    ['value.components[*]']
-  );
+  const contentStates =
+    await PageStateController.getContentStatesWithWhereClause(
+      `key = "${pages[0].key}" AND businessUnitKey = "${businessUnitKey}"`,
+      ['value.components[*]']
+    );
 
   if (contentStates.length > 0) {
     if (contentStates[0].states.draft) {
@@ -599,7 +624,7 @@ export const updateComponentInPage = async (
     ...updates,
     businessUnitKey,
   });
-  const newPage =  await pageController.getCustomObject(pageKey, [
+  const newPage = await pageController.getCustomObject(pageKey, [
     'value.components[*]',
   ]);
   return mapPageContentItems(newPage);

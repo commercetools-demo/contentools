@@ -1,49 +1,64 @@
 import { CustomObjectController } from './custom-object.controller';
-import { CONTENT_ITEM_CONTAINER, CONTENT_ITEM_STATE_CONTAINER } from '../constants';
 import CustomError from '../errors/custom.error';
 
-export interface ContentItemState {
+interface GenericState {
   key: string;
   businessUnitKey: string;
   states: Record<string, any>;
 }
 
-export const getContentStatesWithWhereClause = async (
-  whereClause: string
-): Promise<ContentItemState[]> => {
+export interface StateControllerDependencies {
+  CONTENT_CONTAINER: string;
+  CONTENT_STATE_CONTAINER: string;
+}
+
+// Internal function that accepts dependencies
+const _getContentStatesWithWhereClause = async<T> (
+  dependencies: StateControllerDependencies,
+  whereClause: string,
+  expand?: string[]
+
+): Promise<T[]> => {
   const contentStateController = new CustomObjectController(
-    CONTENT_ITEM_STATE_CONTAINER
+    dependencies.CONTENT_STATE_CONTAINER
   );
   const contentStates = await contentStateController.getCustomObjects(
-    `value(${whereClause})`
+    `value(${whereClause})`,
+    expand
   );
   return contentStates.map((state) => state.value);
 };
 
-export const getState = async (key: string): Promise<ContentItemState> => {
+// Internal function that accepts dependencies
+const _getState = async<T> (
+  dependencies: StateControllerDependencies,
+  key: string
+): Promise<T> => {
   const contentStateController = new CustomObjectController(
-    CONTENT_ITEM_STATE_CONTAINER
+    dependencies.CONTENT_STATE_CONTAINER
   );
   const contentState = await contentStateController.getCustomObject(key);
   return contentState.value;
 };
 
-export const createDraftState = async (
+// Internal function that accepts dependencies
+const _createDraftState = async<T extends GenericState> (
+  dependencies: StateControllerDependencies,
   businessUnitKey: string,
   key: string,
   value: any
-): Promise<ContentItemState> => {
+): Promise<T> => {
   const stateKey = `${businessUnitKey}_${key}`;
-  let existingState: ContentItemState;
+  let existingState: T;
   try {
-    existingState = await getState(stateKey);
+    existingState = await _getState(dependencies, stateKey);
   } catch (error) {
     if ((error as any).statusCode === 404) {
       existingState = {
         key,
         businessUnitKey,
         states: {},
-      };
+      } as T;
     } else {
       throw new CustomError(500, 'Failed to create draft state'); 
     }
@@ -54,7 +69,7 @@ export const createDraftState = async (
   };
 
   const contentStateController = new CustomObjectController(
-    CONTENT_ITEM_STATE_CONTAINER
+    dependencies.CONTENT_STATE_CONTAINER
   );
   const contentState = await contentStateController.updateCustomObject(
     stateKey,
@@ -63,23 +78,25 @@ export const createDraftState = async (
   return contentState.value;
 };
 
-export const createPublishedState = async (
+// Internal function that accepts dependencies
+const _createPublishedState = async<T extends GenericState> (
+  dependencies: StateControllerDependencies,
   businessUnitKey: string,
   key: string,
   value: any,
   clear?: boolean
-): Promise<ContentItemState> => {
+): Promise<T> => {
   const stateKey = `${businessUnitKey}_${key}`;
-  let existingState: ContentItemState;
+  let existingState: T;
   try {
-    existingState = await getState(stateKey);
+    existingState = await _getState(dependencies, stateKey);
   } catch (error) {
     if ((error as any).statusCode === 404) {
       existingState = {
         key,
         businessUnitKey,
         states: {},
-      };
+      } as T;
     } else {
       throw new CustomError(500, 'Failed to create published state');
     }
@@ -96,7 +113,7 @@ export const createPublishedState = async (
   }
 
   const contentStateController = new CustomObjectController(
-    CONTENT_ITEM_STATE_CONTAINER
+    dependencies.CONTENT_STATE_CONTAINER
   );
   const contentState = await contentStateController.updateCustomObject(
     stateKey,
@@ -105,21 +122,23 @@ export const createPublishedState = async (
   return contentState.value;
 };
 
-export const deleteDraftState = async (
+// Internal function that accepts dependencies
+const _deleteDraftState = async<T extends GenericState> (
+  dependencies: StateControllerDependencies,
   businessUnitKey: string,
   key: string
-): Promise<ContentItemState> => {
+): Promise<T> => {
   const stateKey = `${businessUnitKey}_${key}`;
-  let existingState: ContentItemState;
+  let existingState: T;
   try {
-    existingState = await getState(stateKey);
+    existingState = await _getState(dependencies, stateKey);
   } catch (error) {
     if ((error as any).statusCode === 404) {
       existingState = {
         key,
         businessUnitKey,
         states: {},
-      };
+      } as T;
     } else {
       throw new CustomError(500, 'Failed to delete draft state');
     }
@@ -135,11 +154,11 @@ export const deleteDraftState = async (
   };
 
   const contentItemController = new CustomObjectController(
-    CONTENT_ITEM_CONTAINER
+    dependencies.CONTENT_CONTAINER
   );
 
   const contentStateController = new CustomObjectController(
-    CONTENT_ITEM_STATE_CONTAINER
+    dependencies.CONTENT_STATE_CONTAINER
   );
   await contentItemController.updateCustomObject(key, {
     ...existingState.states.published,
@@ -153,13 +172,36 @@ export const deleteDraftState = async (
   return contentState.value;
 };
 
-export const deleteStates = async (
-    businessUnitKey: string,
-    key: string
+// Internal function that accepts dependencies
+const _deleteStates = async (
+  dependencies: StateControllerDependencies,
+  businessUnitKey: string,
+  key: string
 ): Promise<void> => {
   const stateKey = `${businessUnitKey}_${key}`;
   const contentStateController = new CustomObjectController(
-    CONTENT_ITEM_STATE_CONTAINER
+    dependencies.CONTENT_STATE_CONTAINER
   );
   await contentStateController.deleteCustomObject(stateKey);
 };
+
+// Higher-order function that injects dependencies
+export const withDependencies = <T extends GenericState>(dependencies: StateControllerDependencies) => ({
+  getContentStatesWithWhereClause: (whereClause: string, expand?: string[]) =>
+    _getContentStatesWithWhereClause<T>(dependencies, whereClause, expand),
+  
+  getState: (key: string) =>
+    _getState<T>(dependencies, key),
+  
+  createDraftState: (businessUnitKey: string, key: string, value: any) =>
+    _createDraftState<T>(dependencies, businessUnitKey, key, value),
+  
+  createPublishedState: (businessUnitKey: string, key: string, value: any, clear?: boolean) =>
+    _createPublishedState<T>(dependencies, businessUnitKey, key, value, clear),
+  
+  deleteDraftState: (businessUnitKey: string, key: string) =>
+    _deleteDraftState<T>(dependencies, businessUnitKey, key),
+  
+  deleteStates: (businessUnitKey: string, key: string) =>
+    _deleteStates(dependencies, businessUnitKey, key),
+});

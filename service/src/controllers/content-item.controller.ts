@@ -1,12 +1,43 @@
 import { v4 as uuidv4 } from 'uuid';
-import { CONTENT_ITEM_CONTAINER, CONTENT_TYPE_CONTAINER } from '../constants';
+import {
+  CONTENT_ITEM_CONTAINER,
+  CONTENT_ITEM_STATE_CONTAINER,
+  CONTENT_ITEM_VERSION_CONTAINER,
+  CONTENT_TYPE_CONTAINER,
+  MAX_VERSIONS,
+} from '../constants';
 import { sampleContentTypeRegistry } from '../utils/constants';
 import { logger } from '../utils/logger.utils';
-import * as ContentStateController from './content-state-controller';
-import * as ContentVersionController from './content-version-controller';
+import {
+  withDependencies as withContentStateDependencies,
+  StateControllerDependencies,
+} from './content-state-controller';
+import {ContentVersionControllerDependencies, withDependencies as withContentVersionDependencies} from './content-version-controller';
 import { CustomObjectController } from './custom-object.controller';
 import { resolveDatasource } from './datasource-resolution.route';
 import CustomError from '../errors/custom.error';
+
+export interface ContentItemState {
+  key: string;
+  businessUnitKey: string;
+  states: Record<string, any>;
+}
+export interface ContentItemVersion {
+  key: string;
+  businessUnitKey: string;
+  versions: Array<ContentItem['value']>;
+}
+
+const ContentStateController = withContentStateDependencies<ContentItemState>({
+  CONTENT_CONTAINER: CONTENT_ITEM_CONTAINER,
+  CONTENT_STATE_CONTAINER: CONTENT_ITEM_STATE_CONTAINER,
+});
+
+const ContentVersionController = withContentVersionDependencies<ContentItemVersion>({
+  CONTENT_VERSION_CONTAINER: CONTENT_ITEM_VERSION_CONTAINER,
+  MAX_VERSIONS: MAX_VERSIONS,
+});
+
 
 // Define types for our objects
 export interface ContentItem {
@@ -140,7 +171,6 @@ const resolveDatasourceProperties = async (
       );
     }
   }
-
 
   return clonedContentItem;
 };
