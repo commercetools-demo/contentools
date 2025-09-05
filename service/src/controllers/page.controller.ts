@@ -16,7 +16,6 @@ import { mapPageContentItems } from '../mappers/page';
 
 export interface ContentItemReference {
   id: string;
-  key?: string;
   typeId: string;
   obj?: ContentItem;
 }
@@ -61,7 +60,7 @@ export interface ResolvedPage {
     name: string;
     route: string;
     layout: Layout;
-    components: ContentItem[];
+    components: ContentItem['value'][];
   };
   [key: string]: any;
 }
@@ -600,10 +599,10 @@ export const updateComponentInPage = async (
     ...updates,
     businessUnitKey,
   });
-  const newPage = await getPage(pageKey);
-  await PageStateController.createDraftState(businessUnitKey, pageKey, newPage.value);
-  await PageVersionController.createContentVersion(businessUnitKey, pageKey, newPage.value);
-  return newPage;
+  const newPage =  await pageController.getCustomObject(pageKey, [
+    'value.components[*]',
+  ]);
+  return mapPageContentItems(newPage);
 };
 
 export const removeComponentFromPage = async (
