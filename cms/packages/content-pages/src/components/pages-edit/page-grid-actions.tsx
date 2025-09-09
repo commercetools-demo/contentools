@@ -1,3 +1,4 @@
+import { EStateType } from '@commercetools-demo/contentools-types';
 import IconButton from '@commercetools-uikit/icon-button';
 import { ClockIcon, GearIcon, GridIcon, ListWithSearchIcon, SubdirectoryArrowIcon } from '@commercetools-uikit/icons';
 import PrimaryActionDropdown, {
@@ -20,7 +21,7 @@ interface PageGridActionsProps {
   onTogglePageSettings: () => void;
   onTogglePageLibrary: () => void;
   onAddRow: () => void;
-  currentState: 'draft' | 'published' | 'both' | null;
+  currentState: EStateType | null;
   onViewJson: (isPreview: boolean) => void;
   onRevert: () => void;
   onPublish: () => void;
@@ -39,11 +40,11 @@ const PageGridActions: React.FC<PageGridActionsProps> = ({
 }) => {
   const getStampTone = () => {
     switch (currentState) {
-      case 'draft':
+      case EStateType.DRAFT:
         return 'information';
-      case 'published':
+      case EStateType.PUBLISHED:
         return 'positive';
-      case 'both':
+      case EStateType.BOTH:
         return 'warning';
       default:
         return 'information';
@@ -97,7 +98,7 @@ const PageGridActions: React.FC<PageGridActionsProps> = ({
             <Option
               iconLeft={<ListWithSearchIcon />}
               isDisabled={
-                currentState !== 'published' && currentState !== 'both'
+                currentState !== EStateType.PUBLISHED && currentState !== EStateType.BOTH
               }
               onClick={() => onViewJson(false)}
             >
@@ -106,7 +107,7 @@ const PageGridActions: React.FC<PageGridActionsProps> = ({
           </PrimaryActionDropdown>
 
           <Spacings.Inline>
-            {(currentState === 'draft' || currentState === 'both') && (
+            {(currentState === EStateType.DRAFT || currentState === EStateType.BOTH) && (
               <SecondaryButton
                 size="20"
                 label="Revert to Published"
@@ -114,7 +115,7 @@ const PageGridActions: React.FC<PageGridActionsProps> = ({
               />
             )}
 
-            {currentState !== 'published' && (
+            {currentState !== EStateType.PUBLISHED && (
               <PrimaryButton size="20" label="Publish" onClick={onPublish} />
             )}
           </Spacings.Inline>

@@ -1,3 +1,4 @@
+import { EStateType } from '@commercetools-demo/contentools-types';
 import IconButton from '@commercetools-uikit/icon-button';
 import { ClockIcon, ListWithSearchIcon } from '@commercetools-uikit/icons';
 import PrimaryActionDropdown, {
@@ -17,7 +18,7 @@ const StyledStamp = styled.span`
 interface ContentItemActionsProps {
   showVersionHistory: boolean;
   onToggleVersionHistory: () => void;
-  currentState: 'draft' | 'published' | 'both' | null;
+  currentState: EStateType | null;
   onViewJson: (isPreview: boolean) => void;
   onRevert: () => void;
   onPublish: () => void;
@@ -33,11 +34,11 @@ const ContentItemActions: React.FC<ContentItemActionsProps> = ({
 }) => {
   const getStampTone = () => {
     switch (currentState) {
-      case 'draft':
+      case EStateType.DRAFT:
         return 'information';
-      case 'published':
+      case EStateType.PUBLISHED:
         return 'positive';
-      case 'both':
+      case EStateType.BOTH:
         return 'warning';
       default:
         return 'information';
@@ -73,7 +74,7 @@ const ContentItemActions: React.FC<ContentItemActionsProps> = ({
             <Option
               iconLeft={<ListWithSearchIcon />}
               isDisabled={
-                currentState !== 'published' && currentState !== 'both'
+                currentState !== EStateType.PUBLISHED && currentState !== EStateType.BOTH
               }
               onClick={() => onViewJson(false)}
             >
@@ -82,7 +83,7 @@ const ContentItemActions: React.FC<ContentItemActionsProps> = ({
           </PrimaryActionDropdown>
 
           <Spacings.Inline>
-            {(currentState === 'draft' || currentState === 'both') && (
+            {(currentState === EStateType.DRAFT || currentState === EStateType.BOTH) && (
               <SecondaryButton
                 size="20"
                 label="Revert to Published"
@@ -90,7 +91,7 @@ const ContentItemActions: React.FC<ContentItemActionsProps> = ({
               />
             )}
 
-            {currentState !== 'published' && (
+            {currentState !== EStateType.PUBLISHED && (
               <PrimaryButton size="20" label="Publish" onClick={onPublish} />
             )}
           </Spacings.Inline>

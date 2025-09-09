@@ -123,7 +123,6 @@ const resolveContentItemsInPage = async (
       return contentItem;
     })
   )) as ContentItem['value'][];
-  console.log('allComponents', allComponents.filter(Boolean));
   return {
     ...page,
     components: allComponents.filter(Boolean),
@@ -197,15 +196,15 @@ export const getPreviewPage = async (
   const item = page.value;
   const pageState = await PageStateController.getFirstContentWithState<
     Page['value']
-  >(`key = "${key}" AND businessUnitKey = "${businessUnitKey}"`, 'draft', [
+  >(`key = "${key}" AND businessUnitKey = "${businessUnitKey}"`, ['draft', 'published'], [
     'value.states.draft.components[*]',
     'value.states.published.components[*]',
   ]);
   if (pageState) {
-    return resolveContentItemsInPage(businessUnitKey, pageState, 'draft');
+    return resolveContentItemsInPage(businessUnitKey, pageState, ['draft', 'published']);
   }
 
-  return resolveContentItemsInPage(businessUnitKey, item, 'draft');
+  return resolveContentItemsInPage(businessUnitKey, item, ['draft', 'published']);
 };
 
 export const getPageWithStates = async (

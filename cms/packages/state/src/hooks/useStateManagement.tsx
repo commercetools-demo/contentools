@@ -5,6 +5,8 @@ import {
   ContentItemStates,
   PageStates,
   StateManagementState,
+  EContentType,
+  EStateType,
 } from '@commercetools-demo/contentools-types';
 import {
   getStatesEndpoint,
@@ -23,13 +25,13 @@ const initialState: StateManagementState = {
 function determineCurrentState(states: {
   draft?: any;
   published?: any;
-}): 'draft' | 'published' | 'both' | null {
+}): EStateType | null {
   if (states?.draft && states?.published) {
-    return 'both';
+    return EStateType.BOTH;
   } else if (states?.draft) {
-    return 'draft';
+    return EStateType.DRAFT;
   } else if (states?.published) {
-    return 'published';
+    return EStateType.PUBLISHED;
   }
   return null;
 }
@@ -42,7 +44,7 @@ export const useStateManagement = () => {
     async (
       hydratedUrl: string,
       key: string,
-      contentType: 'content-items' | 'pages'
+      contentType: EContentType
     ) => {
       try {
         setState((prev) => ({ ...prev, loading: true, error: null }));
@@ -80,7 +82,7 @@ export const useStateManagement = () => {
       hydratedUrl: string,
       item: ContentItem | Page,
       key: string,
-      contentType: 'content-items' | 'pages',
+      contentType: EContentType,
       clearDraft: boolean = false
     ) => {
       try {
@@ -119,7 +121,7 @@ export const useStateManagement = () => {
     async (
       hydratedUrl: string,
       key: string,
-      contentType: 'content-items' | 'pages'
+      contentType: EContentType
     ) => {
       try {
         setState((prev) => ({ ...prev, loading: true, error: null }));

@@ -7,6 +7,7 @@ import {
 import {
   ContentItem,
   ContentItemVersionInfo,
+  EContentType,
 } from '@commercetools-demo/contentools-types';
 import VersionHistorySidebar from '@commercetools-demo/contentools-version-history';
 import {
@@ -102,7 +103,7 @@ const ContentItemEditorEditForm: React.FC<ContentItemEditorEditFormProps> = ({
         hydratedUrl,
         item,
         key,
-        contentType as 'content-items' | 'pages',
+        contentType as EContentType,
         clearDraft
       );
     }
@@ -125,7 +126,7 @@ const ContentItemEditorEditForm: React.FC<ContentItemEditorEditFormProps> = ({
       await revertToPublished(
         hydratedUrl,
         key,
-        contentType as 'content-items' | 'pages'
+        contentType as EContentType
       ).then(() => {
         fetchRawContentItem(hydratedUrl, key).then((item) => {
           setItem(item);

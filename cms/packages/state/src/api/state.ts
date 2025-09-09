@@ -1,6 +1,7 @@
 import {
   ContentItem,
   ContentItemStates,
+  EContentType,
   Page,
   PageStates,
   StateInfo,
@@ -12,7 +13,7 @@ import {
 // Get states
 export async function getStatesEndpoint<T>(
   baseURL: string,
-  contentType: 'pages' | 'content-items',
+  contentType: EContentType,
   key: string
 ): Promise<T> {
   return fetch(`${baseURL}/${contentType}/${key}/states`, {
@@ -27,7 +28,7 @@ export async function publishEndpoint<
   T extends (Page | ContentItem) & { states?: StateInfo }
 >(
   baseURL: string,
-  contentType: 'pages' | 'content-items',
+  contentType: EContentType,
   key: string,
   data: T,
   clearDraft: boolean = false
@@ -53,7 +54,7 @@ export async function publishEndpoint<
 // Revert draft state (delete draft)
 export async function revertDraftEndpoint(
   baseURL: string,
-  contentType: 'pages' | 'content-items',
+  contentType: EContentType,
   key: string
 ): Promise<void> {
   const response = await fetch(

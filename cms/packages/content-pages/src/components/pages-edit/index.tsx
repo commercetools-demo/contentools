@@ -5,6 +5,7 @@ import {
   useStateEditor,
   useStateStateManagement,
   useStateVersion,
+  StateProvider,
 } from '@commercetools-demo/contentools-state';
 import Spacings from '@commercetools-uikit/spacings';
 import Text from '@commercetools-uikit/text';
@@ -23,6 +24,7 @@ import PagesGridLayout from './pages-grid-layout';
 import { PageVersionInfo } from '@commercetools-demo/contentools-types';
 import VersionHistorySidebar from '@commercetools-demo/contentools-version-history';
 import PageGridActions from './page-grid-actions';
+import { CONETNT_ITEMS_IN_PAGE_SCOPE } from '../../constants';
 
 interface Props {
   parentUrl: string;
@@ -77,7 +79,6 @@ const EditorContent = styled.div`
   padding: 24px;
   background: #f8f9fa;
 `;
-
 
 const PagesEdit: React.FC<Props> = ({
   parentUrl,
@@ -340,14 +341,15 @@ const PagesEdit: React.FC<Props> = ({
         parentUrl={parentUrl}
       />
 
-      <ComponentEditorModal
-        isOpen={componentEditorModal.isModalOpen}
-        onClose={handleCloseComponentEditor}
-        selectedContentItemKey={selectedContentItemKey}
-        baseURL={baseURL}
-        businessUnitKey={businessUnitKey}
-      />
-
+      <StateProvider baseURL={baseURL} scope={CONETNT_ITEMS_IN_PAGE_SCOPE}>
+        <ComponentEditorModal
+          isOpen={componentEditorModal.isModalOpen}
+          onClose={handleCloseComponentEditor}
+          selectedContentItemKey={selectedContentItemKey}
+          baseURL={baseURL}
+          businessUnitKey={businessUnitKey}
+        />
+      </StateProvider>
       <VersionHistorySidebar
         isVisible={versionHistoryState.isModalOpen}
         selectedVersionId={selectedVersionId}

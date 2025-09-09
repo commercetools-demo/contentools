@@ -1,6 +1,7 @@
 import {
   ContentItemVersionInfo,
   ContentItemVersions,
+  EContentType,
   PageVersionInfo,
   PageVersions,
   VersionState
@@ -24,7 +25,7 @@ export function useVersion<T extends ContentItemVersionInfo | PageVersionInfo>(
     async (
       hydratedUrl: string,
       key: string,
-      contentType: 'content-items' | 'pages'
+      contentType: EContentType,
     ) => {
       try {
         setState((prev) => ({ ...prev, loading: true, error: null }));

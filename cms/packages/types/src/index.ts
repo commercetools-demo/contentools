@@ -7,6 +7,19 @@ export interface ContentItem {
   properties: Record<string, any>;
 }
 
+export enum EStateType {
+  DRAFT = 'draft',
+  PUBLISHED = 'published',
+  BOTH = 'both'
+}
+
+export enum EContentType {
+  CONTENT_ITEMS = 'content-items',
+  PAGES = 'pages',
+  PAGE_ITEMS = 'page-items'
+}
+
+
 export type PageVersionInfo = Page & {
   timestamp: string;
 };
@@ -40,7 +53,7 @@ export interface StateManagementState {
     draft?: ContentItem | Page;
     published?: ContentItem | Page;
   };
-  currentState: 'draft' | 'published' | 'both' | null;
+  currentState: EStateType | null;
   loading: boolean;
   error: string | null;
 }
@@ -193,7 +206,7 @@ export interface DatasourceParam {
 export interface FetchVersionsEvent extends CustomEvent {
   detail: {
     key: string;
-    contentType: 'pages' | 'content-items';
+    contentType: EContentType;
   };
 }
 
@@ -202,14 +215,14 @@ export interface SaveVersionEvent extends CustomEvent {
     item: any;
     previousItem: any;
     key: string;
-    contentType: 'pages' | 'content-items';
+    contentType: EContentType;
   };
 }
 
 export interface FetchStatesEvent extends CustomEvent {
   detail: {
     key: string;
-    contentType: 'pages' | 'content-items';
+    contentType: EContentType;
   };
 }
 
@@ -217,7 +230,7 @@ export interface SaveDraftEvent extends CustomEvent {
   detail: {
     item: any;
     key: string;
-    contentType: 'pages' | 'content-items';
+    contentType: EContentType;
   };
 }
 
@@ -225,7 +238,7 @@ export interface PublishEvent extends CustomEvent {
   detail: {
     item: any;
     key: string;
-    contentType: 'pages' | 'content-items';
+    contentType: EContentType;
     clearDraft?: boolean;
   };
 }
@@ -233,7 +246,7 @@ export interface PublishEvent extends CustomEvent {
 export interface RevertEvent extends CustomEvent {
   detail: {
     key: string;
-    contentType: 'pages' | 'content-items';
+    contentType: EContentType;
   };
 }
 
