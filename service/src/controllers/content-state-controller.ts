@@ -222,7 +222,13 @@ export const withDependencies = <T extends GenericState>(
     whereClause: string,
     stateKey: string | string[],
     expand?: string[]
-  ) => _getFirstContentWithState<T, R>(dependencies, whereClause, stateKey, expand),
+  ) =>
+    _getFirstContentWithState<T, R>(
+      dependencies,
+      whereClause,
+      stateKey,
+      expand
+    ),
 
   getState: (key: string) => _getState<T>(dependencies, key),
 

@@ -25,16 +25,15 @@ const _getContentVersions = async <T extends GenericContentItemVersion>(
   try {
     const versionKey = `${businessUnitKey}_${key}`;
 
-    const contentVersions = await contentVersionController.getCustomObject(
-      versionKey
-    );
+    const contentVersions =
+      await contentVersionController.getCustomObject(versionKey);
     return contentVersions.value;
   } catch (error) {
     if ((error as any).statusCode === 404) {
       return {
         key,
         businessUnitKey,
-        versions: [] as Array<any>
+        versions: [] as Array<any>,
       } as T;
     } else {
       throw new CustomError(500, 'Failed to get versions');
@@ -50,7 +49,11 @@ const _getContentVersion = async <T extends GenericContentItemVersion>(
   key: string,
   versionId: string
 ): Promise<T> => {
-  const versions = await _getContentVersions<T>(dependencies, businessUnitKey, key);
+  const versions = await _getContentVersions<T>(
+    dependencies,
+    businessUnitKey,
+    key
+  );
   return versions.versions.find((version) => version.id === versionId);
 };
 
@@ -62,7 +65,11 @@ const _createContentVersion = async <T extends GenericContentItemVersion>(
   value: any
 ): Promise<T> => {
   const versionKey = `${businessUnitKey}_${key}`;
-  const existingVersions = await _getContentVersions(dependencies, businessUnitKey, key);
+  const existingVersions = await _getContentVersions(
+    dependencies,
+    businessUnitKey,
+    key
+  );
 
   const newVersion = {
     ...value,
@@ -103,16 +110,21 @@ const _deleteVersions = async (
 };
 
 // Higher-order function that injects dependencies
-export const withDependencies = <T extends GenericContentItemVersion>(dependencies: ContentVersionControllerDependencies) => ({
+export const withDependencies = <T extends GenericContentItemVersion>(
+  dependencies: ContentVersionControllerDependencies
+) => ({
   getContentVersions: (businessUnitKey: string, key: string) =>
     _getContentVersions<T>(dependencies, businessUnitKey, key),
-  
-  getContentVersion: (businessUnitKey: string, key: string, versionId: string) =>
-    _getContentVersion<T>(dependencies, businessUnitKey, key, versionId),
-  
+
+  getContentVersion: (
+    businessUnitKey: string,
+    key: string,
+    versionId: string
+  ) => _getContentVersion<T>(dependencies, businessUnitKey, key, versionId),
+
   createContentVersion: (businessUnitKey: string, key: string, value: any) =>
     _createContentVersion<T>(dependencies, businessUnitKey, key, value),
-  
+
   deleteVersions: (businessUnitKey: string, key: string) =>
     _deleteVersions(dependencies, businessUnitKey, key),
 });

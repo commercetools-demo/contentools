@@ -132,11 +132,10 @@ pagesRouter.post(
         throw new CustomError(400, 'Query is required in the request body');
       }
 
-      const object = await PageController.queryPage(
-        businessUnitKey,
-        query,
-        ['draft', 'published']
-      );
+      const object = await PageController.queryPage(businessUnitKey, query, [
+        'draft',
+        'published',
+      ]);
       if (!object) {
         throw new CustomError(404, 'Page not found');
       }
@@ -150,7 +149,6 @@ pagesRouter.post(
     }
   }
 );
-
 
 pagesRouter.get(
   '/:businessUnitKey/published/pages/:key',
@@ -182,10 +180,7 @@ pagesRouter.get(
     try {
       const { key, businessUnitKey } = req.params;
 
-      const object = await PageController.getPreviewPage(
-        businessUnitKey,
-        key
-      );
+      const object = await PageController.getPreviewPage(businessUnitKey, key);
       res.status(200).json(object);
     } catch (error) {
       logger.error(

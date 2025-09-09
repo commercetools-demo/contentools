@@ -6,12 +6,14 @@ import {
   RequestHandler,
 } from 'express';
 import { logger } from '../utils/logger.utils';
-import { withDependencies, StateControllerDependencies } from '../controllers/content-state-controller';
+import {
+  withDependencies,
+  StateControllerDependencies,
+} from '../controllers/content-state-controller';
 import CustomError from '../errors/custom.error';
 import { CustomObjectController } from '../controllers/custom-object.controller';
 import { CONTENT_PAGE_CONTAINER, PAGE_STATE_CONTAINER } from '../constants';
 import { PageState } from '../controllers/page.controller';
-
 
 const pageStateRouter = Router();
 const dependencies: StateControllerDependencies = {
@@ -62,9 +64,8 @@ pageStateRouter.put('/:businessUnitKey/pages/:key/states/published', (async (
     const pageController = new CustomObjectController(CONTENT_PAGE_CONTAINER);
     const page = await pageController.getCustomObject(key);
     const item = page.value;
-    
+
     console.log('item >> ', item);
-    
 
     const state = await PageStateController.createPublishedState(
       businessUnitKey,
@@ -74,7 +75,7 @@ pageStateRouter.put('/:businessUnitKey/pages/:key/states/published', (async (
     );
 
     console.log('state >> ', state);
-    
+
     res.json(state);
   } catch (error) {
     logger.error('Failed to publish state:', error);

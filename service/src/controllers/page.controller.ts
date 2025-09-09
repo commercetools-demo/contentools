@@ -77,12 +77,10 @@ export interface ResolvedPage {
   [key: string]: any;
 }
 
-
 const PageStateController = withContentStateDependencies<PageState>({
   CONTENT_CONTAINER: CONTENT_PAGE_CONTAINER,
   CONTENT_STATE_CONTAINER: PAGE_STATE_CONTAINER,
 });
-
 
 const PageVersionController = withContentVersionDependencies<PageVersion>({
   CONTENT_VERSION_CONTAINER: PAGE_VERSION_CONTAINER,
@@ -106,27 +104,26 @@ const createEmptyGridRow = (): GridRow => {
   };
 };
 
-
 const resolveContentItemsInPage = async (
   businessUnitKey: string,
   page: Page['value'] | ResolvedPage['value'],
   state: string | string[]
 ): Promise<ResolvedPage['value']> => {
   const allComponents = (await Promise.all(
-    page.components
-      .map(async (component) => {
-        if (!component.obj) {
-          return undefined;
-        }
-        const contentItem = await PageContentItemController.getContentItemWithStateKey(
+    page.components.map(async (component) => {
+      if (!component.obj) {
+        return undefined;
+      }
+      const contentItem =
+        await PageContentItemController.getContentItemWithStateKey(
           businessUnitKey,
           component.obj.key,
           state
         );
-        return contentItem;
-      })
+      return contentItem;
+    })
   )) as ContentItem['value'][];
-  console.log('allComponents', allComponents.filter(Boolean))
+  console.log('allComponents', allComponents.filter(Boolean));
   return {
     ...page,
     components: allComponents.filter(Boolean),
@@ -185,11 +182,7 @@ export const getPublishedPage = async (
     'value.states.published.components[*]',
   ]);
   if (pageState) {
-    return resolveContentItemsInPage(
-      businessUnitKey,
-      pageState,
-      'published'
-    );
+    return resolveContentItemsInPage(businessUnitKey, pageState, 'published');
   }
 
   return undefined;
@@ -209,11 +202,7 @@ export const getPreviewPage = async (
     'value.states.published.components[*]',
   ]);
   if (pageState) {
-    return resolveContentItemsInPage(
-      businessUnitKey,
-      pageState,
-      'draft'
-    );
+    return resolveContentItemsInPage(businessUnitKey, pageState, 'draft');
   }
 
   return resolveContentItemsInPage(businessUnitKey, item, 'draft');
@@ -272,11 +261,7 @@ export const queryPage = async (
 
   if (contentState) {
     if (contentState) {
-      return resolveContentItemsInPage(
-        businessUnitKey,
-        contentState,
-        state
-      );
+      return resolveContentItemsInPage(businessUnitKey, contentState, state);
     }
   }
 
@@ -347,7 +332,9 @@ export const deletePage = async (
 ): Promise<void> => {
   const pageController = new CustomObjectController(CONTENT_PAGE_CONTAINER);
 
-  const pageItemsController = new CustomObjectController(PAGE_CONTENT_ITEMS_CONTAINER);
+  const pageItemsController = new CustomObjectController(
+    PAGE_CONTENT_ITEMS_CONTAINER
+  );
 
   const page = await pageController.getCustomObject(key);
 
@@ -385,7 +372,10 @@ export const removeRowFromPage = async (
 
   const deletedContentItems = await Promise.all(
     contentItems.map((contentItemKey: string) =>
-      PageContentItemController.deletePageContentItem(businessUnitKey, contentItemKey)
+      PageContentItemController.deletePageContentItem(
+        businessUnitKey,
+        contentItemKey
+      )
     )
   );
 
@@ -515,7 +505,6 @@ export const updateCellSpanInPage = async (
   return updatedPage;
 };
 
-
 export const addContentItemToPage = async (
   businessUnitKey: string,
   pageKey: string,
@@ -547,7 +536,10 @@ export const addContentItemToPage = async (
     properties: {},
   };
 
-  const contentItem = await PageContentItemController.createPageContentItem(businessUnitKey, item);
+  const contentItem = await PageContentItemController.createPageContentItem(
+    businessUnitKey,
+    item
+  );
 
   cell.contentItemKey = contentItem.key;
 
@@ -568,7 +560,6 @@ export const addContentItemToPage = async (
   return updatedPage;
 };
 
-
 export const updateComponentInPage = async (
   businessUnitKey: string,
   pageKey: string,
@@ -588,8 +579,11 @@ export const updateComponentInPage = async (
     throw new CustomError(400, 'Component not found');
   }
 
-
-  await PageContentItemController.updatePageContentItem(businessUnitKey, contentItemKey, updates);
+  await PageContentItemController.updatePageContentItem(
+    businessUnitKey,
+    contentItemKey,
+    updates
+  );
   const newPage = await pageController.getCustomObject(pageKey, [
     'value.components[*]',
   ]);
@@ -630,7 +624,10 @@ export const removeComponentFromPage = async (
   }
   row.cells[cellIndex].contentItemKey = null;
 
-  const deletedPageItem = await PageContentItemController.deletePageContentItem(businessUnitKey, contentItemKey)
+  const deletedPageItem = await PageContentItemController.deletePageContentItem(
+    businessUnitKey,
+    contentItemKey
+  );
 
   const newComponents = page.value.components.filter(
     (component: ContentItemReference) => component.id !== deletedPageItem.id

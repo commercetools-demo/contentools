@@ -9,12 +9,8 @@ import {
 import CustomError from '../errors/custom.error';
 import { sampleContentTypeRegistry } from '../utils/constants';
 import { logger } from '../utils/logger.utils';
-import {
-  withDependencies as withContentStateDependencies
-} from './content-state-controller';
-import {
-  withDependencies as withContentVersionDependencies
-} from './content-version-controller';
+import { withDependencies as withContentStateDependencies } from './content-state-controller';
+import { withDependencies as withContentVersionDependencies } from './content-version-controller';
 import { CustomObjectController } from './custom-object.controller';
 import { resolveDatasource } from './datasource-resolution.route';
 
@@ -228,7 +224,10 @@ export const getPreviewContentItem = async (
   );
   const contentItem = await contentItemController.getCustomObject(key);
   const item = contentItem.value;
-  const contentState = await getContentItemWithStateKey(businessUnitKey, key, ['draft', 'published']);
+  const contentState = await getContentItemWithStateKey(businessUnitKey, key, [
+    'draft',
+    'published',
+  ]);
   if (contentState) {
     return resolveContentItemDatasource(contentState);
   }
@@ -259,7 +258,6 @@ export const getContentItemWithStateKey = async (
 
   return undefined;
 };
-
 
 export const queryContentItem = async (
   businessUnitKey: string,
@@ -293,7 +291,6 @@ export const queryContentItem = async (
 
   return undefined;
 };
-
 
 /**
  * Get a content item by key and resolve any datasource properties

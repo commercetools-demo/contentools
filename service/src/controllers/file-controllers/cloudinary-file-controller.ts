@@ -53,7 +53,11 @@ export class CloudinaryFileController implements FileController {
     });
   }
 
-  private paginate<T>(items: T[], page: number, limit: number): {
+  private paginate<T>(
+    items: T[],
+    page: number,
+    limit: number
+  ): {
     paginated: T[];
     totalItems: number;
     totalPages: number;
@@ -76,7 +80,9 @@ export class CloudinaryFileController implements FileController {
       if (!custom) return undefined;
       return {
         title: custom.title ? String(custom.title) : undefined,
-        description: custom.description ? String(custom.description) : undefined,
+        description: custom.description
+          ? String(custom.description)
+          : undefined,
       };
     } catch (error) {
       logger.error(`Failed to fetch context for resource ${publicId}:`, error);
@@ -102,7 +108,9 @@ export class CloudinaryFileController implements FileController {
       title: context?.title,
       description: context?.description,
       isImage,
-      createdAt: resource.created_at ? new Date(resource.created_at) : undefined,
+      createdAt: resource.created_at
+        ? new Date(resource.created_at)
+        : undefined,
       size: resource.bytes,
     };
   }
