@@ -157,7 +157,7 @@ contentItemRouter.get(
       logger.info(
         `Getting preview for content item ${key} in business unit ${businessUnitKey}`
       );
-      const object = await ContentItemController.getContentItemWithStates(
+      const object = await ContentItemController.getPreviewContentItem(
         businessUnitKey,
         key
       );
