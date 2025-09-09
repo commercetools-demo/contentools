@@ -47,7 +47,7 @@ const _getFirstContentWithState = async <T extends GenericState, R>(
         }
       }
     } else {
-      if (contentStates[0].states.published) {
+      if (contentStates[0].states[stateKey]) {
         return contentStates[0].states[stateKey];
       }
     }

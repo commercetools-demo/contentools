@@ -92,53 +92,28 @@ pagesRouter.delete('/:businessUnitKey/pages/:key', async (req, res, next) => {
 });
 
 pagesRouter.post(
-  '/:businessUnitKey/pages/:key/components',
+  '/:businessUnitKey/published/pages/query',
   async (req, res, next) => {
     try {
-      const { businessUnitKey, key } = req.params;
-      const { componentType, rowId, cellId } = req.body;
-      const object = await PageController.addContentItemToPage(
+      const { businessUnitKey } = req.params;
+      const { query } = req.body;
+
+      if (!query) {
+        throw new CustomError(400, 'Query is required in the request body');
+      }
+
+      const object = await PageController.queryPage(
         businessUnitKey,
-        key,
-        componentType,
-        rowId,
-        cellId
+        query,
+        'published'
       );
-      res.status(201).json(object);
+      if (!object) {
+        throw new CustomError(404, 'Page not found');
+      }
+      res.json(object);
     } catch (error) {
       logger.error(
-        `Failed to add component to page with key ${req.params.key}:`,
-        error
-      );
-      next(error);
-    }
-  }
-);
-
-// pagesRouter.delete('/:businessUnitKey/pages/:key/components/:rowId', async (req, res, next) => {
-//   try {
-//     const { businessUnitKey, key, rowId } = req.params;
-//     await PageController.removeContentItemFromPage(businessUnitKey, key, rowId);
-//     res.status(204).send();
-//   } catch (error) {
-//     logger.error(
-//       `Failed to remove component from page with key ${req.params.key}:`,
-//       error
-//     );
-//     next(error);
-//   }
-// });
-
-pagesRouter.delete(
-  '/:businessUnitKey/pages/:key/rows/:rowId',
-  async (req, res, next) => {
-    try {
-      const { businessUnitKey, key, rowId } = req.params;
-      const object = await PageController.removeRowFromPage(businessUnitKey, key, rowId);
-      res.status(200).json(object);
-    } catch (error) {
-      logger.error(
-        `Failed to remove row from page with key ${req.params.key}:`,
+        `Failed to query published page with query ${req.body.query}:`,
         error
       );
       next(error);
@@ -147,77 +122,34 @@ pagesRouter.delete(
 );
 
 pagesRouter.post(
-  '/:businessUnitKey/pages/:key/rows',
+  '/:businessUnitKey/preview/pages/query',
   async (req, res, next) => {
     try {
-      const { businessUnitKey, key } = req.params;
-      const object = await PageController.addRowToPage(businessUnitKey, key);
-      res.status(201).json(object);
+      const { businessUnitKey } = req.params;
+      const { query } = req.body;
+
+      if (!query) {
+        throw new CustomError(400, 'Query is required in the request body');
+      }
+
+      const object = await PageController.queryPage(
+        businessUnitKey,
+        query,
+        ['draft', 'published']
+      );
+      if (!object) {
+        throw new CustomError(404, 'Page not found');
+      }
+      res.json(object);
     } catch (error) {
       logger.error(
-        `Failed to add row to page with key ${req.params.key}:`,
+        `Failed to query preview page with query ${req.body.query}:`,
         error
       );
       next(error);
     }
   }
 );
-
-pagesRouter.put(
-  '/:businessUnitKey/pages/:key/rows/:rowId/cells/:cellId',
-  async (req, res, next) => {
-    try {
-      const { businessUnitKey, key, rowId, cellId } = req.params;
-      const { updates } = req.body;
-
-      const object = await PageController.updateCellSpanInPage(businessUnitKey, key, rowId, cellId, updates);
-      res.status(200).json(object);
-    } catch (error) {
-      logger.error(
-        `Failed to update cell span in page with key ${req.params.key}:`,
-        error
-      );
-
-      next(error);
-    }
-  }
-);
-
-pagesRouter.put(
-  '/:businessUnitKey/pages/:key/components/:contentItemKey',
-  async (req, res, next) => {
-    try {
-      const { businessUnitKey, key, contentItemKey } = req.params;
-      const { updates } = req.body;
-      const object = await PageController.updateComponentInPage(businessUnitKey, key, contentItemKey, updates);
-      res.status(200).json(object);
-    } catch (error) {
-      logger.error(
-        `Failed to update component in page with key ${req.params.key}:`,
-        error
-      );
-      next(error);
-    }
-  }
-);
-
-pagesRouter.delete(
-  '/:businessUnitKey/pages/:key/components/:contentItemKey',
-  async (req, res, next) => {
-    try {
-      const { businessUnitKey, key, contentItemKey } = req.params;
-      const object = await PageController.removeComponentFromPage(businessUnitKey, key, contentItemKey);
-      res.status(200).json(object);
-    } catch (error) {
-      logger.error(
-        `Failed to remove component from page with key ${req.params.key}:`,
-        error
-      );
-      next(error);
-    }
-  } 
-);
-
 
 
 pagesRouter.get(

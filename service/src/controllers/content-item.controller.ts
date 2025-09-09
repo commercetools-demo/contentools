@@ -256,9 +256,10 @@ export const getPublishedContentItem = async (
   return undefined;
 };
 
-export const queryPublishedContentItem = async (
+export const queryContentItem = async (
   businessUnitKey: string,
-  query: string
+  query: string,
+  state: string | string[]
 ): Promise<ContentItem['value'] | undefined> => {
   const contentItemController = new CustomObjectController(
     CONTENT_ITEM_CONTAINER
@@ -276,7 +277,7 @@ export const queryPublishedContentItem = async (
     ContentItem['value']
   >(
     `key = "${contentItems[0].key}" AND businessUnitKey = "${businessUnitKey}"`,
-    'published'
+    state
   );
 
   if (contentState) {
@@ -285,39 +286,9 @@ export const queryPublishedContentItem = async (
     }
   }
 
-  return resolveContentItemDatasource(contentItems[0].value);
+  return undefined;
 };
 
-export const queryContentItem = async (
-  businessUnitKey: string,
-  query: string
-): Promise<ContentItem['value'] | undefined> => {
-  const contentItemController = new CustomObjectController(
-    CONTENT_ITEM_CONTAINER
-  );
-
-  const contentItems = await contentItemController.getCustomObjects(
-    `value(${query} AND businessUnitKey = "${businessUnitKey}")`
-  );
-
-  if (contentItems.length === 0) {
-    return undefined;
-  }
-
-  const contentState = await ContentStateController.getFirstContentWithState<
-    ContentItem['value']
-  >(
-    `key = "${contentItems[0].key}" AND businessUnitKey = "${businessUnitKey}"`,
-    'draft',
-    []
-  );
-
-  if (contentState) {
-    return resolveContentItemDatasource(contentState);
-  }
-
-  return resolveContentItemDatasource(contentItems[0].value);
-};
 
 /**
  * Get a content item by key and resolve any datasource properties

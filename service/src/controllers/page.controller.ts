@@ -97,7 +97,8 @@ const createEmptyGridRow = (): GridRow => {
 };
 
 export const resolveContentItemsInPageDatasource = async (
-  page: Page['value'] | ResolvedPage['value']
+  page: Page['value'] | ResolvedPage['value'],
+  state: string | string[]
 ): Promise<ResolvedPage['value']> => {
   const allComponents = await Promise.all(
     page.components.map(async (component) => {
@@ -179,7 +180,7 @@ export const getPublishedPage = async (
     'value.states.published.components[*]',
   ]);
   if (pageState) {
-    return resolveContentItemsInPageDatasource(pageState);
+    return resolveContentItemsInPageDatasource(pageState, 'published');
   }
 
   return undefined;
@@ -196,7 +197,7 @@ export const getPreviewPage = async (
     ['value.states.draft.components[*]', 'value.states.published.components[*]']
   );
   if (pageState) {
-    return resolveContentItemsInPageDatasource(pageState);
+    return resolveContentItemsInPageDatasource(pageState, 'draft');
   }
 
   return undefined;
@@ -229,17 +230,10 @@ export const getPageWithStates = async (
     value: item,
   }).value;
 };
-
-export const queryPublishedPage = async (
-  businessUnitKey: string,
-  query: string
-): Promise<ResolvedPage['value'] | undefined> => {
-  // TODO return published state of page + all published content items
-};
-
 export const queryPage = async (
   businessUnitKey: string,
-  query: string
+  query: string,
+  state: string | string[]
 ): Promise<ResolvedPage['value'] | undefined> => {
   const pageController = new CustomObjectController(CONTENT_PAGE_CONTAINER);
 
@@ -251,19 +245,20 @@ export const queryPage = async (
     return undefined;
   }
 
-  const contentStates =
-    await PageStateController.getContentStatesWithWhereClause(
+  const contentState =
+    await PageStateController.getFirstContentWithState<Page['value']>(
       `key = "${pages[0].key}" AND businessUnitKey = "${businessUnitKey}"`,
-      ['value.components[*]']
+      state,
+      ['value.components[*]'],
     );
 
-  if (contentStates.length > 0) {
-    if (contentStates[0].states.draft) {
-      return resolveContentItemsInPageDatasource(contentStates[0].states.draft);
+  if (contentState) {
+    if (contentState) {
+      return resolveContentItemsInPageDatasource(contentState, state);
     }
   }
 
-  return resolveContentItemsInPageDatasource(pages[0].value);
+  return undefined
 };
 
 /**
