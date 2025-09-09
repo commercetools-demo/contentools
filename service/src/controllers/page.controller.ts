@@ -171,21 +171,15 @@ export const getPublishedPage = async (
   businessUnitKey: string,
   key: string
 ): Promise<ResolvedPage['value'] | undefined> => {
-  const pageController = new CustomObjectController(CONTENT_PAGE_CONTAINER);
-  const page = await pageController.getCustomObject(key, [
-    'value.components[*]',
+
+  const pageState = await PageStateController.getFirstContentWithState<
+    Page['value']
+  >(`key = "${key}" AND businessUnitKey = "${businessUnitKey}"`, 'published', [
+    'value.states.draft.components[*]',
+    'value.states.published.components[*]',
   ]);
-  const item = page.value;
-  const pageStates = await PageStateController.getContentStatesWithWhereClause(
-    `key = "${key}" AND businessUnitKey = "${businessUnitKey}"`,
-    ['value.states.draft.components[*]', 'value.states.published.components[*]']
-  );
-  if (pageStates.length > 0) {
-    if (pageStates[0].states.published) {
-      return resolveContentItemsInPageDatasource(
-        pageStates[0].states.published
-      );
-    }
+  if (pageState) {
+    return resolveContentItemsInPageDatasource(pageState);
   }
 
   return undefined;
@@ -195,19 +189,14 @@ export const getPreviewPage = async (
   businessUnitKey: string,
   key: string
 ): Promise<ResolvedPage['value'] | undefined> => {
-  const pageController = new CustomObjectController(CONTENT_PAGE_CONTAINER);
-  const page = await pageController.getCustomObject(key, [
-    'value.components[*]',
-  ]);
-  const item = page.value;
-  const pageStates = await PageStateController.getContentStatesWithWhereClause(
+
+  const pageState = await PageStateController.getFirstContentWithState<Page['value']>(
     `key = "${key}" AND businessUnitKey = "${businessUnitKey}"`,
+    'draft',
     ['value.states.draft.components[*]', 'value.states.published.components[*]']
   );
-  if (pageStates.length > 0) {
-    if (pageStates[0].states.draft) {
-      return resolveContentItemsInPageDatasource(pageStates[0].states.draft);
-    }
+  if (pageState) {
+    return resolveContentItemsInPageDatasource(pageState);
   }
 
   return undefined;
@@ -222,22 +211,17 @@ export const getPageWithStates = async (
     'value.components[*]',
   ]);
   const item = page.value;
-  const pageStates = await PageStateController.getContentStatesWithWhereClause(
+  const pageState = await PageStateController.getFirstContentWithState<Page['value']>(
     `key = "${key}" AND businessUnitKey = "${businessUnitKey}"`,
+    ['draft', 'published'],
     ['value.states.draft.components[*]', 'value.states.published.components[*]']
   );
-  if (pageStates.length > 0) {
-    if (pageStates[0].states.draft) {
-      return mapPageContentItems({
-        ...page,
-        value: pageStates[0].states.draft,
-      }).value;
-    } else if (pageStates[0].states.published) {
-      return mapPageContentItems({
-        ...page,
-        value: pageStates[0].states.published,
-      }).value;
-    }
+  if (pageState) {
+    return mapPageContentItems({
+      ...page,
+      value: pageState ,
+    }).value;
+    
   }
 
   return mapPageContentItems({
@@ -250,32 +234,7 @@ export const queryPublishedPage = async (
   businessUnitKey: string,
   query: string
 ): Promise<ResolvedPage['value'] | undefined> => {
-  const pageController = new CustomObjectController(CONTENT_PAGE_CONTAINER);
-
-  const pages = await pageController.getCustomObjects(
-    `value(${query} AND businessUnitKey = "${businessUnitKey}")`,
-    ['value.components[*]']
-  );
-
-  if (pages.length === 0) {
-    return undefined;
-  }
-
-  const contentStates =
-    await PageStateController.getContentStatesWithWhereClause(
-      `key = "${pages[0].key}" AND businessUnitKey = "${businessUnitKey}"`,
-      ['value.components[*]']
-    );
-
-  if (contentStates.length > 0) {
-    if (contentStates[0].states.published) {
-      return resolveContentItemsInPageDatasource(
-        contentStates[0].states.published
-      );
-    }
-  }
-
-  return resolveContentItemsInPageDatasource(pages[0].value);
+  // TODO return published state of page + all published content items
 };
 
 export const queryPage = async (

@@ -6,16 +6,17 @@ import {
   CONTENT_TYPE_CONTAINER,
   MAX_VERSIONS,
 } from '../constants';
+import CustomError from '../errors/custom.error';
 import { sampleContentTypeRegistry } from '../utils/constants';
 import { logger } from '../utils/logger.utils';
 import {
-  withDependencies as withContentStateDependencies,
-  StateControllerDependencies,
+  withDependencies as withContentStateDependencies
 } from './content-state-controller';
-import {ContentVersionControllerDependencies, withDependencies as withContentVersionDependencies} from './content-version-controller';
+import {
+  withDependencies as withContentVersionDependencies
+} from './content-version-controller';
 import { CustomObjectController } from './custom-object.controller';
 import { resolveDatasource } from './datasource-resolution.route';
-import CustomError from '../errors/custom.error';
 
 export interface ContentItemState {
   key: string;
@@ -33,11 +34,11 @@ const ContentStateController = withContentStateDependencies<ContentItemState>({
   CONTENT_STATE_CONTAINER: CONTENT_ITEM_STATE_CONTAINER,
 });
 
-const ContentVersionController = withContentVersionDependencies<ContentItemVersion>({
-  CONTENT_VERSION_CONTAINER: CONTENT_ITEM_VERSION_CONTAINER,
-  MAX_VERSIONS: MAX_VERSIONS,
-});
-
+const ContentVersionController =
+  withContentVersionDependencies<ContentItemVersion>({
+    CONTENT_VERSION_CONTAINER: CONTENT_ITEM_VERSION_CONTAINER,
+    MAX_VERSIONS: MAX_VERSIONS,
+  });
 
 // Define types for our objects
 export interface ContentItem {
@@ -227,16 +228,14 @@ export const getContentItemWithStates = async (
   );
   const contentItem = await contentItemController.getCustomObject(key);
   const item = contentItem.value;
-  const contentStates =
-    await ContentStateController.getContentStatesWithWhereClause(
-      `key = "${key}" AND businessUnitKey = "${businessUnitKey}"`
-    );
-  if (contentStates.length > 0) {
-    if (contentStates[0].states.draft) {
-      return resolveContentItemDatasource(contentStates[0].states.draft);
-    } else if (contentStates[0].states.published) {
-      return resolveContentItemDatasource(contentStates[0].states.published);
-    }
+  const contentState = await ContentStateController.getFirstContentWithState<
+    ContentItem['value']
+  >(`key = "${key}" AND businessUnitKey = "${businessUnitKey}"`, [
+    'draft',
+    'published',
+  ]);
+  if (contentState) {
+    return resolveContentItemDatasource(contentState);
   }
 
   return resolveContentItemDatasource(item);
@@ -246,15 +245,12 @@ export const getPublishedContentItem = async (
   businessUnitKey: string,
   key: string
 ): Promise<ContentItem['value'] | undefined> => {
-  const contentStates =
-    await ContentStateController.getContentStatesWithWhereClause(
-      `key = "${key}" AND businessUnitKey = "${businessUnitKey}"`
-    );
+  const contentState = await ContentStateController.getFirstContentWithState<
+    ContentItem['value']
+  >(`key = "${key}" AND businessUnitKey = "${businessUnitKey}"`, 'published');
 
-  if (contentStates.length > 0) {
-    if (contentStates[0].states.published) {
-      return resolveContentItemDatasource(contentStates[0].states.published);
-    }
+  if (contentState) {
+    return resolveContentItemDatasource(contentState);
   }
 
   return undefined;
@@ -276,14 +272,16 @@ export const queryPublishedContentItem = async (
     return undefined;
   }
 
-  const contentStates =
-    await ContentStateController.getContentStatesWithWhereClause(
-      `key = "${contentItems[0].key}" AND businessUnitKey = "${businessUnitKey}"`
-    );
+  const contentState = await ContentStateController.getFirstContentWithState<
+    ContentItem['value']
+  >(
+    `key = "${contentItems[0].key}" AND businessUnitKey = "${businessUnitKey}"`,
+    'published'
+  );
 
-  if (contentStates.length > 0) {
-    if (contentStates[0].states.published) {
-      return resolveContentItemDatasource(contentStates[0].states.published);
+  if (contentState) {
+    if (contentState) {
+      return resolveContentItemDatasource(contentState);
     }
   }
 
@@ -306,15 +304,16 @@ export const queryContentItem = async (
     return undefined;
   }
 
-  const contentStates =
-    await ContentStateController.getContentStatesWithWhereClause(
-      `key = "${contentItems[0].key}" AND businessUnitKey = "${businessUnitKey}"`
-    );
+  const contentState = await ContentStateController.getFirstContentWithState<
+    ContentItem['value']
+  >(
+    `key = "${contentItems[0].key}" AND businessUnitKey = "${businessUnitKey}"`,
+    'draft',
+    []
+  );
 
-  if (contentStates.length > 0) {
-    if (contentStates[0].states.draft) {
-      return resolveContentItemDatasource(contentStates[0].states.draft);
-    }
+  if (contentState) {
+    return resolveContentItemDatasource(contentState);
   }
 
   return resolveContentItemDatasource(contentItems[0].value);

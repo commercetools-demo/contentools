@@ -13,11 +13,10 @@ export interface StateControllerDependencies {
 }
 
 // Internal function that accepts dependencies
-const _getContentStatesWithWhereClause = async<T> (
+const _getContentStatesWithWhereClause = async <T>(
   dependencies: StateControllerDependencies,
   whereClause: string,
   expand?: string[]
-
 ): Promise<T[]> => {
   const contentStateController = new CustomObjectController(
     dependencies.CONTENT_STATE_CONTAINER
@@ -29,8 +28,35 @@ const _getContentStatesWithWhereClause = async<T> (
   return contentStates.map((state) => state.value);
 };
 
+const _getFirstContentWithState = async <T extends GenericState, R>(
+  dependencies: StateControllerDependencies,
+  whereClause: string,
+  stateKey: string | string[],
+  expand?: string[]
+): Promise<R | undefined> => {
+  const contentStates = await _getContentStatesWithWhereClause<T>(
+    dependencies,
+    whereClause,
+    expand
+  );
+  if (contentStates.length > 0) {
+    if (Array.isArray(stateKey)) {
+      for (const state of stateKey) {
+        if (contentStates[0].states[state]) {
+          return contentStates[0].states[state];
+        }
+      }
+    } else {
+      if (contentStates[0].states.published) {
+        return contentStates[0].states[stateKey];
+      }
+    }
+  }
+  return undefined;
+};
+
 // Internal function that accepts dependencies
-const _getState = async<T> (
+const _getState = async <T>(
   dependencies: StateControllerDependencies,
   key: string
 ): Promise<T> => {
@@ -42,7 +68,7 @@ const _getState = async<T> (
 };
 
 // Internal function that accepts dependencies
-const _createDraftState = async<T extends GenericState> (
+const _createDraftState = async <T extends GenericState>(
   dependencies: StateControllerDependencies,
   businessUnitKey: string,
   key: string,
@@ -60,7 +86,7 @@ const _createDraftState = async<T extends GenericState> (
         states: {},
       } as T;
     } else {
-      throw new CustomError(500, 'Failed to create draft state'); 
+      throw new CustomError(500, 'Failed to create draft state');
     }
   }
   existingState.states = {
@@ -79,7 +105,7 @@ const _createDraftState = async<T extends GenericState> (
 };
 
 // Internal function that accepts dependencies
-const _createPublishedState = async<T extends GenericState> (
+const _createPublishedState = async <T extends GenericState>(
   dependencies: StateControllerDependencies,
   businessUnitKey: string,
   key: string,
@@ -123,7 +149,7 @@ const _createPublishedState = async<T extends GenericState> (
 };
 
 // Internal function that accepts dependencies
-const _deleteDraftState = async<T extends GenericState> (
+const _deleteDraftState = async <T extends GenericState>(
   dependencies: StateControllerDependencies,
   businessUnitKey: string,
   key: string
@@ -186,22 +212,34 @@ const _deleteStates = async (
 };
 
 // Higher-order function that injects dependencies
-export const withDependencies = <T extends GenericState>(dependencies: StateControllerDependencies) => ({
+export const withDependencies = <T extends GenericState>(
+  dependencies: StateControllerDependencies
+) => ({
   getContentStatesWithWhereClause: (whereClause: string, expand?: string[]) =>
     _getContentStatesWithWhereClause<T>(dependencies, whereClause, expand),
-  
-  getState: (key: string) =>
-    _getState<T>(dependencies, key),
-  
+
+  getFirstContentWithState: <R>(
+    whereClause: string,
+    stateKey: string | string[],
+    expand?: string[]
+  ) => _getFirstContentWithState<T, R>(dependencies, whereClause, stateKey, expand),
+
+  getState: (key: string) => _getState<T>(dependencies, key),
+
   createDraftState: (businessUnitKey: string, key: string, value: any) =>
     _createDraftState<T>(dependencies, businessUnitKey, key, value),
-  
-  createPublishedState: (businessUnitKey: string, key: string, value: any, clear?: boolean) =>
+
+  createPublishedState: (
+    businessUnitKey: string,
+    key: string,
+    value: any,
+    clear?: boolean
+  ) =>
     _createPublishedState<T>(dependencies, businessUnitKey, key, value, clear),
-  
+
   deleteDraftState: (businessUnitKey: string, key: string) =>
     _deleteDraftState<T>(dependencies, businessUnitKey, key),
-  
+
   deleteStates: (businessUnitKey: string, key: string) =>
     _deleteStates(dependencies, businessUnitKey, key),
 });
