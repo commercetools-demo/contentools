@@ -1653,7 +1653,7 @@ __metadata:
     "@types/react": "npm:^19"
     styled-components: "npm:^6.1.19"
   peerDependencies:
-    "@commercetools-demo/contentools-state": ">=1.0.4"
+    "@commercetools-demo/contentools-state": ">=1.1.0"
     "@emotion/react": ">=11.0.0"
     react: ">=19.0.0"
     react-dom: ">=19.0.0"
@@ -1701,7 +1701,7 @@ __metadata:
     react-router-dom: "npm:5.3.4"
     styled-components: "npm:^6.1.19"
   peerDependencies:
-    "@commercetools-demo/contentools-state": ">=1.0.4"
+    "@commercetools-demo/contentools-state": ">=1.1.0"
     "@emotion/react": ">=11.0.0"
     react: ">=19.0.0"
     react-dom: ">=19.0.0"
@@ -1721,6 +1721,7 @@ __metadata:
   resolution: "@commercetools-demo/contentools-content-pages@workspace:packages/content-pages"
   dependencies:
     "@babel/runtime-corejs3": "npm:^7.28.0"
+    "@commercetools-demo/contentools-page-renderer": "workspace:^"
     "@commercetools-demo/contentools-property-editor": "workspace:^"
     "@commercetools-demo/contentools-types": "workspace:^"
     "@commercetools-demo/contentools-ui-components": "workspace:^"
@@ -1748,7 +1749,7 @@ __metadata:
     react-router-dom: "npm:5.3.4"
     styled-components: "npm:^6.1.19"
   peerDependencies:
-    "@commercetools-demo/contentools-state": ">=1.0.4"
+    "@commercetools-demo/contentools-state": ">=1.1.0"
     "@emotion/react": ">=11.0.0"
     react: ">=19.0.0"
     react-dom: ">=19.0.0"
@@ -1818,11 +1819,31 @@ __metadata:
     react-router-dom: "npm:5.3.4"
     styled-components: "npm:^6.1.19"
   peerDependencies:
-    "@commercetools-demo/contentools-state": ">=1.0.4"
+    "@commercetools-demo/contentools-state": ">=1.1.0"
     "@emotion/react": ">=11.0.0"
     react: ">=19.0.0"
     react-dom: ">=19.0.0"
     react-router-dom: ">=5.0.0"
+    styled-components: ">=5.0.0"
+  languageName: unknown
+  linkType: soft
+
+"@commercetools-demo/contentools-page-renderer@workspace:^, @commercetools-demo/contentools-page-renderer@workspace:packages/page-renderer":
+  version: 0.0.0-use.local
+  resolution: "@commercetools-demo/contentools-page-renderer@workspace:packages/page-renderer"
+  dependencies:
+    "@babel/runtime-corejs3": "npm:^7.28.0"
+    "@commercetools-demo/contentools-content-item-renderer": "workspace:^"
+    "@commercetools-demo/contentools-types": "workspace:^"
+    "@commercetools-demo/contentools-ui-components": "workspace:^"
+    "@emotion/react": "npm:^11.14.0"
+    "@types/react": "npm:^19"
+    styled-components: "npm:^6.1.19"
+  peerDependencies:
+    "@commercetools-demo/contentools-state": ">=1.1.0"
+    "@emotion/react": ">=11.0.0"
+    react: ">=19.0.0"
+    react-dom: ">=19.0.0"
     styled-components: ">=5.0.0"
   languageName: unknown
   linkType: soft
@@ -1856,7 +1877,7 @@ __metadata:
     styled-components: "npm:^6.1.19"
     yup: "npm:^1.6.1"
   peerDependencies:
-    "@commercetools-demo/contentools-state": ">=1.0.4"
+    "@commercetools-demo/contentools-state": ">=1.1.0"
     "@emotion/react": ">=11.0.0"
     react: ">=19.0.0"
     react-dom: ">=19.0.0"
@@ -1864,7 +1885,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@commercetools-demo/contentools-state@workspace:^, @commercetools-demo/contentools-state@workspace:packages/state":
+"@commercetools-demo/contentools-state@workspace:packages/state":
   version: 0.0.0-use.local
   resolution: "@commercetools-demo/contentools-state@workspace:packages/state"
   dependencies:
@@ -1890,6 +1911,7 @@ __metadata:
   resolution: "@commercetools-demo/contentools-ui-components@workspace:packages/ui-components"
   dependencies:
     "@babel/runtime-corejs3": "npm:^7.28.0"
+    "@commercetools-demo/contentools-types": "workspace:^"
     "@commercetools-uikit/card": "npm:^20.2.2"
     "@commercetools-uikit/flat-button": "npm:^20.2.1"
     "@commercetools-uikit/icon-button": "npm:^20.2.1"
@@ -1916,7 +1938,6 @@ __metadata:
   resolution: "@commercetools-demo/contentools-version-history@workspace:packages/version-history"
   dependencies:
     "@babel/runtime-corejs3": "npm:^7.28.0"
-    "@commercetools-demo/contentools-state": "workspace:^"
     "@commercetools-demo/contentools-types": "workspace:^"
     "@commercetools-demo/contentools-ui-components": "workspace:^"
     "@commercetools-uikit/card": "npm:^20.2.2"
@@ -1928,6 +1949,7 @@ __metadata:
     "@types/react": "npm:^19"
     styled-components: "npm:^6.1.19"
   peerDependencies:
+    "@commercetools-demo/contentools-state": ">=1.1.0"
     "@emotion/react": ">=11.0.0"
     react: ">=19.0.0"
     react-dom: ">=19.0.0"
