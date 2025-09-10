@@ -255,7 +255,8 @@ export const queryPage = async (
   >(
     `key = "${pages[0].key}" AND businessUnitKey = "${businessUnitKey}"`,
     state,
-    ['value.components[*]']
+    ['value.states.draft.components[*]',
+    'value.states.published.components[*]',]
   );
 
   if (contentState) {

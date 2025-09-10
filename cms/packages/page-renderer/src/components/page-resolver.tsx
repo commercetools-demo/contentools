@@ -27,7 +27,7 @@ const PageResolver: React.FC<
     useState<Page | null>(page || null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { fetchPage } = useStatePages();
+  const { fetchPage, fetchPublishedPage, queryPage, queryPublishedPage } = useStatePages();
 
   const hydratedUrl = useMemo(() => {
     return baseURL + '/' + businessUnitKey;
@@ -56,8 +56,9 @@ const PageResolver: React.FC<
         throw new Error('BaseURL is required to fetch page');
       }
       // Note: usePages hook only has fetchPage, no published version support yet
-      const fetchedPage = await fetchPage(hydratedUrl, pageKey!);
-
+      const fetchedPage = isDraft
+      ? await fetchPage(hydratedUrl, pageKey!)
+      : await fetchPublishedPage(hydratedUrl, pageKey!);
       setResolvedPage(fetchedPage);
     } catch (err: any) {
       setError(err.message);
@@ -67,12 +68,26 @@ const PageResolver: React.FC<
     }
   }, [hydratedUrl, pageKey, fetchPage, onError]);
 
-  // Note: Query functionality is not yet implemented in usePages hook
   const fetchPageByQuery = useCallback(async () => {
-    console.warn('Query functionality is not yet implemented for pages');
-    setError('Query functionality is not yet implemented for pages');
-    if (onError) onError(new Error('Query functionality is not yet implemented for pages'));
-  }, [onError]);
+    try {
+      setLoading(true);
+      setError(null);
+
+      if (!hydratedUrl) {
+        throw new Error('BaseURL is required to fetch page');
+      }
+      const fetchedItem = isDraft
+        ? await queryPage(hydratedUrl, query!)
+        : await queryPublishedPage(hydratedUrl, query!);
+
+      setResolvedPage(fetchedItem);
+    } catch (err: any) {
+      setError(err.message);
+      if (onError) onError(err);
+    } finally {
+      setLoading(false);
+    }
+  }, [hydratedUrl, query]);
 
   // Effect to fetch page by pageKey if needed
   useEffect(() => {

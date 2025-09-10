@@ -5,66 +5,6 @@ import {
   StateInfo,
 } from '@commercetools-demo/contentools-types';
 import { fetchApi } from '../api';
-/**
- * Fetch a single custom object
- */
-export async function fetchPageEndpoint(
-  baseURL: string,
-  key: string
-): Promise<Page> {
-  const response = await fetch(`${baseURL}/pages/${key}`);
-  if (!response.ok) {
-    throw new Error(
-      `API request failed: ${response.status} ${response.statusText}`
-    );
-  }
-  return response.json();
-}
-
-/**
- * Update a custom object
- */
-export async function updatePageEndpoint<T>(
-  baseURL: string,
-  key: string,
-  data: T
-): Promise<ApiResponse<T>> {
-  return fetchApi<T>(`${baseURL}/pages/${key}`, {
-    method: 'PUT',
-    body: JSON.stringify({ value: data }),
-  });
-}
-
-/**
- * Create a custom object
- */
-export async function createPageEndpoint(
-  baseURL: string,
-  data: Omit<Page, 'key' | 'layout' | 'components'>
-): Promise<ApiResponse<Page>> {
-  return fetchApi<Page>(`${baseURL}/pages`, {
-    method: 'POST',
-    body: JSON.stringify({ value: data }),
-  });
-}
-
-/**
- * Delete a custom object
- */
-export async function deletePageEndpoint(
-  baseURL: string,
-  key: string
-): Promise<void> {
-  const response = await fetch(`${baseURL}/pages/${key}`, {
-    method: 'DELETE',
-  });
-
-  if (!response.ok) {
-    throw new Error(
-      `API request failed: ${response.status} ${response.statusText}`
-    );
-  }
-}
 
 /**
  * Add a component to a page
@@ -164,33 +104,61 @@ export async function removeComponentFromPageApi(
   );
 }
 
-
-export const fetchPagesApi = async (baseUrl: string): Promise<{
-  container: string;
-  key: string;
-  value: Page;
-  version: number;
-  states: StateInfo<Page>;
-}[]> => {
+export const fetchPagesApi = async (
+  baseUrl: string
+): Promise<
+  {
+    container: string;
+    key: string;
+    value: Page;
+    version: number;
+    states: StateInfo<Page>;
+  }[]
+> => {
   try {
     const response = await fetch(`${baseUrl}/pages`);
 
-  if (!response.ok) {
-    throw new Error(
-      `API request failed: ${response.status} ${response.statusText}`
-    );
-  }
+    if (!response.ok) {
+      throw new Error(
+        `API request failed: ${response.status} ${response.statusText}`
+      );
+    }
 
-  return response.json();
+    return response.json();
   } catch (error) {
     throw new Error('Failed to fetch pages');
   }
 };
 
-export const fetchPageApi = async (baseUrl: string, key: string): Promise<Page> => {
+export const fetchPageApi = async (
+  baseUrl: string,
+  key: string
+): Promise<Page> => {
   try {
-    const data = await fetchPageEndpoint(baseUrl, key);
-    return data;
+    const response = await fetch(`${baseUrl}/pages/${key}`);
+    if (!response.ok) {
+      throw new Error(
+        `API request failed: ${response.status} ${response.statusText}`
+      );
+    }
+    return response.json();
+  } catch (error) {
+    throw new Error(`Failed to fetch page with key: ${key}`);
+  }
+};
+
+export const fetchPublishedPageApi = async (
+  baseUrl: string,
+  key: string
+): Promise<Page> => {
+  try {
+    const response = await fetch(`${baseUrl}/published/pages/${key}`);
+    if (!response.ok) {
+      throw new Error(
+        `API request failed: ${response.status} ${response.statusText}`
+      );
+    }
+    return response.json();
   } catch (error) {
     throw new Error(`Failed to fetch page with key: ${key}`);
   }
@@ -201,26 +169,82 @@ export const createPageApi = async (
   page: Omit<Page, 'key' | 'layout' | 'components'>
 ): Promise<Page> => {
   try {
-    const data = await createPageEndpoint(hydratedUrl, page);
-    return data.value;
+    const response = await fetchApi<Page>(`${hydratedUrl}/pages`, {
+      method: 'POST',
+      body: JSON.stringify({ value: page }),
+    });
+    return response.value;
   } catch (error) {
     throw new Error('Failed to create page');
   }
 };
 
-export const updatePageApi = async (baseUrl: string, page: Page): Promise<Page> => {
+export const updatePageApi = async (
+  baseUrl: string,
+  page: Page
+): Promise<Page> => {
   try {
-    const data = await updatePageEndpoint<Page>(baseUrl, page.key, page);
-    return data.value as Page;
+    const response = await fetchApi<Page>(`${baseUrl}/pages/${page.key}`, {
+      method: 'PUT',
+      body: JSON.stringify({ value: page }),
+    });
+    return response.value as Page;
   } catch (error) {
     throw new Error(`Failed to update page with key: ${page.key}`);
   }
 };
 
-export const deletePageApi = async (baseUrl: string, key: string): Promise<void> => {
+export const deletePageApi = async (
+  baseUrl: string,
+  key: string
+): Promise<void> => {
   try {
-    await deletePageEndpoint(baseUrl, key);
+    const response = await fetch(`${baseUrl}/pages/${key}`, {
+      method: 'DELETE',
+    });
+
+    if (!response.ok) {
+      throw new Error(
+        `API request failed: ${response.status} ${response.statusText}`
+      );
+    }
   } catch (error) {
     throw new Error(`Failed to delete page with key: ${key}`);
   }
 };
+
+
+/**
+ * Query a single page
+ */
+export async function queryPageEndpoint(
+  baseURL: string,
+  query: string
+): Promise<Page> {
+  const response = await fetch(`${baseURL}/preview/pages/query`, {
+    method: 'POST',
+    body: JSON.stringify({ query }),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  }).then((response) => response.json());
+  return response;
+}
+
+
+/**
+ * Query a single page
+ */
+export async function queryPublishedPageEndpoint(
+  baseURL: string,
+  query: string
+): Promise<Page> {
+  const response = await fetch(`${baseURL}/published/pages/query`, {
+    method: 'POST',
+    body: JSON.stringify({ query }),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  }).then((response) => response.json());
+  return response;
+}

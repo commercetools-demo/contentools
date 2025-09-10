@@ -1828,6 +1828,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@commercetools-demo/contentools-page-renderer@link:../packages/page-renderer::locator=plain-react-test%40workspace%3Aplain-react-test":
+  version: 0.0.0-use.local
+  resolution: "@commercetools-demo/contentools-page-renderer@link:../packages/page-renderer::locator=plain-react-test%40workspace%3Aplain-react-test"
+  languageName: node
+  linkType: soft
+
 "@commercetools-demo/contentools-page-renderer@workspace:^, @commercetools-demo/contentools-page-renderer@workspace:packages/page-renderer":
   version: 0.0.0-use.local
   resolution: "@commercetools-demo/contentools-page-renderer@workspace:packages/page-renderer"
@@ -14785,6 +14791,7 @@ __metadata:
     "@commercetools-demo/contentools-content-items": "link:../packages/content-items"
     "@commercetools-demo/contentools-content-pages": "link:../packages/content-pages"
     "@commercetools-demo/contentools-content-types": "link:../packages/content-types"
+    "@commercetools-demo/contentools-page-renderer": "link:../packages/page-renderer"
     "@emotion/react": "npm:^11.14.0"
     "@testing-library/dom": "npm:^10.4.0"
     "@testing-library/jest-dom": "npm:^6.6.3"

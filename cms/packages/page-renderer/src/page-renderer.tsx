@@ -1,4 +1,4 @@
-import { Page, GridRow, GridCell } from '@commercetools-demo/contentools-types';
+import { GridRow, GridCell } from '@commercetools-demo/contentools-types';
 import { ContentItemRenderer } from '@commercetools-demo/contentools-content-item-renderer';
 import React, { PropsWithChildren } from 'react';
 import { PageRendererProps } from '.';
@@ -82,8 +82,8 @@ const PageGridRenderer: React.FC<
     const rowStyle: React.CSSProperties = {
       display: 'grid',
       gridTemplateColumns: `repeat(${Math.max(totalColumns, 12)}, 1fr)`, // Minimum 12 columns for responsive grid
-      gap: '1rem',
-      marginBottom: '1rem',
+      gap: 'var(--page-grid-gap, 1rem)',
+      marginBottom: 'var(--page-grid-row-margin, 1rem)',
     };
 
     return (
@@ -103,16 +103,13 @@ const PageGridRenderer: React.FC<
   return (
     <div
       className={`page-renderer ${className || ''}`}
+      style={style}
     >
       {/* Page metadata could be rendered here if needed */}
       <div className="page-content">
         {page.layout?.rows?.map((row, rowIndex) =>
           renderRow(row, rowIndex)
-        ) || (
-          <div className="page-renderer--no-layout">
-            {children || <p>No layout defined for this page</p>}
-          </div>
-        )}
+        ) || null}
       </div>
     </div>
   );

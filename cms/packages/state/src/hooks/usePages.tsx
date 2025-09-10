@@ -13,6 +13,9 @@ import {
   deletePageApi,
   fetchPageApi,
   fetchPagesApi,
+  fetchPublishedPageApi,
+  queryPageEndpoint,
+  queryPublishedPageEndpoint,
   removeComponentFromPageApi,
   removeRowFromPageApi,
   updateCellSpanInPageApi,
@@ -85,6 +88,53 @@ export const usePages = () => {
       throw error;
     }
   }, []);
+
+  const fetchPublishedPage = useCallback(
+    async (hydratedUrl: string, key: string) => {
+      try {
+        setState((prev) => ({ ...prev, loading: true, error: null }));
+        const page = await fetchPublishedPageApi(
+          hydratedUrl,
+          key
+        );
+
+        setState((prev) => ({
+          ...prev,
+          loading: false,
+        }));
+
+        return page;
+      } catch (error) {
+        setState((prev) => ({
+          ...prev,
+          loading: false,
+          error:
+            error instanceof Error
+              ? error.message
+              : 'Failed to fetch published page',
+        }));
+        throw error;
+      }
+    },
+    []
+  );
+
+  const queryPage = useCallback(
+    async (hydratedUrl: string, query: string) => {
+      return await queryPageEndpoint(hydratedUrl, query);
+    },
+    []
+  );
+
+  const queryPublishedPage = useCallback(
+    async (hydratedUrl: string, query: string) => {
+      return await queryPublishedPageEndpoint(
+        hydratedUrl,
+        query
+      );
+    },
+    []
+  );
 
   const updatePage = useCallback(async (hydratedUrl: string, page: Page) => {
     try {
@@ -323,6 +373,9 @@ export const usePages = () => {
     // Actions
     fetchPages,
     fetchPage,
+    fetchPublishedPage,
+    queryPage,
+    queryPublishedPage,
     fetchItemState,
     updatePage,
     deletePage,
