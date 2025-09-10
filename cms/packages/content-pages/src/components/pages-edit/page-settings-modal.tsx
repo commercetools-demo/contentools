@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Modal } from '@commercetools-demo/contentools-ui-components';
+import {
+  ConfirmationModal,
+  Modal,
+} from '@commercetools-demo/contentools-ui-components';
 import { Page } from '@commercetools-demo/contentools-types';
 import Spacings from '@commercetools-uikit/spacings';
 import Text from '@commercetools-uikit/text';
@@ -61,73 +64,62 @@ const PageSettingsModal: React.FC<Props> = ({
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Page Settings" size={30}>
-      <Spacings.Stack scale="m">
+      <Spacings.Stack scale="m" alignItems="flex-start">
         <Text.Body tone="secondary">
           Configure page properties and metadata
         </Text.Body>
 
-        {/* Page Info Section */}
         <Card>
-          <Spacings.Stack scale="s">
-            <Text.Subheadline as="h4">Page Information</Text.Subheadline>
-            <Spacings.Stack scale="xs">
-              <div>
-                <Text.Body>Page Name</Text.Body>
+          <Spacings.Stack scale="s" alignItems="flex-start">
+            <Spacings.Stack scale="xs" alignItems="flex-start">
+              <Spacings.Inline>
+                <Text.Body fontWeight="bold">Page Name</Text.Body>
                 <Text.Body>{currentPage.name}</Text.Body>
-              </div>
-              <div>
-                <Text.Body>Route</Text.Body>
+              </Spacings.Inline>
+              <Spacings.Inline>
+                <Text.Body fontWeight="bold">Route</Text.Body>
                 <Text.Body>{currentPage.route}</Text.Body>
-              </div>
-              <div>
-                <Text.Body>Page Key</Text.Body>
+              </Spacings.Inline>
+              <Spacings.Inline>
+                <Text.Body fontWeight="bold">Page Key</Text.Body>
                 <Text.Body tone="secondary">{currentPage.key}</Text.Body>
-              </div>
+              </Spacings.Inline>
             </Spacings.Stack>
           </Spacings.Stack>
         </Card>
 
-        {/* Delete Section */}
         <Card>
-          <Spacings.Stack scale="s">
-            <Text.Subheadline as="h4" tone="critical">
-              Danger Zone
-            </Text.Subheadline>
-            <Text.Body tone="secondary">
-              Once you delete this page, there is no going back. Please be
-              certain.
-            </Text.Body>
-
-            {!showDeleteConfirmation ? (
+          <Spacings.Inline scale="s" alignItems="flex-start">
+            <Spacings.Stack scale="s" alignItems="flex-start">
+              <Text.Subheadline as="h4" tone="critical">
+                Danger Zone
+              </Text.Subheadline>
+              <Text.Body tone="secondary">
+                Once you delete this page, there is no going back. Please be
+                certain.
+              </Text.Body>
               <SecondaryButton
                 label="Delete Page"
                 iconLeft={<BinLinearIcon />}
                 onClick={handleDeleteClick}
               />
-            ) : (
-              <Spacings.Stack scale="xs">
-                <Text.Body tone="critical">
-                  Are you sure you want to delete "{currentPage.name}"? This
-                  action cannot be undone.
-                </Text.Body>
-                <Spacings.Inline scale="s">
-                  <PrimaryButton
-                    label={isDeleting ? 'Deleting...' : 'Yes, Delete Page'}
-                    tone="critical"
-                    onClick={handleDeletePage}
-                    isDisabled={isDeleting}
-                  />
-                  <SecondaryButton
-                    label="Cancel"
-                    onClick={handleCancelDelete}
-                    isDisabled={isDeleting}
-                  />
-                </Spacings.Inline>
-              </Spacings.Stack>
-            )}
-          </Spacings.Stack>
+            </Spacings.Stack>
+          </Spacings.Inline>
         </Card>
       </Spacings.Stack>
+      <ConfirmationModal
+        isOpen={showDeleteConfirmation}
+        onClose={handleCancelDelete}
+        onConfirm={handleDeletePage}
+        onReject={handleCancelDelete}
+        confirmTitle="Delete"
+        rejectTitle="Cancel"
+      >
+        <Text.Body>
+          Are you sure you want to delete "{currentPage.name}"? This action
+          cannot be undone.
+        </Text.Body>
+      </ConfirmationModal>
     </Modal>
   );
 };
