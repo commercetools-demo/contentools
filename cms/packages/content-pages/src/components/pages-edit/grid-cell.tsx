@@ -147,6 +147,7 @@ const GridCell: React.FC<GridCellProps> = ({
 
   const [currentState, setCurrentState] =
     useState<StateInfo<ContentItem> | null>(null);
+    
   const [contentType, setContentType] = useState<ContentTypeData | null>(null);
   const { fetchItemState } = useStatePages()!;
   const { fetchContentType } = useStateContentType()!;
@@ -199,7 +200,9 @@ const GridCell: React.FC<GridCellProps> = ({
 
   useEffect(() => {
     if (contentItem?.key) {
-      fetchItemState(hydratedUrl, contentItem.key).then(setCurrentState);
+      fetchItemState(hydratedUrl, contentItem.key).then((result) => {
+        setCurrentState(result.states);
+      });
     }
     if (contentItem?.type) {
       fetchContentType(contentItem.type).then(setContentType);

@@ -132,7 +132,11 @@ export const usePages = () => {
   }, []);
 
   const fetchItemState = useCallback(async (hydratedUrl: string, contentItemKey: string) => {
-    const result = await getStatesEndpoint<StateInfo<ContentItem>>(hydratedUrl, EContentType.PAGE_ITEMS, contentItemKey);
+    const result = await getStatesEndpoint<{
+      businessUnitKey: string;
+      key: string;
+      states: StateInfo<ContentItem>;
+    }>(hydratedUrl, EContentType.PAGE_ITEMS, contentItemKey);
     return result;
   }, []);
 
