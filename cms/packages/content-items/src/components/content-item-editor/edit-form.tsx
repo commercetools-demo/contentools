@@ -83,8 +83,16 @@ const ContentItemEditorEditForm: React.FC<ContentItemEditorEditFormProps> = ({
           }
         );
 
-        await fetchVersions(hydratedUrl, component.key, EContentType.CONTENT_ITEMS);
-        await fetchStates(hydratedUrl, component.key, EContentType.CONTENT_ITEMS);
+        await fetchVersions(
+          hydratedUrl,
+          component.key,
+          EContentType.CONTENT_ITEMS
+        );
+        await fetchStates(
+          hydratedUrl,
+          component.key,
+          EContentType.CONTENT_ITEMS
+        );
         await fetchContentItems(hydratedUrl);
       }
     } else {

@@ -1,5 +1,9 @@
 import React, { useEffect } from 'react';
-import { getStateType, Modal, StateTag } from '@commercetools-demo/contentools-ui-components';
+import {
+  getStateType,
+  Modal,
+  StateTag,
+} from '@commercetools-demo/contentools-ui-components';
 import Spacings from '@commercetools-uikit/spacings';
 import Text from '@commercetools-uikit/text';
 import {
@@ -20,7 +24,6 @@ import PrimaryButton from '@commercetools-uikit/primary-button';
 import Stamp from '@commercetools-uikit/stamp';
 import styled from 'styled-components';
 import { CONETNT_ITEMS_IN_PAGE_SCOPE } from '../../constants';
-
 
 const StyledStamp = styled.span`
   text-transform: capitalize;
@@ -77,18 +80,32 @@ const ComponentEditorModal: React.FC<Props> = ({
 
   const onRevert = async () => {
     if (currentPage?.key && selectedComponent) {
-      await revertToPublishedPageContentItem(hydratedUrl, selectedComponent.key, EContentType.PAGE_ITEMS);
+      await revertToPublishedPageContentItem(
+        hydratedUrl,
+        selectedComponent.key,
+        EContentType.PAGE_ITEMS
+      );
     }
   };
   const onPublish = async () => {
     if (currentPage?.key && selectedComponent) {
-      await publishPageContentItem(hydratedUrl, selectedComponent, selectedComponent.key, EContentType.PAGE_ITEMS, true);
+      await publishPageContentItem(
+        hydratedUrl,
+        selectedComponent,
+        selectedComponent.key,
+        EContentType.PAGE_ITEMS,
+        true
+      );
     }
   };
 
   useEffect(() => {
     if (selectedContentItemKey) {
-      fetchPageItemStates(hydratedUrl, selectedContentItemKey, EContentType.PAGE_ITEMS);
+      fetchPageItemStates(
+        hydratedUrl,
+        selectedContentItemKey,
+        EContentType.PAGE_ITEMS
+      );
     }
   }, [selectedContentItemKey, fetchPageItemStates]);
 
@@ -112,9 +129,7 @@ const ComponentEditorModal: React.FC<Props> = ({
     <Modal isOpen={isOpen} onClose={onClose} title="Edit Component" size={30}>
       <Spacings.Stack scale="m">
         <Spacings.Inline alignItems="center" justifyContent="space-between">
-          {currentStatePageItem && (
-            <StateTag status={currentStatePageItem} />
-          )}
+          {currentStatePageItem && <StateTag status={currentStatePageItem} />}
           <Spacings.Inline alignItems="center" justifyContent="flex-end">
             <Spacings.Inline>
               {(pageItemStateType === EStateType.DRAFT ||

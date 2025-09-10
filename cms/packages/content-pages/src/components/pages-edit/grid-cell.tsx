@@ -147,7 +147,7 @@ const GridCell: React.FC<GridCellProps> = ({
 
   const [currentState, setCurrentState] =
     useState<StateInfo<ContentItem> | null>(null);
-    
+
   const [contentType, setContentType] = useState<ContentTypeData | null>(null);
   const { fetchItemState } = useStatePages()!;
   const { fetchContentType } = useStateContentType()!;
@@ -231,15 +231,13 @@ const GridCell: React.FC<GridCellProps> = ({
     >
       {hasComponent ? (
         <ComponentCard>
-          <Spacings.Inline scale="s" >
-            <Spacings.Stack scale="s" alignItems='flex-start'>
-              {currentState && (
-                <StateTag status={currentState} isCondensed />
-              )}
-              <Text.Subheadline  as="h4" nowrap>
+          <Spacings.Inline scale="s">
+            <Spacings.Stack scale="s" alignItems="flex-start">
+              {currentState && <StateTag status={currentState} isCondensed />}
+              <Text.Subheadline as="h4" nowrap>
                 {contentType?.metadata.name}
               </Text.Subheadline>
-              <Text.Detail nowrap >{contentItem?.name}</Text.Detail>
+              <Text.Detail nowrap>{contentItem?.name}</Text.Detail>
             </Spacings.Stack>
           </Spacings.Inline>
         </ComponentCard>

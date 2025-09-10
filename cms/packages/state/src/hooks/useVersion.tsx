@@ -4,15 +4,14 @@ import {
   EContentType,
   PageVersionInfo,
   PageVersions,
-  VersionState
+  VersionState,
 } from '@commercetools-demo/contentools-types';
 import { useCallback, useState } from 'react';
-import {
-  fetchVersionsEndpoint
-} from '../api/version';
+import { fetchVersionsEndpoint } from '../api/version';
 
-export function useVersion<T extends ContentItemVersionInfo | PageVersionInfo>(
-) {
+export function useVersion<
+  T extends ContentItemVersionInfo | PageVersionInfo
+>() {
   const initialState: VersionState<T> = {
     versions: [],
     loading: false,
@@ -22,11 +21,7 @@ export function useVersion<T extends ContentItemVersionInfo | PageVersionInfo>(
 
   // Actions
   const fetchVersions = useCallback(
-    async (
-      hydratedUrl: string,
-      key: string,
-      contentType: EContentType,
-    ) => {
+    async (hydratedUrl: string, key: string, contentType: EContentType) => {
       try {
         setState((prev) => ({ ...prev, loading: true, error: null }));
         const result = await fetchVersionsEndpoint<

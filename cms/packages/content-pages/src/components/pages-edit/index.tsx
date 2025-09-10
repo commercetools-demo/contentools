@@ -113,8 +113,6 @@ const PagesEdit: React.FC<Props> = ({
   const { fetchVersions, versions } = useStateVersion<PageVersionInfo>()!;
   const draggingComponentType = editorState?.draggingComponentType;
 
-
-
   const [selectedVersionId, setSelectedVersionId] = useState<string | null>(
     null
   );

@@ -43,10 +43,13 @@ export const usePages = () => {
     try {
       const pagesFromApi = await fetchPagesApi(hydratedUrl);
       const pages = pagesFromApi.map((item) => item.value);
-      const states = pagesFromApi.reduce((acc: Record<string, StateInfo<Page>>, item) => {
-        acc[item.key] = item.states;
-        return acc;
-      }, {} as Record<string, StateInfo<Page>>);
+      const states = pagesFromApi.reduce(
+        (acc: Record<string, StateInfo<Page>>, item) => {
+          acc[item.key] = item.states;
+          return acc;
+        },
+        {} as Record<string, StateInfo<Page>>
+      );
       console.log('pages', pages);
       console.log('states', states);
       setState((prev) => ({
@@ -65,7 +68,6 @@ export const usePages = () => {
       }));
     }
   }, []);
-
 
   const fetchPage = useCallback(async (hydratedUrl: string, key: string) => {
     try {
@@ -93,10 +95,7 @@ export const usePages = () => {
     async (hydratedUrl: string, key: string) => {
       try {
         setState((prev) => ({ ...prev, loading: true, error: null }));
-        const page = await fetchPublishedPageApi(
-          hydratedUrl,
-          key
-        );
+        const page = await fetchPublishedPageApi(hydratedUrl, key);
 
         setState((prev) => ({
           ...prev,
@@ -119,19 +118,13 @@ export const usePages = () => {
     []
   );
 
-  const queryPage = useCallback(
-    async (hydratedUrl: string, query: string) => {
-      return await queryPageEndpoint(hydratedUrl, query);
-    },
-    []
-  );
+  const queryPage = useCallback(async (hydratedUrl: string, query: string) => {
+    return await queryPageEndpoint(hydratedUrl, query);
+  }, []);
 
   const queryPublishedPage = useCallback(
     async (hydratedUrl: string, query: string) => {
-      return await queryPublishedPageEndpoint(
-        hydratedUrl,
-        query
-      );
+      return await queryPublishedPageEndpoint(hydratedUrl, query);
     },
     []
   );
@@ -181,14 +174,17 @@ export const usePages = () => {
     }
   }, []);
 
-  const fetchItemState = useCallback(async (hydratedUrl: string, contentItemKey: string) => {
-    const result = await getStatesEndpoint<{
-      businessUnitKey: string;
-      key: string;
-      states: StateInfo<ContentItem>;
-    }>(hydratedUrl, EContentType.PAGE_ITEMS, contentItemKey);
-    return result;
-  }, []);
+  const fetchItemState = useCallback(
+    async (hydratedUrl: string, contentItemKey: string) => {
+      const result = await getStatesEndpoint<{
+        businessUnitKey: string;
+        key: string;
+        states: StateInfo<ContentItem>;
+      }>(hydratedUrl, EContentType.PAGE_ITEMS, contentItemKey);
+      return result;
+    },
+    []
+  );
 
   // Local actions
   const setCurrentPage = useCallback((key: string) => {

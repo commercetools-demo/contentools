@@ -386,7 +386,7 @@ const PropertyEditor: React.FC<PropertyEditorProps> = ({
                   {showDeleteButton && (
                     <PrimaryButton
                       label="Delete"
-                      tone='critical'
+                      tone="critical"
                       onClick={() => setShowDeleteConfirm(true)}
                     />
                   )}

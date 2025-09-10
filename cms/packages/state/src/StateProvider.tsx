@@ -121,29 +121,34 @@ export const useStateContext = <T extends VersionInfo>(
 ): StateContextValue<T> => {
   const stack = useContext(StateStackContext);
   const currentContext = useContext(StateContext);
-  
+
   if (!currentContext) {
     throw new Error('useStateContext must be used within a StateProvider');
   }
-  
+
   if (!targetScope) {
     return currentContext as StateContextValue<T>;
   }
-  
+
   if (stack && stack.contexts.has(targetScope)) {
     return stack.contexts.get(targetScope) as StateContextValue<T>;
   }
-  
+
   throw new Error(`StateProvider with scope "${targetScope}" not found`);
 };
 
 // Individual hook exports for convenience
 export const useStatePages = (scope?: string) => useStateContext(scope).pages;
 export const useStateEditor = (scope?: string) => useStateContext(scope).editor;
-export const useStateContentType = (scope?: string) => useStateContext(scope).contentType;
-export const useStateContentItem = (scope?: string) => useStateContext(scope).contentItem;
+export const useStateContentType = (scope?: string) =>
+  useStateContext(scope).contentType;
+export const useStateContentItem = (scope?: string) =>
+  useStateContext(scope).contentItem;
 export const useStateVersion = <T extends VersionInfo>(scope?: string) =>
   useStateContext<T>(scope).version;
-export const useStateStateManagement = (scope?: string) => useStateContext(scope).stateManagement;
-export const useStateMediaLibrary = (scope?: string) => useStateContext(scope).mediaLibrary;
-export const useStateDatasource = (scope?: string) => useStateContext(scope).datasource;
+export const useStateStateManagement = (scope?: string) =>
+  useStateContext(scope).stateManagement;
+export const useStateMediaLibrary = (scope?: string) =>
+  useStateContext(scope).mediaLibrary;
+export const useStateDatasource = (scope?: string) =>
+  useStateContext(scope).datasource;

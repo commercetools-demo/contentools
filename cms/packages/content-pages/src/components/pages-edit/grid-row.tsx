@@ -65,10 +65,13 @@ const GridRow: React.FC<GridRowProps> = ({
   onIncreaseWidth,
   onDecreaseWidth,
 }) => {
-  const getComponentForCell = useCallback((contentItemKey: string | null): ContentItem | undefined => {
-    if (!contentItemKey) return undefined;
-    return components.find(c => c?.key === contentItemKey);
-  }, [components, row]);
+  const getComponentForCell = useCallback(
+    (contentItemKey: string | null): ContentItem | undefined => {
+      if (!contentItemKey) return undefined;
+      return components.find((c) => c?.key === contentItemKey);
+    },
+    [components, row]
+  );
 
   const isSelected = (cellId: string): boolean => {
     return !!(
@@ -79,9 +82,11 @@ const GridRow: React.FC<GridRowProps> = ({
   };
 
   const isIncreaseDisabled = useMemo(() => {
-    return row.cells.reduce((acc, cell) => acc + cell.colSpan, 0) > NUMBER_OF_COLUMNS || !row.cells.some(cell => cell.colSpan === 1);
+    return (
+      row.cells.reduce((acc, cell) => acc + cell.colSpan, 0) >
+        NUMBER_OF_COLUMNS || !row.cells.some((cell) => cell.colSpan === 1)
+    );
   }, [row.cells]);
-
 
   const handleCellClick = (cellId: string, contentItemKey?: string) => {
     onCellClick(row.id, cellId, contentItemKey);
@@ -105,25 +110,24 @@ const GridRow: React.FC<GridRowProps> = ({
     return onComponentToCurrentPage(row.id, cellId);
   };
 
-
   return (
     <StyledGridRow data-row-id={row.id}>
       {!readonly && (
         <RowHeader>
           <span>Row {rowIndex + 1}</span>
-          <IconButton 
-            onClick={handleRemoveRow} 
+          <IconButton
+            onClick={handleRemoveRow}
             title="Remove row"
             label="Remove row"
-            icon={<BinLinearIcon  color='primary'  size='small'/>}
-           />
+            icon={<BinLinearIcon color="primary" size="small" />}
+          />
         </RowHeader>
       )}
-      
+
       <RowContent>
-        {row.cells.map(cell => {
+        {row.cells.map((cell) => {
           const contentItem = getComponentForCell(cell.contentItemKey);
-          
+
           return (
             <GridCell
               key={cell.id}

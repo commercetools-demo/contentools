@@ -27,11 +27,7 @@ export const useStateManagement = () => {
 
   // Actions
   const fetchStates = useCallback(
-    async (
-      hydratedUrl: string,
-      key: string,
-      contentType: EContentType
-    ) => {
+    async (hydratedUrl: string, key: string, contentType: EContentType) => {
       try {
         setState((prev) => ({ ...prev, loading: true, error: null }));
         const result = await getStatesEndpoint<ContentItemStates | PageStates>(
@@ -104,11 +100,7 @@ export const useStateManagement = () => {
   );
 
   const revertToPublished = useCallback(
-    async (
-      hydratedUrl: string,
-      key: string,
-      contentType: EContentType
-    ) => {
+    async (hydratedUrl: string, key: string, contentType: EContentType) => {
       try {
         setState((prev) => ({ ...prev, loading: true, error: null }));
         await revertDraftEndpoint(hydratedUrl, contentType, key);
@@ -144,7 +136,6 @@ export const useStateManagement = () => {
     },
     []
   );
-
 
   const clearError = useCallback(() => {
     setState((prev) => ({ ...prev, error: null }));

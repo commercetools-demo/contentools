@@ -1,7 +1,4 @@
-import {
-    ContentItem,
-    StateInfo
-} from '@commercetools-demo/contentools-types';
+import { ContentItem, StateInfo } from '@commercetools-demo/contentools-types';
 import { fetchApi } from '../api';
 /**
  * Fetch all content items
@@ -131,10 +128,13 @@ export async function updateContentItemEndpoint(
   key: string,
   data: ContentItem
 ): Promise<ContentItem> {
-  const response = await fetchApi<ContentItem>(`${baseURL}/content-items/${key}`, {
-    method: 'PUT',
-    body: JSON.stringify({ value: data }),
-  });
+  const response = await fetchApi<ContentItem>(
+    `${baseURL}/content-items/${key}`,
+    {
+      method: 'PUT',
+      body: JSON.stringify({ value: data }),
+    }
+  );
   return response.value;
 }
 

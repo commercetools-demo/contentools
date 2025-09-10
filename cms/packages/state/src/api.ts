@@ -2,7 +2,7 @@ import {
   ApiResponse,
   ContentTypeData,
   MediaLibraryResult,
-  Page
+  Page,
 } from '@commercetools-demo/contentools-types';
 
 /**

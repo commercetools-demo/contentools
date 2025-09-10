@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Modal } from '@commercetools-demo/contentools-ui-components';
-import { useStateContentType, useStateEditor } from '@commercetools-demo/contentools-state';
+import {
+  useStateContentType,
+  useStateEditor,
+} from '@commercetools-demo/contentools-state';
 import Spacings from '@commercetools-uikit/spacings';
 import Text from '@commercetools-uikit/text';
 import LoadingSpinner from '@commercetools-uikit/loading-spinner';
@@ -56,7 +59,8 @@ const ErrorContainer = styled.div`
 `;
 
 const ComponentLibraryModal: React.FC<Props> = ({ isOpen, onClose }) => {
-  const { contentTypes, loading, error, fetchContentTypes } = useStateContentType();
+  const { contentTypes, loading, error, fetchContentTypes } =
+    useStateContentType();
   const editorState = useStateEditor();
   const setDraggingComponentType = editorState?.setDraggingComponentType;
   const [draggingItemId, setDraggingItemId] = useState<string | null>(null);
@@ -89,19 +93,21 @@ const ComponentLibraryModal: React.FC<Props> = ({ isOpen, onClose }) => {
       onDragStart={() => handleDragStart(contentType)}
       onDragEnd={handleDragEnd}
     >
-      
       <Spacings.Stack scale="xs">
         <Text.Subheadline as="h4">
           {contentType.metadata.icon && (
-            <span style={{ marginRight: '8px' }}>{contentType.metadata.icon}</span>
+            <span style={{ marginRight: '8px' }}>
+              {contentType.metadata.icon}
+            </span>
           )}
           {contentType.metadata.name}
         </Text.Subheadline>
+        <Text.Detail tone="secondary">{contentType.metadata.type}</Text.Detail>
         <Text.Detail tone="secondary">
-          {contentType.metadata.type}
-        </Text.Detail>
-        <Text.Detail tone="secondary">
-          <small>{Object.keys(contentType.metadata.propertySchema || {}).length} properties</small>
+          <small>
+            {Object.keys(contentType.metadata.propertySchema || {}).length}{' '}
+            properties
+          </small>
         </Text.Detail>
       </Spacings.Stack>
     </ComponentItem>

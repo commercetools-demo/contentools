@@ -18,7 +18,7 @@ const GridContainer = styled.div`
   flex-direction: column;
   gap: 20px;
   & > div {
-    &:nth-child(2n+1) {
+    &:nth-child(2n + 1) {
       background: ${themes.default.colorNeutral98};
       &:hover {
         background: ${themes.default.colorNeutral85};
@@ -49,7 +49,11 @@ const PagesGridLayout: React.FC<Props> = ({
   onComponentSelect,
   onComponentToCurrentPage,
 }) => {
-  const { currentPage: page, removeRowFromCurrentPage, updateCellSpanInCurrentPage } = useStatePages()!;
+  const {
+    currentPage: page,
+    removeRowFromCurrentPage,
+    updateCellSpanInCurrentPage,
+  } = useStatePages()!;
   const hydratedUrl = `${baseURL}/${businessUnitKey}`;
   const [selectedCell, setSelectedCell] = useState<{
     rowId: string;
@@ -69,43 +73,50 @@ const PagesGridLayout: React.FC<Props> = ({
     [onComponentSelect]
   );
 
+  const handleRemoveRow = useCallback(
+    (rowId: string) => {
+      // This would dispatch an action to remove the row from the page layout
+      removeRowFromCurrentPage(hydratedUrl, rowId);
+    },
+    [hydratedUrl, removeRowFromCurrentPage]
+  );
 
+  const handleIncreaseWidth = useCallback(
+    (rowId: string, cellId: string, colSpan: number) => {
+      updateCellSpanInCurrentPage(hydratedUrl, rowId, cellId, {
+        colSpan,
+        shouldRemoveEmptyCell: true,
+      });
+    },
+    []
+  );
 
-  const handleRemoveRow = useCallback((rowId: string) => {
-    // This would dispatch an action to remove the row from the page layout
-    removeRowFromCurrentPage(hydratedUrl, rowId);
-  }, [hydratedUrl, removeRowFromCurrentPage]);
+  const handleDecreaseWidth = useCallback(
+    (rowId: string, cellId: string, colSpan: number) => {
+      updateCellSpanInCurrentPage(hydratedUrl, rowId, cellId, {
+        colSpan,
+        shouldAddEmptyCell: true,
+      });
+    },
+    []
+  );
 
-  const handleIncreaseWidth = useCallback((rowId: string, cellId: string, colSpan: number) => {
-    updateCellSpanInCurrentPage(hydratedUrl,rowId, cellId, {
-      colSpan,
-      shouldRemoveEmptyCell: true,
-    });
-  }, []);
-
-  const handleDecreaseWidth = useCallback((rowId: string, cellId: string, colSpan: number) => {
-    updateCellSpanInCurrentPage(hydratedUrl,rowId, cellId, {
-      colSpan,
-      shouldAddEmptyCell: true,
-    });
-  }, []);
-
-    // Update selectedCell when selectedComponentId changes externally
-    useEffect(() => {
-      if (selectedContentItemKey) {
-        // Find the cell that contains this component
-        for (const row of page?.layout.rows || []) {
-          for (const cell of row.cells) {
-            if (cell.contentItemKey === selectedContentItemKey) {
-              setSelectedCell({ rowId: row.id, cellId: cell.id });
-              return;
-            }
+  // Update selectedCell when selectedComponentId changes externally
+  useEffect(() => {
+    if (selectedContentItemKey) {
+      // Find the cell that contains this component
+      for (const row of page?.layout.rows || []) {
+        for (const cell of row.cells) {
+          if (cell.contentItemKey === selectedContentItemKey) {
+            setSelectedCell({ rowId: row.id, cellId: cell.id });
+            return;
           }
         }
-      } else {
-        setSelectedCell(null);
       }
-    }, [selectedContentItemKey, page?.layout.rows]);
+    } else {
+      setSelectedCell(null);
+    }
+  }, [selectedContentItemKey, page?.layout.rows]);
 
   return (
     <>

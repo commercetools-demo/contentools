@@ -33,7 +33,6 @@ const Actions = styled.div`
   margin-top: 24px;
 `;
 
-
 type FormValues = {
   name: string;
   route: string;
@@ -81,7 +80,6 @@ const PagesNew: React.FC<Props> = ({
   };
 
   const handleSubmit = async (values: FormValues) => {
-
     try {
       const newPage = await createEmptyPage(
         hydratedUrl,

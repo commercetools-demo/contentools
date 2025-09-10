@@ -213,7 +213,6 @@ export const deletePageApi = async (
   }
 };
 
-
 /**
  * Query a single page
  */
@@ -230,7 +229,6 @@ export async function queryPageEndpoint(
   }).then((response) => response.json());
   return response;
 }
-
 
 /**
  * Query a single page

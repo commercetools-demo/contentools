@@ -63,10 +63,7 @@ export const useContentItem = () => {
     async (hydratedUrl: string, key: string) => {
       try {
         setState((prev) => ({ ...prev, loading: true, error: null }));
-        const item = await fetchPreviewContentItemEndpoint(
-          hydratedUrl,
-          key
-        );
+        const item = await fetchPreviewContentItemEndpoint(hydratedUrl, key);
 
         setState((prev) => ({
           ...prev,
@@ -93,10 +90,7 @@ export const useContentItem = () => {
     async (hydratedUrl: string, key: string) => {
       try {
         setState((prev) => ({ ...prev, loading: true, error: null }));
-        const item = await fetchRawContentItemEndpoint(
-          hydratedUrl,
-          key
-        );
+        const item = await fetchRawContentItemEndpoint(hydratedUrl, key);
 
         setState((prev) => ({
           ...prev,
@@ -123,10 +117,7 @@ export const useContentItem = () => {
     async (hydratedUrl: string, key: string) => {
       try {
         setState((prev) => ({ ...prev, loading: true, error: null }));
-        const item = await fetchPublishedContentItemEndpoint(
-          hydratedUrl,
-          key
-        );
+        const item = await fetchPublishedContentItemEndpoint(hydratedUrl, key);
 
         setState((prev) => ({
           ...prev,
@@ -154,10 +145,7 @@ export const useContentItem = () => {
       try {
         setState((prev) => ({ ...prev, loading: true, error: null }));
 
-        const createdItem = await createContentItemEndpoint(
-          hydratedUrl,
-          item
-        );
+        const createdItem = await createContentItemEndpoint(hydratedUrl, item);
 
         setState((prev) => ({
           ...prev,
@@ -332,10 +320,7 @@ export const useContentItem = () => {
 
   const queryPublishedContentItem = useCallback(
     async (hydratedUrl: string, query: string) => {
-      return await queryPublishedContentItemEndpoint(
-        hydratedUrl,
-        query
-      );
+      return await queryPublishedContentItemEndpoint(hydratedUrl, query);
     },
     []
   );

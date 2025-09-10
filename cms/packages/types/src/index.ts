@@ -10,15 +10,14 @@ export interface ContentItem {
 export enum EStateType {
   DRAFT = 'draft',
   PUBLISHED = 'published',
-  BOTH = 'both'
+  BOTH = 'both',
 }
 
 export enum EContentType {
   CONTENT_ITEMS = 'content-items',
   PAGES = 'pages',
-  PAGE_ITEMS = 'page-items'
+  PAGE_ITEMS = 'page-items',
 }
-
 
 export type PageVersionInfo = Page & {
   timestamp: string;

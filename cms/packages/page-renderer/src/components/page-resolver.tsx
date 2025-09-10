@@ -10,9 +10,9 @@ import {
 } from 'react';
 import PageGridRenderer from '../page-renderer';
 
-const PageResolver: React.FC<
-  PropsWithChildren<PageRendererProps>
-> = (props) => {
+const PageResolver: React.FC<PropsWithChildren<PageRendererProps>> = (
+  props
+) => {
   const {
     isDraft,
     page,
@@ -23,11 +23,11 @@ const PageResolver: React.FC<
     onError,
     ...otherProps
   } = props;
-  const [resolvedPage, setResolvedPage] =
-    useState<Page | null>(page || null);
+  const [resolvedPage, setResolvedPage] = useState<Page | null>(page || null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { fetchPage, fetchPublishedPage, queryPage, queryPublishedPage } = useStatePages();
+  const { fetchPage, fetchPublishedPage, queryPage, queryPublishedPage } =
+    useStatePages();
 
   const hydratedUrl = useMemo(() => {
     return baseURL + '/' + businessUnitKey;
@@ -47,7 +47,6 @@ const PageResolver: React.FC<
   }
 
   const fetchPageByKey = useCallback(async () => {
-    
     try {
       setLoading(true);
       setError(null);
@@ -57,8 +56,8 @@ const PageResolver: React.FC<
       }
       // Note: usePages hook only has fetchPage, no published version support yet
       const fetchedPage = isDraft
-      ? await fetchPage(hydratedUrl, pageKey!)
-      : await fetchPublishedPage(hydratedUrl, pageKey!);
+        ? await fetchPage(hydratedUrl, pageKey!)
+        : await fetchPublishedPage(hydratedUrl, pageKey!);
       setResolvedPage(fetchedPage);
     } catch (err: any) {
       setError(err.message);
@@ -123,11 +122,7 @@ const PageResolver: React.FC<
 
   // Render the actual PageGridRenderer with the resolved page
   return (
-    <PageGridRenderer
-      page={resolvedPage}
-      baseURL={baseURL}
-      {...otherProps}
-    />
+    <PageGridRenderer page={resolvedPage} baseURL={baseURL} {...otherProps} />
   );
 };
 

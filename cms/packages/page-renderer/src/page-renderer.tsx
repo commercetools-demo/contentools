@@ -87,11 +87,7 @@ const PageGridRenderer: React.FC<
     };
 
     return (
-      <div
-        key={`row-${rowIndex}`}
-        style={rowStyle}
-        className="page-grid-row"
-      >
+      <div key={`row-${rowIndex}`} style={rowStyle} className="page-grid-row">
         {row.cells.map((cell, cellIndex) =>
           renderCell(cell, rowIndex, cellIndex)
         )}
@@ -99,17 +95,12 @@ const PageGridRenderer: React.FC<
     );
   };
 
-
   return (
-    <div
-      className={`page-renderer ${className || ''}`}
-      style={style}
-    >
+    <div className={`page-renderer ${className || ''}`} style={style}>
       {/* Page metadata could be rendered here if needed */}
       <div className="page-content">
-        {page.layout?.rows?.map((row, rowIndex) =>
-          renderRow(row, rowIndex)
-        ) || null}
+        {page.layout?.rows?.map((row, rowIndex) => renderRow(row, rowIndex)) ||
+          null}
       </div>
     </div>
   );

@@ -17,12 +17,12 @@ interface Props {
   parentUrl: string;
 }
 
-const PageSettingsModal: React.FC<Props> = ({ 
-  isOpen, 
-  onClose, 
-  currentPage, 
-  deletePage, 
-  parentUrl 
+const PageSettingsModal: React.FC<Props> = ({
+  isOpen,
+  onClose,
+  currentPage,
+  deletePage,
+  parentUrl,
 }) => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
@@ -34,7 +34,7 @@ const PageSettingsModal: React.FC<Props> = ({
     try {
       setIsDeleting(true);
       await deletePage(currentPage.key);
-      
+
       // Navigate to parent URL after successful deletion
       history.push(`/`);
       onClose();
@@ -60,12 +60,7 @@ const PageSettingsModal: React.FC<Props> = ({
   }
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      title="Page Settings"
-      size={30}
-    >
+    <Modal isOpen={isOpen} onClose={onClose} title="Page Settings" size={30}>
       <Spacings.Stack scale="m">
         <Text.Body tone="secondary">
           Configure page properties and metadata
@@ -99,9 +94,10 @@ const PageSettingsModal: React.FC<Props> = ({
               Danger Zone
             </Text.Subheadline>
             <Text.Body tone="secondary">
-              Once you delete this page, there is no going back. Please be certain.
+              Once you delete this page, there is no going back. Please be
+              certain.
             </Text.Body>
-            
+
             {!showDeleteConfirmation ? (
               <SecondaryButton
                 label="Delete Page"
@@ -111,11 +107,12 @@ const PageSettingsModal: React.FC<Props> = ({
             ) : (
               <Spacings.Stack scale="xs">
                 <Text.Body tone="critical">
-                  Are you sure you want to delete "{currentPage.name}"? This action cannot be undone.
+                  Are you sure you want to delete "{currentPage.name}"? This
+                  action cannot be undone.
                 </Text.Body>
                 <Spacings.Inline scale="s">
                   <PrimaryButton
-                    label={isDeleting ? "Deleting..." : "Yes, Delete Page"}
+                    label={isDeleting ? 'Deleting...' : 'Yes, Delete Page'}
                     tone="critical"
                     onClick={handleDeletePage}
                     isDisabled={isDeleting}

@@ -41,13 +41,11 @@ export interface PageRendererProps {
  *
  * This ensures backward compatibility and ease of use for consumers.
  */
-export const PageRenderer: React.FC<
-  PropsWithChildren<PageRendererProps>
-> = (props) => {
+export const PageRenderer: React.FC<PropsWithChildren<PageRendererProps>> = (
+  props
+) => {
   return (
-    <PageRendererErrorBoundary
-      fallback={<StandaloneRenderer {...props} />}
-    >
+    <PageRendererErrorBoundary fallback={<StandaloneRenderer {...props} />}>
       <ContextualRenderer {...props} />
     </PageRendererErrorBoundary>
   );
