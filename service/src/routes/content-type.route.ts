@@ -4,7 +4,6 @@ import { CustomObjectController } from '../controllers/custom-object.controller'
 import { CONTENT_TYPE_CONTAINER } from '../constants';
 import { v4 as uuidv4 } from 'uuid';
 
-
 const contentTypeController = new CustomObjectController(
   CONTENT_TYPE_CONTAINER
 );
@@ -13,7 +12,7 @@ const contentTypeRouter = Router();
 contentTypeRouter.get('/content-type', async (req, res, next) => {
   try {
     const dynamicContentTypes = await contentTypeController.getCustomObjects();
-    
+
     res.json([
       ...dynamicContentTypes.map((item) => ({
         id: item.id,

@@ -9,9 +9,14 @@ import { useMediaLibrary } from './hooks/useMediaLibrary';
 import { useDatasource } from './hooks/useDatasource';
 import { VersionInfo } from '@commercetools-demo/contentools-types';
 
+interface ScopedStateContext<T extends VersionInfo> {
+  contexts: Map<string, StateContextValue<T>>;
+  currentScope: string;
+}
+
 export interface StateContextValue<T extends VersionInfo> {
   // Pages
-  pages?: ReturnType<typeof usePages>;
+  pages: ReturnType<typeof usePages>;
 
   // Editor
   editor?: ReturnType<typeof useEditor>;
@@ -36,13 +41,19 @@ export interface StateContextValue<T extends VersionInfo> {
 
   // Base URL
   baseURL: string;
+
+  scope?: string;
 }
 
 const StateContext = createContext<StateContextValue<VersionInfo> | null>(null);
+const StateStackContext = createContext<ScopedStateContext<VersionInfo> | null>(
+  null
+);
 
 export interface StateProviderProps {
   children: ReactNode;
   baseURL: string;
+  scope?: string;
 
   // Minimal
   minimal?: boolean;
@@ -51,16 +62,19 @@ export interface StateProviderProps {
 export const StateProvider = <T extends VersionInfo>({
   children,
   baseURL,
+  scope = 'default',
   minimal = false,
 }: StateProviderProps) => {
+  const parentStack = useContext(StateStackContext);
+
   // Initialize all hooks
   const contentType = useContentType(baseURL);
   const contentItem = useContentItem();
-  // Initialize Full 
-  const pages = !minimal ? usePages(baseURL) : undefined;
+  const pages = usePages();
+  // Initialize Full
   const editor = !minimal ? useEditor() : undefined;
-  const version = !minimal ? useVersion<T>(baseURL) : undefined;
-  const stateManagement = !minimal ? useStateManagement(baseURL) : undefined;
+  const version = !minimal ? useVersion<T>() : undefined;
+  const stateManagement = !minimal ? useStateManagement() : undefined;
   const mediaLibrary = !minimal ? useMediaLibrary() : undefined;
   const datasource = !minimal ? useDatasource(baseURL) : undefined;
 
@@ -74,7 +88,17 @@ export const StateProvider = <T extends VersionInfo>({
     mediaLibrary,
     datasource,
     baseURL,
+    scope,
   };
+
+  const newStack: ScopedStateContext<T> = {
+    contexts: new Map(parentStack?.contexts || []) as Map<
+      string,
+      StateContextValue<T>
+    >,
+    currentScope: scope,
+  };
+  newStack.contexts.set(scope, contextValue);
 
   useEffect(() => {
     if (!minimal) {
@@ -84,29 +108,47 @@ export const StateProvider = <T extends VersionInfo>({
   }, [baseURL]);
 
   return (
-    <StateContext.Provider value={contextValue}>
-      {children}
-    </StateContext.Provider>
+    <StateStackContext.Provider value={newStack}>
+      <StateContext.Provider value={contextValue}>
+        {children}
+      </StateContext.Provider>
+    </StateStackContext.Provider>
   );
 };
 
-export const useStateContext = <
-  T extends VersionInfo
->(): StateContextValue<T> => {
-  const context = useContext(StateContext);
-  if (!context) {
+export const useStateContext = <T extends VersionInfo>(
+  targetScope = 'default'
+): StateContextValue<T> => {
+  const stack = useContext(StateStackContext);
+  const currentContext = useContext(StateContext);
+
+  if (!currentContext) {
     throw new Error('useStateContext must be used within a StateProvider');
   }
-  return context as StateContextValue<T>;
+
+  if (!targetScope) {
+    return currentContext as StateContextValue<T>;
+  }
+
+  if (stack && stack.contexts.has(targetScope)) {
+    return stack.contexts.get(targetScope) as StateContextValue<T>;
+  }
+
+  throw new Error(`StateProvider with scope "${targetScope}" not found`);
 };
 
 // Individual hook exports for convenience
-export const useStatePages = () => useStateContext().pages;
-export const useStateEditor = () => useStateContext().editor;
-export const useStateContentType = () => useStateContext().contentType;
-export const useStateContentItem = () => useStateContext().contentItem;
-export const useStateVersion = <T extends VersionInfo>() =>
-  useStateContext<T>().version;
-export const useStateStateManagement = () => useStateContext().stateManagement;
-export const useStateMediaLibrary = () => useStateContext().mediaLibrary;
-export const useStateDatasource = () => useStateContext().datasource;
+export const useStatePages = (scope?: string) => useStateContext(scope).pages;
+export const useStateEditor = (scope?: string) => useStateContext(scope).editor;
+export const useStateContentType = (scope?: string) =>
+  useStateContext(scope).contentType;
+export const useStateContentItem = (scope?: string) =>
+  useStateContext(scope).contentItem;
+export const useStateVersion = <T extends VersionInfo>(scope?: string) =>
+  useStateContext<T>(scope).version;
+export const useStateStateManagement = (scope?: string) =>
+  useStateContext(scope).stateManagement;
+export const useStateMediaLibrary = (scope?: string) =>
+  useStateContext(scope).mediaLibrary;
+export const useStateDatasource = (scope?: string) =>
+  useStateContext(scope).datasource;

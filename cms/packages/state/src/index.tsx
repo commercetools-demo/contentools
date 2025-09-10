@@ -17,8 +17,4 @@ export * from './api';
 
 // Utility functions
 export { debounce } from './utils/debounce';
-export {
-  NUMBER_OF_COLUMNS,
-  LOCAL_STORAGE_KEY_PREFIX,
-  DEBOUNCE_DELAY,
-} from './utils/constants';
+export { NUMBER_OF_COLUMNS } from './utils/constants';

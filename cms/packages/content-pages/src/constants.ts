@@ -1,0 +1,1 @@
+export const CONETNT_ITEMS_IN_PAGE_SCOPE = 'content-items-in-page';

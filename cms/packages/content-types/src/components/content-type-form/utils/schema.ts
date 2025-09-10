@@ -74,4 +74,9 @@ const isDefaultValueVisible = (type: PropertySchema['type']): boolean => {
   }
 };
 
-export { parseDefaultValue, formatDefaultValue, getDefaultValuePlaceholder, isDefaultValueVisible };
+export {
+  parseDefaultValue,
+  formatDefaultValue,
+  getDefaultValuePlaceholder,
+  isDefaultValueVisible,
+};

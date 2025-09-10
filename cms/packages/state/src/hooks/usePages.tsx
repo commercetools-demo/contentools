@@ -1,175 +1,104 @@
-import { useState, useCallback } from 'react';
-import { v4 as uuidv4 } from 'uuid';
 import {
+  ContentItem,
+  EContentType,
   Page,
   PagesState,
-  ContentItem,
-  GridRow,
-  GridCell,
+  StateInfo,
 } from '@commercetools-demo/contentools-types';
-import { debounce } from '../utils/debounce';
+import { useCallback, useState } from 'react';
 import {
-  NUMBER_OF_COLUMNS,
-  LOCAL_STORAGE_KEY_PREFIX,
-  DEBOUNCE_DELAY,
-} from '../utils/constants';
-import {
-  fetchPagesEndpoint,
-  fetchPageEndpoint,
-  createPageEndpoint,
-  updatePageEndpoint,
-  deletePageEndpoint,
-} from '../api';
+  addComponentToPageApi,
+  addRowToPageApi,
+  createPageApi,
+  deletePageApi,
+  fetchPageApi,
+  fetchPagesApi,
+  fetchPublishedPageApi,
+  queryPageEndpoint,
+  queryPublishedPageEndpoint,
+  removeComponentFromPageApi,
+  removeRowFromPageApi,
+  updateCellSpanInPageApi,
+  updateComponentInPageApi,
+  updatePageApi,
+} from '../api/page';
+import { getStatesEndpoint } from '../api/state';
 
 const initialState: PagesState = {
   pages: [],
   currentPage: null,
+  states: {},
   loading: false,
   error: null,
   unsavedChanges: false,
-  businessUnitKey: '',
-};
-
-// Helper functions for API calls
-const fetchPagesApi = async (baseUrl: string): Promise<Page[]> => {
-  try {
-    const data = await fetchPagesEndpoint<Page>(baseUrl);
-    return data.map((item) => item.value);
-  } catch (error) {
-    throw new Error('Failed to fetch pages');
-  }
-};
-
-const fetchPageApi = async (baseUrl: string, key: string): Promise<Page> => {
-  try {
-    const data = await fetchPageEndpoint<Page>(baseUrl, key);
-    return data.value;
-  } catch (error) {
-    throw new Error(`Failed to fetch page with key: ${key}`);
-  }
-};
-
-const createPageApi = async (baseUrl: string, page: Page): Promise<Page> => {
-  try {
-    const data = await createPageEndpoint<Page>(baseUrl, page);
-    return data.value;
-  } catch (error) {
-    throw new Error('Failed to create page');
-  }
-};
-
-const updatePageApi = async (baseUrl: string, page: Page): Promise<Page> => {
-  try {
-    const data = await updatePageEndpoint<Page>(baseUrl, page.key, page);
-    return data.value as Page;
-  } catch (error) {
-    throw new Error(`Failed to update page with key: ${page.key}`);
-  }
-};
-
-const deletePageApi = async (baseUrl: string, key: string): Promise<void> => {
-  try {
-    await deletePageEndpoint(baseUrl, key);
-  } catch (error) {
-    throw new Error(`Failed to delete page with key: ${key}`);
-  }
 };
 
 // Helper functions
-const createEmptyGridRow = (): GridRow => {
-  const cells: GridCell[] = [];
 
-  for (let i = 0; i < NUMBER_OF_COLUMNS; i++) {
-    cells.push({
-      id: uuidv4(),
-      componentId: null,
-      colSpan: 1,
-    });
-  }
-
-  return {
-    id: uuidv4(),
-    cells,
-  };
-};
-
-export const usePages = (baseUrl: string) => {
+export const usePages = () => {
   const [state, setState] = useState<PagesState>(initialState);
 
-  // Create a debounced session storage save function
-  const saveToSessionStorage = useCallback(
-    debounce((pages: Page[], businessUnitKey: string) => {
-      try {
-        const safePages = JSON.parse(JSON.stringify({ pages })).pages;
-        const storageKey = `${LOCAL_STORAGE_KEY_PREFIX}_${businessUnitKey}`;
-        sessionStorage.setItem(storageKey, JSON.stringify(safePages));
-      } catch (error) {
-        console.error('Error saving to session storage:', error);
-      }
-    }, DEBOUNCE_DELAY),
-    []
-  );
-
   // Actions
-  const fetchPages = useCallback(async (businessUnitKey: string) => {
+  const fetchPages = useCallback(async (hydratedUrl: string) => {
     try {
-      setState((prev) => ({ ...prev, loading: true, error: null }));
-
-      // First try to get from session storage
-      const storageKey = `${LOCAL_STORAGE_KEY_PREFIX}_${businessUnitKey}`;
-      const storedPages = sessionStorage.getItem(storageKey);
-      const pagesFromStorage = storedPages
-        ? (JSON.parse(storedPages) as Page[])
-        : null;
-
+      const pagesFromApi = await fetchPagesApi(hydratedUrl);
+      const pages = pagesFromApi.map((item) => item.value);
+      const states = pagesFromApi.reduce(
+        (acc: Record<string, StateInfo<Page>>, item) => {
+          acc[item.key] = item.states;
+          return acc;
+        },
+        {} as Record<string, StateInfo<Page>>
+      );
+      console.log('pages', pages);
+      console.log('states', states);
       setState((prev) => ({
         ...prev,
-        pages: pagesFromStorage || [],
-        businessUnitKey,
+        pages: pages,
+        states,
         loading: false,
       }));
     } catch (error) {
       setState((prev) => ({
         ...prev,
         pages: [],
-        businessUnitKey,
+        states: {},
         loading: false,
         error: error instanceof Error ? error.message : 'Failed to fetch pages',
       }));
     }
   }, []);
 
-  const syncPagesWithApi = useCallback(async () => {
+  const fetchPage = useCallback(async (hydratedUrl: string, key: string) => {
     try {
       setState((prev) => ({ ...prev, loading: true, error: null }));
-      const pagesFromApi = await fetchPagesApi(baseUrl);
+      const page = await fetchPageApi(hydratedUrl, key);
 
       setState((prev) => ({
         ...prev,
-        pages: pagesFromApi,
+        currentPage: page,
         loading: false,
       }));
+
+      return page;
     } catch (error) {
       setState((prev) => ({
         ...prev,
         loading: false,
-        error:
-          error instanceof Error
-            ? error.message
-            : 'Failed to sync pages with API',
+        error: error instanceof Error ? error.message : 'Failed to fetch page',
       }));
+      throw error;
     }
-  }, [baseUrl]);
+  }, []);
 
-  const fetchPage = useCallback(
-    async (key: string) => {
+  const fetchPublishedPage = useCallback(
+    async (hydratedUrl: string, key: string) => {
       try {
         setState((prev) => ({ ...prev, loading: true, error: null }));
-        const page = await fetchPageApi(baseUrl, key);
+        const page = await fetchPublishedPageApi(hydratedUrl, key);
 
         setState((prev) => ({
           ...prev,
-          currentPage: page,
           loading: false,
         }));
 
@@ -179,91 +108,82 @@ export const usePages = (baseUrl: string) => {
           ...prev,
           loading: false,
           error:
-            error instanceof Error ? error.message : 'Failed to fetch page',
+            error instanceof Error
+              ? error.message
+              : 'Failed to fetch published page',
         }));
         throw error;
       }
     },
-    [baseUrl]
+    []
   );
 
-  const createPage = useCallback(
-    async (page: Page) => {
-      try {
-        setState((prev) => ({ ...prev, loading: true, error: null }));
-        const createdPage = await createPageApi(baseUrl, page);
+  const queryPage = useCallback(async (hydratedUrl: string, query: string) => {
+    return await queryPageEndpoint(hydratedUrl, query);
+  }, []);
 
-        setState((prev) => ({
-          ...prev,
-          pages: [...prev.pages, createdPage],
-          loading: false,
-        }));
-
-        return createdPage;
-      } catch (error) {
-        setState((prev) => ({
-          ...prev,
-          loading: false,
-          error:
-            error instanceof Error ? error.message : 'Failed to create page',
-        }));
-        throw error;
-      }
+  const queryPublishedPage = useCallback(
+    async (hydratedUrl: string, query: string) => {
+      return await queryPublishedPageEndpoint(hydratedUrl, query);
     },
-    [baseUrl]
+    []
   );
 
-  const updatePage = useCallback(
-    async (page: Page) => {
-      try {
-        setState((prev) => ({ ...prev, loading: true, error: null }));
-        const updatedPage = await updatePageApi(baseUrl, page);
+  const updatePage = useCallback(async (hydratedUrl: string, page: Page) => {
+    try {
+      setState((prev) => ({ ...prev, loading: true, error: null }));
+      const updatedPage = await updatePageApi(hydratedUrl, page);
 
-        setState((prev) => ({
-          ...prev,
-          pages: prev.pages.map((p) => (p.key === page.key ? updatedPage : p)),
-          currentPage:
-            prev.currentPage?.key === page.key ? updatedPage : prev.currentPage,
-          loading: false,
-        }));
+      setState((prev) => ({
+        ...prev,
+        pages: prev.pages.map((p) => (p.key === page.key ? updatedPage : p)),
+        currentPage:
+          prev.currentPage?.key === page.key ? updatedPage : prev.currentPage,
+        loading: false,
+      }));
 
-        return updatedPage;
-      } catch (error) {
-        setState((prev) => ({
-          ...prev,
-          loading: false,
-          error:
-            error instanceof Error ? error.message : 'Failed to update page',
-        }));
-        throw error;
-      }
+      return updatedPage;
+    } catch (error) {
+      setState((prev) => ({
+        ...prev,
+        loading: false,
+        error: error instanceof Error ? error.message : 'Failed to update page',
+      }));
+      throw error;
+    }
+  }, []);
+
+  const deletePage = useCallback(async (hydratedUrl: string, key: string) => {
+    try {
+      setState((prev) => ({ ...prev, loading: true, error: null }));
+      await deletePageApi(hydratedUrl, key);
+
+      setState((prev) => ({
+        ...prev,
+        pages: prev.pages.filter((p) => p.key !== key),
+        currentPage: prev.currentPage?.key === key ? null : prev.currentPage,
+        loading: false,
+      }));
+    } catch (error) {
+      setState((prev) => ({
+        ...prev,
+        loading: false,
+        error: error instanceof Error ? error.message : 'Failed to delete page',
+      }));
+      throw error;
+    }
+  }, []);
+
+  const fetchItemState = useCallback(
+    async (hydratedUrl: string, contentItemKey: string) => {
+      const result = await getStatesEndpoint<{
+        businessUnitKey: string;
+        key: string;
+        states: StateInfo<ContentItem>;
+      }>(hydratedUrl, EContentType.PAGE_ITEMS, contentItemKey);
+      return result;
     },
-    [baseUrl]
-  );
-
-  const deletePage = useCallback(
-    async (key: string) => {
-      try {
-        setState((prev) => ({ ...prev, loading: true, error: null }));
-        await deletePageApi(baseUrl, key);
-
-        setState((prev) => ({
-          ...prev,
-          pages: prev.pages.filter((p) => p.key !== key),
-          currentPage: prev.currentPage?.key === key ? null : prev.currentPage,
-          loading: false,
-        }));
-      } catch (error) {
-        setState((prev) => ({
-          ...prev,
-          loading: false,
-          error:
-            error instanceof Error ? error.message : 'Failed to delete page',
-        }));
-        throw error;
-      }
-    },
-    [baseUrl]
+    []
   );
 
   // Local actions
@@ -275,194 +195,158 @@ export const usePages = (baseUrl: string) => {
   }, []);
 
   const createEmptyPage = useCallback(
-    (name: string, route: string, businessUnitKey: string) => {
-      const newPage: Page = {
-        key: `page-${uuidv4()}`,
-        name,
-        uuid: uuidv4(),
-        route,
-        businessUnitKey,
-        layout: {
-          rows: [createEmptyGridRow()],
-        },
-        components: [],
+    async (
+      hydratedUrl: string,
+      page: Pick<Page, 'name' | 'route'>,
+      businessUnitKey: string
+    ): Promise<Page> => {
+      const newPage: Omit<Page, 'key' | 'layout' | 'components'> = {
+        name: page.name,
+        route: page.route,
       };
+      const createdPage = await createPageApi(hydratedUrl, newPage);
 
       setState((prev) => ({
         ...prev,
-        pages: [...prev.pages, newPage],
-        currentPage: newPage,
+        pages: [...prev.pages, createdPage],
+        currentPage: createdPage,
         unsavedChanges: true,
-        businessUnitKey,
       }));
 
-      // Save to session storage
-      saveToSessionStorage([...state.pages, newPage], businessUnitKey);
+      return createdPage;
     },
-    [state.pages, saveToSessionStorage]
-  );
-
-  const updateCurrentPage = useCallback(
-    (updates: Partial<Page>) => {
-      setState((prev) => {
-        if (!prev.currentPage) return prev;
-
-        const updatedPage = { ...prev.currentPage, ...updates };
-        const updatedPages = prev.pages.map((p) =>
-          p.key === prev.currentPage!.key ? updatedPage : p
-        );
-
-        // Save to session storage
-        saveToSessionStorage(updatedPages, prev.businessUnitKey);
-
-        return {
-          ...prev,
-          pages: updatedPages,
-          currentPage: updatedPage,
-          unsavedChanges: true,
-        };
-      });
-    },
-    [saveToSessionStorage]
+    [state.pages]
   );
 
   const addRowToCurrentPage = useCallback(
-    (rowIndex?: number) => {
-      setState((prev) => {
-        if (!prev.currentPage) return prev;
-
-        const newRow = createEmptyGridRow();
-        const layout = { ...prev.currentPage.layout };
-
-        if (rowIndex !== undefined) {
-          layout.rows.splice(rowIndex + 1, 0, newRow);
-        } else {
-          layout.rows.push(newRow);
-        }
-
-        const updatedPage = { ...prev.currentPage, layout };
-        const updatedPages = prev.pages.map((p) =>
-          p.key === prev.currentPage!.key ? updatedPage : p
-        );
-
-        // Save to session storage
-        saveToSessionStorage(updatedPages, prev.businessUnitKey);
-
-        return {
-          ...prev,
-          pages: updatedPages,
-          currentPage: updatedPage,
-          unsavedChanges: true,
-        };
-      });
+    async (hydratedUrl: string) => {
+      if (!state.currentPage) return;
+      const updatedPage = await addRowToPageApi(
+        hydratedUrl,
+        state.currentPage.key
+      );
+      setState((prev) => ({
+        ...prev,
+        currentPage: updatedPage.value,
+        unsavedChanges: true,
+      }));
+      return updatedPage;
     },
-    [saveToSessionStorage]
+    [state.currentPage]
   );
 
   const removeRowFromCurrentPage = useCallback(
-    (rowId: string) => {
-      setState((prev) => {
-        if (!prev.currentPage) return prev;
-
-        const layout = { ...prev.currentPage.layout };
-        layout.rows = layout.rows.filter((row) => row.id !== rowId);
-
-        const updatedPage = { ...prev.currentPage, layout };
-        const updatedPages = prev.pages.map((p) =>
-          p.key === prev.currentPage!.key ? updatedPage : p
-        );
-
-        // Save to session storage
-        saveToSessionStorage(updatedPages, prev.businessUnitKey);
-
-        return {
-          ...prev,
-          pages: updatedPages,
-          currentPage: updatedPage,
-          unsavedChanges: true,
-        };
-      });
+    async (hydratedUrl: string, rowId: string) => {
+      if (!state.currentPage) return;
+      const updatedPage = await removeRowFromPageApi(
+        hydratedUrl,
+        state.currentPage.key,
+        rowId
+      );
+      setState((prev) => ({
+        ...prev,
+        currentPage: updatedPage.value,
+        unsavedChanges: true,
+      }));
+      return updatedPage;
     },
-    [saveToSessionStorage]
+    [state.currentPage]
   );
 
   const addComponentToCurrentPage = useCallback(
-    (component: ContentItem) => {
-      setState((prev) => {
-        if (!prev.currentPage) return prev;
-
-        const components = [...prev.currentPage.components, component];
-        const updatedPage = { ...prev.currentPage, components };
-        const updatedPages = prev.pages.map((p) =>
-          p.key === prev.currentPage!.key ? updatedPage : p
-        );
-
-        // Save to session storage
-        saveToSessionStorage(updatedPages, prev.businessUnitKey);
-
-        return {
-          ...prev,
-          pages: updatedPages,
-          currentPage: updatedPage,
-          unsavedChanges: true,
-        };
-      });
+    async (
+      hydratedUrl: string,
+      componentType: string | null | undefined,
+      rowId: string,
+      cellId: string
+    ) => {
+      if (!state.currentPage) return;
+      if (!componentType) return;
+      const updatedPage = await addComponentToPageApi(
+        hydratedUrl,
+        state.currentPage.key,
+        componentType,
+        rowId,
+        cellId
+      );
+      setState((prev) => ({
+        ...prev,
+        currentPage: updatedPage.value,
+        unsavedChanges: true,
+      }));
+      return updatedPage;
     },
-    [saveToSessionStorage]
+    [state.currentPage]
+  );
+
+  const updateCellSpanInCurrentPage = useCallback(
+    async (
+      hydratedUrl: string,
+      rowId: string,
+      cellId: string,
+      updates: {
+        colSpan: number;
+        shouldRemoveEmptyCell?: boolean;
+        shouldAddEmptyCell?: boolean;
+      }
+    ) => {
+      if (!state.currentPage) return;
+      const updatedPage = await updateCellSpanInPageApi(
+        hydratedUrl,
+        state.currentPage.key,
+        rowId,
+        cellId,
+        updates
+      );
+      setState((prev) => ({
+        ...prev,
+        currentPage: updatedPage.value,
+        unsavedChanges: true,
+      }));
+      return updatedPage;
+    },
+    [state.currentPage]
   );
 
   const updateComponentInCurrentPage = useCallback(
-    (componentId: string, updates: Partial<ContentItem>) => {
-      setState((prev) => {
-        if (!prev.currentPage) return prev;
-
-        const components = prev.currentPage.components.map((c) =>
-          c.id === componentId ? { ...c, ...updates } : c
-        );
-        const updatedPage = { ...prev.currentPage, components };
-        const updatedPages = prev.pages.map((p) =>
-          p.key === prev.currentPage!.key ? updatedPage : p
-        );
-
-        // Save to session storage
-        saveToSessionStorage(updatedPages, prev.businessUnitKey);
-
-        return {
-          ...prev,
-          pages: updatedPages,
-          currentPage: updatedPage,
-          unsavedChanges: true,
-        };
-      });
+    async (
+      hydratedUrl: string,
+      contentItemKey: string,
+      updates: Partial<ContentItem>
+    ) => {
+      if (!state.currentPage) return;
+      const updatedPage = await updateComponentInPageApi(
+        hydratedUrl,
+        state.currentPage.key,
+        contentItemKey,
+        updates
+      );
+      setState((prev) => ({
+        ...prev,
+        currentPage: updatedPage.value,
+        unsavedChanges: true,
+      }));
+      return updatedPage;
     },
-    [saveToSessionStorage]
+    [state.currentPage]
   );
 
   const removeComponentFromCurrentPage = useCallback(
-    (componentId: string) => {
-      setState((prev) => {
-        if (!prev.currentPage) return prev;
-
-        const components = prev.currentPage.components.filter(
-          (c) => c.id !== componentId
-        );
-        const updatedPage = { ...prev.currentPage, components };
-        const updatedPages = prev.pages.map((p) =>
-          p.key === prev.currentPage!.key ? updatedPage : p
-        );
-
-        // Save to session storage
-        saveToSessionStorage(updatedPages, prev.businessUnitKey);
-
-        return {
-          ...prev,
-          pages: updatedPages,
-          currentPage: updatedPage,
-          unsavedChanges: true,
-        };
-      });
+    async (hydratedUrl: string, contentItemKey: string) => {
+      if (!state.currentPage) return;
+      const updatedPage = await removeComponentFromPageApi(
+        hydratedUrl,
+        state.currentPage.key,
+        contentItemKey
+      );
+      setState((prev) => ({
+        ...prev,
+        currentPage: updatedPage.value,
+        unsavedChanges: true,
+      }));
+      return updatedPage;
     },
-    [saveToSessionStorage]
+    [state.currentPage]
   );
 
   const clearError = useCallback(() => {
@@ -477,26 +361,28 @@ export const usePages = (baseUrl: string) => {
     // State
     pages: state.pages,
     currentPage: state.currentPage,
+    states: state.states,
     loading: state.loading,
     error: state.error,
     unsavedChanges: state.unsavedChanges,
-    businessUnitKey: state.businessUnitKey,
 
     // Actions
     fetchPages,
-    syncPagesWithApi,
     fetchPage,
-    createPage,
+    fetchPublishedPage,
+    queryPage,
+    queryPublishedPage,
+    fetchItemState,
     updatePage,
     deletePage,
     setCurrentPage,
     createEmptyPage,
-    updateCurrentPage,
     addRowToCurrentPage,
     removeRowFromCurrentPage,
     addComponentToCurrentPage,
     updateComponentInCurrentPage,
     removeComponentFromCurrentPage,
+    updateCellSpanInCurrentPage,
     clearError,
     clearUnsavedChanges,
   };

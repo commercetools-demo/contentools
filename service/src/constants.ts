@@ -9,13 +9,33 @@ export const CONTENT_ITEM_CONTAINER =
 export const CONTENT_ITEM_STATE_CONTAINER =
   process.env.CONTENT_ITEM_STATE_CONTAINER || 'content-item-state';
 
-
 export const CONTENT_ITEM_VERSION_CONTAINER =
-process.env.CONTENT_ITEM_VERSION_CONTAINER || 'content-item-version';
-
+  process.env.CONTENT_ITEM_VERSION_CONTAINER || 'content-item-version';
 
 export const CONTENT_TYPE_CONTAINER =
   process.env.CONTENT_TYPE_CONTAINER || 'content-type';
 
 export const DATASOURCE_CONTAINER =
   process.env.DATASOURCE_CONTAINER || 'datasource';
+
+export const PAGE_VERSION_CONTAINER =
+  process.env.PAGE_VERSION_CONTAINER || 'page-version';
+
+export const PAGE_STATE_CONTAINER =
+  process.env.PAGE_STATE_CONTAINER || 'page-state';
+
+export const CONTENT_PAGE_CONTAINER =
+  process.env.CONTENT_PAGE_CONTAINER || 'content-page';
+
+export const PAGE_CONTENT_ITEMS_CONTAINER =
+  process.env.PAGE_CONTENT_ITEMS_CONTAINER || 'page-content-items';
+export const PAGE_CONTENT_ITEM_STATE_CONTAINER =
+  process.env.PAGE_CONTENT_ITEM_STATE_CONTAINER || 'page-content-item-state';
+export const PAGE_CONTENT_ITEM_VERSION_CONTAINER =
+  process.env.PAGE_CONTENT_ITEM_VERSION_CONTAINER ||
+  'page-content-item-version';
+
+export const NUMBER_OF_COLUMNS = parseInt(
+  process.env.NUMBER_OF_COLUMNS || '12',
+  10
+);

@@ -70,7 +70,7 @@ const ModalBody = styled.div`
 
 const ModalFooter = styled.div`
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   gap: 12px;
   padding: 16px 24px;
   border-top: 1px solid #e0e0e0;

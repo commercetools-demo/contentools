@@ -1,0 +1,36 @@
+{
+  "name": "@commercetools-demo/contentools-version-history",
+  "description": "Version history for CMS",
+  "version": "1.1.0",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "dist/commercetools-demo-contentools-version-history.cjs.js",
+  "module": "dist/commercetools-demo-contentools-version-history.esm.js",
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "@babel/runtime-corejs3": "^7.28.0",
+    "@commercetools-demo/contentools-types": "workspace:^",
+    "@commercetools-demo/contentools-ui-components": "workspace:^",
+    "@commercetools-uikit/card": "^20.2.2",
+    "@commercetools-uikit/primary-button": "^20.2.2",
+    "@commercetools-uikit/secondary-button": "^20.2.2",
+    "@commercetools-uikit/spacings": "^20.2.1",
+    "@commercetools-uikit/text": "^20.2.2",
+    "@emotion/react": "^11.14.0",
+    "styled-components": "^6.1.19"
+  },
+  "devDependencies": {
+    "@types/react": "^19"
+  },
+  "peerDependencies": {
+    "@commercetools-demo/contentools-state": ">=1.1.0",
+    "@emotion/react": ">=11.0.0",
+    "react": ">=19.0.0",
+    "react-dom": ">=19.0.0",
+    "styled-components": ">=5.0.0"
+  }
+}

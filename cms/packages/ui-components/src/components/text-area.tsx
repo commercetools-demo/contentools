@@ -1,5 +1,5 @@
-import React from 'react'
-import styled from 'styled-components'
+import React from 'react';
+import styled from 'styled-components';
 
 const StyledTextArea = styled.textarea`
   width: 100%;
@@ -9,31 +9,41 @@ const StyledTextArea = styled.textarea`
   padding: 8px;
   font-size: 14px;
   box-sizing: border-box;
-`
+`;
 
 type Props = {
-    id: string;
-    name: string;
-    value: string;
-    onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
-    hasError: boolean;
-    minRows: number;
-    maxRows: number;
-    placeholder: string;
-}
+  id: string;
+  name: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  hasError: boolean;
+  minRows: number;
+  maxRows: number;
+  placeholder: string;
+};
 
-const MultilineTextInput = ({ id, name, value, onChange, hasError, minRows, maxRows, placeholder, ...props }: Props) => {
+const MultilineTextInput = ({
+  id,
+  name,
+  value,
+  onChange,
+  hasError,
+  minRows,
+  maxRows,
+  placeholder,
+  ...props
+}: Props) => {
   return (
     <StyledTextArea
-        id={id}
-        name={name}
-        value={value}
-        onChange={onChange}
-        rows={minRows}
-        placeholder={placeholder}
-        {...props}
-      />
-  )
-}
+      id={id}
+      name={name}
+      value={value}
+      onChange={onChange}
+      rows={minRows}
+      placeholder={placeholder}
+      {...props}
+    />
+  );
+};
 
-export default MultilineTextInput
+export default MultilineTextInput;

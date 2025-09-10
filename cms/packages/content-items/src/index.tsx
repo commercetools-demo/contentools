@@ -1,7 +1,6 @@
 import { StateProvider } from '@commercetools-demo/contentools-state';
 import ContentItemRouter from './router';
 import { BrowserRouter as Router } from 'react-router-dom';
-import React from 'react';
 
 const WrappedContentItemApp = ({
   parentUrl,

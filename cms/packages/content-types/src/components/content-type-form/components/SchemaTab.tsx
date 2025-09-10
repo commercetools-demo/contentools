@@ -1,5 +1,8 @@
 import { useStateDatasource } from '@commercetools-demo/contentools-state';
-import { ContentTypeData, PropertySchema } from '@commercetools-demo/contentools-types';
+import {
+  ContentTypeData,
+  PropertySchema,
+} from '@commercetools-demo/contentools-types';
 import CheckboxInput from '@commercetools-uikit/checkbox-input';
 import FieldLabel from '@commercetools-uikit/field-label';
 import PrimaryButton from '@commercetools-uikit/primary-button';
@@ -15,7 +18,7 @@ import {
   isDefaultValueVisible,
   parseDefaultValue,
 } from '../utils/schema';
-import {SelectInput} from '@commercetools-demo/contentools-ui-components';
+import { SelectInput } from '@commercetools-demo/contentools-ui-components';
 
 const SchemaBuilder = styled.div`
   border: 1px solid #ddd;
@@ -95,7 +98,7 @@ const SchemaTab: React.FC<SchemaTabProps> = ({
   businessUnitKey,
 }) => {
   const { datasources: availableDatasources } = useStateDatasource();
-  
+
   const [newProperty, setNewProperty] = useState({
     key: '',
     label: '',
@@ -438,9 +441,10 @@ const SchemaTab: React.FC<SchemaTabProps> = ({
               label="Add Property"
               onClick={handleAddProperty}
               isDisabled={
-                !newProperty.key || 
-                !newProperty.label || 
-                (newProperty.type === 'datasource' && !newProperty.datasourceType)
+                !newProperty.key ||
+                !newProperty.label ||
+                (newProperty.type === 'datasource' &&
+                  !newProperty.datasourceType)
               }
             />
           </AddPropertyForm>

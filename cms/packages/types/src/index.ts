@@ -7,6 +7,18 @@ export interface ContentItem {
   properties: Record<string, any>;
 }
 
+export enum EStateType {
+  DRAFT = 'draft',
+  PUBLISHED = 'published',
+  BOTH = 'both',
+}
+
+export enum EContentType {
+  CONTENT_ITEMS = 'content-items',
+  PAGES = 'pages',
+  PAGE_ITEMS = 'page-items',
+}
+
 export type PageVersionInfo = Page & {
   timestamp: string;
 };
@@ -17,22 +29,20 @@ export type ContentItemVersionInfo = ContentItem & {
 
 export type VersionInfo = ContentItemVersionInfo | PageVersionInfo;
 
-export interface StateInfo {
-  draft?: ContentItem;
-  published?: ContentItem;
+export interface StateInfo<T extends ContentItem | Page> {
+  draft?: T;
+  published?: T;
 }
 
 export interface ContentItemState {
   items: ContentItem[];
-  states: Record<string, StateInfo>;
+  states: Record<string, StateInfo<ContentItem>>;
   loading: boolean;
   error: string | null;
 }
 
 export interface VersionState<T> {
   versions: T[];
-  selectedVersion: T | null;
-  contentType: 'content-items' | 'pages';
   loading: boolean;
   error: string | null;
 }
@@ -42,8 +52,7 @@ export interface StateManagementState {
     draft?: ContentItem | Page;
     published?: ContentItem | Page;
   };
-  currentState: 'draft' | 'published' | 'both' | null;
-  contentType: 'content-items' | 'pages';
+  currentState: StateInfo<ContentItem | Page>;
   loading: boolean;
   error: string | null;
 }
@@ -57,7 +66,7 @@ export interface ContentItemVersions {
 export interface ContentItemStates {
   key: string; // Same as ContentItem key
   businessUnitKey: string;
-  states: StateInfo;
+  states: StateInfo<ContentItem>;
 }
 
 // Similar extensions for the Page interface
@@ -78,7 +87,7 @@ export interface PageStates {
 
 export interface GridCell {
   id: string;
-  componentId: string | null;
+  contentItemKey: string | null;
   colSpan: number;
 }
 
@@ -91,23 +100,26 @@ export interface Layout {
   rows: GridRow[];
 }
 
+export interface ContentItemReferences {
+  id: string;
+  typeId: string;
+  obj?: ContentItem;
+}
+
 export interface Page {
-  businessUnitKey: string;
   key: string;
   name: string;
-  uuid: string;
   route: string;
   layout: Layout;
   components: ContentItem[];
 }
-
 export interface PagesState {
   pages: Page[];
   currentPage: Page | null;
+  states: Record<string, StateInfo<Page>>;
   loading: boolean;
   error: string | null;
   unsavedChanges: boolean;
-  businessUnitKey: string;
 }
 
 export interface EditorState {
@@ -194,7 +206,7 @@ export interface DatasourceParam {
 export interface FetchVersionsEvent extends CustomEvent {
   detail: {
     key: string;
-    contentType: 'pages' | 'content-items';
+    contentType: EContentType;
   };
 }
 
@@ -203,14 +215,14 @@ export interface SaveVersionEvent extends CustomEvent {
     item: any;
     previousItem: any;
     key: string;
-    contentType: 'pages' | 'content-items';
+    contentType: EContentType;
   };
 }
 
 export interface FetchStatesEvent extends CustomEvent {
   detail: {
     key: string;
-    contentType: 'pages' | 'content-items';
+    contentType: EContentType;
   };
 }
 
@@ -218,7 +230,7 @@ export interface SaveDraftEvent extends CustomEvent {
   detail: {
     item: any;
     key: string;
-    contentType: 'pages' | 'content-items';
+    contentType: EContentType;
   };
 }
 
@@ -226,7 +238,7 @@ export interface PublishEvent extends CustomEvent {
   detail: {
     item: any;
     key: string;
-    contentType: 'pages' | 'content-items';
+    contentType: EContentType;
     clearDraft?: boolean;
   };
 }
@@ -234,7 +246,7 @@ export interface PublishEvent extends CustomEvent {
 export interface RevertEvent extends CustomEvent {
   detail: {
     key: string;
-    contentType: 'pages' | 'content-items';
+    contentType: EContentType;
   };
 }
 

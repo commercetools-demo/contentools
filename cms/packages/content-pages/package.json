@@ -1,0 +1,55 @@
+{
+  "name": "@commercetools-demo/contentools-content-pages",
+  "description": "Content pages CMS",
+  "version": "1.1.0",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "dist/commercetools-demo-contentools-content-pages.cjs.js",
+  "module": "dist/commercetools-demo-contentools-content-pages.esm.js",
+  "types": "dist/commercetools-demo-contentools-content-pages.cjs.d.ts",
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "@babel/runtime-corejs3": "^7.28.0",
+    "@commercetools-demo/contentools-page-renderer": "workspace:^",
+    "@commercetools-demo/contentools-property-editor": "workspace:^",
+    "@commercetools-demo/contentools-types": "workspace:^",
+    "@commercetools-demo/contentools-ui-components": "workspace:^",
+    "@commercetools-demo/contentools-version-history": "workspace:^",
+    "@commercetools-uikit/card": "^20.2.2",
+    "@commercetools-uikit/data-table": "^20.2.1",
+    "@commercetools-uikit/design-system": "^20.2.3",
+    "@commercetools-uikit/field-label": "^20.2.2",
+    "@commercetools-uikit/flat-button": "^20.2.1",
+    "@commercetools-uikit/icon-button": "^20.2.3",
+    "@commercetools-uikit/icons": "^20.2.3",
+    "@commercetools-uikit/loading-spinner": "^20.2.2",
+    "@commercetools-uikit/primary-action-dropdown": "^20.2.3",
+    "@commercetools-uikit/primary-button": "^20.2.3",
+    "@commercetools-uikit/secondary-button": "^20.2.3",
+    "@commercetools-uikit/spacings": "^20.2.3",
+    "@commercetools-uikit/stamp": "^20.2.3",
+    "@commercetools-uikit/text": "^20.2.2",
+    "@commercetools-uikit/text-input": "^20.2.2",
+    "@emotion/react": "^11.14.0",
+    "formik": "^2.4.6",
+    "react-grid-layout": "^1.4.4",
+    "react-router-dom": "5.3.4",
+    "styled-components": "^6.1.19"
+  },
+  "devDependencies": {
+    "@types/react": "^19",
+    "@types/react-grid-layout": "^1.3.5"
+  },
+  "peerDependencies": {
+    "@commercetools-demo/contentools-state": ">=1.1.0",
+    "@emotion/react": ">=11.0.0",
+    "react": ">=19.0.0",
+    "react-dom": ">=19.0.0",
+    "react-router-dom": ">=5.0.0",
+    "styled-components": ">=5.0.0"
+  }
+}

@@ -7,14 +7,19 @@ import {
 import {
   ContentItem,
   ContentItemVersionInfo,
+  EContentType,
+  StateInfo,
 } from '@commercetools-demo/contentools-types';
-import { Modal, useModalState } from '@commercetools-demo/contentools-ui-components';
+import VersionHistorySidebar from '@commercetools-demo/contentools-version-history';
+import {
+  Modal,
+  useModalState,
+} from '@commercetools-demo/contentools-ui-components';
 import Spacings from '@commercetools-uikit/spacings';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import ContentItemActions from './content-item-actions';
-import VersionHistorySidebar from './version-history-sidebar';
 import PropertyEditorPreview from '../property-editor-preview';
 
 const StyledRowDiv = styled.div`
@@ -51,7 +56,8 @@ const ContentItemEditorEditForm: React.FC<ContentItemEditorEditFormProps> = ({
   const [contentVersion, setContentVersion] =
     useState<ContentItemVersionInfo | null>(null);
   const [item, setItem] = useState<ContentItem | null>(null);
-  const { fetchVersions, versions } = useStateVersion<ContentItemVersionInfo>()!;
+  const { fetchVersions, versions } =
+    useStateVersion<ContentItemVersionInfo>()!;
   const { fetchStates, publish, revertToPublished, currentState } =
     useStateStateManagement()!;
   const {
@@ -77,8 +83,16 @@ const ContentItemEditorEditForm: React.FC<ContentItemEditorEditFormProps> = ({
           }
         );
 
-        await fetchVersions(hydratedUrl, component.key, 'content-items');
-        await fetchStates(hydratedUrl, component.key, 'content-items');
+        await fetchVersions(
+          hydratedUrl,
+          component.key,
+          EContentType.CONTENT_ITEMS
+        );
+        await fetchStates(
+          hydratedUrl,
+          component.key,
+          EContentType.CONTENT_ITEMS
+        );
         await fetchContentItems(hydratedUrl);
       }
     } else {
@@ -98,7 +112,7 @@ const ContentItemEditorEditForm: React.FC<ContentItemEditorEditFormProps> = ({
         hydratedUrl,
         item,
         key,
-        contentType as 'content-items' | 'pages',
+        contentType as EContentType,
         clearDraft
       );
     }
@@ -121,7 +135,7 @@ const ContentItemEditorEditForm: React.FC<ContentItemEditorEditFormProps> = ({
       await revertToPublished(
         hydratedUrl,
         key,
-        contentType as 'content-items' | 'pages'
+        contentType as EContentType
       ).then(() => {
         fetchRawContentItem(hydratedUrl, key).then((item) => {
           setItem(item);
@@ -172,11 +186,7 @@ const ContentItemEditorEditForm: React.FC<ContentItemEditorEditFormProps> = ({
 
   const handleFetchVersions = useCallback(async () => {
     if (item?.key) {
-      await fetchVersions(
-        hydratedUrl,
-        item.key,
-        'content-items'
-      );
+      await fetchVersions(hydratedUrl, item.key, EContentType.CONTENT_ITEMS);
     }
   }, [fetchVersions, item?.key, hydratedUrl]);
 
@@ -201,7 +211,7 @@ const ContentItemEditorEditForm: React.FC<ContentItemEditorEditFormProps> = ({
     if (contentItemKey) {
       fetchRawContentItem(hydratedUrl, contentItemKey).then((item) => {
         setItem(item);
-        fetchStates(hydratedUrl, contentItemKey, 'content-items');
+        fetchStates(hydratedUrl, contentItemKey, EContentType.CONTENT_ITEMS);
       });
     }
   }, [fetchRawContentItem, hydratedUrl, contentItemKey]);
@@ -227,7 +237,7 @@ const ContentItemEditorEditForm: React.FC<ContentItemEditorEditFormProps> = ({
                 ? handleCloseVersionHistory()
                 : handleOpenVersionHistory()
             }
-            currentState={currentState}
+            currentState={currentState as StateInfo<ContentItem>}
             onViewJson={handleJson}
             onRevert={handleRevert}
             onPublish={handlePublish}

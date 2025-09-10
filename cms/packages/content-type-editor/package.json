@@ -1,7 +1,7 @@
 {
   "name": "@commercetools-demo/contentools-content-type-editor",
   "description": "Content type editor for the Commercetools platform",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "license": "MIT",
   "publishConfig": {
     "access": "public"

@@ -1,13 +1,13 @@
+import { ContentTypeData } from '@commercetools-demo/contentools-types';
 import {
-  ContentTypeData,
-} from '@commercetools-demo/contentools-types';
-import { Modal, useModalState } from '@commercetools-demo/contentools-ui-components';
+  Modal,
+  useModalState,
+} from '@commercetools-demo/contentools-ui-components';
 import React, { useEffect, useState } from 'react';
 import { useHistory, useParams, useRouteMatch } from 'react-router-dom';
 import { useStateContentType } from '@commercetools-demo/contentools-state';
 import ContentTypeForm from '../content-type-form';
 import styled from 'styled-components';
-
 
 const ErrorContainer = styled.div`
   display: flex;

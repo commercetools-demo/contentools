@@ -6,10 +6,23 @@ import {
   RequestHandler,
 } from 'express';
 import { logger } from '../utils/logger.utils';
-import * as ContentStateController from '../controllers/content-state-controller';
+import {
+  StateControllerDependencies,
+  withDependencies,
+} from '../controllers/content-state-controller';
 import CustomError from '../errors/custom.error';
+import {
+  CONTENT_ITEM_CONTAINER,
+  CONTENT_ITEM_STATE_CONTAINER,
+} from '../constants';
+import { ContentItemState } from '../controllers/content-item.controller';
 
 const contentItemStateRouter = Router();
+const dependencies: StateControllerDependencies = {
+  CONTENT_CONTAINER: CONTENT_ITEM_CONTAINER,
+  CONTENT_STATE_CONTAINER: CONTENT_ITEM_STATE_CONTAINER,
+};
+const ContentStateController = withDependencies<ContentItemState>(dependencies);
 
 // Get states for a content item
 contentItemStateRouter.get(
@@ -39,24 +52,6 @@ contentItemStateRouter.get(
       next(error);
     }
   }
-);
-
-// Save draft state
-contentItemStateRouter.put(
-  '/:businessUnitKey/content-items/:key/states/draft',
-  (async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const state = await ContentStateController.createDraftState(
-        req.params.businessUnitKey,
-        req.params.key,
-        req.body
-      );
-      res.json(state);
-    } catch (error) {
-      logger.error('Failed to save draft state:', error);
-      next(error);
-    }
-  }) as RequestHandler
 );
 
 // Publish state (move draft to published)

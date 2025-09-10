@@ -5,6 +5,7 @@
   "dependencies": {
     "@commercetools-demo/contentools-content-item-renderer": "link:../packages/content-item-renderer",
     "@commercetools-demo/contentools-content-items": "link:../packages/content-items",
+    "@commercetools-demo/contentools-content-pages": "link:../packages/content-pages",
     "@commercetools-demo/contentools-content-types": "link:../packages/content-types",
     "@emotion/react": "^11.14.0",
     "@testing-library/dom": "^10.4.0",

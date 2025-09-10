@@ -6,7 +6,10 @@ import SecondaryButton from '@commercetools-uikit/secondary-button';
 import PrimaryButton from '@commercetools-uikit/primary-button';
 import Text from '@commercetools-uikit/text';
 import TextInput from '@commercetools-uikit/text-input';
-import { Modal, useModalState } from '@commercetools-demo/contentools-ui-components';
+import {
+  Modal,
+  useModalState,
+} from '@commercetools-demo/contentools-ui-components';
 import { useStateMediaLibrary } from '@commercetools-demo/contentools-state';
 import { MediaFile } from '@commercetools-demo/contentools-types';
 
@@ -191,7 +194,7 @@ export const FileField: React.FC<FileFieldProps> = ({
     loading,
     uploading,
     error: mediaLibraryError,
-  } = useStateMediaLibrary();
+  } = useStateMediaLibrary()!;
   const uploadModal = useModalState(false);
   const selectModal = useModalState(false);
 

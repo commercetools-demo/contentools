@@ -108,7 +108,7 @@ const PropertyEditorPreview: React.FC<PropertyEditorPreviewProps> = ({
 
   useEffect(() => {
     if (Object.keys(resolvedDatasources || {}).length > 0) {
-    setResolvedItem({
+      setResolvedItem({
         ...item,
         properties: { ...item.properties, ...resolvedDatasources },
       });

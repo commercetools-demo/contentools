@@ -1111,14 +1111,6 @@ The API may return the following error responses:
 
 ## Environment Variables
 
-- `CONTENT_TYPE_CONTAINER`: Container for content types (default: "content-type")
-- `CONTENT_ITEM_CONTAINER`: Container for content items (default: "content-item")
-- `CONTENT_ITEM_STATE_CONTAINER`: Container for content item states (default: "content-item-state")
-- `CONTENT_ITEM_VERSION_CONTAINER`: Container for content item versions (default: "content-item-version")
-- `PAGE_STATE_CONTAINER`: Container for page states (default: "page-state")
-- `PAGE_VERSION_CONTAINER`: Container for page versions (default: "page-version")
-- `DATASOURCE_CONTAINER`: Container for datasources (default: "datasource")
-- `MAIN_CONTAINER`: Main container for pages (default: "default")
 - `MAX_VERSIONS`: Maximum number of versions to keep (default: 5)
 - `CORS_ALLOWED_ORIGINS`: Comma-separated list of allowed origins for CORS
 
