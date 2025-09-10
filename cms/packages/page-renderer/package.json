@@ -1,0 +1,33 @@
+{
+  "name": "@commercetools-demo/contentools-page-renderer",
+  "description": "Page renderer for rendering complete pages with layout grids and components",
+  "version": "1.0.0",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "dist/commercetools-demo-contentools-page-renderer.cjs.js",
+  "module": "dist/commercetools-demo-contentools-page-renderer.esm.js",
+  "types": "dist/commercetools-demo-contentools-page-renderer.cjs.d.ts",
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "@babel/runtime-corejs3": "^7.28.0",
+    "@commercetools-demo/contentools-content-item-renderer": "workspace:^",
+    "@commercetools-demo/contentools-types": "workspace:^",
+    "@commercetools-demo/contentools-ui-components": "workspace:^",
+    "@emotion/react": "^11.14.0",
+    "styled-components": "^6.1.19"
+  },
+  "devDependencies": {
+    "@types/react": "^19"
+  },
+  "peerDependencies": {
+    "@commercetools-demo/contentools-state": ">=1.0.4",
+    "@emotion/react": ">=11.0.0",
+    "react": ">=19.0.0",
+    "react-dom": ">=19.0.0",
+    "styled-components": ">=5.0.0"
+  }
+}

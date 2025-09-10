@@ -16,7 +16,7 @@ interface ScopedStateContext<T extends VersionInfo> {
 
 export interface StateContextValue<T extends VersionInfo> {
   // Pages
-  pages?: ReturnType<typeof usePages>;
+  pages: ReturnType<typeof usePages>;
 
   // Editor
   editor?: ReturnType<typeof useEditor>;
@@ -70,8 +70,8 @@ export const StateProvider = <T extends VersionInfo>({
   // Initialize all hooks
   const contentType = useContentType(baseURL);
   const contentItem = useContentItem();
+  const pages = usePages();
   // Initialize Full
-  const pages = !minimal ? usePages() : undefined;
   const editor = !minimal ? useEditor() : undefined;
   const version = !minimal ? useVersion<T>() : undefined;
   const stateManagement = !minimal ? useStateManagement() : undefined;

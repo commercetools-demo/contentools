@@ -14,6 +14,7 @@
   ],
   "dependencies": {
     "@babel/runtime-corejs3": "^7.28.0",
+    "@commercetools-demo/contentools-page-renderer": "workspace:^",
     "@commercetools-demo/contentools-property-editor": "workspace:^",
     "@commercetools-demo/contentools-types": "workspace:^",
     "@commercetools-demo/contentools-ui-components": "workspace:^",

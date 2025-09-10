@@ -29,6 +29,7 @@ import ComponentLibraryModal from './component-library-modal';
 import PageGridActions from './page-grid-actions';
 import PageSettingsModal from './page-settings-modal';
 import PagesGridLayout from './pages-grid-layout';
+import PagePreview from '../page-preview';
 
 interface Props {
   parentUrl: string;
@@ -112,7 +113,7 @@ const PagesEdit: React.FC<Props> = ({
   const { fetchVersions, versions } = useStateVersion<PageVersionInfo>()!;
   const draggingComponentType = editorState?.draggingComponentType;
 
-  const versionHistoryState = useModalState();
+
 
   const [selectedVersionId, setSelectedVersionId] = useState<string | null>(
     null
@@ -128,6 +129,8 @@ const PagesEdit: React.FC<Props> = ({
   const componentLibraryModal = useModalState();
   const pageSettingsModal = useModalState();
   const componentEditorModal = useModalState();
+  const versionHistoryState = useModalState();
+  const pagePreviewState = useModalState();
 
   const hydratedUrl = `${baseURL}/${businessUnitKey}`;
 
@@ -254,6 +257,10 @@ const PagesEdit: React.FC<Props> = ({
     addRowToCurrentPage(hydratedUrl);
   };
 
+  const handleOpenPagePreview = () => {
+    pagePreviewState.openModal();
+  };
+
   useEffect(() => {
     if (pageKey) {
       fetchPage(hydratedUrl, pageKey).then(() => {
@@ -323,6 +330,7 @@ const PagesEdit: React.FC<Props> = ({
             }
             onTogglePageSettings={handleOpenPageSettings}
             onTogglePageLibrary={handleOpenComponentLibrary}
+            onTogglePagePreview={handleOpenPagePreview}
             currentState={currentState as StateInfo<Page>}
             onViewJson={handleJson}
             onRevert={handleRevert}
@@ -369,6 +377,13 @@ const PagesEdit: React.FC<Props> = ({
         onApplyVersion={handleApplyVersion}
         onSelectionCancelled={handleSelectionCancelled}
         onClose={handleCloseVersionHistory}
+      />
+      <PagePreview
+        isOpen={pagePreviewState.isModalOpen}
+        onClose={pagePreviewState.closeModal}
+        currentPage={currentPage}
+        baseURL={baseURL}
+        businessUnitKey={businessUnitKey}
       />
     </Container>
   );

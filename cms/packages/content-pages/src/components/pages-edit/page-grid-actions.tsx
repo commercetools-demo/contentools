@@ -1,20 +1,28 @@
-import { EStateType, Page, StateInfo } from '@commercetools-demo/contentools-types';
-import { getStateType, StateTag } from '@commercetools-demo/contentools-ui-components';
+import {
+  EStateType,
+  Page,
+  StateInfo,
+} from '@commercetools-demo/contentools-types';
+import {
+  getStateType,
+  StateTag,
+} from '@commercetools-demo/contentools-ui-components';
 import IconButton from '@commercetools-uikit/icon-button';
-import { ClockIcon, GearIcon, GridIcon, ListWithSearchIcon, SubdirectoryArrowIcon } from '@commercetools-uikit/icons';
+import {
+  ClockIcon,
+  EyeIcon,
+  GearIcon,
+  GridIcon,
+  ListWithSearchIcon,
+  SubdirectoryArrowIcon,
+} from '@commercetools-uikit/icons';
 import PrimaryActionDropdown, {
   Option,
 } from '@commercetools-uikit/primary-action-dropdown';
 import PrimaryButton from '@commercetools-uikit/primary-button';
 import SecondaryButton from '@commercetools-uikit/secondary-button';
 import Spacings from '@commercetools-uikit/spacings';
-import Stamp from '@commercetools-uikit/stamp';
 import React from 'react';
-import styled from 'styled-components';
-
-const StyledStamp = styled.span`
-  text-transform: capitalize;
-`;
 
 interface PageGridActionsProps {
   showVersionHistory: boolean;
@@ -26,6 +34,7 @@ interface PageGridActionsProps {
   onViewJson: (isPreview: boolean) => void;
   onRevert: () => void;
   onPublish: () => void;
+  onTogglePagePreview: () => void;
 }
 
 const PageGridActions: React.FC<PageGridActionsProps> = ({
@@ -38,17 +47,15 @@ const PageGridActions: React.FC<PageGridActionsProps> = ({
   onViewJson,
   onRevert,
   onPublish,
+  onTogglePagePreview,
 }) => {
-
   const pageStateType = getStateType(currentState);
 
   return (
     <Spacings.Stack>
       <Spacings.Inline alignItems="center" justifyContent="space-between">
         <Spacings.Inline alignItems="center" justifyContent="space-between">
-          {currentState && (
-            <StateTag status={currentState} />
-          )}
+          {currentState && <StateTag status={currentState} />}
 
           <IconButton
             size="30"
@@ -74,6 +81,12 @@ const PageGridActions: React.FC<PageGridActionsProps> = ({
             onClick={onAddRow}
             icon={<SubdirectoryArrowIcon />}
           />
+          <IconButton
+            size="30"
+            label="Page Preview"
+            onClick={onTogglePagePreview}
+            icon={<EyeIcon />}
+          />
         </Spacings.Inline>
 
         <Spacings.Inline alignItems="center" justifyContent="flex-end">
@@ -87,7 +100,8 @@ const PageGridActions: React.FC<PageGridActionsProps> = ({
             <Option
               iconLeft={<ListWithSearchIcon />}
               isDisabled={
-                pageStateType !== EStateType.PUBLISHED && pageStateType !== EStateType.BOTH
+                pageStateType !== EStateType.PUBLISHED &&
+                pageStateType !== EStateType.BOTH
               }
               onClick={() => onViewJson(false)}
             >
@@ -96,7 +110,8 @@ const PageGridActions: React.FC<PageGridActionsProps> = ({
           </PrimaryActionDropdown>
 
           <Spacings.Inline>
-            {(pageStateType === EStateType.DRAFT || pageStateType === EStateType.BOTH) && (
+            {(pageStateType === EStateType.DRAFT ||
+              pageStateType === EStateType.BOTH) && (
               <SecondaryButton
                 size="20"
                 label="Revert to Published"
