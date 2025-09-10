@@ -1898,6 +1898,7 @@ __metadata:
     "@commercetools-uikit/primary-button": "npm:^20.2.2"
     "@commercetools-uikit/secondary-button": "npm:^20.2.2"
     "@commercetools-uikit/spacings": "npm:^20.2.1"
+    "@commercetools-uikit/stamp": "npm:^20.2.3"
     "@commercetools-uikit/text": "npm:^20.2.2"
     "@emotion/react": "npm:^11.14.0"
     "@types/react": "npm:^19"

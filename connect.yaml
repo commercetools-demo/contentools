@@ -10,22 +10,10 @@ deployAs:
           description: Comma separated list of allowed origins
           default: localhost:3000,localhost:5173,commercetools.com,frontend.site
           required: false
-        - key: MAIN_CONTAINER
-          description: The container to use for the service
+        - key: MAX_VERSIONS
+          description: Maximum number of versions to keep
           required: false
-          default: cms_container
-        - key: CONTENT_TYPE_CONTAINER
-          description: The container to use for the content type
-          required: false
-          default: content-type
-        - key: CONTENT_ITEM_CONTAINER
-          description: The container to use for the content item
-          required: false
-          default: content-item
-        - key: DATASOURCE_CONTAINER
-          description: The container to use for the datasource
-          required: false
-          default: datasource
+          default: "5"
         # - key: AWS_ACCESS_KEY_ID
         #   description: AWS Access Key ID (only used if STORAGE_TYPE is aws)
         #   required: false
