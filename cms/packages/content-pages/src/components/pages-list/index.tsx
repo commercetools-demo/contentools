@@ -1,13 +1,13 @@
-import React, { useEffect, useMemo } from 'react';
-import { useHistory } from 'react-router-dom';
 import { useStatePages } from '@commercetools-demo/contentools-state';
-import Spacings from '@commercetools-uikit/spacings';
-import Text from '@commercetools-uikit/text';
-import PrimaryButton from '@commercetools-uikit/primary-button';
 import Card from '@commercetools-uikit/card';
 import LoadingSpinner from '@commercetools-uikit/loading-spinner';
-import DataTable from '@commercetools-uikit/data-table';
+import PrimaryButton from '@commercetools-uikit/primary-button';
+import Spacings from '@commercetools-uikit/spacings';
+import Text from '@commercetools-uikit/text';
+import React, { useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
+import PageDataTable from './page-datatable';
 
 interface Props {
   parentUrl: string;
@@ -45,7 +45,7 @@ const PagesList: React.FC<Props> = ({
   locale: _locale,
 }) => {
   const history = useHistory();
-  const { pages, loading, error, fetchPages } = useStatePages()!;
+  const { pages, states, loading, error, fetchPages } = useStatePages()!;
   const hydratedUrl = `${baseURL}/${businessUnitKey}`;
 
   useEffect(() => {
@@ -56,51 +56,6 @@ const PagesList: React.FC<Props> = ({
   const handleCreatePage = () => {
     history.push(`/new`);
   };
-
-  const handleEditPage = (pageKey: string) => {
-    history.push(`/edit/${pageKey}`);
-  };
-
-  // Define table columns
-  const columns = useMemo(
-    () => [
-      {
-        key: 'name',
-        label: 'Page Name',
-        isSortable: true,
-      },
-      {
-        key: 'route',
-        label: 'Route',
-        isSortable: true,
-      },
-      {
-        key: 'components',
-        label: 'Components',
-        isSortable: true,
-      },
-      {
-        key: 'rows',
-        label: 'Layout Rows',
-        isSortable: true,
-      },
-    ],
-    []
-  );
-
-  // Transform pages data for DataTable
-  const tableRows = useMemo(
-    () =>
-      pages.map((page) => ({
-        id: page.key,
-        name: page.name,
-        route: page.route,
-        components: page.components?.length || 0,
-        rows: page.layout?.rows?.length || 0,
-        page, // Keep reference to original page for row click
-      })),
-    [pages]
-  );
 
   if (loading && pages.length === 0) {
     return (
@@ -146,11 +101,7 @@ const PagesList: React.FC<Props> = ({
         </EmptyState>
       ) : (
         <TableContainer>
-          <DataTable
-            columns={columns}
-            rows={tableRows}
-            onRowClick={(row) => handleEditPage(row.page.key)}
-          />
+          <PageDataTable pages={pages} states={states} />
         </TableContainer>
       )}
     </Container>

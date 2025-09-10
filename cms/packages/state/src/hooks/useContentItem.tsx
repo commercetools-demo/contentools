@@ -36,7 +36,7 @@ export const useContentItem = () => {
       const states = result.reduce((acc, item) => {
         acc[item.key] = item.states;
         return acc;
-      }, {} as Record<string, StateInfo>);
+      }, {} as Record<string, StateInfo<ContentItem>>);
 
       setState((prev) => ({
         ...prev,
@@ -273,7 +273,7 @@ export const useContentItem = () => {
   }, []);
 
   const updateContentItemState = useCallback(
-    (key: string, stateInfo: StateInfo) => {
+    (key: string, stateInfo: StateInfo<ContentItem>) => {
       setState((prev) => ({
         ...prev,
         states: {

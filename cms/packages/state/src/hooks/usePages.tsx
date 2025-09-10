@@ -2,139 +2,65 @@ import {
   ContentItem,
   Page,
   PagesState,
+  StateInfo,
 } from '@commercetools-demo/contentools-types';
 import { useCallback, useState } from 'react';
 import {
   addComponentToPageApi,
   addRowToPageApi,
-  createPageEndpoint,
-  deletePageEndpoint,
-  fetchPageEndpoint,
-  fetchPagesEndpoint,
+  createPageApi,
+  deletePageApi,
+  fetchPageApi,
+  fetchPagesApi,
   removeComponentFromPageApi,
   removeRowFromPageApi,
   updateCellSpanInPageApi,
   updateComponentInPageApi,
-  updatePageEndpoint,
+  updatePageApi,
 } from '../api/page';
-import { DEBOUNCE_DELAY, LOCAL_STORAGE_KEY_PREFIX } from '../utils/constants';
-import { debounce } from '../utils/debounce';
 
 const initialState: PagesState = {
   pages: [],
   currentPage: null,
+  states: {},
   loading: false,
   error: null,
   unsavedChanges: false,
 };
 
-// Helper functions for API calls
-const fetchPagesApi = async (baseUrl: string): Promise<Page[]> => {
-  try {
-    const data = await fetchPagesEndpoint<Page>(baseUrl);
-    return data.map((item) => item.value);
-  } catch (error) {
-    throw new Error('Failed to fetch pages');
-  }
-};
-
-const fetchPageApi = async (baseUrl: string, key: string): Promise<Page> => {
-  try {
-    const data = await fetchPageEndpoint(baseUrl, key);
-    return data;
-  } catch (error) {
-    throw new Error(`Failed to fetch page with key: ${key}`);
-  }
-};
-
-const createPageApi = async (
-  hydratedUrl: string,
-  page: Omit<Page, 'key' | 'layout' | 'components'>
-): Promise<Page> => {
-  try {
-    const data = await createPageEndpoint(hydratedUrl, page);
-    return data.value;
-  } catch (error) {
-    throw new Error('Failed to create page');
-  }
-};
-
-const updatePageApi = async (baseUrl: string, page: Page): Promise<Page> => {
-  try {
-    const data = await updatePageEndpoint<Page>(baseUrl, page.key, page);
-    return data.value as Page;
-  } catch (error) {
-    throw new Error(`Failed to update page with key: ${page.key}`);
-  }
-};
-
-const deletePageApi = async (baseUrl: string, key: string): Promise<void> => {
-  try {
-    await deletePageEndpoint(baseUrl, key);
-  } catch (error) {
-    throw new Error(`Failed to delete page with key: ${key}`);
-  }
-};
-
 // Helper functions
 
-export const usePages = (baseUrl: string) => {
+export const usePages = () => {
   const [state, setState] = useState<PagesState>(initialState);
-
-  // Create a debounced session storage save function
-  const saveToSessionStorage = useCallback(
-    debounce((pages: Page[], businessUnitKey: string) => {
-      try {
-        const safePages = JSON.parse(JSON.stringify({ pages })).pages;
-        const storageKey = `${LOCAL_STORAGE_KEY_PREFIX}_${businessUnitKey}`;
-        sessionStorage.setItem(storageKey, JSON.stringify(safePages));
-      } catch (error) {
-        console.error('Error saving to session storage:', error);
-      }
-    }, DEBOUNCE_DELAY),
-    []
-  );
 
   // Actions
   const fetchPages = useCallback(async (hydratedUrl: string) => {
     try {
       const pagesFromApi = await fetchPagesApi(hydratedUrl);
+      const pages = pagesFromApi.map((item) => item.value);
+      const states = pagesFromApi.reduce((acc: Record<string, StateInfo<Page>>, item) => {
+        acc[item.key] = item.states;
+        return acc;
+      }, {} as Record<string, StateInfo<Page>>);
+      console.log('pages', pages);
+      console.log('states', states);
       setState((prev) => ({
         ...prev,
-        pages: pagesFromApi,
+        pages: pages,
+        states,
         loading: false,
       }));
     } catch (error) {
       setState((prev) => ({
         ...prev,
         pages: [],
+        states: {},
         loading: false,
         error: error instanceof Error ? error.message : 'Failed to fetch pages',
       }));
     }
   }, []);
 
-  const syncPagesWithApi = useCallback(async () => {
-    try {
-      setState((prev) => ({ ...prev, loading: true, error: null }));
-      const pagesFromApi = await fetchPagesApi(baseUrl);
-
-      setState((prev) => ({
-        ...prev,
-        pages: pagesFromApi,
-        loading: false,
-      }));
-    } catch (error) {
-      setState((prev) => ({
-        ...prev,
-        loading: false,
-        error:
-          error instanceof Error
-            ? error.message
-            : 'Failed to sync pages with API',
-      }));
-    }
-  }, [baseUrl]);
 
   const fetchPage = useCallback(async (hydratedUrl: string, key: string) => {
     try {
@@ -230,36 +156,9 @@ export const usePages = (baseUrl: string) => {
         unsavedChanges: true,
       }));
 
-      // Save to session storage
-      saveToSessionStorage([...state.pages, createdPage], businessUnitKey);
-
       return createdPage;
     },
-    [state.pages, saveToSessionStorage]
-  );
-
-  const updateCurrentPage = useCallback(
-    (updates: Partial<Page>, businessUnitKey: string) => {
-      setState((prev) => {
-        if (!prev.currentPage) return prev;
-
-        const updatedPage = { ...prev.currentPage, ...updates };
-        const updatedPages = prev.pages.map((p) =>
-          p.key === prev.currentPage!.key ? updatedPage : p
-        );
-
-        // Save to session storage
-        saveToSessionStorage(updatedPages, businessUnitKey);
-
-        return {
-          ...prev,
-          pages: updatedPages,
-          currentPage: updatedPage,
-          unsavedChanges: true,
-        };
-      });
-    },
-    [saveToSessionStorage]
+    [state.pages]
   );
 
   const addRowToCurrentPage = useCallback(
@@ -269,7 +168,6 @@ export const usePages = (baseUrl: string) => {
         hydratedUrl,
         state.currentPage.key
       );
-      console.log('updatedPage >>>>', updatedPage);
       setState((prev) => ({
         ...prev,
         currentPage: updatedPage.value,
@@ -277,7 +175,7 @@ export const usePages = (baseUrl: string) => {
       }));
       return updatedPage;
     },
-    [saveToSessionStorage, state]
+    [state.currentPage]
   );
 
   const removeRowFromCurrentPage = useCallback(
@@ -295,7 +193,7 @@ export const usePages = (baseUrl: string) => {
       }));
       return updatedPage;
     },
-    [saveToSessionStorage, state.currentPage]
+    [state.currentPage]
   );
 
   const addComponentToCurrentPage = useCallback(
@@ -321,7 +219,7 @@ export const usePages = (baseUrl: string) => {
       }));
       return updatedPage;
     },
-    [saveToSessionStorage, state.currentPage]
+    [state.currentPage]
   );
 
   const updateCellSpanInCurrentPage = useCallback(
@@ -350,7 +248,7 @@ export const usePages = (baseUrl: string) => {
       }));
       return updatedPage;
     },
-    [saveToSessionStorage, state.currentPage]
+    [state.currentPage]
   );
 
   const updateComponentInCurrentPage = useCallback(
@@ -373,7 +271,7 @@ export const usePages = (baseUrl: string) => {
       }));
       return updatedPage;
     },
-    [saveToSessionStorage, state.currentPage]
+    [state.currentPage]
   );
 
   const removeComponentFromCurrentPage = useCallback(
@@ -391,7 +289,7 @@ export const usePages = (baseUrl: string) => {
       }));
       return updatedPage;
     },
-    [saveToSessionStorage, state.currentPage]
+    [state.currentPage]
   );
 
   const clearError = useCallback(() => {
@@ -406,19 +304,18 @@ export const usePages = (baseUrl: string) => {
     // State
     pages: state.pages,
     currentPage: state.currentPage,
+    states: state.states,
     loading: state.loading,
     error: state.error,
     unsavedChanges: state.unsavedChanges,
 
     // Actions
     fetchPages,
-    syncPagesWithApi,
     fetchPage,
     updatePage,
     deletePage,
     setCurrentPage,
     createEmptyPage,
-    updateCurrentPage,
     addRowToCurrentPage,
     removeRowFromCurrentPage,
     addComponentToCurrentPage,

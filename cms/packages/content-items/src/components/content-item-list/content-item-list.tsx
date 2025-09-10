@@ -32,7 +32,7 @@ const ErrorContainer = styled.div`
 
 interface ContentItemListProps {
   items: ContentItem[];
-  states: Record<string, StateInfo>;
+  states: Record<string, StateInfo<ContentItem>>;
   baseURL: string;
   businessUnitKey: string;
   loading?: boolean;
@@ -44,7 +44,7 @@ interface ContentItemListProps {
 
 type ContentItemRow = TRow & ContentItem;
 
-const formatStatus = (status?: StateInfo): string => {
+const formatStatus = (status?: StateInfo<ContentItem>): string => {
   if (!status) {
     return 'Draft';
   }
@@ -60,7 +60,7 @@ const formatStatus = (status?: StateInfo): string => {
   return 'Published';
 };
 
-const formatTone = (status?: StateInfo) => {
+const formatTone = (status?: StateInfo<ContentItem>) => {
   if (!status) {
     return 'critical';
   }

@@ -12,7 +12,7 @@ export async function fetchContentItemsEndpoint(baseURL: string): Promise<
     key: string;
     value: ContentItem;
     version: number;
-    states: StateInfo;
+    states: StateInfo<ContentItem>;
   }[]
 > {
   const response = await fetch(`${baseURL}/content-items`);

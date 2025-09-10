@@ -2,6 +2,7 @@ import {
   ApiResponse,
   ContentItem,
   Page,
+  StateInfo,
 } from '@commercetools-demo/contentools-types';
 import { fetchApi } from '../api';
 /**
@@ -17,23 +18,6 @@ export async function fetchPageEndpoint(
       `API request failed: ${response.status} ${response.statusText}`
     );
   }
-  return response.json();
-}
-
-/**
- * Fetch all custom objects
- */
-export async function fetchPagesEndpoint<T>(
-  baseURL: string
-): Promise<ApiResponse<T>[]> {
-  const response = await fetch(`${baseURL}/pages`);
-
-  if (!response.ok) {
-    throw new Error(
-      `API request failed: ${response.status} ${response.statusText}`
-    );
-  }
-
   return response.json();
 }
 
@@ -179,3 +163,64 @@ export async function removeComponentFromPageApi(
     }
   );
 }
+
+
+export const fetchPagesApi = async (baseUrl: string): Promise<{
+  container: string;
+  key: string;
+  value: Page;
+  version: number;
+  states: StateInfo<Page>;
+}[]> => {
+  try {
+    const response = await fetch(`${baseUrl}/pages`);
+
+  if (!response.ok) {
+    throw new Error(
+      `API request failed: ${response.status} ${response.statusText}`
+    );
+  }
+
+  return response.json();
+  } catch (error) {
+    throw new Error('Failed to fetch pages');
+  }
+};
+
+export const fetchPageApi = async (baseUrl: string, key: string): Promise<Page> => {
+  try {
+    const data = await fetchPageEndpoint(baseUrl, key);
+    return data;
+  } catch (error) {
+    throw new Error(`Failed to fetch page with key: ${key}`);
+  }
+};
+
+export const createPageApi = async (
+  hydratedUrl: string,
+  page: Omit<Page, 'key' | 'layout' | 'components'>
+): Promise<Page> => {
+  try {
+    const data = await createPageEndpoint(hydratedUrl, page);
+    return data.value;
+  } catch (error) {
+    throw new Error('Failed to create page');
+  }
+};
+
+export const updatePageApi = async (baseUrl: string, page: Page): Promise<Page> => {
+  try {
+    const data = await updatePageEndpoint<Page>(baseUrl, page.key, page);
+    return data.value as Page;
+  } catch (error) {
+    throw new Error(`Failed to update page with key: ${page.key}`);
+  }
+};
+
+export const deletePageApi = async (baseUrl: string, key: string): Promise<void> => {
+  try {
+    await deletePageEndpoint(baseUrl, key);
+  } catch (error) {
+    throw new Error(`Failed to delete page with key: ${key}`);
+  }
+};

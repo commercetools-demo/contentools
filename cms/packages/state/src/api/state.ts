@@ -25,7 +25,7 @@ export async function getStatesEndpoint<T>(
 
 // Publish state
 export async function publishEndpoint<
-  T extends (Page | ContentItem) & { states?: StateInfo }
+  T extends (Page | ContentItem) & { states?: StateInfo<Page | ContentItem> }
 >(
   baseURL: string,
   contentType: EContentType,

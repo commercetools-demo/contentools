@@ -30,14 +30,14 @@ export type ContentItemVersionInfo = ContentItem & {
 
 export type VersionInfo = ContentItemVersionInfo | PageVersionInfo;
 
-export interface StateInfo {
-  draft?: ContentItem;
-  published?: ContentItem;
+export interface StateInfo<T extends ContentItem | Page> {
+  draft?: T;
+  published?: T;
 }
 
 export interface ContentItemState {
   items: ContentItem[];
-  states: Record<string, StateInfo>;
+  states: Record<string, StateInfo<ContentItem>>;
   loading: boolean;
   error: string | null;
 }
@@ -67,7 +67,7 @@ export interface ContentItemVersions {
 export interface ContentItemStates {
   key: string; // Same as ContentItem key
   businessUnitKey: string;
-  states: StateInfo;
+  states: StateInfo<ContentItem>;
 }
 
 // Similar extensions for the Page interface
@@ -117,6 +117,7 @@ export interface Page {
 export interface PagesState {
   pages: Page[];
   currentPage: Page | null;
+  states: Record<string, StateInfo<Page>>;
   loading: boolean;
   error: string | null;
   unsavedChanges: boolean;
