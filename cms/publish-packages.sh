@@ -15,25 +15,31 @@ NC='\033[0m' # No Color
 # Package directories
 PACKAGES=(
     "cms/packages/content-item-renderer"
-    "cms/packages/content-types"
     "cms/packages/content-items"
+    "cms/packages/content-pages"
     "cms/packages/content-type-editor"
+    "cms/packages/content-types"
+    "cms/packages/page-renderer"
     "cms/packages/property-editor"
     "cms/packages/state"
     "cms/packages/types"
     "cms/packages/ui-components"
+    "cms/packages/version-history"
 )
 
 # Package names for output
 PACKAGE_NAMES=(
     "@commercetools-demo/contentools-content-item-renderer"
-    "@commercetools-demo/contentools-content-types"
     "@commercetools-demo/contentools-content-items"
+    "@commercetools-demo/contentools-content-pages"
     "@commercetools-demo/contentools-content-type-editor"
+    "@commercetools-demo/contentools-content-types"
+    "@commercetools-demo/contentools-page-renderer"
     "@commercetools-demo/contentools-property-editor"
     "@commercetools-demo/contentools-state"
     "@commercetools-demo/contentools-types"
     "@commercetools-demo/contentools-ui-components"
+    "@commercetools-demo/contentools-version-history"
 )
 
 echo -e "${BLUE}🚀 Starting package publication process...${NC}"

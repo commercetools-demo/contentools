@@ -52,7 +52,9 @@ function parseArgs(argv) {
 }
 
 function printHelp() {
-  console.log(`\nUpdate versions for all packages under cms/cms/packages.\n\nUsage:\n  node scripts/update-package-versions.js --bump patch\n  node scripts/update-package-versions.js --bump minor\n  node scripts/update-package-versions.js --bump major\n  node scripts/update-package-versions.js --set 1.2.3\n\nOptions:\n  --bump [patch|minor|major]    Bump the current version (default: patch if neither --bump nor --set provided)\n  --set <version>                Set all packages to the specific version\n  --packagesDir <path>           Override packages directory (default: cms/cms/packages)\n  --dry                          Show changes without writing files\n`);
+  console.log(
+    `\nUpdate versions for all packages under cms/cms/packages.\n\nUsage:\n  node scripts/update-package-versions.js --bump patch\n  node scripts/update-package-versions.js --bump minor\n  node scripts/update-package-versions.js --bump major\n  node scripts/update-package-versions.js --set 1.2.3\n\nOptions:\n  --bump [patch|minor|major]    Bump the current version (default: patch if neither --bump nor --set provided)\n  --set <version>                Set all packages to the specific version\n  --packagesDir <path>           Override packages directory (default: cms/cms/packages)\n  --dry                          Show changes without writing files\n`
+  );
 }
 
 function isSemver(version) {
@@ -70,10 +72,14 @@ function bumpVersion(current, bump) {
   const remainder = match[4] || '';
 
   if (bump === 'major') {
-    major += 1; minor = 0; patch = 0;
+    major += 1;
+    minor = 0;
+    patch = 0;
   } else if (bump === 'minor') {
-    minor += 1; patch = 0;
-  } else { // patch default
+    minor += 1;
+    patch = 0;
+  } else {
+    // patch default
     patch += 1;
   }
   return `${major}.${minor}.${patch}`; // drop prerelease/build on bump
@@ -99,7 +105,7 @@ function main() {
     process.exit(1);
   }
 
-  const mode = args.set ? 'set' : (args.bump ? 'bump' : 'bump');
+  const mode = args.set ? 'set' : args.bump ? 'bump' : 'bump';
   const bumpKind = args.bump || 'patch';
   const targetVersion = args.set || null;
 
@@ -112,7 +118,8 @@ function main() {
     process.exit(1);
   }
 
-  const packageDirs = fs.readdirSync(packagesDir)
+  const packageDirs = fs
+    .readdirSync(packagesDir)
     .map((name) => path.join(packagesDir, name))
     .filter((p) => fs.statSync(p).isDirectory());
 
@@ -133,7 +140,12 @@ function main() {
     }
 
     if (currentVersion !== nextVersion) {
-      changes.push({ name: pkg.name || path.basename(dir), from: currentVersion, to: nextVersion, pkgPath });
+      changes.push({
+        name: pkg.name || path.basename(dir),
+        from: currentVersion,
+        to: nextVersion,
+        pkgPath,
+      });
       if (!args.dry) {
         pkg.version = nextVersion;
         writeJson(pkgPath, pkg);
@@ -157,4 +169,3 @@ try {
   console.error(err.message || err);
   process.exit(1);
 }
-
