@@ -13,6 +13,7 @@
   ],
   "dependencies": {
     "@babel/runtime-corejs3": "^7.28.0",
+    "@commercetools-demo/contentools-types": "workspace:^",
     "@commercetools-uikit/card": "^20.2.2",
     "@commercetools-uikit/flat-button": "^20.2.1",
     "@commercetools-uikit/icon-button": "^20.2.1",
@@ -21,6 +22,7 @@
     "@commercetools-uikit/primary-button": "^20.2.2",
     "@commercetools-uikit/secondary-button": "^20.2.2",
     "@commercetools-uikit/spacings": "^20.2.1",
+    "@commercetools-uikit/stamp": "^20.2.3",
     "@commercetools-uikit/text": "^20.2.2",
     "@emotion/react": "^11.14.0",
     "styled-components": "^6.1.19"

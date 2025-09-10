@@ -121,6 +121,8 @@ const PagesGridLayout: React.FC<Props> = ({
           {page?.layout.rows.map((row, index) => (
             <GridRow
               key={row.id}
+              baseURL={baseURL}
+              businessUnitKey={businessUnitKey}
               row={row}
               rowIndex={index}
               components={page.components}

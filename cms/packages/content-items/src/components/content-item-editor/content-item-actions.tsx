@@ -1,4 +1,5 @@
-import { EStateType } from '@commercetools-demo/contentools-types';
+import { ContentItem, EStateType, StateInfo } from '@commercetools-demo/contentools-types';
+import { StateTag, getStateType } from '@commercetools-demo/contentools-ui-components';
 import IconButton from '@commercetools-uikit/icon-button';
 import { ClockIcon, ListWithSearchIcon } from '@commercetools-uikit/icons';
 import PrimaryActionDropdown, {
@@ -7,18 +8,12 @@ import PrimaryActionDropdown, {
 import PrimaryButton from '@commercetools-uikit/primary-button';
 import SecondaryButton from '@commercetools-uikit/secondary-button';
 import Spacings from '@commercetools-uikit/spacings';
-import Stamp from '@commercetools-uikit/stamp';
 import React from 'react';
-import styled from 'styled-components';
-
-const StyledStamp = styled.span`
-  text-transform: capitalize;
-`;
 
 interface ContentItemActionsProps {
   showVersionHistory: boolean;
   onToggleVersionHistory: () => void;
-  currentState: EStateType | null;
+  currentState: StateInfo<ContentItem> | null;
   onViewJson: (isPreview: boolean) => void;
   onRevert: () => void;
   onPublish: () => void;
@@ -32,27 +27,15 @@ const ContentItemActions: React.FC<ContentItemActionsProps> = ({
   onRevert,
   onPublish,
 }) => {
-  const getStampTone = () => {
-    switch (currentState) {
-      case EStateType.DRAFT:
-        return 'information';
-      case EStateType.PUBLISHED:
-        return 'positive';
-      case EStateType.BOTH:
-        return 'warning';
-      default:
-        return 'information';
-    }
-  };
+
+  const stateType = getStateType(currentState);
 
   return (
     <Spacings.Stack>
       <Spacings.Inline alignItems="center" justifyContent="space-between">
         <Spacings.Inline alignItems="center" justifyContent="space-between">
           {currentState && (
-            <Stamp tone={getStampTone()}>
-              <StyledStamp>{currentState}</StyledStamp>
-            </Stamp>
+            <StateTag status={currentState} />
           )}
 
           <IconButton
@@ -74,7 +57,7 @@ const ContentItemActions: React.FC<ContentItemActionsProps> = ({
             <Option
               iconLeft={<ListWithSearchIcon />}
               isDisabled={
-                currentState !== EStateType.PUBLISHED && currentState !== EStateType.BOTH
+                stateType !== EStateType.PUBLISHED && stateType !== EStateType.BOTH
               }
               onClick={() => onViewJson(false)}
             >
@@ -83,7 +66,7 @@ const ContentItemActions: React.FC<ContentItemActionsProps> = ({
           </PrimaryActionDropdown>
 
           <Spacings.Inline>
-            {(currentState === EStateType.DRAFT || currentState === EStateType.BOTH) && (
+            {(stateType === EStateType.DRAFT || stateType === EStateType.BOTH) && (
               <SecondaryButton
                 size="20"
                 label="Revert to Published"
@@ -91,7 +74,7 @@ const ContentItemActions: React.FC<ContentItemActionsProps> = ({
               />
             )}
 
-            {currentState !== EStateType.PUBLISHED && (
+            {stateType !== EStateType.PUBLISHED && (
               <PrimaryButton size="20" label="Publish" onClick={onPublish} />
             )}
           </Spacings.Inline>

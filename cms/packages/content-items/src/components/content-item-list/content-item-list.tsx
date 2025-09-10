@@ -1,5 +1,6 @@
 import { useStateContentType } from '@commercetools-demo/contentools-state';
 import { ContentItem, StateInfo } from '@commercetools-demo/contentools-types';
+import { StateTag } from '@commercetools-demo/contentools-ui-components';
 import DataTable, { TColumn, TRow } from '@commercetools-uikit/data-table';
 import IconButton from '@commercetools-uikit/icon-button';
 import {
@@ -43,34 +44,6 @@ interface ContentItemListProps {
 }
 
 type ContentItemRow = TRow & ContentItem;
-
-const formatStatus = (status?: StateInfo<ContentItem>): string => {
-  if (!status) {
-    return 'Draft';
-  }
-
-  if (status.draft && status.published) {
-    return 'Draft & Published';
-  }
-
-  if (status.draft) {
-    return 'Draft';
-  }
-
-  return 'Published';
-};
-
-const formatTone = (status?: StateInfo<ContentItem>) => {
-  if (!status) {
-    return 'critical';
-  }
-
-  if (status.draft && status.published) {
-    return 'warning'; // Using archived for "both" state
-  }
-
-  return status.draft ? 'information' : 'positive';
-};
 
 export const ContentItemList: React.FC<ContentItemListProps> = ({
   items,
@@ -120,9 +93,7 @@ export const ContentItemList: React.FC<ContentItemListProps> = ({
       key: 'status',
       label: 'Status',
       renderItem: (row: ContentItemRow) => (
-        <Stamp tone={formatTone(states[row.key])}>
-          {formatStatus(states[row.key])}
-        </Stamp>
+        <StateTag status={states[row.key]} />
       ),
     },
     {

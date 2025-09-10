@@ -53,7 +53,7 @@ export interface StateManagementState {
     draft?: ContentItem | Page;
     published?: ContentItem | Page;
   };
-  currentState: EStateType | null;
+  currentState: StateInfo<ContentItem | Page>;
   loading: boolean;
   error: string | null;
 }

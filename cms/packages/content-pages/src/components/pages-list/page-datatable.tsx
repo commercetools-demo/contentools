@@ -1,8 +1,8 @@
 import { Page, StateInfo } from '@commercetools-demo/contentools-types';
+import { StateTag } from '@commercetools-demo/contentools-ui-components';
 import DataTable, { TRow } from '@commercetools-uikit/data-table';
-import Stamp from '@commercetools-uikit/stamp';
 import Text from '@commercetools-uikit/text';
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { useHistory } from 'react-router-dom';
 
 type Props = {
@@ -10,34 +10,6 @@ type Props = {
   states: Record<string, StateInfo<Page>>;
 };
 type PageRow = TRow & Page;
-
-const formatStatus = (status?: StateInfo<Page>): string => {
-  if (!status) {
-    return 'Draft';
-  }
-
-  if (status.draft && status.published) {
-    return 'Draft & Published';
-  }
-
-  if (status.draft) {
-    return 'Draft';
-  }
-
-  return 'Published';
-};
-
-const formatTone = (status?: StateInfo<Page>) => {
-  if (!status) {
-    return 'critical';
-  }
-
-  if (status.draft && status.published) {
-    return 'warning'; // Using archived for "both" state
-  }
-
-  return status.draft ? 'information' : 'positive';
-};
 
 const PageDataTable = ({ pages, states }: Props) => {
   const history = useHistory();
@@ -78,11 +50,7 @@ const PageDataTable = ({ pages, states }: Props) => {
       {
         key: 'status',
         label: 'Status',
-        renderItem: (row: PageRow) => (
-          <Stamp tone={formatTone(states[row.key])}>
-            {formatStatus(states[row.key])}
-          </Stamp>
-        ),
+        renderItem: (row: PageRow) => <StateTag status={states[row.key]} />,
       },
     ],
     []

@@ -1,30 +1,34 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { useHistory, useParams } from 'react-router-dom';
 import {
-  useStatePages,
+  StateProvider,
   useStateEditor,
+  useStatePages,
   useStateStateManagement,
   useStateVersion,
-  StateProvider,
 } from '@commercetools-demo/contentools-state';
+import {
+  EContentType,
+  Page,
+  PageVersionInfo,
+  StateInfo,
+} from '@commercetools-demo/contentools-types';
+import { useModalState } from '@commercetools-demo/contentools-ui-components';
+import VersionHistorySidebar from '@commercetools-demo/contentools-version-history';
+import Card from '@commercetools-uikit/card';
+import IconButton from '@commercetools-uikit/icon-button';
+import { BackIcon } from '@commercetools-uikit/icons';
+import LoadingSpinner from '@commercetools-uikit/loading-spinner';
+import SecondaryButton from '@commercetools-uikit/secondary-button';
 import Spacings from '@commercetools-uikit/spacings';
 import Text from '@commercetools-uikit/text';
-import PrimaryButton from '@commercetools-uikit/primary-button';
-import SecondaryButton from '@commercetools-uikit/secondary-button';
-import IconButton from '@commercetools-uikit/icon-button';
-import Card from '@commercetools-uikit/card';
-import LoadingSpinner from '@commercetools-uikit/loading-spinner';
-import { useModalState } from '@commercetools-demo/contentools-ui-components';
-import { GridIcon, GearIcon, BackIcon } from '@commercetools-uikit/icons';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useHistory, useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import ComponentLibraryModal from './component-library-modal';
-import PageSettingsModal from './page-settings-modal';
-import ComponentEditorModal from './component-editor-modal';
-import PagesGridLayout from './pages-grid-layout';
-import { PageVersionInfo } from '@commercetools-demo/contentools-types';
-import VersionHistorySidebar from '@commercetools-demo/contentools-version-history';
-import PageGridActions from './page-grid-actions';
 import { CONETNT_ITEMS_IN_PAGE_SCOPE } from '../../constants';
+import ComponentEditorModal from './component-editor-modal';
+import ComponentLibraryModal from './component-library-modal';
+import PageGridActions from './page-grid-actions';
+import PageSettingsModal from './page-settings-modal';
+import PagesGridLayout from './pages-grid-layout';
 
 interface Props {
   parentUrl: string;
@@ -171,8 +175,8 @@ const PagesEdit: React.FC<Props> = ({
 
   const handleFetchStatesAndVersions = useCallback(() => {
     if (pageKey) {
-      fetchStates(hydratedUrl, pageKey, 'pages');
-      fetchVersions(hydratedUrl, pageKey, 'pages');
+      fetchStates(hydratedUrl, pageKey, EContentType.PAGES);
+      fetchVersions(hydratedUrl, pageKey, EContentType.PAGES);
     }
   }, [pageKey, fetchStates, hydratedUrl]);
 
@@ -195,13 +199,15 @@ const PagesEdit: React.FC<Props> = ({
 
   const handleRevert = async () => {
     if (currentPage?.key) {
-      await revertToPublished(hydratedUrl, currentPage.key, 'pages').then(
-        () => {
-          fetchPage(hydratedUrl, pageKey).then(() => {
-            handleFetchStatesAndVersions();
-          });
-        }
-      );
+      await revertToPublished(
+        hydratedUrl,
+        currentPage.key,
+        EContentType.PAGES
+      ).then(() => {
+        fetchPage(hydratedUrl, pageKey).then(() => {
+          handleFetchStatesAndVersions();
+        });
+      });
       setContentVersion(null);
       setSelectedVersionId(null);
     }
@@ -209,9 +215,15 @@ const PagesEdit: React.FC<Props> = ({
 
   const handlePublish = async () => {
     if (currentPage?.key) {
-      await publish(hydratedUrl, currentPage, currentPage.key, 'pages', true);
-      fetchStates(hydratedUrl, currentPage.key, 'pages');
-      fetchVersions(hydratedUrl, currentPage.key, 'pages');
+      await publish(
+        hydratedUrl,
+        currentPage,
+        currentPage.key,
+        EContentType.PAGES,
+        true
+      );
+      fetchStates(hydratedUrl, currentPage.key, EContentType.PAGES);
+      fetchVersions(hydratedUrl, currentPage.key, EContentType.PAGES);
     }
   };
 
@@ -311,7 +323,7 @@ const PagesEdit: React.FC<Props> = ({
             }
             onTogglePageSettings={handleOpenPageSettings}
             onTogglePageLibrary={handleOpenComponentLibrary}
-            currentState={currentState}
+            currentState={currentState as StateInfo<Page>}
             onViewJson={handleJson}
             onRevert={handleRevert}
             onPublish={handlePublish}

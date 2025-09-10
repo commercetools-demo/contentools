@@ -6,35 +6,21 @@ import {
   PageStates,
   StateManagementState,
   EContentType,
-  EStateType,
+  StateInfo,
 } from '@commercetools-demo/contentools-types';
 import {
   getStatesEndpoint,
+  getStateEndpoint,
   publishEndpoint,
   revertDraftEndpoint,
 } from '../api/state';
 
 const initialState: StateManagementState = {
   states: {},
-  currentState: null,
+  currentState: {},
   loading: false,
   error: null,
 };
-
-// Update current state based on state data
-function determineCurrentState(states: {
-  draft?: any;
-  published?: any;
-}): EStateType | null {
-  if (states?.draft && states?.published) {
-    return EStateType.BOTH;
-  } else if (states?.draft) {
-    return EStateType.DRAFT;
-  } else if (states?.published) {
-    return EStateType.PUBLISHED;
-  }
-  return null;
-}
 
 export const useStateManagement = () => {
   const [state, setState] = useState<StateManagementState>(initialState);
@@ -59,7 +45,7 @@ export const useStateManagement = () => {
         setState((prev) => ({
           ...prev,
           states,
-          currentState: determineCurrentState(states),
+          currentState: states,
           loading: false,
         }));
 
@@ -100,7 +86,7 @@ export const useStateManagement = () => {
         setState((prev) => ({
           ...prev,
           states,
-          currentState: determineCurrentState(states),
+          currentState: states,
           loading: false,
         }));
 
@@ -139,7 +125,7 @@ export const useStateManagement = () => {
         setState((prev) => ({
           ...prev,
           states,
-          currentState: determineCurrentState(states),
+          currentState: states,
           loading: false,
         }));
 

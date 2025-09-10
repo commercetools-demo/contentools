@@ -1,4 +1,5 @@
-import { EStateType } from '@commercetools-demo/contentools-types';
+import { EStateType, Page, StateInfo } from '@commercetools-demo/contentools-types';
+import { getStateType, StateTag } from '@commercetools-demo/contentools-ui-components';
 import IconButton from '@commercetools-uikit/icon-button';
 import { ClockIcon, GearIcon, GridIcon, ListWithSearchIcon, SubdirectoryArrowIcon } from '@commercetools-uikit/icons';
 import PrimaryActionDropdown, {
@@ -21,7 +22,7 @@ interface PageGridActionsProps {
   onTogglePageSettings: () => void;
   onTogglePageLibrary: () => void;
   onAddRow: () => void;
-  currentState: EStateType | null;
+  currentState: StateInfo<Page> | null;
   onViewJson: (isPreview: boolean) => void;
   onRevert: () => void;
   onPublish: () => void;
@@ -38,27 +39,15 @@ const PageGridActions: React.FC<PageGridActionsProps> = ({
   onRevert,
   onPublish,
 }) => {
-  const getStampTone = () => {
-    switch (currentState) {
-      case EStateType.DRAFT:
-        return 'information';
-      case EStateType.PUBLISHED:
-        return 'positive';
-      case EStateType.BOTH:
-        return 'warning';
-      default:
-        return 'information';
-    }
-  };
+
+  const pageStateType = getStateType(currentState);
 
   return (
     <Spacings.Stack>
       <Spacings.Inline alignItems="center" justifyContent="space-between">
         <Spacings.Inline alignItems="center" justifyContent="space-between">
           {currentState && (
-            <Stamp tone={getStampTone()}>
-              <StyledStamp>{currentState}</StyledStamp>
-            </Stamp>
+            <StateTag status={currentState} />
           )}
 
           <IconButton
@@ -98,7 +87,7 @@ const PageGridActions: React.FC<PageGridActionsProps> = ({
             <Option
               iconLeft={<ListWithSearchIcon />}
               isDisabled={
-                currentState !== EStateType.PUBLISHED && currentState !== EStateType.BOTH
+                pageStateType !== EStateType.PUBLISHED && pageStateType !== EStateType.BOTH
               }
               onClick={() => onViewJson(false)}
             >
@@ -107,7 +96,7 @@ const PageGridActions: React.FC<PageGridActionsProps> = ({
           </PrimaryActionDropdown>
 
           <Spacings.Inline>
-            {(currentState === EStateType.DRAFT || currentState === EStateType.BOTH) && (
+            {(pageStateType === EStateType.DRAFT || pageStateType === EStateType.BOTH) && (
               <SecondaryButton
                 size="20"
                 label="Revert to Published"
@@ -115,7 +104,7 @@ const PageGridActions: React.FC<PageGridActionsProps> = ({
               />
             )}
 
-            {currentState !== EStateType.PUBLISHED && (
+            {pageStateType !== EStateType.PUBLISHED && (
               <PrimaryButton size="20" label="Publish" onClick={onPublish} />
             )}
           </Spacings.Inline>

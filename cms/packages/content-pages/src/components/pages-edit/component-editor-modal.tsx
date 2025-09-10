@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react';
-import { Modal } from '@commercetools-demo/contentools-ui-components';
+import { getStateType, Modal, StateTag } from '@commercetools-demo/contentools-ui-components';
 import Spacings from '@commercetools-uikit/spacings';
 import Text from '@commercetools-uikit/text';
 import {
   ContentItem,
+  EContentType,
   EStateType,
   Page,
   PageVersionInfo,
@@ -20,18 +21,7 @@ import Stamp from '@commercetools-uikit/stamp';
 import styled from 'styled-components';
 import { CONETNT_ITEMS_IN_PAGE_SCOPE } from '../../constants';
 
-const getStampTone = (currentState: EStateType | null) => {
-  switch (currentState) {
-    case EStateType.DRAFT:
-      return 'information';
-    case EStateType.PUBLISHED:
-      return 'positive';
-    case EStateType.BOTH:
-      return 'warning';
-    default:
-      return 'information';
-  }
-};
+
 const StyledStamp = styled.span`
   text-transform: capitalize;
 `;
@@ -67,6 +57,8 @@ const ComponentEditorModal: React.FC<Props> = ({
   } = useStateStateManagement(CONETNT_ITEMS_IN_PAGE_SCOPE)!;
   const { fetchVersions } = useStateVersion<PageVersionInfo>()!;
 
+  const pageItemStateType = getStateType(currentStatePageItem);
+
   const selectedComponent = currentPage?.components?.find(
     (c: ContentItem) => c?.key === selectedContentItemKey
   );
@@ -78,25 +70,25 @@ const ComponentEditorModal: React.FC<Props> = ({
       selectedContentItemKey,
       component
     );
-    fetchStates(hydratedUrl, currentPage.key, 'pages');
-    fetchVersions(hydratedUrl, currentPage.key, 'pages');
+    fetchStates(hydratedUrl, currentPage.key, EContentType.PAGES);
+    fetchVersions(hydratedUrl, currentPage.key, EContentType.PAGES);
     onClose();
   };
 
   const onRevert = async () => {
     if (currentPage?.key && selectedComponent) {
-      await revertToPublishedPageContentItem(hydratedUrl, selectedComponent.key, 'page-items');
+      await revertToPublishedPageContentItem(hydratedUrl, selectedComponent.key, EContentType.PAGE_ITEMS);
     }
   };
   const onPublish = async () => {
     if (currentPage?.key && selectedComponent) {
-      await publishPageContentItem(hydratedUrl, selectedComponent, selectedComponent.key, 'page-items', true);
+      await publishPageContentItem(hydratedUrl, selectedComponent, selectedComponent.key, EContentType.PAGE_ITEMS, true);
     }
   };
 
   useEffect(() => {
     if (selectedContentItemKey) {
-      fetchPageItemStates(hydratedUrl, selectedContentItemKey, 'page-items');
+      fetchPageItemStates(hydratedUrl, selectedContentItemKey, EContentType.PAGE_ITEMS);
     }
   }, [selectedContentItemKey, fetchPageItemStates]);
 
@@ -121,14 +113,12 @@ const ComponentEditorModal: React.FC<Props> = ({
       <Spacings.Stack scale="m">
         <Spacings.Inline alignItems="center" justifyContent="space-between">
           {currentStatePageItem && (
-            <Stamp tone={getStampTone(currentStatePageItem)}>
-              <StyledStamp>{currentStatePageItem}</StyledStamp>
-            </Stamp>
+            <StateTag status={currentStatePageItem} />
           )}
           <Spacings.Inline alignItems="center" justifyContent="flex-end">
             <Spacings.Inline>
-              {(currentStatePageItem === EStateType.DRAFT ||
-                currentStatePageItem === EStateType.BOTH) && (
+              {(pageItemStateType === EStateType.DRAFT ||
+                pageItemStateType === EStateType.BOTH) && (
                 <SecondaryButton
                   size="10"
                   label="Revert to Published"
@@ -136,7 +126,7 @@ const ComponentEditorModal: React.FC<Props> = ({
                 />
               )}
 
-              {currentStatePageItem !== EStateType.PUBLISHED && (
+              {pageItemStateType !== EStateType.PUBLISHED && (
                 <PrimaryButton size="10" label="Publish" onClick={onPublish} />
               )}
             </Spacings.Inline>

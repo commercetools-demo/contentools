@@ -1,5 +1,6 @@
 import {
   ContentItem,
+  EContentType,
   Page,
   PagesState,
   StateInfo,
@@ -18,6 +19,7 @@ import {
   updateComponentInPageApi,
   updatePageApi,
 } from '../api/page';
+import { getStatesEndpoint } from '../api/state';
 
 const initialState: PagesState = {
   pages: [],
@@ -127,6 +129,11 @@ export const usePages = () => {
       }));
       throw error;
     }
+  }, []);
+
+  const fetchItemState = useCallback(async (hydratedUrl: string, contentItemKey: string) => {
+    const result = await getStatesEndpoint<StateInfo<ContentItem>>(hydratedUrl, EContentType.PAGE_ITEMS, contentItemKey);
+    return result;
   }, []);
 
   // Local actions
@@ -312,6 +319,7 @@ export const usePages = () => {
     // Actions
     fetchPages,
     fetchPage,
+    fetchItemState,
     updatePage,
     deletePage,
     setCurrentPage,

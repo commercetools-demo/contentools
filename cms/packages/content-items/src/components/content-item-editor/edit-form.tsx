@@ -8,6 +8,7 @@ import {
   ContentItem,
   ContentItemVersionInfo,
   EContentType,
+  StateInfo,
 } from '@commercetools-demo/contentools-types';
 import VersionHistorySidebar from '@commercetools-demo/contentools-version-history';
 import {
@@ -82,8 +83,8 @@ const ContentItemEditorEditForm: React.FC<ContentItemEditorEditFormProps> = ({
           }
         );
 
-        await fetchVersions(hydratedUrl, component.key, 'content-items');
-        await fetchStates(hydratedUrl, component.key, 'content-items');
+        await fetchVersions(hydratedUrl, component.key, EContentType.CONTENT_ITEMS);
+        await fetchStates(hydratedUrl, component.key, EContentType.CONTENT_ITEMS);
         await fetchContentItems(hydratedUrl);
       }
     } else {
@@ -177,7 +178,7 @@ const ContentItemEditorEditForm: React.FC<ContentItemEditorEditFormProps> = ({
 
   const handleFetchVersions = useCallback(async () => {
     if (item?.key) {
-      await fetchVersions(hydratedUrl, item.key, 'content-items');
+      await fetchVersions(hydratedUrl, item.key, EContentType.CONTENT_ITEMS);
     }
   }, [fetchVersions, item?.key, hydratedUrl]);
 
@@ -202,7 +203,7 @@ const ContentItemEditorEditForm: React.FC<ContentItemEditorEditFormProps> = ({
     if (contentItemKey) {
       fetchRawContentItem(hydratedUrl, contentItemKey).then((item) => {
         setItem(item);
-        fetchStates(hydratedUrl, contentItemKey, 'content-items');
+        fetchStates(hydratedUrl, contentItemKey, EContentType.CONTENT_ITEMS);
       });
     }
   }, [fetchRawContentItem, hydratedUrl, contentItemKey]);
@@ -228,7 +229,7 @@ const ContentItemEditorEditForm: React.FC<ContentItemEditorEditFormProps> = ({
                 ? handleCloseVersionHistory()
                 : handleOpenVersionHistory()
             }
-            currentState={currentState}
+            currentState={currentState as StateInfo<ContentItem>}
             onViewJson={handleJson}
             onRevert={handleRevert}
             onPublish={handlePublish}

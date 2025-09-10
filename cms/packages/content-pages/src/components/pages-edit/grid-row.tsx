@@ -17,6 +17,8 @@ interface GridRowData {
 }
 
 interface GridRowProps {
+  baseURL: string;
+  businessUnitKey: string;
   row: GridRowData;
   rowIndex: number;
   components: ContentItem[];
@@ -50,6 +52,8 @@ const StyledGridRow = styled.div`
 `;
 
 const GridRow: React.FC<GridRowProps> = ({
+  baseURL,
+  businessUnitKey,
   row,
   rowIndex,
   components,
@@ -123,6 +127,8 @@ const GridRow: React.FC<GridRowProps> = ({
           return (
             <GridCell
               key={cell.id}
+              baseURL={baseURL}
+              businessUnitKey={businessUnitKey}
               cellId={cell.id}
               rowId={row.id}
               colSpan={cell.colSpan}
