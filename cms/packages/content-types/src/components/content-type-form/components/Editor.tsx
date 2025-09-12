@@ -1,4 +1,4 @@
-import { ComponentPlayground } from '@commercetools-demo/contentools-content-type-editor';
+import { ComponentPlayground } from '@commercetools-demo/contentools-content-type-code-editor';
 import { ContentTypeData } from '@commercetools-demo/contentools-types';
 import Card from '@commercetools-uikit/card';
 import Spacings from '@commercetools-uikit/spacings';

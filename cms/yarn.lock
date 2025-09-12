@@ -1673,7 +1673,6 @@ __metadata:
   dependencies:
     "@babel/runtime-corejs3": "npm:^7.28.0"
     "@commercetools-demo/contentools-content-item-renderer": "workspace:^"
-    "@commercetools-demo/contentools-content-type-editor": "workspace:^"
     "@commercetools-demo/contentools-property-editor": "workspace:^"
     "@commercetools-demo/contentools-types": "workspace:^"
     "@commercetools-demo/contentools-ui-components": "workspace:^"
@@ -1759,9 +1758,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@commercetools-demo/contentools-content-type-editor@workspace:^, @commercetools-demo/contentools-content-type-editor@workspace:packages/content-type-editor":
+"@commercetools-demo/contentools-content-type-code-editor@workspace:^, @commercetools-demo/contentools-content-type-code-editor@workspace:packages/content-type-code-editor":
   version: 0.0.0-use.local
-  resolution: "@commercetools-demo/contentools-content-type-editor@workspace:packages/content-type-editor"
+  resolution: "@commercetools-demo/contentools-content-type-code-editor@workspace:packages/content-type-code-editor"
   dependencies:
     "@babel/runtime-corejs3": "npm:^7.28.0"
     "@babel/standalone": "npm:^7.28.2"
@@ -1793,7 +1792,7 @@ __metadata:
   dependencies:
     "@babel/runtime-corejs3": "npm:^7.28.0"
     "@commercetools-demo/contentools-content-item-renderer": "workspace:^"
-    "@commercetools-demo/contentools-content-type-editor": "workspace:^"
+    "@commercetools-demo/contentools-content-type-code-editor": "workspace:^"
     "@commercetools-demo/contentools-property-editor": "workspace:^"
     "@commercetools-demo/contentools-types": "workspace:^"
     "@commercetools-demo/contentools-ui-components": "workspace:^"

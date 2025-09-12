@@ -1,7 +1,7 @@
 {
   "name": "@commercetools-demo/contentools-content-types",
   "description": "Content types CMS",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "license": "MIT",
   "publishConfig": {
     "access": "public"
@@ -15,7 +15,7 @@
   "dependencies": {
     "@babel/runtime-corejs3": "^7.28.0",
     "@commercetools-demo/contentools-content-item-renderer": "workspace:^",
-    "@commercetools-demo/contentools-content-type-editor": "workspace:^",
+    "@commercetools-demo/contentools-content-type-code-editor": "workspace:^",
     "@commercetools-demo/contentools-property-editor": "workspace:^",
     "@commercetools-demo/contentools-types": "workspace:^",
     "@commercetools-demo/contentools-ui-components": "workspace:^",
