@@ -4,6 +4,7 @@ import * as Yup from 'yup';
 import {
   ContentItem,
   ContentTypeMetaData,
+  EPropertyType,
   PropertySchema,
 } from '@commercetools-demo/contentools-types';
 import { useStateContentType } from '@commercetools-demo/contentools-state';
@@ -11,7 +12,6 @@ import styled from 'styled-components';
 import Spacings from '@commercetools-uikit/spacings';
 import Text from '@commercetools-uikit/text';
 import PrimaryButton from '@commercetools-uikit/primary-button';
-import SecondaryButton from '@commercetools-uikit/secondary-button';
 import Card from '@commercetools-uikit/card';
 import { StringField } from './components/string-field';
 import { NumberField } from './components/number-field';
@@ -251,20 +251,15 @@ const PropertyEditor: React.FC<PropertyEditorProps> = ({
       };
 
       switch (field.type) {
-        case 'string':
-          if (component.type === 'richText' && key === 'content') {
-            return (
-              <WysiwygField {...commonProps} value={value || ''} key={key} />
-            );
-          }
+        case EPropertyType.STRING:
           return <StringField {...commonProps} value={value || ''} key={key} />;
-        case 'number':
+        case EPropertyType.NUMBER:
           return <NumberField {...commonProps} value={value} key={key} />;
-        case 'boolean':
+        case EPropertyType.BOOLEAN:
           return <BooleanField {...commonProps} value={value} key={key} />;
-        case 'array':
+        case EPropertyType.ARRAY:
           return <ArrayField {...commonProps} value={value || []} key={key} />;
-        case 'file':
+        case EPropertyType.FILE:
           return (
             <FileField
               key={key}
@@ -280,7 +275,7 @@ const PropertyEditor: React.FC<PropertyEditorProps> = ({
               validationError={errorString}
             />
           );
-        case 'datasource':
+        case EPropertyType.DATASOURCE:
           return (
             <DatasourceField
               key={key}
@@ -295,8 +290,10 @@ const PropertyEditor: React.FC<PropertyEditorProps> = ({
               validationError={errorString}
             />
           );
-        case 'object':
+        case EPropertyType.OBJECT:
           return <ObjectField {...commonProps} value={value || {}} key={key} />;
+        case EPropertyType.RICH_TEXT:
+          return <WysiwygField {...commonProps} value={value || {}} key={key} />;
         default:
           return (
             <Spacings.Stack scale="s" key={key}>

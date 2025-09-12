@@ -1,6 +1,7 @@
 import React from 'react';
 import { ComponentCache } from './component-cache';
 import styled from 'styled-components';
+import * as Tiptap from '@tiptap/core';
 
 export class SecureDynamicComponentLoader {
   private componentCache = new ComponentCache();
@@ -63,15 +64,17 @@ export class SecureDynamicComponentLoader {
       // Inject styled-components
       const dependencies = {
         styled: styled,
+        Tiptap: Tiptap,
       };
 
       // Step 3: Execute component with Function constructor (most secure)
       const componentFactory = new Function(
         'React',
         'styled',
+        'Tiptap',
         `return (${transpiledCode})`
       );
-      const componentIIFE = componentFactory(wrappedReact, dependencies.styled);
+      const componentIIFE = componentFactory(wrappedReact, dependencies.styled, dependencies.Tiptap);
       const Component = componentIIFE(wrappedReact);
       // Step 4: Validate the result
       if (!Component || typeof Component !== 'function') {

@@ -1,6 +1,7 @@
 import { transform } from '@babel/standalone';
+import { EPropertyType, PropertySchema } from '@commercetools-demo/contentools-types';
 import Editor from '@monaco-editor/react';
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 
 class SecureTranspiler {
   private static readonly DANGEROUS_PATTERNS = [
@@ -75,6 +76,7 @@ class SecureTranspiler {
 interface ComponentPlaygroundProps {
   initialCode?: string;
   componentName: string;
+  propertySchema: PropertySchema;
   props: string;
   onCodeChange: (data: { transpiledCode: string; text: string }) => void;
 }
@@ -83,9 +85,23 @@ const ComponentPlayground = ({
   onCodeChange,
   initialCode,
   componentName,
+  propertySchema,
   props,
 }: ComponentPlaygroundProps) => {
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const extraImports = useMemo(() => {
+    if (!propertySchema || Object.keys(propertySchema).length === 0) {
+      return '';
+    }
+    const hasRichtext = Object.values(propertySchema).some((schema) => schema.type === EPropertyType.RICH_TEXT);
+    if (hasRichtext) {
+      return `import { generateHTML } from '@tiptap/core;
+      // use to convert rich text json to html`;
+    }
+    return ''
+
+  }, [propertySchema]);
 
   const handleChange = useCallback(
     (value?: string) => {
@@ -120,6 +136,7 @@ const ComponentPlayground = ({
 
   const defaultCode = `import React from 'react';
 import styled from 'styled-components';
+${extraImports}
 
 function ${componentName}({${props}}) {
   return (
