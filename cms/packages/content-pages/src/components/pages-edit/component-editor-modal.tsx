@@ -3,7 +3,9 @@ import {
   getStateType,
   Modal,
   StateTag,
-} from '@commercetools-demo/contentools-ui-components';
+
+  ConfirmationModal,
+  useModalState} from '@commercetools-demo/contentools-ui-components';
 import Spacings from '@commercetools-uikit/spacings';
 import Text from '@commercetools-uikit/text';
 import {
@@ -25,10 +27,6 @@ import Stamp from '@commercetools-uikit/stamp';
 import styled from 'styled-components';
 import { CONETNT_ITEMS_IN_PAGE_SCOPE } from '../../constants';
 import isEqual from 'fast-deep-equal';
-import {
-  ConfirmationModal,
-  useModalState,
-} from '@commercetools-demo/contentools-ui-components';
 
 interface Props {
   isOpen: boolean;

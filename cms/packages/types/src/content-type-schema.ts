@@ -1,14 +1,8 @@
 import type { DatasourceInfo } from './datasource-types';
+import type { EPropertyType } from './enums';
 
 export interface PropertySchema {
-  type:
-    | 'string'
-    | 'number'
-    | 'boolean'
-    | 'array'
-    | 'object'
-    | 'file'
-    | 'datasource';
+  type: EPropertyType;
   label: string;
   defaultValue?: any;
   required?: boolean;

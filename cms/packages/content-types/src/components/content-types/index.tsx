@@ -51,6 +51,11 @@ const ContentTypesApp = ({
     removeContentType,
   } = useStateContentType();
 
+  const loadItems = async () => {
+    await fetchContentTypes();
+    clearError();
+  };
+
   const handleDeleteConfirmation = async (key: string) => {
     setIsLoading(true);
     await removeContentType(key);
@@ -73,10 +78,7 @@ const ContentTypesApp = ({
     history.push(`content-type/${item.key}`);
   };
 
-  const loadItems = async () => {
-    await fetchContentTypes();
-    clearError();
-  };
+
 
   // Load data on mount
   useEffect(() => {

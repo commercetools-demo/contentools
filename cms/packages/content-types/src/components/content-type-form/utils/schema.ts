@@ -1,21 +1,21 @@
-import { PropertySchema } from '@commercetools-demo/contentools-types';
+import { EPropertyType, PropertySchema } from '@commercetools-demo/contentools-types';
 
 const parseDefaultValue = (
   value: string,
-  type: PropertySchema['type']
+  type: EPropertyType
 ): any => {
   switch (type) {
-    case 'number':
+    case EPropertyType.NUMBER:
       return isNaN(Number(value)) ? 0 : Number(value);
-    case 'boolean':
+    case EPropertyType.BOOLEAN:
       return value.toLowerCase() === 'true';
-    case 'array':
+    case EPropertyType.ARRAY:
       try {
         return JSON.parse(value);
       } catch {
         return [];
       }
-    case 'object':
+    case EPropertyType.OBJECT:
       try {
         return JSON.parse(value);
       } catch {
@@ -28,7 +28,7 @@ const parseDefaultValue = (
 
 const formatDefaultValue = (
   value: any,
-  type: PropertySchema['type']
+  type: EPropertyType
 ): string => {
   if (value === undefined || value === null) return '';
 
@@ -43,31 +43,34 @@ const formatDefaultValue = (
   }
 };
 
-const getDefaultValuePlaceholder = (type: PropertySchema['type']): string => {
+const getDefaultValuePlaceholder = (type: EPropertyType): string => {
   switch (type) {
-    case 'string':
+    case EPropertyType.STRING:
       return 'Enter default text';
-    case 'number':
+    case EPropertyType.NUMBER:
       return 'Enter default number';
-    case 'boolean':
+    case EPropertyType.BOOLEAN:
       return 'true or false';
-    case 'array':
+    case EPropertyType.ARRAY:
       return '["item1", "item2"]';
-    case 'object':
+    case EPropertyType.OBJECT:
       return '{"key": "value"}';
-    case 'file':
+    case EPropertyType.FILE:
       return 'Default file URL';
-    case 'datasource':
+    case EPropertyType.DATASOURCE:
       return 'Default datasource value';
+    case EPropertyType.RICH_TEXT:
+      return 'Enter default rich text';
     default:
       return 'Enter default value';
   }
 };
 
-const isDefaultValueVisible = (type: PropertySchema['type']): boolean => {
+const isDefaultValueVisible = (type: EPropertyType): boolean => {
   switch (type) {
-    case 'file':
-    case 'datasource':
+    case EPropertyType.FILE:
+    case EPropertyType.DATASOURCE:
+    case EPropertyType.RICH_TEXT:
       return false;
     default:
       return true;

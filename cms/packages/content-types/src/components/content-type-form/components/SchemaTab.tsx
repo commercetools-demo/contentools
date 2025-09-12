@@ -1,8 +1,10 @@
 import { useStateDatasource } from '@commercetools-demo/contentools-state';
 import {
   ContentTypeData,
+  EPropertyType,
   PropertySchema,
 } from '@commercetools-demo/contentools-types';
+import { SelectInput } from '@commercetools-demo/contentools-ui-components';
 import CheckboxInput from '@commercetools-uikit/checkbox-input';
 import FieldLabel from '@commercetools-uikit/field-label';
 import PrimaryButton from '@commercetools-uikit/primary-button';
@@ -18,7 +20,6 @@ import {
   isDefaultValueVisible,
   parseDefaultValue,
 } from '../utils/schema';
-import { SelectInput } from '@commercetools-demo/contentools-ui-components';
 
 const SchemaBuilder = styled.div`
   border: 1px solid #ddd;
@@ -75,13 +76,14 @@ const AddPropertyForm = styled.div`
 `;
 
 const typeOptions = [
-  { value: 'string', label: 'String' },
-  { value: 'number', label: 'Number' },
-  { value: 'boolean', label: 'Boolean' },
-  // { value: 'array', label: 'Array' },
-  { value: 'object', label: 'Object' },
-  { value: 'file', label: 'File' },
-  { value: 'datasource', label: 'Datasource' },
+  { value: EPropertyType.STRING, label: 'String' },
+  { value: EPropertyType.NUMBER, label: 'Number' },
+  { value: EPropertyType.BOOLEAN, label: 'Boolean' },
+  // { value: EPropertyType.ARRAY, label: 'Array' },
+  { value: EPropertyType.OBJECT, label: 'Object' },
+  { value: EPropertyType.FILE, label: 'File' },
+  { value: EPropertyType.DATASOURCE, label: 'Datasource' },
+  { value: EPropertyType.RICH_TEXT, label: 'Rich Text' },
 ];
 
 export interface SchemaTabProps {
@@ -97,12 +99,12 @@ const SchemaTab: React.FC<SchemaTabProps> = ({
   baseURL,
   businessUnitKey,
 }) => {
-  const { datasources: availableDatasources } = useStateDatasource();
+  const { datasources: availableDatasources } = useStateDatasource()!;
 
   const [newProperty, setNewProperty] = useState({
     key: '',
     label: '',
-    type: 'string' as PropertySchema['type'],
+    type: EPropertyType.STRING,
     defaultValue: '',
     datasourceType: undefined as string | undefined,
   });
@@ -171,7 +173,7 @@ const SchemaTab: React.FC<SchemaTabProps> = ({
     setNewProperty({
       key: '',
       label: '',
-      type: 'string',
+      type: EPropertyType.STRING,
       defaultValue: '',
       datasourceType: undefined,
     });
@@ -220,7 +222,7 @@ const SchemaTab: React.FC<SchemaTabProps> = ({
   );
 
   const handleDefaultValueChange = useCallback(
-    (propertyKey: string, value: string, type: PropertySchema['type']) => {
+    (propertyKey: string, value: string, type: EPropertyType) => {
       const updatedDefaultProperties = {
         ...contentType.metadata.defaultProperties,
       };
@@ -386,7 +388,7 @@ const SchemaTab: React.FC<SchemaTabProps> = ({
                 onChange={(e) =>
                   setNewProperty((prev) => ({
                     ...prev,
-                    type: e.target.value as PropertySchema['type'],
+                    type: e.target.value as EPropertyType,
                   }))
                 }
                 options={typeOptions}
