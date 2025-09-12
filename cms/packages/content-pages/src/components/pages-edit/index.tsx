@@ -85,6 +85,10 @@ const EditorContent = styled.div`
   background: #f8f9fa;
 `;
 
+const StyledWrapper = styled.div`
+  padding: 10px 0;
+`;
+
 const PagesEdit: React.FC<Props> = ({
   parentUrl,
   baseURL,
@@ -98,10 +102,8 @@ const PagesEdit: React.FC<Props> = ({
     loading,
     error,
     fetchPage,
-    updatePage,
     deletePage,
     addRowToCurrentPage,
-    removeRowFromCurrentPage,
     addComponentToCurrentPage,
     // clearUnsavedChanges,
   } = useStatePages()!;
@@ -171,7 +173,7 @@ const PagesEdit: React.FC<Props> = ({
       rowId,
       cellId
     );
-    handleFetchStatesAndVersions();
+    loadPage();
   };
 
   const handleFetchStatesAndVersions = useCallback(() => {
@@ -205,9 +207,7 @@ const PagesEdit: React.FC<Props> = ({
         currentPage.key,
         EContentType.PAGES
       ).then(() => {
-        fetchPage(hydratedUrl, pageKey).then(() => {
-          handleFetchStatesAndVersions();
-        });
+        loadPage();
       });
       setContentVersion(null);
       setSelectedVersionId(null);
@@ -223,26 +223,25 @@ const PagesEdit: React.FC<Props> = ({
         EContentType.PAGES,
         true
       );
-      fetchStates(hydratedUrl, currentPage.key, EContentType.PAGES);
-      fetchVersions(hydratedUrl, currentPage.key, EContentType.PAGES);
+      loadPage();
     }
   };
 
-  const handleVersionSelected = (versionId: string) => {
-    setSelectedVersionId(versionId);
-    const selectedVersion = versions.find((v) => v.id === versionId);
-    if (selectedVersion) {
-      setContentVersion(selectedVersion);
-    }
+  const handleVersionSelected = (_versionId: string) => {
+    // setSelectedVersionId(versionId);
+    // const selectedVersion = versions.find((v) => v.id === versionId);
+    // if (selectedVersion) {
+    //   setContentVersion(selectedVersion);
+    // }
   };
 
-  const handleApplyVersion = async (versionId: string) => {
-    const selectedVersion = versions.find((v) => v.id === versionId);
-    if (selectedVersion && currentPage?.key) {
-      // await updatePage(hydratedUrl,  selectedVersion);
-      setSelectedVersionId(null);
-      setContentVersion(null);
-    }
+  const handleApplyVersion = async (_versionId: string) => {
+    // const selectedVersion = versions.find((v) => v.id === versionId);
+    // if (selectedVersion && currentPage?.key) {
+    //   // await updatePage(hydratedUrl,  selectedVersion);
+    //   setSelectedVersionId(null);
+    //   setContentVersion(null);
+    // }
   };
 
   const handleSelectionCancelled = () => {
@@ -251,21 +250,26 @@ const PagesEdit: React.FC<Props> = ({
     handleCloseVersionHistory();
   };
 
-  const handleAddRow = () => {
-    addRowToCurrentPage(hydratedUrl);
+  const handleAddRow = async () => {
+    await addRowToCurrentPage(hydratedUrl);
+    loadPage();
   };
 
   const handleOpenPagePreview = () => {
     pagePreviewState.openModal();
   };
 
-  useEffect(() => {
+  const loadPage = useCallback(() => {
     if (pageKey) {
       fetchPage(hydratedUrl, pageKey).then(() => {
         handleFetchStatesAndVersions();
       });
     }
   }, [pageKey, fetchPage, parentUrl]);
+
+  useEffect(() => {
+    loadPage();
+  }, [pageKey, loadPage]);
 
   if (loading) {
     return (
@@ -319,26 +323,29 @@ const PagesEdit: React.FC<Props> = ({
         </ContainerHeader>
 
         <EditorContent>
-          <PageGridActions
-            showVersionHistory={versionHistoryState.isModalOpen}
-            onToggleVersionHistory={() =>
-              versionHistoryState.isModalOpen
-                ? handleCloseVersionHistory()
-                : handleOpenVersionHistory()
-            }
-            onTogglePageSettings={handleOpenPageSettings}
-            onTogglePageLibrary={handleOpenComponentLibrary}
-            onTogglePagePreview={handleOpenPagePreview}
-            currentState={currentState as StateInfo<Page>}
-            onViewJson={handleJson}
-            onRevert={handleRevert}
-            onPublish={handlePublish}
-            onAddRow={handleAddRow}
-          />
+          <StyledWrapper>
+            <PageGridActions
+              showVersionHistory={versionHistoryState.isModalOpen}
+              onToggleVersionHistory={() =>
+                versionHistoryState.isModalOpen
+                  ? handleCloseVersionHistory()
+                  : handleOpenVersionHistory()
+              }
+              onTogglePageSettings={handleOpenPageSettings}
+              onTogglePageLibrary={handleOpenComponentLibrary}
+              onTogglePagePreview={handleOpenPagePreview}
+              currentState={currentState as StateInfo<Page>}
+              onViewJson={handleJson}
+              onRevert={handleRevert}
+              onPublish={handlePublish}
+              onAddRow={handleAddRow}
+            />
+          </StyledWrapper>
           <PagesGridLayout
             baseURL={baseURL}
             businessUnitKey={businessUnitKey}
             selectedContentItemKey={selectedContentItemKey}
+            onRefresh={loadPage}
             onComponentSelect={handleComponentSelect}
             onComponentToCurrentPage={handleComponentToCurrentPage}
           />
@@ -363,6 +370,7 @@ const PagesEdit: React.FC<Props> = ({
         <ComponentEditorModal
           isOpen={componentEditorModal.isModalOpen}
           onClose={handleCloseComponentEditor}
+          onRefresh={loadPage}
           selectedContentItemKey={selectedContentItemKey}
           baseURL={baseURL}
           businessUnitKey={businessUnitKey}

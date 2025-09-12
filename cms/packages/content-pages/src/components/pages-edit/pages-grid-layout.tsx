@@ -9,6 +9,7 @@ interface Props {
   baseURL: string;
   businessUnitKey: string;
   selectedContentItemKey: string | null;
+  onRefresh: () => void;
   onComponentSelect: (componentId: string | null) => void;
   onComponentToCurrentPage: (rowId: string, cellId: string) => Promise<void>;
 }
@@ -46,6 +47,7 @@ const PagesGridLayout: React.FC<Props> = ({
   baseURL,
   businessUnitKey,
   selectedContentItemKey,
+  onRefresh,
   onComponentSelect,
   onComponentToCurrentPage,
 }) => {
@@ -74,29 +76,32 @@ const PagesGridLayout: React.FC<Props> = ({
   );
 
   const handleRemoveRow = useCallback(
-    (rowId: string) => {
+    async (rowId: string) => {
       // This would dispatch an action to remove the row from the page layout
-      removeRowFromCurrentPage(hydratedUrl, rowId);
+      await removeRowFromCurrentPage(hydratedUrl, rowId);
+      onRefresh();
     },
     [hydratedUrl, removeRowFromCurrentPage]
   );
 
   const handleIncreaseWidth = useCallback(
-    (rowId: string, cellId: string, colSpan: number) => {
-      updateCellSpanInCurrentPage(hydratedUrl, rowId, cellId, {
+    async (rowId: string, cellId: string, colSpan: number) => {
+      await updateCellSpanInCurrentPage(hydratedUrl, rowId, cellId, {
         colSpan,
         shouldRemoveEmptyCell: true,
       });
+      onRefresh();
     },
     []
   );
 
   const handleDecreaseWidth = useCallback(
-    (rowId: string, cellId: string, colSpan: number) => {
-      updateCellSpanInCurrentPage(hydratedUrl, rowId, cellId, {
+    async  (rowId: string, cellId: string, colSpan: number) => {
+      await updateCellSpanInCurrentPage(hydratedUrl, rowId, cellId, {
         colSpan,
         shouldAddEmptyCell: true,
       });
+      onRefresh();
     },
     []
   );
