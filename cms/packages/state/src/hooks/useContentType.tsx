@@ -12,6 +12,7 @@ import {
   getAvailableDatasourcesEndpoint,
   fetchContentTypeEndpoint,
 } from '../api';
+import { decodeFromBase64, encodeToBase64 } from '../utils/text-encoder';
 
 const initialState: ContentTypeState = {
   contentTypes: [],
@@ -77,8 +78,10 @@ export const useContentType = (baseURL: string) => {
           key
         );
         try {
-          const base64Code = atob(response.code?.transpiledCode || '');
-          const base64Text = atob(response.code?.text || '');
+          const base64Code = decodeFromBase64(
+            response.code?.transpiledCode || ''
+          );
+          const base64Text = decodeFromBase64(response.code?.text || '');
           response.code = {
             componentName: response.metadata.type,
             transpiledCode: base64Code,
@@ -204,8 +207,10 @@ export const useContentType = (baseURL: string) => {
     async (key: string, contentType: ContentTypeData) => {
       try {
         setState((prev) => ({ ...prev, loading: true, error: null }));
-        const base64Code = btoa(contentType.code?.transpiledCode || '');
-        const base64Text = btoa(contentType.code?.text || '');
+        const base64Code = encodeToBase64(
+          contentType.code?.transpiledCode || ''
+        );
+        const base64Text = encodeToBase64(contentType.code?.text || '');
         contentType.code = {
           componentName: contentType.metadata.type,
           transpiledCode: base64Code,

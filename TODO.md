@@ -83,6 +83,7 @@ FE:
    [] cleanup items on top
 [] Add preview
 [] style injection using css vars (e.g z-index)
+[] version hihglighting in pages
 
 App:
 [] post deploy to add datasoures
