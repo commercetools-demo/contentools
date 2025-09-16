@@ -76,6 +76,16 @@ export const ContentItemList: React.FC<ContentItemListProps> = ({
       renderItem: (row: ContentItemRow) => <Text.Body>{row.name}</Text.Body>,
     },
     {
+      key: 'type',
+      label: 'Type',
+      renderItem: (row: ContentItemRow) => {
+        const contentType = contentTypes.find(
+          (type) => type.key === row.type
+        );
+        return <Text.Body>{contentType?.metadata.name || row.type}</Text.Body>;
+      },
+    },
+    {
       key: 'key',
       label: 'Key',
       renderItem: (row: ContentItemRow) => (
