@@ -66,6 +66,7 @@ const PreviewTab: React.FC<PreviewTabProps> = ({
           <ComponentPlayground
             props={props}
             componentName={contentType.metadata.type}
+            propertySchema={contentType.metadata.propertySchema}
             initialCode={contentType.code?.text}
             onCodeChange={handleCodeChange}
           />

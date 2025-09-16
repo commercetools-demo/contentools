@@ -19,7 +19,6 @@ export interface PagesState {
   unsavedChanges: boolean;
 }
 
-
 export interface PageVersions {
   key: string; // Same as Page key
   businessUnitKey: string;

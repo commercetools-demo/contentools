@@ -3,9 +3,9 @@ import {
   getStateType,
   Modal,
   StateTag,
-
   ConfirmationModal,
-  useModalState} from '@commercetools-demo/contentools-ui-components';
+  useModalState,
+} from '@commercetools-demo/contentools-ui-components';
 import Spacings from '@commercetools-uikit/spacings';
 import Text from '@commercetools-uikit/text';
 import {

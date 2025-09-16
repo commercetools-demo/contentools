@@ -1,5 +1,8 @@
 import { transform } from '@babel/standalone';
-import { EPropertyType, PropertySchema } from '@commercetools-demo/contentools-types';
+import {
+  EPropertyType,
+  PropertySchema,
+} from '@commercetools-demo/contentools-types';
 import Editor from '@monaco-editor/react';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 
@@ -76,7 +79,7 @@ class SecureTranspiler {
 interface ComponentPlaygroundProps {
   initialCode?: string;
   componentName: string;
-  propertySchema: PropertySchema;
+  propertySchema: Record<string, PropertySchema>;
   props: string;
   onCodeChange: (data: { transpiledCode: string; text: string }) => void;
 }
@@ -90,17 +93,17 @@ const ComponentPlayground = ({
 }: ComponentPlaygroundProps) => {
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const extraImports = useMemo(() => {
+  const comments = useMemo(() => {
     if (!propertySchema || Object.keys(propertySchema).length === 0) {
       return '';
     }
-    const hasRichtext = Object.values(propertySchema).some((schema) => schema.type === EPropertyType.RICH_TEXT);
-    if (hasRichtext) {
-      return `import { generateHTML } from '@tiptap/core;
-      // use to convert rich text json to html`;
+    const property: [string, PropertySchema] | undefined = Object.entries(
+      propertySchema
+    ).find((schema) => schema?.[1].type === EPropertyType.RICH_TEXT);
+    if (!!property) {
+      return `// use <div dangerouslySetInnerHTML={{__html: ${property?.[0]}}} /> to render the HTML stored in Rich text editor'`;
     }
-    return ''
-
+    return '';
   }, [propertySchema]);
 
   const handleChange = useCallback(
@@ -136,7 +139,7 @@ const ComponentPlayground = ({
 
   const defaultCode = `import React from 'react';
 import styled from 'styled-components';
-${extraImports}
+${comments}
 
 function ${componentName}({${props}}) {
   return (

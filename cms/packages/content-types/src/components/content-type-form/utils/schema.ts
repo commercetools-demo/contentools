@@ -1,9 +1,9 @@
-import { EPropertyType, PropertySchema } from '@commercetools-demo/contentools-types';
+import {
+  EPropertyType,
+  PropertySchema,
+} from '@commercetools-demo/contentools-types';
 
-const parseDefaultValue = (
-  value: string,
-  type: EPropertyType
-): any => {
+const parseDefaultValue = (value: string, type: EPropertyType): any => {
   switch (type) {
     case EPropertyType.NUMBER:
       return isNaN(Number(value)) ? 0 : Number(value);
@@ -26,10 +26,7 @@ const parseDefaultValue = (
   }
 };
 
-const formatDefaultValue = (
-  value: any,
-  type: EPropertyType
-): string => {
+const formatDefaultValue = (value: any, type: EPropertyType): string => {
   if (value === undefined || value === null) return '';
 
   switch (type) {

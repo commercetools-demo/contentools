@@ -13,6 +13,7 @@
   ],
   "dependencies": {
     "@babel/runtime-corejs3": "^7.28.0",
+    "@commercetools-demo/contentools-property-editor-wisiwyg": "workspace:^",
     "@commercetools-demo/contentools-types": "workspace:^",
     "@commercetools-demo/contentools-ui-components": "workspace:^",
     "@commercetools-uikit/card": "^20.2.2",

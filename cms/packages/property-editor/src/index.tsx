@@ -62,6 +62,7 @@ const PropertyEditor: React.FC<PropertyEditorProps> = ({
   onComponentUpdated,
   onComponentDeleted,
 }) => {
+  const hydratedUrl = `${baseURL}/${businessUnitKey}`;
   const { contentTypes } = useStateContentType();
   const [metadata, setMetadata] = useState<ContentTypeMetaData | null>(
     metadataProp || null
@@ -117,38 +118,43 @@ const PropertyEditor: React.FC<PropertyEditorProps> = ({
     Object.entries(metadata.propertySchema).forEach(([key, field]) => {
       if (field.required) {
         switch (field.type) {
-          case 'string':
+          case EPropertyType.STRING:
             propertiesSchema[key] = Yup.string().required(
               `${field.label} is required`
             );
             break;
-          case 'number':
+          case EPropertyType.NUMBER:
             propertiesSchema[key] = Yup.number().required(
               `${field.label} is required`
             );
             break;
-          case 'boolean':
+          case EPropertyType.BOOLEAN:
             propertiesSchema[key] = Yup.boolean().required(
               `${field.label} is required`
             );
             break;
-          case 'array':
+          case EPropertyType.ARRAY:
             propertiesSchema[key] = Yup.array().min(
               1,
               `${field.label} must have at least one item`
             );
             break;
-          case 'file':
+          case EPropertyType.FILE:
             propertiesSchema[key] = Yup.mixed().required(
               `${field.label} is required`
             );
             break;
-          case 'datasource':
+          case EPropertyType.DATASOURCE:
             propertiesSchema[key] = Yup.object().required(
               `${field.label} is required`
             );
             break;
-          case 'object':
+          case EPropertyType.OBJECT:
+            propertiesSchema[key] = Yup.mixed().required(
+              `${field.label} is required`
+            );
+            break;
+          case EPropertyType.RICH_TEXT:
             propertiesSchema[key] = Yup.mixed().required(
               `${field.label} is required`
             );
@@ -240,6 +246,7 @@ const PropertyEditor: React.FC<PropertyEditorProps> = ({
           : undefined;
 
       const commonProps = {
+        hydratedUrl,
         key,
         fieldKey: key,
         label: field.label,
@@ -293,7 +300,9 @@ const PropertyEditor: React.FC<PropertyEditorProps> = ({
         case EPropertyType.OBJECT:
           return <ObjectField {...commonProps} value={value || {}} key={key} />;
         case EPropertyType.RICH_TEXT:
-          return <WysiwygField {...commonProps} value={value || {}} key={key} />;
+          return (
+            <WysiwygField {...commonProps} value={value || {}} key={key} />
+          );
         default:
           return (
             <Spacings.Stack scale="s" key={key}>

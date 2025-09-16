@@ -16,7 +16,6 @@ export interface ContentItemState {
   error: string | null;
 }
 
-
 export interface ContentItemVersions {
   key: string; // Same as ContentItem key
   businessUnitKey: string;
@@ -34,4 +33,3 @@ export interface ContentItemReferences {
   typeId: string;
   obj?: ContentItem;
 }
-

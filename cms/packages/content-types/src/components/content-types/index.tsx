@@ -78,8 +78,6 @@ const ContentTypesApp = ({
     history.push(`content-type/${item.key}`);
   };
 
-
-
   // Load data on mount
   useEffect(() => {
     loadItems();

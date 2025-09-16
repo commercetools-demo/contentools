@@ -96,7 +96,7 @@ const PagesGridLayout: React.FC<Props> = ({
   );
 
   const handleDecreaseWidth = useCallback(
-    async  (rowId: string, cellId: string, colSpan: number) => {
+    async (rowId: string, cellId: string, colSpan: number) => {
       await updateCellSpanInCurrentPage(hydratedUrl, rowId, cellId, {
         colSpan,
         shouldAddEmptyCell: true,
