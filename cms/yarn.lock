@@ -1650,12 +1650,7 @@ __metadata:
     "@commercetools-demo/contentools-types": "workspace:^"
     "@commercetools-demo/contentools-ui-components": "workspace:^"
     "@emotion/react": "npm:^11.14.0"
-    "@tiptap/core": "npm:^3.4.2"
-    "@tiptap/extension-bold": "npm:^3.4.3"
     "@tiptap/extension-document": "npm:^3.4.3"
-    "@tiptap/extension-paragraph": "npm:^3.4.3"
-    "@tiptap/extension-text": "npm:^3.4.3"
-    "@tiptap/extension-text-align": "npm:^3.4.3"
     "@types/react": "npm:^19"
     styled-components: "npm:^6.1.19"
   peerDependencies:
@@ -6171,15 +6166,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tiptap/extension-bold@npm:^3.4.3":
-  version: 3.4.3
-  resolution: "@tiptap/extension-bold@npm:3.4.3"
-  peerDependencies:
-    "@tiptap/core": ^3.4.3
-  checksum: 10/f87be7b1489920ffd42181e883fcd8fab528b8d0d2b81cfa0b49a8fc8e0e1888a7bd61f70791432764899370dcf58f0dbf9f828f42cae85fb4ccb78ba6ade6cd
-  languageName: node
-  linkType: hard
-
 "@tiptap/extension-bubble-menu@npm:^3.4.2":
   version: 3.4.2
   resolution: "@tiptap/extension-bubble-menu@npm:3.4.2"
@@ -6380,15 +6366,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tiptap/extension-paragraph@npm:^3.4.3":
-  version: 3.4.3
-  resolution: "@tiptap/extension-paragraph@npm:3.4.3"
-  peerDependencies:
-    "@tiptap/core": ^3.4.3
-  checksum: 10/649185175cc0b0127ab7a956f23624e5ae61a86b03712a00d0baf0f0206902722a37e41f299e5a3ae05cc4f93389613a4eb0889d2020ef4179cae5f378f4aebc
-  languageName: node
-  linkType: hard
-
 "@tiptap/extension-strike@npm:^3.4.2":
   version: 3.4.2
   resolution: "@tiptap/extension-strike@npm:3.4.2"
@@ -6427,15 +6404,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tiptap/extension-text-align@npm:^3.4.3":
-  version: 3.4.3
-  resolution: "@tiptap/extension-text-align@npm:3.4.3"
-  peerDependencies:
-    "@tiptap/core": ^3.4.3
-  checksum: 10/f41e4a6242b6c773be56cab8ca182ef55587b5e90b88dcc86c58100cb6ef60703540b6c01d646e432b327299ba904a2ce66f0e1b08d5dacfb8731506650fe3a6
-  languageName: node
-  linkType: hard
-
 "@tiptap/extension-text-style@npm:^3.4.2":
   version: 3.4.2
   resolution: "@tiptap/extension-text-style@npm:3.4.2"
@@ -6451,15 +6419,6 @@ __metadata:
   peerDependencies:
     "@tiptap/core": ^3.4.2
   checksum: 10/3d419e9a6df86b687b5d04c2fa85411faf51ed8f781eca568f10a413c474631e48427745b6f7564265f32b0e50287c656b57314c99172fe104008fd584059799
-  languageName: node
-  linkType: hard
-
-"@tiptap/extension-text@npm:^3.4.3":
-  version: 3.4.3
-  resolution: "@tiptap/extension-text@npm:3.4.3"
-  peerDependencies:
-    "@tiptap/core": ^3.4.3
-  checksum: 10/28b945f50c7b3d5d43c01d2e2c7b862c2eaf08b9624aa711ff1d256453d22014d7cf3c38c018040f7f292aea46812161c714b7fa9263d861854d7fa70c0e0881
   languageName: node
   linkType: hard
 

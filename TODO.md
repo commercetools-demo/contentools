@@ -73,6 +73,7 @@ Server:
 [] use CustomError to return errors
 [] refactoe custom object controller and not use the class
 [] refactor all other routes
+[] add default content-types post deploy
 
 
 FE:
@@ -81,7 +82,9 @@ FE:
    [] use better wysivig editor for react
    [] cleanup items on top
 [] Add preview
+[] style injection using css vars (e.g z-index)
 
 App:
 [] post deploy to add datasoures
 [] post deploy default content types
+[] Localize CMS
