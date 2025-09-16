@@ -1,8 +1,10 @@
 import { Page } from '@commercetools-demo/contentools-types';
 import React, { PropsWithChildren } from 'react';
-import PageRendererErrorBoundary from './components/page-renderer-error-boundary';
-import ContextualRenderer from './components/contextual-renderer';
-import StandaloneRenderer from './components/standalone-renderer';
+import { 
+  ContextErrorBoundary, 
+  createRenderers 
+} from '@commercetools-demo/contentools-content-item-renderer';
+import PageResolver from './components/page-resolver';
 
 export interface PageRendererProps {
   /** The page to render (required if pageKey is not provided) */
@@ -31,6 +33,9 @@ export interface PageRendererProps {
   onError?: (error: Error) => void;
 }
 
+// Create the contextual and standalone renderers using the factory
+const { ContextualRenderer, StandaloneRenderer } = createRenderers(PageResolver);
+
 /**
  * Main entry point for the page renderer package.
  *
@@ -45,9 +50,12 @@ export const PageRenderer: React.FC<PropsWithChildren<PageRendererProps>> = (
   props
 ) => {
   return (
-    <PageRendererErrorBoundary fallback={<StandaloneRenderer {...props} />}>
+    <ContextErrorBoundary 
+      componentName="PageRenderer"
+      fallback={<StandaloneRenderer {...props} />}
+    >
       <ContextualRenderer {...props} />
-    </PageRendererErrorBoundary>
+    </ContextErrorBoundary>
   );
 };
 

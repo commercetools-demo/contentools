@@ -1,6 +1,6 @@
 import { ContentItem } from '@commercetools-demo/contentools-types';
 import React, { PropsWithChildren } from 'react';
-import ContentItemRendererErrorBoundary from './components/content-item-renderer-error-boundry';
+import ContextErrorBoundary from './components/context-error-boundary';
 import ContextualRenderer from './components/contextual-renderer';
 import StandaloneRenderer from './components/standalone-renderer';
 
@@ -44,13 +44,23 @@ export const ContentItemRenderer: React.FC<
   PropsWithChildren<ContentItemRendererProps>
 > = (props) => {
   return (
-    <ContentItemRendererErrorBoundary
+    <ContextErrorBoundary
+      componentName="ContentItemRenderer"
       fallback={<StandaloneRenderer {...props} />}
     >
       <ContextualRenderer {...props} />
-    </ContentItemRendererErrorBoundary>
+    </ContextErrorBoundary>
   );
 };
+
+// Export shared infrastructure for reuse by other renderer packages
+export { ComponentCache } from './components/component-cache';
+export { SecureDynamicComponentLoader } from './components/dynamic-component-loader';
+export { DynamicComponentErrorBoundary } from './components/error-boundary';
+export { default as ContextErrorBoundary } from './components/context-error-boundary';
+export { createRenderers, createRenderer } from './components/renderer-factory';
+export { default as ContextualRenderer } from './components/contextual-renderer';
+export { default as StandaloneRenderer } from './components/standalone-renderer';
 
 // Default export is the smart wrapper component
 export default ContentItemRenderer;
