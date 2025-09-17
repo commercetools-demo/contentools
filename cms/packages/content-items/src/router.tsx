@@ -9,12 +9,18 @@ interface Props {
   baseURL: string;
   businessUnitKey: string;
   locale: string;
+  backButton?: {
+    label: string;
+    onClick: () => void;
+    icon: React.ReactElement;
+  };
 }
 const ContentItemRouter = ({
   parentUrl,
   baseURL,
   businessUnitKey,
   locale,
+  backButton,
 }: Props) => {
   const match = useRouteMatch();
 
@@ -22,6 +28,7 @@ const ContentItemRouter = ({
     <>
       <Route path="/">
         <ContentItemApp
+          backButton={backButton}
           parentUrl={parentUrl}
           baseURL={baseURL}
           businessUnitKey={businessUnitKey}

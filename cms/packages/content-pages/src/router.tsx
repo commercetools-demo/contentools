@@ -9,6 +9,11 @@ interface Props {
   baseURL: string;
   businessUnitKey: string;
   locale: string;
+  backButton?: {
+    label: string;
+    onClick: () => void;
+    icon: React.ReactElement;
+  };
 }
 
 const PagesRouter = ({
@@ -16,6 +21,7 @@ const PagesRouter = ({
   baseURL,
   businessUnitKey,
   locale,
+  backButton,
 }: Props) => {
   const match = useRouteMatch();
 
@@ -24,6 +30,7 @@ const PagesRouter = ({
       <Switch>
         <Route path="/" exact>
           <PagesList
+            backButton={backButton}
             parentUrl={parentUrl}
             baseURL={baseURL}
             businessUnitKey={businessUnitKey}

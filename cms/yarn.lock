@@ -1654,7 +1654,7 @@ __metadata:
     "@types/react": "npm:^19"
     styled-components: "npm:^6.1.19"
   peerDependencies:
-    "@commercetools-demo/contentools-state": ">=1.1.0"
+    "@commercetools-demo/contentools-state": ">=1.1.2"
     "@emotion/react": ">=11.0.0"
     react: ">=19.0.0"
     react-dom: ">=19.0.0"
@@ -1682,7 +1682,7 @@ __metadata:
     "@commercetools-uikit/checkbox-input": "npm:^20.2.2"
     "@commercetools-uikit/data-table": "npm:^20.2.1"
     "@commercetools-uikit/field-label": "npm:^20.2.2"
-    "@commercetools-uikit/flat-button": "npm:^20.2.1"
+    "@commercetools-uikit/flat-button": "npm:^20.2.3"
     "@commercetools-uikit/icon-button": "npm:^20.2.1"
     "@commercetools-uikit/icons": "npm:^20.2.1"
     "@commercetools-uikit/loading-spinner": "npm:^20.2.2"
@@ -1701,7 +1701,7 @@ __metadata:
     react-router-dom: "npm:5.3.4"
     styled-components: "npm:^6.1.19"
   peerDependencies:
-    "@commercetools-demo/contentools-state": ">=1.1.0"
+    "@commercetools-demo/contentools-state": ">=1.1.2"
     "@emotion/react": ">=11.0.0"
     react: ">=19.0.0"
     react-dom: ">=19.0.0"
@@ -1730,7 +1730,7 @@ __metadata:
     "@commercetools-uikit/data-table": "npm:^20.2.1"
     "@commercetools-uikit/design-system": "npm:^20.2.3"
     "@commercetools-uikit/field-label": "npm:^20.2.2"
-    "@commercetools-uikit/flat-button": "npm:^20.2.1"
+    "@commercetools-uikit/flat-button": "npm:^20.2.3"
     "@commercetools-uikit/icon-button": "npm:^20.2.3"
     "@commercetools-uikit/icons": "npm:^20.2.3"
     "@commercetools-uikit/loading-spinner": "npm:^20.2.2"
@@ -1750,7 +1750,7 @@ __metadata:
     react-router-dom: "npm:5.3.4"
     styled-components: "npm:^6.1.19"
   peerDependencies:
-    "@commercetools-demo/contentools-state": ">=1.1.0"
+    "@commercetools-demo/contentools-state": ">=1.1.2"
     "@emotion/react": ">=11.0.0"
     react: ">=19.0.0"
     react-dom: ">=19.0.0"
@@ -1820,7 +1820,7 @@ __metadata:
     react-router-dom: "npm:5.3.4"
     styled-components: "npm:^6.1.19"
   peerDependencies:
-    "@commercetools-demo/contentools-state": ">=1.1.0"
+    "@commercetools-demo/contentools-state": ">=1.1.2"
     "@emotion/react": ">=11.0.0"
     react: ">=19.0.0"
     react-dom: ">=19.0.0"
@@ -1847,7 +1847,7 @@ __metadata:
     "@types/react": "npm:^19"
     styled-components: "npm:^6.1.19"
   peerDependencies:
-    "@commercetools-demo/contentools-state": ">=1.1.0"
+    "@commercetools-demo/contentools-state": ">=1.1.2"
     "@emotion/react": ">=11.0.0"
     react: ">=19.0.0"
     react-dom: ">=19.0.0"
@@ -1920,7 +1920,7 @@ __metadata:
     styled-components: "npm:^6.1.19"
     yup: "npm:^1.6.1"
   peerDependencies:
-    "@commercetools-demo/contentools-state": ">=1.1.0"
+    "@commercetools-demo/contentools-state": ">=1.1.2"
     "@emotion/react": ">=11.0.0"
     react: ">=19.0.0"
     react-dom: ">=19.0.0"
@@ -1992,7 +1992,7 @@ __metadata:
     "@types/react": "npm:^19"
     styled-components: "npm:^6.1.19"
   peerDependencies:
-    "@commercetools-demo/contentools-state": ">=1.1.0"
+    "@commercetools-demo/contentools-state": ">=1.1.2"
     "@emotion/react": ">=11.0.0"
     react: ">=19.0.0"
     react-dom: ">=19.0.0"
@@ -2009,6 +2009,7 @@ __metadata:
     "@babel/preset-react": "npm:^7.27.1"
     "@babel/preset-typescript": "npm:^7.27.1"
     "@commercetools-frontend/eslint-config-mc-app": "npm:24.0.0"
+    "@commercetools-uikit/icons": "npm:^20.2.3"
     "@manypkg/cli": "npm:0.24.0"
     "@preconstruct/cli": "npm:2.8.10"
     "@types/add": "npm:^2"
@@ -2591,7 +2592,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@commercetools-uikit/flat-button@npm:20.2.3":
+"@commercetools-uikit/flat-button@npm:20.2.3, @commercetools-uikit/flat-button@npm:^20.2.3":
   version: 20.2.3
   resolution: "@commercetools-uikit/flat-button@npm:20.2.3"
   dependencies:

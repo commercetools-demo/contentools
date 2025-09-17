@@ -7,16 +7,23 @@ const WrappedContentItemApp = ({
   baseURL,
   businessUnitKey,
   locale = 'en-US',
+  backButton,
 }: {
   parentUrl: string;
   baseURL: string;
   businessUnitKey: string;
   locale?: string;
+  backButton?: {
+    label: string;
+    onClick: () => void;
+    icon: React.ReactElement;
+  };
 }) => {
   return (
     <Router basename={`/${parentUrl}`}>
       <StateProvider baseURL={baseURL}>
         <ContentItemRouter
+          backButton={backButton}
           parentUrl={parentUrl}
           baseURL={baseURL}
           businessUnitKey={businessUnitKey}

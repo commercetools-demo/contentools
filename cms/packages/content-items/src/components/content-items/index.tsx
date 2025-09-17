@@ -30,6 +30,11 @@ interface ContentItemAppProps {
   baseURL: string;
   businessUnitKey: string;
   locale?: string;
+  backButton?: {
+    label: string;
+    onClick: () => void;
+    icon: React.ReactElement;
+  };
 }
 
 const ContentItemApp: React.FC<ContentItemAppProps> = ({
@@ -37,6 +42,7 @@ const ContentItemApp: React.FC<ContentItemAppProps> = ({
   baseURL,
   businessUnitKey,
   locale = 'en-US',
+  backButton,
 }) => {
   const history = useHistory();
   const deleteModal = useModalState();
@@ -108,6 +114,7 @@ const ContentItemApp: React.FC<ContentItemAppProps> = ({
         businessUnitKey={businessUnitKey}
         loading={loading}
         error={error}
+        backButton={backButton}
         onCreateNew={handleCreateNew}
         onEdit={handleEdit}
         onDelete={handleDeleteModalOpen}

@@ -8,6 +8,11 @@ interface WrappedContentPagesAppProps {
   baseURL: string;
   businessUnitKey: string;
   locale?: string;
+  backButton?: {
+    label: string;
+    onClick: () => void;
+    icon: React.ReactElement;
+  };
 }
 
 const WrappedContentPagesApp: React.FC<WrappedContentPagesAppProps> = ({
@@ -15,11 +20,13 @@ const WrappedContentPagesApp: React.FC<WrappedContentPagesAppProps> = ({
   baseURL,
   businessUnitKey,
   locale = 'en-US',
+  backButton,
 }) => {
   return (
     <Router basename={`/${parentUrl}`}>
       <StateProvider baseURL={baseURL}>
         <PagesRouter
+          backButton={backButton}
           parentUrl={parentUrl}
           baseURL={baseURL}
           businessUnitKey={businessUnitKey}

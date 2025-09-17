@@ -16,6 +16,7 @@ import Stamp from '@commercetools-uikit/stamp';
 import Text from '@commercetools-uikit/text';
 import React from 'react';
 import styled from 'styled-components';
+import FlatButton from '@commercetools-uikit/flat-button';
 
 const LoadingContainer = styled.div`
   display: flex;
@@ -41,6 +42,11 @@ interface ContentItemListProps {
   onCreateNew?: () => void;
   onEdit?: (item: ContentItem) => void;
   onDelete?: (key: string) => void;
+  backButton?: {
+    label: string;
+    onClick: () => void;
+    icon: React.ReactElement;
+  };
 }
 
 type ContentItemRow = TRow & ContentItem;
@@ -55,6 +61,7 @@ export const ContentItemList: React.FC<ContentItemListProps> = ({
   onCreateNew,
   onEdit,
   onDelete,
+  backButton,
 }) => {
   const { contentTypes } = useStateContentType();
   const handleCopy = (item: ContentItem) => {
@@ -79,9 +86,7 @@ export const ContentItemList: React.FC<ContentItemListProps> = ({
       key: 'type',
       label: 'Type',
       renderItem: (row: ContentItemRow) => {
-        const contentType = contentTypes.find(
-          (type) => type.key === row.type
-        );
+        const contentType = contentTypes.find((type) => type.key === row.type);
         return <Text.Body>{contentType?.metadata.name || row.type}</Text.Body>;
       },
     },
@@ -162,6 +167,15 @@ export const ContentItemList: React.FC<ContentItemListProps> = ({
 
   return (
     <Spacings.Stack>
+      {backButton && (
+        <FlatButton
+          onClick={backButton.onClick}
+          label={backButton.label}
+          icon={backButton.icon as any}
+        >
+          {backButton.label}
+        </FlatButton>
+      )}
       <Spacings.Inline alignItems="center" justifyContent="space-between">
         <Text.Headline as="h1">Content Items</Text.Headline>
         <PrimaryButton onClick={onCreateNew} label="Create New" />

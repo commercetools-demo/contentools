@@ -8,22 +8,21 @@ import React, { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import PageDataTable from './page-datatable';
+import FlatButton from '@commercetools-uikit/flat-button';
 
 interface Props {
   parentUrl: string;
   baseURL: string;
   businessUnitKey: string;
   locale: string;
+  backButton?: {
+    label: string;
+    onClick: () => void;
+    icon: React.ReactElement;
+  };
 }
 
 const Container = styled.div``;
-
-const Header = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 24px;
-`;
 
 const TableContainer = styled.div`
   background: white;
@@ -43,6 +42,7 @@ const PagesList: React.FC<Props> = ({
   baseURL,
   businessUnitKey,
   locale: _locale,
+  backButton,
 }) => {
   const history = useHistory();
   const { pages, states, loading, error, fetchPages } = useStatePages()!;
@@ -79,11 +79,20 @@ const PagesList: React.FC<Props> = ({
   }
 
   return (
-    <Container>
-      <Header>
+    <Spacings.Stack>
+      {backButton && (
+        <FlatButton
+          onClick={backButton.onClick}
+          label={backButton.label}
+          icon={backButton.icon as any}
+        >
+          {backButton.label}
+        </FlatButton>
+      )}
+      <Spacings.Inline alignItems="center" justifyContent="space-between">
         <Text.Headline as="h1">Pages</Text.Headline>
         <PrimaryButton label="Create Page" onClick={handleCreatePage} />
-      </Header>
+      </Spacings.Inline>
 
       {pages.length === 0 ? (
         <EmptyState>
@@ -104,7 +113,7 @@ const PagesList: React.FC<Props> = ({
           <PageDataTable pages={pages} states={states} />
         </TableContainer>
       )}
-    </Container>
+    </Spacings.Stack>
   );
 };
 
