@@ -51,10 +51,13 @@ deployAs:
 inheritAs:
   configuration:
     standardConfiguration:
-      - key: CTP_REGION
-        description: commercetools Composable Commerce API region
-        default: us-central1.gcp
+      - key: CTP_AUTH_URL
+        description: commercetools Composable Commerce auth URL
         required: true
+      - key: CTP_API_URL
+        description: commercetools Composable Commerce API URL
+        required: true
+        default: "https://api.us-central1.gcp.commercetools.com"
       - key: CTP_PROJECT_KEY
         description: commercetools Composable Commerce project key
         required: true

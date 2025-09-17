@@ -14,18 +14,9 @@ export const readConfiguration = () => {
     clientSecret: process.env.CTP_CLIENT_SECRET as string,
     projectKey: process.env.CTP_PROJECT_KEY as string,
     scope: process.env.CTP_SCOPE,
-    region: process.env.CTP_REGION as string,
+    authUrl: process.env.CTP_AUTH_URL as string,
+    apiUrl: process.env.CTP_API_URL as string,
   };
-
-  const validationErrors = getValidateMessages(envValidators, envVars);
-
-  if (validationErrors.length) {
-    throw new CustomError(
-      'InvalidEnvironmentVariablesError',
-      'Invalid Environment Variables please check your .env file',
-      validationErrors
-    );
-  }
 
   return envVars;
 };
