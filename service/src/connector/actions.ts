@@ -2,9 +2,8 @@ import { ByProjectKeyRequestBuilder } from '@commercetools/platform-sdk/dist/dec
 import { logger } from '../utils/logger.utils';
 import sampleDatasources from '../samples/datasource';
 import sampleContentTypes from '../samples/content-types';
-import { CONTENT_TYPE_CONTAINER, DATASOURCE_CONTAINER } from '../constants';
-const SHARED_DEPLOYED_URL = 'cms-app-deployed-url';
-const SHARED_CMS_CONTAINER = 'cms-shared-container';
+import { CMS_DEPLOYED_URL_KEY, CONTENT_TYPE_CONTAINER, DATASOURCE_CONTAINER, SHARED_CONTAINER } from '../constants';
+
 
 export async function createServiceURLStorageLink(
   apiRoot: ByProjectKeyRequestBuilder,
@@ -14,8 +13,8 @@ export async function createServiceURLStorageLink(
     .customObjects()
     .post({
       body: {
-        key: SHARED_DEPLOYED_URL,
-        container: SHARED_CMS_CONTAINER,
+        key: CMS_DEPLOYED_URL_KEY,
+        container: SHARED_CONTAINER,
         value: applicationUrl,
       },
     })

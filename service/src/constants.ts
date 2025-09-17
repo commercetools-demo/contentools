@@ -18,6 +18,9 @@ export const CONTENT_TYPE_CONTAINER =
 export const DATASOURCE_CONTAINER =
   process.env.DATASOURCE_CONTAINER || 'datasource';
 
+export const SHARED_CONTAINER = 'shared-sellertools-container';
+export const CMS_DEPLOYED_URL_KEY = 'cms-app-deployed-url';
+
 export const PAGE_VERSION_CONTAINER =
   process.env.PAGE_VERSION_CONTAINER || 'page-version';
 
