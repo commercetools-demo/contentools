@@ -1,4 +1,7 @@
-import { useStateContentType } from '@commercetools-demo/contentools-state';
+import {
+  decodeFromBase64,
+  useStateContentType,
+} from '@commercetools-demo/contentools-state';
 import React, {
   PropsWithChildren,
   Suspense,
@@ -9,6 +12,7 @@ import React, {
 import { SecureDynamicComponentLoader } from './components/dynamic-component-loader';
 import { DynamicComponentErrorBoundary } from './components/error-boundary';
 import { ContentItemRendererProps } from '.';
+import { ContentTypeData } from '@commercetools-demo/contentools-types';
 
 /**
  * ComponentRenderer - Renders content items as React components
@@ -35,11 +39,29 @@ const ComponentRenderer: React.FC<
 }) => {
   const { fetchContentType } = useStateContentType();
   const [Component, setComponent] = useState<any>(null);
+  const [contentType, setContentType] = useState<ContentTypeData | null>(null);
 
   // Create loader instance with useMemo to prevent recreation
   const loader = useMemo(() => new SecureDynamicComponentLoader(), []);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const properties = useMemo(() => {
+    if (!contentType) return component?.properties;
+    if (!contentType.metadata.propertySchema) return component?.properties;
+    return Object.keys(contentType.metadata.propertySchema).reduce(
+      (acc, key) => {
+        if (!component?.properties[key]) return acc;
+        if (contentType.metadata.propertySchema[key].type === 'richText') {
+          acc[key] = decodeFromBase64(component?.properties[key]);
+        } else {
+          acc[key] = component?.properties[key];
+        }
+        return acc;
+      },
+      {} as Record<string, any>
+    );
+  }, [contentType]);
 
   useEffect(() => {
     let mounted = true;
@@ -49,7 +71,8 @@ const ComponentRenderer: React.FC<
         setLoading(true);
         setError(null);
 
-        const contentType = await fetchContentType(component.type);
+        const contentType = await fetchContentType(component?.type || '');
+        setContentType(contentType);
 
         const loadedComponent = await loader.loadComponent({
           id: contentType.id,
@@ -79,6 +102,7 @@ const ComponentRenderer: React.FC<
       mounted = false;
     };
   }, [component?.type, fetchContentType, loader, onError]);
+
   useEffect(() => {
     return () => {
       loader.clearCache();
@@ -90,12 +114,12 @@ const ComponentRenderer: React.FC<
   }
 
   if (error) {
-    console.error(error);
+    console.info(error);
     return children;
   }
 
   if (!Component) {
-    console.error('Component not found');
+    console.info('Component not found');
     return children;
   }
 
@@ -107,7 +131,7 @@ const ComponentRenderer: React.FC<
       >
         <Suspense fallback={null}>
           <Component
-            {...(component && component.properties)}
+            {...(component && properties)}
             locale={locale}
             baseURL={baseURL}
           />

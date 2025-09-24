@@ -58,9 +58,7 @@ export const TipTapEditorStyles = createGlobalStyle`
   }
 
   .simple-editor-content {
-    max-width: 648px;
     width: 100%;
-    margin: 0 auto;
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -68,7 +66,7 @@ export const TipTapEditorStyles = createGlobalStyle`
 
     .tiptap.ProseMirror.simple-editor {
       flex: 1;
-      padding: 3rem 3rem 30vh;
+      padding: 20px;
     }
   }
 

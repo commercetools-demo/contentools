@@ -110,13 +110,13 @@ const PageResolver: React.FC<PropsWithChildren<PageRendererProps>> = (
 
   // Show error state if fetch failed
   if (error) {
-    console.error('Error:', error);
+    console.info('Error:', error);
     return null;
   }
 
   // If no resolved page, show error
   if (!resolvedPage) {
-    console.error('Resolved page is null');
+    console.info('Resolved page is null');
     return null;
   }
 

@@ -70,7 +70,7 @@ import TipTapEditorStyles from "../../../styles/tiptap-editor-styles"
 import ThemeVariables from "../../../styles/theme-variables"
 
 // --- State ---
-import { useStateMediaLibrary } from "@commercetools-demo/contentools-state"
+import { useStateMediaLibrary, encodeToBase64, decodeFromBase64 } from "@commercetools-demo/contentools-state"
 
 const MainToolbarContent = ({
   onHighlighterClick,
@@ -153,9 +153,13 @@ const MobileToolbarContent = ({
 )
 
 export function SimpleEditor({ hydratedUrl, value, onChange }) {
+
   const {
     uploadMediaFile,
   } = useStateMediaLibrary();
+
+  const isValueEmpty = !value || (typeof value === 'object' && !Object.keys(value).length);
+  console.log('isValueEmpty', isValueEmpty);
 
   const handleImageUpload = React.useCallback(async (file) => {
     const result = await uploadMediaFile(hydratedUrl, file);
@@ -194,7 +198,7 @@ export function SimpleEditor({ hydratedUrl, value, onChange }) {
   ];
 
   const editor = useEditor({
-    onUpdate: (e) => (onChange(editor.getHTML())),
+    onUpdate: (e) => (onChange(encodeToBase64(editor.getHTML()))),
     // onTransaction: (e) => (console.log(e)),
     immediatelyRender: false,
     shouldRerenderOnTransaction: false,
@@ -208,7 +212,7 @@ export function SimpleEditor({ hydratedUrl, value, onChange }) {
       },
     },
     extensions: extensions,
-    content: generateJSON(value, extensions),
+    content: generateJSON(isValueEmpty ? '' : decodeFromBase64(value), extensions),
   })
 
 

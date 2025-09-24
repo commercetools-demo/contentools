@@ -26,7 +26,7 @@ export class DynamicComponentErrorBoundary extends Component<
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.error(
+    console.info(
       `Component ${this.props.componentId} error:`,
       error,
       errorInfo

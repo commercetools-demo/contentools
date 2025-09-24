@@ -17,4 +17,5 @@ export * from './api';
 
 // Utility functions
 export { debounce } from './utils/debounce';
+export { encodeToBase64, decodeFromBase64 } from './utils/text-encoder';
 export { NUMBER_OF_COLUMNS } from './utils/constants';

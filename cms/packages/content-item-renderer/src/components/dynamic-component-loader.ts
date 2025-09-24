@@ -84,7 +84,7 @@ export class SecureDynamicComponentLoader {
 
       return Component;
     } catch (error: any) {
-      console.error('Component creation failed:', error);
+      console.info('Component creation failed:', error);
       return this.createErrorComponent(error.message);
     }
   }

@@ -115,13 +115,13 @@ const ContentItemResolver: React.FC<
 
   // Show error state if fetch failed
   if (error) {
-    console.error('Error:', error);
+    console.info('Error:', error);
     return null;
   }
 
   // If no resolved component, show error
   if (!resolvedComponent) {
-    console.error('Resolved component is null');
+    console.info('Resolved component is null');
     return null;
   }
 

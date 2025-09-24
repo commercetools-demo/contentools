@@ -42,7 +42,7 @@ export class ComponentCache {
         try {
           cleanup();
         } catch (error) {
-          console.error('Cleanup error:', error);
+          console.info('Cleanup error:', error);
         }
       });
     }

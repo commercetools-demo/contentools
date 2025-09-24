@@ -1,5 +1,5 @@
 import { GridRow, GridCell } from '@commercetools-demo/contentools-types';
-import { ContentItemRenderer } from '@commercetools-demo/contentools-content-item-renderer';
+import { ContextualRenderer } from '@commercetools-demo/contentools-content-item-renderer';
 import React, { PropsWithChildren } from 'react';
 import { PageRendererProps } from '.';
 
@@ -51,7 +51,7 @@ const PageGridRenderer: React.FC<
             style={cellStyle}
             className="page-grid-cell"
           >
-            <ContentItemRenderer
+            <ContextualRenderer
               component={contentItem}
               baseURL={baseURL}
               locale={locale}
