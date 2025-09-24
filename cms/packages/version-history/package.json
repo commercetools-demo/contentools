@@ -1,7 +1,7 @@
 {
   "name": "@commercetools-demo/contentools-version-history",
   "description": "Version history for CMS",
-  "version": "1.1.2",
+  "version": "1.1.5",
   "license": "MIT",
   "publishConfig": {
     "access": "public"

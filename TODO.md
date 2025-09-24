@@ -74,6 +74,7 @@ Server:
 [] refactoe custom object controller and not use the class
 [] refactor all other routes
 [] add default content-types post deploy
+[] deleting content-type should delete all content-items and content-versions or ask for confirmation
 
 
 FE:
@@ -89,3 +90,10 @@ App:
 [] post deploy to add datasoures
 [] post deploy default content types
 [] Localize CMS
+[] accept children in content-items and content-pages
+[] closing confirmation in page editor
+[] use more uikit
+[] configurable styles
+[] back button to types
+[X] base64 wisiwig editor content before and after
+[] image selector inside wisiwig editor

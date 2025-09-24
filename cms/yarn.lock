@@ -1654,7 +1654,7 @@ __metadata:
     "@types/react": "npm:^19"
     styled-components: "npm:^6.1.19"
   peerDependencies:
-    "@commercetools-demo/contentools-state": ">=1.1.2"
+    "@commercetools-demo/contentools-state": ">=1.1.5"
     "@emotion/react": ">=11.0.0"
     react: ">=19.0.0"
     react-dom: ">=19.0.0"
@@ -1847,7 +1847,7 @@ __metadata:
     "@types/react": "npm:^19"
     styled-components: "npm:^6.1.19"
   peerDependencies:
-    "@commercetools-demo/contentools-state": ">=1.1.2"
+    "@commercetools-demo/contentools-state": ">=1.1.5"
     "@emotion/react": ">=11.0.0"
     react: ">=19.0.0"
     react-dom: ">=19.0.0"
@@ -1859,7 +1859,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@commercetools-demo/contentools-property-editor-wisiwyg@workspace:packages/property-editor-wisiwyg"
   dependencies:
-    "@commercetools-demo/contentools-state": "workspace:^"
     "@floating-ui/react": "npm:^0.27.16"
     "@radix-ui/react-dropdown-menu": "npm:^2.1.16"
     "@radix-ui/react-popover": "npm:^1.1.15"
@@ -1883,6 +1882,7 @@ __metadata:
     react-hotkeys-hook: "npm:^5.1.0"
     styled-components: "npm:^6.1.19"
   peerDependencies:
+    "@commercetools-demo/contentools-state": ">=1.1.5"
     "@emotion/react": ">=11.0.0"
     react: ">=19.0.0"
     react-dom: ">=19.0.0"
@@ -1928,7 +1928,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@commercetools-demo/contentools-state@workspace:^, @commercetools-demo/contentools-state@workspace:packages/state":
+"@commercetools-demo/contentools-state@workspace:packages/state":
   version: 0.0.0-use.local
   resolution: "@commercetools-demo/contentools-state@workspace:packages/state"
   dependencies:
