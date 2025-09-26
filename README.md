@@ -143,26 +143,184 @@ yarn start
 
 ## Usage
 
-### Creating a Page
+### Frontend Components (For Managing Content)
+
+The CMS provides several React components that can be imported and used in your applications:
+
+#### ContentItem
+
+Manages content items (CRUD operations) - allows creation, editing, and management of individual content items.
+
+```javascript
+import ContentItem from '@commercetools-demo/contentools-content-items';
+
+<ContentItem
+  baseURL="https://deployed-service-url"
+  businessUnitKey="default"
+  locale="en-US"
+  parentUrl=""
+  backButton={{
+    label: 'Back',
+    onClick: () => console.log('Back'),
+    icon: <BackIcon />,
+  }}
+/>
+```
+
+**Props:**
+- `baseURL` (string): Base URL for API calls
+- `businessUnitKey` (string, required): Business unit identifier
+- `locale` (string, optional): Locale for content (default: "en-US")
+- `parentUrl` (string): Parent URL for navigation
+- `backButton` (object, optional): Back button configuration with label, onClick handler, and icon
+
+#### ContentType
+
+Manages content types and schemas - allows creation and editing of content type definitions.
+
+```javascript
+import ContentType from '@commercetools-demo/contentools-content-types';
+
+<ContentType
+  baseURL="https://deployed-service-url"
+  businessUnitKey="default"
+  locale="en-US"
+  parentUrl=""
+/>
+```
+
+**Props:**
+- `baseURL` (string): Base URL for API calls
+- `businessUnitKey` (string, required): Business unit identifier
+- `locale` (string): Locale for content
+- `parentUrl` (string): Parent URL for navigation
+
+### Frontend Components (For Rendering Content)
+
+#### ContentItemRenderer
+
+Renders individual content items as React components based on their type and data.
+
+```javascript
+import ContentItemRenderer from '@commercetools-demo/contentools-content-item-renderer';
+
+<ContentItemRenderer
+  baseURL="https://deployed-service-url"
+  businessUnitKey="default"
+  locale="en-US"
+  parentUrl="content-items"
+  itemKey="item-55a40674-6d1a-43e0-8edb-710cc78bd3a9"
+  query='properties(slot="header")'
+/>
+```
+
+**Props:**
+- `baseURL` (string, optional): Base URL for API calls
+- `businessUnitKey` (string, required): Business unit identifier
+- `locale` (string, optional): Locale for rendering (default: "en-US")
+- `parentUrl` (string, optional): Parent URL for navigation
+- `itemKey` (string, optional): Key of content item to render (required if component/query not provided)
+- `query` (string, optional): Query to fetch content item (required if component/itemKey not provided)
+- `component` (ContentItem, optional): Content item object to render directly
+- `isDraft` (boolean, optional): Whether to render draft version
+- `className` (string, optional): Additional CSS class
+- `style` (CSSProperties, optional): Additional styles
+- `onError` (function, optional): Error callback
+
+#### ContentPages
+
+Manages pages with layout grids - provides page creation, editing, and layout management capabilities.
+
+```javascript
+import ContentPages from '@commercetools-demo/contentools-content-pages';
+
+<ContentPages
+  baseURL="https://deployed-service-url"
+  businessUnitKey="default"
+  locale="en-US"
+  parentUrl="content-pages"
+  backButton={{
+    label: 'Back',
+    onClick: () => console.log('Back'),
+    icon: <BackIcon />,
+  }}
+/>
+```
+
+**Props:**
+- `baseURL` (string): Base URL for API calls
+- `businessUnitKey` (string, required): Business unit identifier
+- `locale` (string, optional): Locale for content (default: "en-US")
+- `parentUrl` (string): Parent URL for navigation
+- `backButton` (object, optional): Back button configuration with label, onClick handler, and icon
+
+#### PageRenderer
+
+Renders complete pages with their layout grids and embedded components.
+
+```javascript
+import PageRenderer from '@commercetools-demo/contentools-page-renderer';
+
+<PageRenderer
+  baseURL="https://deployed-service-url"
+  businessUnitKey="default"
+  locale="en-US"
+  parentUrl="content-pages"
+  query='route="/blogs/1"'
+  style={{
+    '--page-grid-gap': '0.5rem',
+    '--page-grid-row-margin': '0.5rem',
+  }}
+/>
+```
+
+**Props:**
+- `baseURL` (string, optional): Base URL for API calls
+- `businessUnitKey` (string, required): Business unit identifier
+- `locale` (string, optional): Locale for rendering (default: "en-US")
+- `parentUrl` (string, optional): Parent URL for navigation
+- `pageKey` (string, optional): Key of page to render (required if page/query not provided)
+- `query` (string, optional): Query to fetch page (required if page/pageKey not provided)
+- `page` (Page, optional): Page object to render directly
+- `isDraft` (boolean, optional): Whether to render draft version
+- `className` (string, optional): Additional CSS class
+- `style` (CSSProperties, optional): Additional styles (supports CSS custom properties for grid styling)
+- `onError` (function, optional): Error callback
+
+### Installation
+
+Add the required packages to your project:
+
+```bash
+yarn add @commercetools-demo/contentools-content-items
+yarn add @commercetools-demo/contentools-content-types
+yarn add @commercetools-demo/contentools-content-item-renderer
+yarn add @commercetools-demo/contentools-content-pages
+yarn add @commercetools-demo/contentools-page-renderer
+```
+
+### CMS Application Usage
+
+#### Creating a Page
 
 1. Click "Create Page" button on the Pages list
 2. Enter a name and route for the page
 3. Click "Create Page"
 
-### Adding Components to a Page
+#### Adding Components to a Page
 
 1. Select a page from the list
 2. Drag components from the Component Library to the layout grid
 3. Edit component properties in the sidebar panel
 4. Add rows to the layout if needed
 
-### Editing Component Properties
+#### Editing Component Properties
 
 1. Click on a component in the layout grid
 2. Edit the component properties in the sidebar panel
 3. Click "Save Changes" when done
 
-### Saving Changes
+#### Saving Changes
 
 Click "Save Changes" in the bottom bar when you're done editing a page.
 
