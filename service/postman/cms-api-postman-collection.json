@@ -45,6 +45,26 @@
       "key": "datasource_key",
       "value": "sample-datasource",
       "type": "string"
+    },
+    {
+      "key": "version_id",
+      "value": "v1.0",
+      "type": "string"
+    },
+    {
+      "key": "row_id",
+      "value": "row-1",
+      "type": "string"
+    },
+    {
+      "key": "cell_id",
+      "value": "cell-1",
+      "type": "string"
+    },
+    {
+      "key": "content_item_key_for_page",
+      "value": "page-content-item",
+      "type": "string"
     }
   ],
   "item": [
@@ -305,6 +325,50 @@
             }
           },
           "response": []
+        },
+        {
+          "name": "Query Published Content Items",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"properties(slot = \\\"hero-banner\\\")\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/published/content-items/query",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "published", "content-items", "query"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Query Preview Content Items",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"properties(slot = \\\"hero-banner\\\")\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/preview/content-items/query",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "preview", "content-items", "query"]
+            }
+          },
+          "response": []
         }
       ]
     },
@@ -405,6 +469,86 @@
               "raw": "{{base_url}}/{{business_unit_key}}/pages/{{page_key}}",
               "host": ["{{base_url}}"],
               "path": ["{{business_unit_key}}", "pages", "{{page_key}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Query Published Pages",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"properties(name = \\\"Homepage\\\")\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/published/pages/query",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "published", "pages", "query"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Query Preview Pages",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"properties(name = \\\"Homepage\\\")\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/preview/pages/query",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "preview", "pages", "query"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Published Page",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/published/pages/{{page_key}}",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "published", "pages", "{{page_key}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Preview Page",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/preview/pages/{{page_key}}",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "preview", "pages", "{{page_key}}"]
             }
           },
           "response": []
@@ -600,6 +744,28 @@
               "raw": "{{base_url}}/datasource/{{datasource_key}}",
               "host": ["{{base_url}}"],
               "path": ["datasource", "{{datasource_key}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Test Datasource",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"params\": {\n    \"id\": \"123\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/datasource/{{datasource_key}}/test",
+              "host": ["{{base_url}}"],
+              "path": ["datasource", "{{datasource_key}}", "test"]
             }
           },
           "response": []
@@ -836,6 +1002,24 @@
               "response": []
             },
             {
+              "name": "Get Specific Content Item Version",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/{{business_unit_key}}/content-items/{{content_item_key}}/versions/{{version_id}}",
+                  "host": ["{{base_url}}"],
+                  "path": ["{{business_unit_key}}", "content-items", "{{content_item_key}}", "versions", "{{version_id}}"]
+                }
+              },
+              "response": []
+            },
+            {
               "name": "Create Content Item Version",
               "request": {
                 "method": "POST",
@@ -899,6 +1083,24 @@
               "response": []
             },
             {
+              "name": "Get Specific Page Version",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/{{business_unit_key}}/pages/{{page_key}}/versions/{{version_id}}",
+                  "host": ["{{base_url}}"],
+                  "path": ["{{business_unit_key}}", "pages", "{{page_key}}", "versions", "{{version_id}}"]
+                }
+              },
+              "response": []
+            },
+            {
               "name": "Create Page Version",
               "request": {
                 "method": "POST",
@@ -921,6 +1123,228 @@
               "response": []
             }
           ]
+        }
+      ]
+    },
+    {
+      "name": "Page Components",
+      "item": [
+        {
+          "name": "Add Component to Page",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"componentType\": \"hero-banner\",\n  \"rowId\": \"{{row_id}}\",\n  \"cellId\": \"{{cell_id}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/pages/{{page_key}}/components",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "pages", "{{page_key}}", "components"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Component in Page",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"updates\": {\n    \"data\": {\n      \"title\": \"Updated Component Title\",\n      \"subtitle\": \"Updated Component Subtitle\"\n    }\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/pages/{{page_key}}/components/{{content_item_key_for_page}}",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "pages", "{{page_key}}", "components", "{{content_item_key_for_page}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Remove Component from Page",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/pages/{{page_key}}/components/{{content_item_key_for_page}}",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "pages", "{{page_key}}", "components", "{{content_item_key_for_page}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Page Content Item States",
+      "item": [
+        {
+          "name": "Get Page Content Item States",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/page-items/{{content_item_key_for_page}}/states",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "page-items", "{{content_item_key_for_page}}", "states"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Publish Page Content Item State",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"value\": {\n    \"type\": \"hero-banner\",\n    \"name\": \"Published Page Content Item\",\n    \"data\": {\n      \"title\": \"Published Title\",\n      \"subtitle\": \"Published Subtitle\",\n      \"image\": \"https://example.com/published-image.jpg\"\n    }\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/page-items/{{content_item_key_for_page}}/states/published?clearDraft=true",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "page-items", "{{content_item_key_for_page}}", "states", "published"],
+              "query": [
+                {
+                  "key": "clearDraft",
+                  "value": "true"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Page Content Item Draft State",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/page-items/{{content_item_key_for_page}}/states/draft",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "page-items", "{{content_item_key_for_page}}", "states", "draft"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Page Rows",
+      "item": [
+        {
+          "name": "Add Row to Page",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/pages/{{page_key}}/rows",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "pages", "{{page_key}}", "rows"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Cell Span in Page",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"updates\": {\n    \"span\": 6,\n    \"offset\": 0\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/pages/{{page_key}}/rows/{{row_id}}/cells/{{cell_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "pages", "{{page_key}}", "rows", "{{row_id}}", "cells", "{{cell_id}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Remove Row from Page",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/pages/{{page_key}}/rows/{{row_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "pages", "{{page_key}}", "rows", "{{row_id}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/health",
+              "host": ["{{base_url}}"],
+              "path": ["health"]
+            }
+          },
+          "response": []
         }
       ]
     },
