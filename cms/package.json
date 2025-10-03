@@ -14,12 +14,13 @@
     "clean": "manypkg exec rm -rf dist",
     "build": "yarn preconstruct build",
     "build:watch": "yarn preconstruct watch",
-    "start": "cd plain-react-test && yarn start",
+    "start:plain-react": "cd plain-react-test && yarn start",
+    "start:mc-application": "cd mc-application-test && yarn start",
     "lint": "jest --config jest.eslint.config.js",
     "format": "prettier --write '**/*.{js,ts,tsx}'"
   },
   "workspaces": [
-    "test-application",
+    "mc-application-test",
     "plain-react-test",
     "packages/*"
   ],
