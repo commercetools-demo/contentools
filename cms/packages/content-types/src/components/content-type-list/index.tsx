@@ -5,6 +5,7 @@ import { BinLinearIcon, EditIcon } from '@commercetools-uikit/icons';
 import PrimaryButton from '@commercetools-uikit/primary-button';
 import Spacings from '@commercetools-uikit/spacings';
 import Text from '@commercetools-uikit/text';
+import FlatButton from '@commercetools-uikit/flat-button';
 
 type Props = {
   items: (ContentTypeData & { id: string })[];
@@ -14,6 +15,11 @@ type Props = {
   onCreateNew: () => void;
   onEdit: (item: ContentTypeData) => void;
   onDelete: (key: string) => void;
+  backButton?: {
+    label: string;
+    onClick: () => void;
+    icon: React.ReactElement;
+  };
 };
 
 const ContentTypeList = ({
@@ -24,6 +30,7 @@ const ContentTypeList = ({
   onCreateNew,
   onEdit,
   onDelete,
+  backButton,
 }: Props) => {
   const columns: TColumn<ContentTypeData>[] = [
     {
@@ -67,6 +74,15 @@ const ContentTypeList = ({
   ];
   return (
     <Spacings.Stack>
+      {backButton && (
+        <FlatButton
+          onClick={backButton.onClick}
+          label={backButton.label}
+          icon={backButton.icon as any}
+        >
+          {backButton.label}
+        </FlatButton>
+      )}
       <Spacings.Inline alignItems="center" justifyContent="space-between">
         <Text.Headline as="h1">Content types</Text.Headline>
         <PrimaryButton onClick={onCreateNew} label="Create New" />

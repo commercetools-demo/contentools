@@ -16,6 +16,11 @@ type Props = {
   baseURL: string;
   businessUnitKey: string;
   locale: string;
+  backButton?: {
+    label: string;
+    onClick: () => void;
+    icon: React.ReactElement;
+  };
 };
 
 const LoadingContainer = styled.div`
@@ -36,6 +41,7 @@ const ContentTypesApp = ({
   baseURL,
   businessUnitKey,
   locale,
+  backButton,
 }: Props) => {
   const history = useHistory();
   const deleteModal = useModalState();
@@ -103,6 +109,7 @@ const ContentTypesApp = ({
         baseURL={baseURL}
         businessUnitKey={businessUnitKey}
         error={error}
+        backButton={backButton}
         onCreateNew={handleCreateNew}
         onEdit={handleEdit}
         onDelete={handleDeleteModalOpen}

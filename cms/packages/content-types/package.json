@@ -23,7 +23,7 @@
     "@commercetools-uikit/checkbox-input": "^20.2.2",
     "@commercetools-uikit/data-table": "^20.2.1",
     "@commercetools-uikit/field-label": "^20.2.2",
-    "@commercetools-uikit/flat-button": "^20.2.1",
+    "@commercetools-uikit/flat-button": "^20.2.3",
     "@commercetools-uikit/icon-button": "^20.2.1",
     "@commercetools-uikit/icons": "^20.2.1",
     "@commercetools-uikit/loading-spinner": "^20.2.2",

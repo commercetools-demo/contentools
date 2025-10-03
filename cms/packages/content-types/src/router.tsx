@@ -9,12 +9,18 @@ interface Props {
   baseURL: string;
   businessUnitKey: string;
   locale: string;
+  backButton?: {
+    label: string;
+    onClick: () => void;
+    icon: React.ReactElement;
+  };
 }
 const ContentTypeRouter = ({
   parentUrl,
   baseURL,
   businessUnitKey,
   locale,
+  backButton,
 }: Props) => {
   const match = useRouteMatch();
 
@@ -22,6 +28,7 @@ const ContentTypeRouter = ({
     <>
       <Route path="/">
         <ContentTypesApp
+          backButton={backButton}
           parentUrl={parentUrl}
           baseURL={baseURL}
           businessUnitKey={businessUnitKey}

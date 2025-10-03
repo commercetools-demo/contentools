@@ -2184,7 +2184,7 @@ __metadata:
     "@commercetools-uikit/checkbox-input": "npm:^20.2.2"
     "@commercetools-uikit/data-table": "npm:^20.2.1"
     "@commercetools-uikit/field-label": "npm:^20.2.2"
-    "@commercetools-uikit/flat-button": "npm:^20.2.1"
+    "@commercetools-uikit/flat-button": "npm:^20.2.3"
     "@commercetools-uikit/icon-button": "npm:^20.2.1"
     "@commercetools-uikit/icons": "npm:^20.2.1"
     "@commercetools-uikit/loading-spinner": "npm:^20.2.2"
