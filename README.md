@@ -224,7 +224,6 @@ import ContentItemRenderer from '@commercetools-demo/contentools-content-item-re
 - `component` (ContentItem, optional): Content item object to render directly
 - `isDraft` (boolean, optional): Whether to render draft version
 - `className` (string, optional): Additional CSS class
-- `style` (CSSProperties, optional): Additional styles
 - `onError` (function, optional): Error callback
 
 #### ContentPages
@@ -284,7 +283,6 @@ import PageRenderer from '@commercetools-demo/contentools-page-renderer';
 - `page` (Page, optional): Page object to render directly
 - `isDraft` (boolean, optional): Whether to render draft version
 - `className` (string, optional): Additional CSS class
-- `style` (CSSProperties, optional): Additional styles (supports CSS custom properties for grid styling)
 - `onError` (function, optional): Error callback
 
 ### Installation
@@ -522,6 +520,40 @@ The CMS supports multiple storage options for media files, which can be configur
 - **Cloudinary**: Set `STORAGE_TYPE=cloudinary` and provide Cloudinary credentials
 
 Refer to the `connect.yaml` file for all available configuration options.
+
+## CSS Customization
+
+The CMS components provide CSS custom properties (CSS variables) that allow you to customize their appearance and behavior. These variables can be set at the root level or on specific component containers.
+
+### Available CSS Variables
+
+| Component | Variable | Description | Default Value |
+|-----------|----------|-------------|---------------|
+| **Modal** | `--modal-overlay-top` | Top position for modal overlay | `0` |
+| **Modal** | `--modal-container-top` | Top position for modal container | `0` |
+| **Modal** | `--modal-header-border-bottom` | Border bottom style for modal header | `1px solid #e0e0e0` |
+| **Modal** | `--modal-header-background-color` | Background color for modal header | `transparent` |
+| **ConfirmationModal** | `--confirmation-modal-overlay-top` | Top position for confirmation modal overlay | `0` |
+| **PageRenderer** | `--page-grid-gap` | Gap between grid cells | `1rem` |
+| **PageRenderer** | `--page-grid-row-margin` | Margin between grid rows | `1rem` |
+
+### Setting CSS Variables
+
+You can customize these variables by setting them in your CSS or inline styles [example](cms/mc-application-test/src/routes.tsx)
+
+#### Using :root (Global)
+```css
+:root {
+  /* Modal positioning - useful when rendering in fixed containers */
+  --modal-overlay-top: 60px;
+  --modal-container-top: 60px;
+  --confirmation-modal-overlay-top: 60px;
+  
+  /* Page layout spacing */
+  --page-grid-gap: 0.5rem;
+  --page-grid-row-margin: 0.75rem;
+}
+```
 
 ## Original Connect Application Information
 

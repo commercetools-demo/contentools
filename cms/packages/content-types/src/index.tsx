@@ -13,7 +13,6 @@ const WrappedContentTypeApp = ({
   businessUnitKey,
   locale = 'en-US',
   backButton,
-  style,
 }: {
   parentUrl: string;
   baseURL: string;
@@ -25,22 +24,19 @@ const WrappedContentTypeApp = ({
     onClick: () => void;
     icon: React.ReactElement;
   };
-  style?: React.CSSProperties;
 }) => {
   return (
-    <div style={style}>
-      <Router basename={`/${parentUrl}`}>
-        <StateProvider baseURL={baseURL}>
-          <ContentTypeRouter
-            backButton={backButton}
-            parentUrl={parentUrl}
-            baseURL={baseURL}
-            businessUnitKey={businessUnitKey}
-            locale={locale}
-          />
-        </StateProvider>
-      </Router>
-    </div>
+    <Router basename={`/${parentUrl}`}>
+      <StateProvider baseURL={baseURL}>
+        <ContentTypeRouter
+          backButton={backButton}
+          parentUrl={parentUrl}
+          baseURL={baseURL}
+          businessUnitKey={businessUnitKey}
+          locale={locale}
+        />
+      </StateProvider>
+    </Router>
   );
 };
 

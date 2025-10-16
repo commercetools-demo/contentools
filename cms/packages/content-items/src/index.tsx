@@ -8,7 +8,6 @@ const WrappedContentItemApp = ({
   businessUnitKey,
   locale = 'en-US',
   backButton,
-  style,
 }: {
   parentUrl: string;
   baseURL: string;
@@ -19,10 +18,8 @@ const WrappedContentItemApp = ({
     onClick: () => void;
     icon: React.ReactElement;
   };
-  style?: React.CSSProperties;
 }) => {
   return (
-    <div style={style}>
       <Router basename={`/${parentUrl}`}>
         <StateProvider baseURL={baseURL}>
           <ContentItemRouter
@@ -34,7 +31,6 @@ const WrappedContentItemApp = ({
           />
         </StateProvider>
       </Router>
-    </div>
   );
 };
 

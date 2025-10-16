@@ -25,7 +25,7 @@ const ComponentRenderer: React.FC<
   PropsWithChildren<
     Pick<
       ContentItemRendererProps,
-      'baseURL' | 'component' | 'locale' | 'className' | 'style' | 'onError'
+      'baseURL' | 'component' | 'locale' | 'className' | 'onError'
     >
   >
 > = ({
@@ -33,7 +33,6 @@ const ComponentRenderer: React.FC<
   baseURL = '',
   locale = 'en-US',
   className,
-  style,
   onError,
   children,
 }) => {
@@ -124,7 +123,7 @@ const ComponentRenderer: React.FC<
   }
 
   return (
-    <div className={className} style={style}>
+    <div className={className}>
       <DynamicComponentErrorBoundary
         componentId={component?.id || ''}
         onError={onError}

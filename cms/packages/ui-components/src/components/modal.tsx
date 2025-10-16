@@ -15,7 +15,7 @@ interface ModalProps {
 
 const ModalOverlay = styled.div<{ isVisible: boolean }>`
   position: fixed;
-  top: 0;
+  top: var(--modal-overlay-top, 0);
   left: 0;
   right: 0;
   bottom: 0;
@@ -28,7 +28,7 @@ const ModalOverlay = styled.div<{ isVisible: boolean }>`
 
 const ModalContainer = styled.div<{ isVisible: boolean; size: number }>`
   position: fixed;
-  top: 0;
+  top: var(--modal-container-top, 0);
   right: 0;
   bottom: 0;
   width: ${(props) => props.size}%;
@@ -46,8 +46,8 @@ const ModalHeader = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 16px 24px;
-  border-bottom: 1px solid #e0e0e0;
-  background-color: #f5f5f5;
+  border-bottom: var(--modal-header-border-bottom, 1px solid #e0e0e0);
+  background-color: var(--modal-header-background-color, #f5f5f5);
 `;
 
 const ModalHeaderContent = styled.div`

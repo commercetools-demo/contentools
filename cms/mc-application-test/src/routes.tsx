@@ -32,6 +32,16 @@ const ApplicationRoutes = (_props: ApplicationRoutesProps) => {
 
   return (
     <Spacings.Inset scale="l">
+      <style>
+        {`:root {
+          --modal-container-top: 57px;
+          --modal-overlay-top: 57px;
+          --modal-header-background-color: none;
+          --modal-footer-background-color: none;
+          --modal-header-border-bottom: none;
+          --modal-footer-border-top: none;
+        }`}
+      </style>
       <Switch>
         <Route path={`${match.path}/pages`}>
           <ContentPage
@@ -69,6 +79,13 @@ const ApplicationRoutes = (_props: ApplicationRoutesProps) => {
             businessUnitKey={environment.BUSINESS_UNIT_KEY}
             locale={dataLocale ?? 'en-US'}
             parentUrl={`${match.url.slice(1)}/types`}
+            backButton={{
+              icon: <ListIcon />,
+              label: 'Back',
+              onClick: () => {
+                history.push(match.url);
+              },
+            }}
           />
         </Route>
         <Route>

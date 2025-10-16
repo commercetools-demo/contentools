@@ -14,7 +14,7 @@ const PageGridRenderer: React.FC<
   PropsWithChildren<
     Pick<
       PageRendererProps,
-      'baseURL' | 'page' | 'locale' | 'className' | 'style' | 'onError'
+      'baseURL' | 'page' | 'locale' | 'className' | 'onError'
     >
   >
 > = ({
@@ -22,7 +22,6 @@ const PageGridRenderer: React.FC<
   baseURL = '',
   locale = 'en-US',
   className,
-  style,
   onError,
   children,
 }) => {
@@ -96,7 +95,7 @@ const PageGridRenderer: React.FC<
   };
 
   return (
-    <div className={`page-renderer ${className || ''}`} style={style}>
+    <div className={`page-renderer ${className || ''}`}>
       {/* Page metadata could be rendered here if needed */}
       <div className="page-content">
         {page.layout?.rows?.map((row, rowIndex) => renderRow(row, rowIndex)) ||

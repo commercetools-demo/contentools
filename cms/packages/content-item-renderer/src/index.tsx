@@ -21,8 +21,6 @@ export interface ContentItemRendererProps {
   locale?: string;
   /** Additional CSS class name */
   className?: string;
-  /** Additional styles */
-  style?: React.CSSProperties;
   /** Show loading state */
   loading?: boolean;
   /** Custom error message */

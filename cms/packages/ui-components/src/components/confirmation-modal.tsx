@@ -22,7 +22,7 @@ interface ConfirmationModalProps {
 
 const ModalOverlay = styled.div<{ isVisible: boolean }>`
   position: fixed;
-  top: 0;
+  top: var(--confirmation-modal-overlay-top, 0);
   left: 0;
   right: 0;
   bottom: 0;
@@ -57,8 +57,8 @@ const ModalHeader = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 16px 24px;
-  border-bottom: 1px solid #e0e0e0;
-  background-color: #f5f5f5;
+  border-bottom: var(--modal-header-border-bottom, 1px solid #e0e0e0);
+  background-color: var(--modal-header-background-color, #f5f5f5);
   border-radius: 8px 8px 0 0;
 `;
 
@@ -73,8 +73,8 @@ const ModalFooter = styled.div`
   justify-content: space-between;
   gap: 12px;
   padding: 16px 24px;
-  border-top: 1px solid #e0e0e0;
-  background-color: #f5f5f5;
+  border-top: var(--modal-footer-border-top, 1px solid #e0e0e0);
+  background-color: var(--modal-footer-background-color, #f5f5f5);
   border-radius: 0 0 8px 8px;
 `;
 
