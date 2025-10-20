@@ -32,7 +32,7 @@ interface BooleanFieldProps {
   highlight?: boolean;
   required?: boolean;
   error?: string;
-  onFieldChange: (key: string, value: any) => void;
+  onFieldChange: (value: any) => void;
 }
 
 export const BooleanField: React.FC<BooleanFieldProps> = ({
@@ -44,13 +44,6 @@ export const BooleanField: React.FC<BooleanFieldProps> = ({
   error,
   onFieldChange,
 }) => {
-  const handleChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      onFieldChange(fieldKey, event.target.checked);
-    },
-    [fieldKey, onFieldChange]
-  );
-
   return (
     <Spacings.Stack scale="xs">
       <FieldLabel
@@ -63,7 +56,7 @@ export const BooleanField: React.FC<BooleanFieldProps> = ({
           id={fieldKey}
           name={fieldKey}
           isChecked={value || false}
-          onChange={handleChange}
+          onChange={(event) => onFieldChange(event.target.checked)}
           hasError={!!error}
         />
       </HighlightedContainer>

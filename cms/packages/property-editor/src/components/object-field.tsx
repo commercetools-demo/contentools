@@ -54,7 +54,7 @@ interface ObjectFieldProps {
   highlight?: boolean;
   required?: boolean;
   error?: string;
-  onFieldChange: (key: string, value: any) => void;
+  onFieldChange: (value: any) => void;
 }
 
 export const ObjectField: React.FC<ObjectFieldProps> = ({
@@ -82,13 +82,13 @@ export const ObjectField: React.FC<ObjectFieldProps> = ({
       // Try to parse and update the actual value
       try {
         const parsed = JSON.parse(newValue);
-        onFieldChange(fieldKey, parsed);
+        onFieldChange(parsed);
       } catch {
         // If parsing fails, store as string for now
-        onFieldChange(fieldKey, newValue);
+        onFieldChange(newValue);
       }
     },
-    [fieldKey, onFieldChange]
+    [onFieldChange]
   );
 
   const beautifyJson = useCallback(() => {
@@ -110,7 +110,7 @@ export const ObjectField: React.FC<ObjectFieldProps> = ({
       const formatted = JSON.stringify(parsed, null, 2);
 
       setTextValue(formatted);
-      onFieldChange(fieldKey, parsed);
+      onFieldChange(parsed);
     } catch (parseError) {
       // If we still can't parse, try to fix more issues
       try {
@@ -138,13 +138,13 @@ export const ObjectField: React.FC<ObjectFieldProps> = ({
         const formatted = JSON.stringify(parsed, null, 2);
 
         setTextValue(formatted);
-        onFieldChange(fieldKey, parsed);
+        onFieldChange(parsed);
       } catch (secondError) {
         // If all else fails, just format what we can
         console.warn('Could not beautify JSON:', secondError);
       }
     }
-  }, [textValue, fieldKey, onFieldChange]);
+  }, [textValue, onFieldChange]);
 
   const validateJson = useCallback(() => {
     try {

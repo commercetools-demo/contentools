@@ -167,7 +167,7 @@ interface FileFieldProps {
   baseURL: string;
   businessUnitKey: string;
   extensions?: string[];
-  onFieldChange: (key: string, value: any) => void;
+  onFieldChange: (value: any) => void;
 }
 
 export const FileField: React.FC<FileFieldProps> = ({
@@ -259,7 +259,7 @@ export const FileField: React.FC<FileFieldProps> = ({
         size: selectedFile.size,
       };
 
-      onFieldChange(fieldKey, mediaFile);
+      onFieldChange(mediaFile);
       uploadModal.closeModal();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Upload failed');
@@ -270,7 +270,6 @@ export const FileField: React.FC<FileFieldProps> = ({
     fileDescription,
     uploadMediaFile,
     onFieldChange,
-    fieldKey,
     uploadModal,
   ]);
 
@@ -280,14 +279,14 @@ export const FileField: React.FC<FileFieldProps> = ({
 
   const handleConfirmSelection = useCallback(() => {
     if (selectedMediaFile) {
-      onFieldChange(fieldKey, selectedMediaFile);
+      onFieldChange(selectedMediaFile);
       selectModal.closeModal();
     }
-  }, [selectedMediaFile, onFieldChange, fieldKey, selectModal]);
+  }, [selectedMediaFile, onFieldChange, selectModal]);
 
   const handleRemoveFile = useCallback(() => {
-    onFieldChange(fieldKey, null);
-  }, [fieldKey, onFieldChange]);
+    onFieldChange(null);
+  }, [onFieldChange]);
 
   const handleFileInputClick = useCallback(() => {
     setError(null);

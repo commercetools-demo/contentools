@@ -159,7 +159,6 @@ export function SimpleEditor({ hydratedUrl, value, onChange }) {
   } = useStateMediaLibrary();
 
   const isValueEmpty = !value || (typeof value === 'object' && !Object.keys(value).length);
-  console.log('isValueEmpty', isValueEmpty);
 
   const handleImageUpload = React.useCallback(async (file) => {
     const result = await uploadMediaFile(hydratedUrl, file);

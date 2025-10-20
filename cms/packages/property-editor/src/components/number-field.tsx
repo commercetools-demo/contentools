@@ -32,7 +32,7 @@ interface NumberFieldProps {
   highlight?: boolean;
   required?: boolean;
   error?: string;
-  onFieldChange: (key: string, value: any) => void;
+  onFieldChange: (value: any) => void;
 }
 
 export const NumberField: React.FC<NumberFieldProps> = ({
@@ -48,9 +48,9 @@ export const NumberField: React.FC<NumberFieldProps> = ({
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const numericValue =
         event.target.value === '' ? undefined : Number(event.target.value);
-      onFieldChange(fieldKey, numericValue);
+      onFieldChange(numericValue);
     },
-    [fieldKey, onFieldChange]
+    [onFieldChange]
   );
 
   return (

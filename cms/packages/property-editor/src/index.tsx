@@ -5,7 +5,6 @@ import {
   ContentItem,
   ContentTypeMetaData,
   EPropertyType,
-  PropertySchema,
 } from '@commercetools-demo/contentools-types';
 import { useStateContentType } from '@commercetools-demo/contentools-state';
 import styled from 'styled-components';
@@ -13,15 +12,10 @@ import Spacings from '@commercetools-uikit/spacings';
 import Text from '@commercetools-uikit/text';
 import PrimaryButton from '@commercetools-uikit/primary-button';
 import Card from '@commercetools-uikit/card';
-import { StringField } from './components/string-field';
-import { NumberField } from './components/number-field';
-import { BooleanField } from './components/boolean-field';
-import { ArrayField } from './components/array-field';
-import { FileField } from './components/file-field';
-import { WysiwygField } from './components/wysiwyg-field';
-import { DatasourceField } from './components/datasource-field';
-import { ObjectField } from './components/object-field';
+
 import { ConfirmationModal } from '@commercetools-demo/contentools-ui-components';
+import FieldWrapper from './field-wrapper';
+import GeneralPropertyFields from './general-attributes';
 
 const PropertyEditorContainer = styled.div`
   padding: 20px 0;
@@ -34,7 +28,7 @@ const ActionsContainer = styled.div`
 `;
 
 // Form values interface
-interface FormValues {
+export interface PropertyEditorFormValues {
   name: string;
   properties: Record<string, any>;
 }
@@ -62,7 +56,6 @@ const PropertyEditor: React.FC<PropertyEditorProps> = ({
   onComponentUpdated,
   onComponentDeleted,
 }) => {
-  const hydratedUrl = `${baseURL}/${businessUnitKey}`;
   const { contentTypes } = useStateContentType();
   const [metadata, setMetadata] = useState<ContentTypeMetaData | null>(
     metadataProp || null
@@ -97,13 +90,13 @@ const PropertyEditor: React.FC<PropertyEditorProps> = ({
   }, [versionedContent, component]);
 
   // Get initial form values (memoized to prevent unnecessary re-renders)
-  const initialValues: FormValues = useMemo(() => {
+  const initialValues: PropertyEditorFormValues = useMemo(() => {
     const sourceComponent = versionedContent || component;
     return {
       name: sourceComponent.name || '',
       properties: { ...sourceComponent.properties },
     };
-  }, [component, versionedContent]);
+  }, []);
 
   // Create validation schema based on PropertySchema
   const validationSchema = useMemo(() => {
@@ -196,7 +189,7 @@ const PropertyEditor: React.FC<PropertyEditorProps> = ({
   }, [component.type, contentTypes, metadataProp]);
 
   const handleSubmit = useCallback(
-    (values: FormValues) => {
+    (values: PropertyEditorFormValues) => {
       const updatedComponent: ContentItem = {
         ...component,
         name: values.name,
@@ -214,107 +207,30 @@ const PropertyEditor: React.FC<PropertyEditorProps> = ({
     }
   }, [component.id, onComponentDeleted]);
 
+  const handleFieldChange = useCallback(
+    (key: string, value: any) => {
+      onChange({
+        ...component,
+        properties: { ...component.properties, [key]: value },
+      });
+    },
+    [component, onChange]
+  );
+
+  const handleGeneralFieldChange = useCallback(
+    (key: string, value: any) => {
+      onChange({
+        ...component,
+        [key]: value,
+      });
+    },
+    [component, onChange]
+  );
+
   // Memoize field entries to prevent unnecessary re-renders
   const fieldEntries = useMemo(() => {
     return metadata ? Object.entries(metadata.propertySchema) : [];
   }, [metadata]);
-
-  const renderField = useCallback(
-    (key: string, field: PropertySchema, formik: FormikProps<FormValues>) => {
-      const value = formik.values.properties[key];
-      const isHighlighted = diff.includes(key);
-      const error = formik.errors.properties?.[key];
-      const touched = formik.touched.properties?.[key];
-
-      const handleFieldChange = useCallback(
-        (fieldKey: string, fieldValue: any) => {
-          formik.setFieldValue(`properties.${fieldKey}`, fieldValue);
-          onChange({
-            ...component,
-            properties: { ...component.properties, [fieldKey]: fieldValue },
-          });
-        },
-        [formik]
-      );
-
-      // Convert error to string for display
-      const errorString =
-        touched && error
-          ? typeof error === 'string'
-            ? error
-            : JSON.stringify(error)
-          : undefined;
-
-      const commonProps = {
-        hydratedUrl,
-        key,
-        fieldKey: key,
-        label: field.label,
-        value: value,
-        highlight: isHighlighted,
-        required: field.required,
-        onFieldChange: handleFieldChange,
-        error: errorString,
-      };
-
-      switch (field.type) {
-        case EPropertyType.STRING:
-          return <StringField {...commonProps} value={value || ''} key={key} />;
-        case EPropertyType.NUMBER:
-          return <NumberField {...commonProps} value={value} key={key} />;
-        case EPropertyType.BOOLEAN:
-          return <BooleanField {...commonProps} value={value} key={key} />;
-        case EPropertyType.ARRAY:
-          return <ArrayField {...commonProps} value={value || []} key={key} />;
-        case EPropertyType.FILE:
-          return (
-            <FileField
-              key={key}
-              fieldKey={key}
-              label={field.label}
-              value={value}
-              highlight={isHighlighted}
-              required={field.required}
-              onFieldChange={handleFieldChange}
-              baseURL={baseURL}
-              businessUnitKey={businessUnitKey}
-              extensions={field.extensions || []}
-              validationError={errorString}
-            />
-          );
-        case EPropertyType.DATASOURCE:
-          return (
-            <DatasourceField
-              key={key}
-              fieldKey={key}
-              label={field.label}
-              value={value || {}}
-              highlight={isHighlighted}
-              required={field.required}
-              onFieldChange={handleFieldChange}
-              datasourceType={field.datasourceType || ''}
-              baseURL={baseURL}
-              validationError={errorString}
-            />
-          );
-        case EPropertyType.OBJECT:
-          return <ObjectField {...commonProps} value={value || {}} key={key} />;
-        case EPropertyType.RICH_TEXT:
-          return (
-            <WysiwygField {...commonProps} value={value || {}} key={key} />
-          );
-        default:
-          return (
-            <Spacings.Stack scale="s" key={key}>
-              <Text.Detail tone="warning">
-                Unsupported field type: {field.type}
-              </Text.Detail>
-            </Spacings.Stack>
-          );
-      }
-    },
-    [diff, baseURL, businessUnitKey, component.type]
-  );
 
   if (loading) {
     return (
@@ -352,42 +268,30 @@ const PropertyEditor: React.FC<PropertyEditorProps> = ({
           <Form>
             <Card>
               <Spacings.Stack scale="m">
-                <Text.Headline as="h2">{component.name}</Text.Headline>
+                <Text.Headline as="h2">{formik.values.name}</Text.Headline>
 
-                <StringField
-                  fieldKey="name"
-                  label="Name"
-                  value={formik.values.name}
-                  highlight={diff.includes('name')}
-                  required
-                  onFieldChange={useCallback(
-                    (_key: string, value: string) => {
-                      formik.setFieldValue('name', value);
-                      onChange({
-                        ...component,
-                        name: value,
-                      });
-                    },
-                    [formik]
-                  )}
-                  error={
-                    formik.touched.name && formik.errors.name
-                      ? typeof formik.errors.name === 'string'
-                        ? formik.errors.name
-                        : JSON.stringify(formik.errors.name)
-                      : undefined
-                  }
+                <GeneralPropertyFields
+                  diff={diff}
+                  onChange={handleGeneralFieldChange}
                 />
 
-                {fieldEntries.map(([key, field]) =>
-                  renderField(key, field, formik)
-                )}
+                {fieldEntries.map(([key, field]) => (
+                  <FieldWrapper
+                    baseURL={baseURL}
+                    businessUnitKey={businessUnitKey}
+                    onChange={handleFieldChange}
+                    key={key}
+                    propKey={key}
+                    field={field}
+                    isHighlighted={diff.includes(key)}
+                  />
+                ))}
 
                 <ActionsContainer>
                   <PrimaryButton
                     type="submit"
                     label="Save Changes"
-                    isDisabled={!formik.isValid}
+                    isDisabled={!formik.isValid || !formik.dirty}
                   />
                   {showDeleteButton && (
                     <PrimaryButton

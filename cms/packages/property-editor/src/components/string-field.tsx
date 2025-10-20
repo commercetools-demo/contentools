@@ -32,7 +32,7 @@ interface StringFieldProps {
   highlight?: boolean;
   required?: boolean;
   error?: string;
-  onFieldChange: (key: string, value: any) => void;
+  onFieldChange: (value: any) => void;
 }
 
 export const StringField: React.FC<StringFieldProps> = ({
@@ -44,13 +44,6 @@ export const StringField: React.FC<StringFieldProps> = ({
   error,
   onFieldChange,
 }) => {
-  const handleChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      onFieldChange(fieldKey, event.target.value);
-    },
-    [fieldKey, onFieldChange]
-  );
-
   return (
     <Spacings.Stack scale="xs">
       <FieldLabel
@@ -63,7 +56,7 @@ export const StringField: React.FC<StringFieldProps> = ({
           id={fieldKey}
           name={fieldKey}
           value={value}
-          onChange={handleChange}
+          onChange={(event) => onFieldChange(event.target.value)}
           hasError={!!error}
         />
       </HighlightedContainer>

@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import Spacings from '@commercetools-uikit/spacings';
 import FieldLabel from '@commercetools-uikit/field-label';
@@ -35,7 +35,7 @@ interface WysiwygFieldProps {
   highlight?: boolean;
   required?: boolean;
   error?: string;
-  onFieldChange: (key: string, value: any) => void;
+  onFieldChange: (value: any) => void;
 }
 
 export const WysiwygField: React.FC<WysiwygFieldProps> = ({
@@ -48,10 +48,6 @@ export const WysiwygField: React.FC<WysiwygFieldProps> = ({
   error,
   onFieldChange,
 }) => {
-  const onChange = useCallback((json: any) => {
-    onFieldChange(fieldKey, json);
-  }, []);
-
   return (
     <Spacings.Stack scale="xs">
       <FieldLabel
@@ -63,7 +59,7 @@ export const WysiwygField: React.FC<WysiwygFieldProps> = ({
         <SimpleEditor
           hydratedUrl={hydratedUrl}
           value={value}
-          onChange={onChange}
+          onChange={(json: string) => onFieldChange(json)}
         />
       </HighlightedContainer>
       {error && <Text.Detail tone="negative">{error}</Text.Detail>}

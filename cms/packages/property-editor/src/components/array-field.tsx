@@ -45,7 +45,7 @@ interface ArrayFieldProps {
   highlight?: boolean;
   required?: boolean;
   error?: string;
-  onFieldChange: (key: string, value: any) => void;
+  onFieldChange: (value: any) => void;
 }
 
 export const ArrayField: React.FC<ArrayFieldProps> = ({
@@ -61,22 +61,22 @@ export const ArrayField: React.FC<ArrayFieldProps> = ({
     (index: number, itemValue: string) => {
       const newArray = [...value];
       newArray[index] = itemValue;
-      onFieldChange(fieldKey, newArray);
+      onFieldChange(newArray);
     },
-    [fieldKey, value, onFieldChange]
+    [value, onFieldChange]
   );
 
   const handleAddItem = useCallback(() => {
     const newArray = [...value, ''];
-    onFieldChange(fieldKey, newArray);
-  }, [fieldKey, value, onFieldChange]);
+    onFieldChange(newArray);
+  }, [value, onFieldChange]);
 
   const handleRemoveItem = useCallback(
     (index: number) => {
       const newArray = value.filter((_, i) => i !== index);
-      onFieldChange(fieldKey, newArray);
+      onFieldChange(newArray);
     },
-    [fieldKey, value, onFieldChange]
+    [value, onFieldChange]
   );
 
   return (

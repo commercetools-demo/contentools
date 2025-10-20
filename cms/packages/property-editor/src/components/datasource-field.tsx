@@ -57,7 +57,7 @@ interface DatasourceFieldProps {
   validationError?: string;
   datasourceType: string;
   baseURL: string;
-  onFieldChange: (key: string, value: any) => void;
+  onFieldChange: (value: any) => void;
 }
 
 export const DatasourceField: React.FC<DatasourceFieldProps> = ({
@@ -90,9 +90,9 @@ export const DatasourceField: React.FC<DatasourceFieldProps> = ({
           [paramKey]: paramValue,
         },
       };
-      onFieldChange(fieldKey, newValue);
+      onFieldChange(newValue);
     },
-    [fieldKey, value, onFieldChange]
+    [value, onFieldChange]
   );
 
   const handleTestConnection = useCallback(async () => {
