@@ -98,6 +98,16 @@ export const ContentItemList: React.FC<ContentItemListProps> = ({
       ),
     },
     {
+      key: 'dates',
+      label: 'Dates',
+      renderItem: (row: ContentItemRow) => (
+        <Text.Body truncate>
+          {row.startDate ? new Date(row.startDate).toLocaleDateString() : '-'} -{' '}
+          {row.endDate ? new Date(row.endDate).toLocaleDateString() : '-'}
+        </Text.Body>
+      ),
+    },
+    {
       key: 'slot',
       label: 'Slot',
       renderItem: (row: ContentItemRow) => (

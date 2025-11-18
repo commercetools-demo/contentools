@@ -1,32 +1,27 @@
-import React, { useEffect, useState } from 'react';
-import {
-  getStateType,
-  Modal,
-  StateTag,
-  ConfirmationModal,
-  useModalState,
-} from '@commercetools-demo/contentools-ui-components';
-import Spacings from '@commercetools-uikit/spacings';
-import Text from '@commercetools-uikit/text';
-import {
-  ContentItem,
-  EContentType,
-  EStateType,
-  Page,
-  PageVersionInfo,
-} from '@commercetools-demo/contentools-types';
 import PropertyEditor from '@commercetools-demo/contentools-property-editor';
 import {
   useStatePages,
   useStateStateManagement,
-  useStateVersion,
 } from '@commercetools-demo/contentools-state';
-import SecondaryButton from '@commercetools-uikit/secondary-button';
+import {
+  ContentItem,
+  EContentType,
+  EStateType,
+} from '@commercetools-demo/contentools-types';
+import {
+  ConfirmationModal,
+  getStateType,
+  Modal,
+  StateTag,
+  useModalState,
+} from '@commercetools-demo/contentools-ui-components';
 import PrimaryButton from '@commercetools-uikit/primary-button';
-import Stamp from '@commercetools-uikit/stamp';
-import styled from 'styled-components';
-import { CONETNT_ITEMS_IN_PAGE_SCOPE } from '../../constants';
+import SecondaryButton from '@commercetools-uikit/secondary-button';
+import Spacings from '@commercetools-uikit/spacings';
+import Text from '@commercetools-uikit/text';
 import isEqual from 'fast-deep-equal';
+import React, { useEffect, useMemo, useState } from 'react';
+import { CONETNT_ITEMS_IN_PAGE_SCOPE } from '../../constants';
 
 interface Props {
   isOpen: boolean;
@@ -63,12 +58,10 @@ const ComponentEditorModal: React.FC<Props> = ({
 
   const confirmationModalState = useModalState();
 
-  const selectedComponent = currentPage?.components?.find(
-    (c: ContentItem) => c?.key === selectedContentItemKey
-  );
+  const [originalComponent, setOriginalComponent] = useState<ContentItem | undefined>();
   const [changedContentItem, setChangedContentItem] = useState<
     ContentItem | undefined
-  >(selectedComponent);
+  >();
 
   const handleComponentUpdated = async (component: ContentItem) => {
     if (!currentPage || !selectedContentItemKey) return;
@@ -82,21 +75,21 @@ const ComponentEditorModal: React.FC<Props> = ({
   };
 
   const onRevert = async () => {
-    if (currentPage?.key && selectedComponent) {
+    if (currentPage?.key && originalComponent) {
       await revertToPublishedPageContentItem(
         hydratedUrl,
-        selectedComponent.key,
+        originalComponent.key,
         EContentType.PAGE_ITEMS
       );
     }
     onRefresh();
   };
   const onPublish = async () => {
-    if (currentPage?.key && selectedComponent) {
+    if (currentPage?.key && originalComponent) {
       await publishPageContentItem(
         hydratedUrl,
-        selectedComponent,
-        selectedComponent.key,
+        originalComponent,
+        originalComponent.key,
         EContentType.PAGE_ITEMS,
         true
       );
@@ -105,7 +98,7 @@ const ComponentEditorModal: React.FC<Props> = ({
   };
 
   const handleCloseCheck = () => {
-    if (changedContentItem && !isEqual(changedContentItem, selectedComponent)) {
+    if (changedContentItem && !isEqual(changedContentItem, originalComponent)) {
       confirmationModalState.openModal();
       return;
     }
@@ -127,6 +120,14 @@ const ComponentEditorModal: React.FC<Props> = ({
     }
   }, [selectedContentItemKey, fetchPageItemStates]);
 
+  useEffect(() => {
+    const originalComponent = currentPage?.components?.find(
+      (c: ContentItem) => c?.key === selectedContentItemKey
+    );
+    setOriginalComponent(originalComponent);
+    setChangedContentItem(originalComponent);
+  }, [currentPage?.components, selectedContentItemKey]);
+
   if (!selectedContentItemKey || !currentPage) {
     return (
       <Modal isOpen={isOpen} onClose={onClose} title="Edit Component" size={30}>
@@ -135,7 +136,7 @@ const ComponentEditorModal: React.FC<Props> = ({
     );
   }
 
-  if (!selectedComponent) {
+  if (!changedContentItem) {
     return (
       <Modal isOpen={isOpen} onClose={onClose} title="Edit Component" size={30}>
         <Text.Body>Component not found</Text.Body>
@@ -176,7 +177,7 @@ const ComponentEditorModal: React.FC<Props> = ({
             </Spacings.Inline>
           </Spacings.Inline>
           <PropertyEditor
-            component={selectedComponent}
+            component={changedContentItem}
             baseURL={baseURL}
             businessUnitKey={businessUnitKey}
             showDeleteButton={true}

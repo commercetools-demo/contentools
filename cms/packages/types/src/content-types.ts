@@ -6,6 +6,8 @@ export interface ContentItem {
   key: string;
   businessUnitKey: string;
   name: string;
+  startDate?: string;
+  endDate?: string;
   properties: Record<string, any>;
 }
 

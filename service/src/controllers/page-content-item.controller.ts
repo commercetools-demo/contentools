@@ -100,10 +100,14 @@ export const getContentItemWithStateKey = async (
   key: string,
   state: string | string[]
 ): Promise<ContentItem['value'] | undefined> => {
+  const now = new Date().toISOString();
+  const startDateClause = Array.isArray(state) ? state.map((s) => `states(${s}(startDate is not defined OR startDate <= "${now}"))`).join(' OR '): `states(${state}(startDate is not defined OR startDate <= "${now}"))`;
+  const endDateClause = Array.isArray(state) ? state.map((s) => `states(${s}(endDate is not defined OR endDate >= "${now}"))`).join(' OR '): `states(${state}(endDate is not defined OR endDate >= "${now}"))`;
+  
   const contentState =
     await PageContentItemStateController.getFirstContentWithState<
       ContentItem['value']
-    >(`key = "${key}" AND businessUnitKey = "${businessUnitKey}"`, state);
+    >(`key = "${key}" AND businessUnitKey = "${businessUnitKey}" AND (${startDateClause}) AND (${endDateClause})`, state);
 
   if (contentState) {
     return ContentItemController.resolveContentItemDatasource(contentState);

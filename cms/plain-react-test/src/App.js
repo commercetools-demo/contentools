@@ -5,47 +5,66 @@ import ContentType from '@commercetools-demo/contentools-content-types';
 import ContentItemRenderer from '@commercetools-demo/contentools-content-item-renderer';
 import ContentPages from '@commercetools-demo/contentools-content-pages';
 import PageRenderer from '@commercetools-demo/contentools-page-renderer';
+import { BackIcon } from '@commercetools-uikit/icons';
 
 function App() {
   return (
     <div className="App">
+      <style>
+        {`
+          :root {
+            --page-grid-gap: 5.5rem;
+            --page-grid-row-margin: 5.5rem;
+          }
+        `}
+      </style>
       <ContentItem
         baseURL="http://localhost:8080/service"
-        businessUnitKey="central-texas-animal-hospital"
+        businessUnitKey="default"
         locale="en-us"
         parentUrl=""
+        backButton={{
+          label: 'Back',
+          onClick: () => {
+            console.log('Back');
+          },
+          icon: <BackIcon />,
+        }}
       />
-      <ContentType
+      {/* <ContentType
         baseURL="http://localhost:8080/service"
         businessUnitKey="central-texas-animal-hospital"
         locale="en-us"
         parentUrl=""
-      />
+      /> */}
       {/* <ContentPages
         baseURL="http://localhost:8080/service"
-        businessUnitKey="central-texas-animal-hospital"
+        businessUnitKey="default"
         locale="en-US"
         parentUrl="content-pages"
+        backButton={{
+          label: 'Back',
+          onClick: () => {
+            console.log('Back');
+          },
+          icon: <BackIcon />,
+        }}
       /> */}
       {/* <PageRenderer
         baseURL="http://localhost:8080/service"
-        businessUnitKey="central-texas-animal-hospital"
+        businessUnitKey="default"
         locale="en-US"
         parentUrl="content-pages"
-        isDraft={true}
+        // isDraft={true}
         // pageKey="page-b159017d-9baa-435f-b920-04c7db95bf9e"
-        query='route="/asdsd"'
-        style={{
-          '--page-grid-gap': '0.5rem',
-          '--page-grid-row-margin': '0.5rem',
-        }}
+        query='route="/content/blogs/champagne"'
       /> */}
       {/* <ContentItemRenderer
         baseURL="http://localhost:8080/service"
-        businessUnitKey="business_unit_behnam"
+        businessUnitKey="default"
         locale="en-US"
         parentUrl="content-items"
-        itemKey="item-8c3bbf44-25ab-4297-8b64-543e0671f0a2"
+        itemKey="item-55a40674-6d1a-43e0-8edb-710cc78bd3a9"
         query='properties(slot="header")'
       /> */}
     </div>

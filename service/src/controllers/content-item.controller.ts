@@ -248,9 +248,16 @@ export const getContentItemWithStateKey = async (
   key: string,
   state: string | string[]
 ): Promise<ContentItem['value'] | undefined> => {
+  const now = new Date().toISOString();
+  const startDateClause = Array.isArray(state) ? state.map((s) => `states(${s}(startDate is not defined OR startDate <= "${now}"))`).join(' OR '): `states(${state}(startDate is not defined OR startDate <= "${now}"))`;
+  const endDateClause = Array.isArray(state) ? state.map((s) => `states(${s}(endDate is not defined OR endDate >= "${now}"))`).join(' OR '): `states(${state}(endDate is not defined OR endDate >= "${now}"))`;
+  
   const contentState = await ContentStateController.getFirstContentWithState<
     ContentItem['value']
-  >(`key = "${key}" AND businessUnitKey = "${businessUnitKey}"`, state);
+  >(
+    `key = "${key}" AND businessUnitKey = "${businessUnitKey}" AND (${startDateClause}) AND (${endDateClause})`,
+    state
+  );
 
   if (contentState) {
     return resolveContentItemDatasource(contentState);
@@ -264,12 +271,13 @@ export const queryContentItem = async (
   query: string,
   state: string | string[]
 ): Promise<ContentItem['value'] | undefined> => {
+  const now = new Date().toISOString();
   const contentItemController = new CustomObjectController(
     CONTENT_ITEM_CONTAINER
   );
 
   const contentItems = await contentItemController.getCustomObjects(
-    `value(${query} AND businessUnitKey = "${businessUnitKey}")`
+    `value(${query} AND businessUnitKey = "${businessUnitKey}" AND (startDate is not defined OR startDate <= "${now}") AND (endDate is not defined OR endDate >= "${now}"))`
   );
 
   if (contentItems.length === 0) {
@@ -279,7 +287,7 @@ export const queryContentItem = async (
   const contentState = await ContentStateController.getFirstContentWithState<
     ContentItem['value']
   >(
-    `key = "${contentItems[0].key}" AND businessUnitKey = "${businessUnitKey}"`,
+    `key = "${contentItems[0].key}" AND businessUnitKey = "${businessUnitKey}" AND (startDate is not defined OR startDate <= "${now}") AND (endDate is not defined OR endDate >= "${now}")`,
     state
   );
 

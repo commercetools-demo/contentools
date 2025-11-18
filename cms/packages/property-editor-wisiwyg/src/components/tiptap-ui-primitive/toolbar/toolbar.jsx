@@ -22,7 +22,7 @@ const StyledToolbar = styled.div`
   &[data-variant="fixed"] {
     position: sticky;
     top: 0;
-    z-index: 1001;
+    z-index: 1000;
     width: 100%;
     min-height: var(--tt-toolbar-height);
     background: var(--tt-toolbar-bg-color);

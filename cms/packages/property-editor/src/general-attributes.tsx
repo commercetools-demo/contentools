@@ -2,6 +2,16 @@ import React, { useCallback } from 'react';
 import { StringField } from './components/string-field';
 import { PropertyEditorFormValues } from '.';
 import { useFormikContext } from 'formik';
+import { DateTimeField } from './components/date-field';
+import styled from 'styled-components';
+import Spacings from '@commercetools-uikit/spacings';
+
+const StyledDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 10px;
+`;
 
 type Props = {
   diff: string[];
@@ -20,7 +30,7 @@ const GeneralPropertyFields = ({ diff, onChange }: Props) => {
     [setFieldValue]
   );
   return (
-    <div>
+    <Spacings.Stack scale="xs">
       <StringField
         fieldKey="name"
         label="Name"
@@ -36,7 +46,24 @@ const GeneralPropertyFields = ({ diff, onChange }: Props) => {
             : undefined
         }
       />
-    </div>
+      <StyledDiv>
+        <DateTimeField
+          fieldKey="startDate"
+          label="Start Date"
+          value={values.startDate}
+          highlight={diff.includes('startDate')}
+          onFieldChange={(value) => handleChange('startDate', value)}
+        />
+        <DateTimeField
+          fieldKey="endDate"
+          label="End Date"
+          value={values.endDate}
+          highlight={diff.includes('endDate')}
+          onFieldChange={(value) => handleChange('endDate', value)}
+        />
+      </StyledDiv>
+      
+    </Spacings.Stack>
   );
 };
 

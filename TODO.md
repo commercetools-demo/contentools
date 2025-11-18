@@ -80,10 +80,10 @@ Server:
 FE:
 [] Cleanup the edit page:
    [] move save to up of the page
-   [] use better wysivig editor for react
+   [X] use better wysivig editor for react
    [] cleanup items on top
-[] Add preview
-[] style injection using css vars (e.g z-index)
+[X] Add preview
+[X] style injection using css vars (e.g z-index)
 [] version hihglighting in pages
 
 App:
@@ -94,6 +94,16 @@ App:
 [] closing confirmation in page editor
 [] use more uikit
 [] configurable styles
-[] back button to types
+[X] back button to types
 [X] base64 wisiwig editor content before and after
-[] image selector inside wisiwig editor
+[X] image selector inside wisiwig editor
+[] security based on business unit key 
+[] start and end date in content-items and content-pages
+[] revert to publish on pages
+[] bug on column editor of pages
+[] highlight diff in page
+
+
+
+## Current task
+- adding date(s) to content-page-items. it shows before publishing and vanishes after publishing > method getContentItemWithStateKey
