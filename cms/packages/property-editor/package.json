@@ -33,6 +33,9 @@
     "@emotion/react": "^11.14.0",
     "add": "^2.0.6",
     "formik": "^2.4.6",
+    "moment": "^2.30.1",
+    "moment-timezone": "^0.6.0",
+    "react-intl": "^7.1.14",
     "styled-components": "^6.1.19",
     "yup": "^1.6.1"
   },
