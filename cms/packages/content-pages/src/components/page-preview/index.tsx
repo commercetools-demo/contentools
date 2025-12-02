@@ -21,7 +21,7 @@ const PagePreview = ({
     return null;
   }
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Edit Component" size={90}>
+    <Modal isOpen={isOpen} onClose={onClose} title="Page Preview" size={90}>
       <PageRenderer
         page={currentPage}
         baseURL={baseURL}
