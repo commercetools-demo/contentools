@@ -14,7 +14,6 @@ import {
 import { useModalState } from '@commercetools-demo/contentools-ui-components';
 import VersionHistorySidebar from '@commercetools-demo/contentools-version-history';
 import Card from '@commercetools-uikit/card';
-import IconButton from '@commercetools-uikit/icon-button';
 import { BackIcon } from '@commercetools-uikit/icons';
 import LoadingSpinner from '@commercetools-uikit/loading-spinner';
 import SecondaryButton from '@commercetools-uikit/secondary-button';
@@ -30,6 +29,7 @@ import PageGridActions from './page-grid-actions';
 import PageSettingsModal from './page-settings-modal';
 import PagesGridLayout from './pages-grid-layout';
 import PagePreview from '../page-preview';
+import FlatButton from '@commercetools-uikit/flat-button';
 
 interface Props {
   parentUrl: string;
@@ -57,25 +57,14 @@ const MainContent = styled.div`
 const ContainerHeader = styled.div`
   display: flex;
   align-items: center;
-  justify-content: flex-start;
-  padding: 16px 24px;
-  border-bottom: 1px solid #e0e0e0;
-  background-color: #f5f5f5;
+  justify-content: space-between;
+  padding: 16px 0;
 `;
 
 const ContainerHeaderContent = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
-`;
-
-const Breadcrumb = styled.span`
-  color: #666;
-  font-size: 14px;
-  &:after {
-    content: ' › ';
-    margin: 0 4px;
-  }
 `;
 
 const EditorContent = styled.div`
@@ -310,37 +299,37 @@ const PagesEdit: React.FC<Props> = ({
     <Container>
       <MainContent>
         <ContainerHeader>
-          <IconButton
-            icon={<BackIcon />}
-            label="Back to Pages"
-            onClick={handleBack}
-            size="medium"
-          />
           <ContainerHeaderContent>
-            <Breadcrumb>Pages</Breadcrumb>
-            <Text.Subheadline as="h4">{currentPage.name}</Text.Subheadline>
+            <FlatButton
+              icon={<BackIcon />}
+              tone="primary"
+              label="Back to Pages"
+              onClick={handleBack}
+            />
+
+            <Text.Subheadline as="h5">{`/`}</Text.Subheadline>
+            <Text.Subheadline>{currentPage.name}</Text.Subheadline>
           </ContainerHeaderContent>
+          <PageGridActions
+            showVersionHistory={versionHistoryState.isModalOpen}
+            onToggleVersionHistory={() =>
+              versionHistoryState.isModalOpen
+                ? handleCloseVersionHistory()
+                : handleOpenVersionHistory()
+            }
+            onTogglePageSettings={handleOpenPageSettings}
+            onTogglePageLibrary={handleOpenComponentLibrary}
+            onTogglePagePreview={handleOpenPagePreview}
+            currentState={currentState as StateInfo<Page>}
+            onViewJson={handleJson}
+            onRevert={handleRevert}
+            onPublish={handlePublish}
+            onAddRow={handleAddRow}
+          />
         </ContainerHeader>
 
         <EditorContent>
-          <StyledWrapper>
-            <PageGridActions
-              showVersionHistory={versionHistoryState.isModalOpen}
-              onToggleVersionHistory={() =>
-                versionHistoryState.isModalOpen
-                  ? handleCloseVersionHistory()
-                  : handleOpenVersionHistory()
-              }
-              onTogglePageSettings={handleOpenPageSettings}
-              onTogglePageLibrary={handleOpenComponentLibrary}
-              onTogglePagePreview={handleOpenPagePreview}
-              currentState={currentState as StateInfo<Page>}
-              onViewJson={handleJson}
-              onRevert={handleRevert}
-              onPublish={handlePublish}
-              onAddRow={handleAddRow}
-            />
-          </StyledWrapper>
+          <StyledWrapper></StyledWrapper>
           <PagesGridLayout
             baseURL={baseURL}
             businessUnitKey={businessUnitKey}
