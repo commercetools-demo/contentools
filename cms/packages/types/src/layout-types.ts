@@ -12,3 +12,11 @@ export interface GridRow {
 export interface Layout {
   rows: GridRow[];
 }
+
+export interface MoveContentItemParams {
+  sourceRowId: string;
+  sourceCellId: string;
+  targetRowId: string;
+  targetCellId: string;
+  contentItemKey: string;
+}

@@ -7,13 +7,13 @@ import {
   PAGE_STATE_CONTAINER,
   PAGE_VERSION_CONTAINER,
 } from '../constants';
+import CustomError from '../errors/custom.error';
+import { mapPageContentItems } from '../mappers/page';
+import type { ContentItem } from './content-item.controller';
 import { withDependencies as withContentStateDependencies } from './content-state-controller';
 import { withDependencies as withContentVersionDependencies } from './content-version-controller';
 import { CustomObjectController } from './custom-object.controller';
 import * as PageContentItemController from './page-content-item.controller';
-import type { ContentItem } from './content-item.controller';
-import CustomError from '../errors/custom.error';
-import { mapPageContentItems } from '../mappers/page';
 
 export interface PageVersion {
   key: string;
@@ -196,15 +196,22 @@ export const getPreviewPage = async (
   const item = page.value;
   const pageState = await PageStateController.getFirstContentWithState<
     Page['value']
-  >(`key = "${key}" AND businessUnitKey = "${businessUnitKey}"`, ['draft', 'published'], [
-    'value.states.draft.components[*]',
-    'value.states.published.components[*]',
-  ]);
+  >(
+    `key = "${key}" AND businessUnitKey = "${businessUnitKey}"`,
+    ['draft', 'published'],
+    ['value.states.draft.components[*]', 'value.states.published.components[*]']
+  );
   if (pageState) {
-    return resolveContentItemsInPage(businessUnitKey, pageState, ['draft', 'published']);
+    return resolveContentItemsInPage(businessUnitKey, pageState, [
+      'draft',
+      'published',
+    ]);
   }
 
-  return resolveContentItemsInPage(businessUnitKey, item, ['draft', 'published']);
+  return resolveContentItemsInPage(businessUnitKey, item, [
+    'draft',
+    'published',
+  ]);
 };
 
 export const getPageWithStates = async (
@@ -255,8 +262,7 @@ export const queryPage = async (
   >(
     `key = "${pages[0].key}" AND businessUnitKey = "${businessUnitKey}"`,
     state,
-    ['value.states.draft.components[*]',
-    'value.states.published.components[*]',]
+    ['value.states.draft.components[*]', 'value.states.published.components[*]']
   );
 
   if (contentState) {
@@ -551,6 +557,62 @@ export const addContentItemToPage = async (
         ...page.value.components,
         { id: contentItem.id, typeId: 'key-value-document' },
       ] as ContentItemReference[],
+      layout: newLayout,
+    },
+  };
+
+  const updatedPage = await updatePage(businessUnitKey, pageKey, newPage.value);
+
+  return updatedPage;
+};
+
+export const moveContentItemInPage = async (
+  businessUnitKey: string,
+  pageKey: string,
+  contentItemKey: string,
+  sourceRowId: string,
+  sourceCellId: string,
+  targetRowId: string,
+  targetCellId: string
+): Promise<ResolvedPage> => {
+  const pageController = new CustomObjectController(CONTENT_PAGE_CONTAINER);
+
+  const page = await pageController.getCustomObject(pageKey);
+
+  const newLayout = JSON.parse(JSON.stringify(page.value.layout));
+  const sourceRow = newLayout.rows.find(
+    (row: GridRow) => row.id === sourceRowId
+  );
+  const targetRow = newLayout.rows.find(
+    (row: GridRow) => row.id === targetRowId
+  );
+  if (!sourceRow) {
+    throw new CustomError(400, 'Source row not found');
+  }
+  if (!targetRow) {
+    throw new CustomError(400, 'Target row not found');
+  }
+  const sourceCell = sourceRow.cells.find(
+    (cell: GridCell) => cell.id === sourceCellId
+  );
+  const targetCell = targetRow.cells.find(
+    (cell: GridCell) => cell.id === targetCellId
+  );
+  if (!sourceCell) {
+    throw new CustomError(400, 'Source cell not found');
+  }
+  if (!targetCell) {
+    throw new CustomError(400, 'Target cell not found');
+  }
+
+  targetCell.contentItemKey = contentItemKey;
+  sourceCell.contentItemKey = null;
+
+  const newPage = {
+    ...page,
+    value: {
+      ...page.value,
+      components: page.value.components,
       layout: newLayout,
     },
   };

@@ -23,6 +23,32 @@ export async function addComponentToPageApi(
 }
 
 /**
+ * Move a component in a page
+ */
+export async function moveComponentInPageApi(
+  baseURL: string,
+  key: string,
+  contentItemKey: string,
+  sourceRowId: string,
+  sourceCellId: string,
+  targetRowId: string,
+  targetCellId: string
+): Promise<ApiResponse<Page>> {
+  return fetchApi<Page>(
+    `${baseURL}/pages/${key}/components/${contentItemKey}/move`,
+    {
+      method: 'POST',
+      body: JSON.stringify({
+        sourceRowId,
+        sourceCellId,
+        targetRowId,
+        targetCellId,
+      }),
+    }
+  );
+}
+
+/**
  * Remove a row from a page
  */
 export async function removeRowFromPageApi(

@@ -21,6 +21,7 @@ import {
   updateCellSpanInPageApi,
   updateComponentInPageApi,
   updatePageApi,
+  moveComponentInPageApi,
 } from '../api/page';
 import { getStatesEndpoint } from '../api/state';
 
@@ -279,6 +280,35 @@ export const usePages = () => {
     [state.currentPage]
   );
 
+  const moveComponentInCurrentPage = useCallback(
+    async (
+      hydratedUrl: string,
+      contentItemKey: string,
+      sourceRowId: string,
+      sourceCellId: string,
+      targetRowId: string,
+      targetCellId: string
+    ) => {
+      if (!state.currentPage) return;
+      const updatedPage = await moveComponentInPageApi(
+        hydratedUrl,
+        state.currentPage.key,
+        contentItemKey,
+        sourceRowId,
+        sourceCellId,
+        targetRowId,
+        targetCellId
+      );
+      setState((prev) => ({
+        ...prev,
+        currentPage: updatedPage.value,
+        unsavedChanges: true,
+      }));
+      return updatedPage;
+    },
+    [state.currentPage]
+  );
+
   const updateCellSpanInCurrentPage = useCallback(
     async (
       hydratedUrl: string,
@@ -383,6 +413,7 @@ export const usePages = () => {
     updateComponentInCurrentPage,
     removeComponentFromCurrentPage,
     updateCellSpanInCurrentPage,
+    moveComponentInCurrentPage,
     clearError,
     clearUnsavedChanges,
   };

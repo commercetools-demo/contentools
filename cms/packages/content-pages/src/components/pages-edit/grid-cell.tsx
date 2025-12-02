@@ -1,20 +1,20 @@
 import {
-  ContentItem,
-  ContentTypeData,
-  StateInfo,
-} from '@commercetools-demo/contentools-types';
-import {
   NUMBER_OF_COLUMNS,
   useStateContentType,
   useStatePages,
 } from '@commercetools-demo/contentools-state';
+import {
+  ContentItem,
+  ContentTypeData,
+  StateInfo,
+} from '@commercetools-demo/contentools-types';
+import { StateTag } from '@commercetools-demo/contentools-ui-components';
 import Card from '@commercetools-uikit/card';
 import Spacings from '@commercetools-uikit/spacings';
 import Text from '@commercetools-uikit/text';
 import React, { useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
-import { StateTag } from '@commercetools-demo/contentools-ui-components';
-import { useContentType } from '@commercetools-demo/contentools-state/dist/declarations/src/hooks/useContentType';
+import { MoveContentItemParams } from '@commercetools-demo/contentools-types';
 
 interface GridCellProps {
   baseURL: string;
@@ -36,6 +36,7 @@ interface GridCellProps {
   onDecreaseWidth: (cellId: string, colSpan: number) => void;
   activeComponentType?: any;
   onComponentToCurrentPage: (cellId: string) => Promise<void>;
+  onMoveContentItem: (params: MoveContentItemParams) => Promise<void>;
 }
 
 const CellContainer = styled.div<{
@@ -98,6 +99,16 @@ const ComponentCard = styled(Card)`
   min-height: 80px;
 `;
 
+const DraggableWrapper = styled.div<{ $readonly?: boolean }>`
+  width: 100%;
+  cursor: ${(props) => (props.$readonly ? 'default' : 'grab')};
+  transition: opacity 0.2s;
+
+  &:active {
+    cursor: ${(props) => (props.$readonly ? 'default' : 'grabbing')};
+  }
+`;
+
 const CellResize = styled.div`
   position: absolute;
   bottom: 5px;
@@ -131,6 +142,7 @@ const GridCell: React.FC<GridCellProps> = ({
   baseURL,
   businessUnitKey,
   cellId,
+  rowId,
   colSpan,
   contentItem,
   selected,
@@ -141,6 +153,7 @@ const GridCell: React.FC<GridCellProps> = ({
   onDecreaseWidth,
   isIncreaseDisabled,
   onComponentToCurrentPage,
+  onMoveContentItem,
 }) => {
   const colWidth = (colSpan / NUMBER_OF_COLUMNS) * 100;
   const hasComponent = !!contentItem;
@@ -169,6 +182,30 @@ const GridCell: React.FC<GridCellProps> = ({
     onDecreaseWidth(cellId, colSpan - 1);
   };
 
+  const handleDragStart = (e: React.DragEvent) => {
+    if (readonly || !hasComponent || !contentItem) return;
+
+    // Set drag data with source information
+    const dragData = {
+      sourceRowId: rowId,
+      sourceCellId: cellId,
+      contentItemKey: contentItem.key,
+      type: 'move-component',
+    };
+    e.dataTransfer.setData('application/json', JSON.stringify(dragData));
+    e.dataTransfer.effectAllowed = 'move';
+
+    // Add visual feedback
+    (e.currentTarget as HTMLElement).style.opacity = '0.5';
+  };
+
+  const handleDragEnd = (e: React.DragEvent) => {
+    if (readonly) return;
+
+    // Reset visual feedback
+    (e.currentTarget as HTMLElement).style.opacity = '1';
+  };
+
   const handleDragOver = (e: React.DragEvent) => {
     if (readonly || hasComponent) return;
 
@@ -190,8 +227,31 @@ const GridCell: React.FC<GridCellProps> = ({
     e.stopPropagation();
     e.currentTarget.classList.remove('drag-over');
 
-    // add the new component to the page
-    await onComponentToCurrentPage(cellId);
+    try {
+      // Try to parse drag data to check if it's a move operation
+      const dragDataStr = e.dataTransfer.getData('application/json');
+
+      if (dragDataStr) {
+        const dragData = JSON.parse(dragDataStr);
+
+        if (dragData.type === 'move-component') {
+          // Moving an existing component
+          await onMoveContentItem({
+            sourceRowId: dragData.sourceRowId,
+            sourceCellId: dragData.sourceCellId,
+            targetRowId: rowId,
+            targetCellId: cellId,
+            contentItemKey: dragData.contentItemKey,
+          });
+        }
+      } else {
+        // Adding a new component to the page (from sidebar)
+        await onComponentToCurrentPage(cellId);
+      }
+    } catch (error) {
+      // If parsing fails, assume it's a new component drop
+      await onComponentToCurrentPage(cellId);
+    }
   };
 
   const isDecreaseDisabled = useMemo(() => {
@@ -230,17 +290,24 @@ const GridCell: React.FC<GridCellProps> = ({
       data-component-id={contentItem?.id || ''}
     >
       {hasComponent ? (
-        <ComponentCard>
-          <Spacings.Inline scale="s">
-            <Spacings.Stack scale="s" alignItems="flex-start">
-              {currentState && <StateTag status={currentState} isCondensed />}
-              <Text.Subheadline as="h4" nowrap>
-                {contentType?.metadata.name}
-              </Text.Subheadline>
-              <Text.Detail nowrap>{contentItem?.name}</Text.Detail>
-            </Spacings.Stack>
-          </Spacings.Inline>
-        </ComponentCard>
+        <DraggableWrapper
+          draggable={!readonly}
+          $readonly={readonly}
+          onDragStart={handleDragStart}
+          onDragEnd={handleDragEnd}
+        >
+          <ComponentCard>
+            <Spacings.Inline scale="s">
+              <Spacings.Stack scale="s" alignItems="flex-start">
+                {currentState && <StateTag status={currentState} isCondensed />}
+                <Text.Subheadline as="h4" nowrap>
+                  {contentType?.metadata.name}
+                </Text.Subheadline>
+                <Text.Detail nowrap>{contentItem?.name}</Text.Detail>
+              </Spacings.Stack>
+            </Spacings.Inline>
+          </ComponentCard>
+        </DraggableWrapper>
       ) : !readonly ? (
         <EmptyText>Drop component here</EmptyText>
       ) : null}

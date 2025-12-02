@@ -1,9 +1,10 @@
 import { useStatePages } from '@commercetools-demo/contentools-state';
+import { MoveContentItemParams } from '@commercetools-demo/contentools-types';
+import { themes } from '@commercetools-uikit/design-system';
 import Text from '@commercetools-uikit/text';
 import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import GridRow from './grid-row';
-import { themes } from '@commercetools-uikit/design-system';
 
 interface Props {
   baseURL: string;
@@ -55,6 +56,7 @@ const PagesGridLayout: React.FC<Props> = ({
     currentPage: page,
     removeRowFromCurrentPage,
     updateCellSpanInCurrentPage,
+    moveComponentInCurrentPage,
   } = useStatePages()!;
   const hydratedUrl = `${baseURL}/${businessUnitKey}`;
   const [selectedCell, setSelectedCell] = useState<{
@@ -106,6 +108,21 @@ const PagesGridLayout: React.FC<Props> = ({
     []
   );
 
+  const handleMoveContentItem = useCallback(
+    async (params: MoveContentItemParams) => {
+      await moveComponentInCurrentPage(
+        hydratedUrl,
+        params.contentItemKey,
+        params.sourceRowId,
+        params.sourceCellId,
+        params.targetRowId,
+        params.targetCellId
+      );
+      onRefresh();
+    },
+    []
+  );
+
   // Update selectedCell when selectedComponentId changes externally
   useEffect(() => {
     if (selectedContentItemKey) {
@@ -148,6 +165,7 @@ const PagesGridLayout: React.FC<Props> = ({
               onIncreaseWidth={handleIncreaseWidth}
               onDecreaseWidth={handleDecreaseWidth}
               onComponentToCurrentPage={onComponentToCurrentPage}
+              onMoveContentItem={handleMoveContentItem}
             />
           ))}
         </GridContainer>

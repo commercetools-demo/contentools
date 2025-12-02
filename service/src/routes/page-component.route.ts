@@ -28,6 +28,32 @@ pageComponentRouter.post(
   }
 );
 
+pageComponentRouter.post(
+  '/:businessUnitKey/pages/:key/components/:contentItemKey/move',
+  async (req, res, next) => {
+    try {
+      const { businessUnitKey, key, contentItemKey } = req.params;
+      const { sourceRowId, sourceCellId, targetRowId, targetCellId } = req.body;
+      const object = await PageController.moveContentItemInPage(
+        businessUnitKey,
+        key,
+        contentItemKey,
+        sourceRowId,
+        sourceCellId,
+        targetRowId,
+        targetCellId
+      );
+      res.status(201).json(object);
+    } catch (error) {
+      logger.error(
+        `Failed to add component to page with key ${req.params.key}:`,
+        error
+      );
+      next(error);
+    }
+  }
+);
+
 pageComponentRouter.put(
   '/:businessUnitKey/pages/:key/components/:contentItemKey',
   async (req, res, next) => {

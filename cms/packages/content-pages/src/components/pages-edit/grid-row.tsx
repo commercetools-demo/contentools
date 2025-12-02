@@ -5,6 +5,7 @@ import GridCell from './grid-cell';
 import IconButton from '@commercetools-uikit/icon-button';
 import { BinLinearIcon } from '@commercetools-uikit/icons';
 import { NUMBER_OF_COLUMNS } from '@commercetools-demo/contentools-state';
+import { MoveContentItemParams } from '@commercetools-demo/contentools-types';
 interface GridCellData {
   id: string;
   contentItemKey: string | null;
@@ -29,6 +30,7 @@ interface GridRowProps {
   onIncreaseWidth: (rowId: string, cellId: string, colSpan: number) => void;
   onDecreaseWidth: (rowId: string, cellId: string, colSpan: number) => void;
   onComponentToCurrentPage: (rowId: string, cellId: string) => Promise<void>;
+  onMoveContentItem: (params: MoveContentItemParams) => Promise<void>;
 }
 
 const RowContent = styled.div`
@@ -64,6 +66,7 @@ const GridRow: React.FC<GridRowProps> = ({
   onRemoveRow,
   onIncreaseWidth,
   onDecreaseWidth,
+  onMoveContentItem,
 }) => {
   const getComponentForCell = useCallback(
     (contentItemKey: string | null): ContentItem | undefined => {
@@ -110,6 +113,10 @@ const GridRow: React.FC<GridRowProps> = ({
     return onComponentToCurrentPage(row.id, cellId);
   };
 
+  const handleMoveContentItem = (params: MoveContentItemParams) => {
+    return onMoveContentItem(params);
+  };
+
   return (
     <StyledGridRow data-row-id={row.id}>
       {!readonly && (
@@ -144,6 +151,7 @@ const GridRow: React.FC<GridRowProps> = ({
               onIncreaseWidth={handleIncreaseWidth}
               onDecreaseWidth={handleDecreaseWidth}
               onComponentToCurrentPage={handleComponentToCurrentPage}
+              onMoveContentItem={handleMoveContentItem}
               isIncreaseDisabled={isIncreaseDisabled}
             />
           );
