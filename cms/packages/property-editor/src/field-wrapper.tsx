@@ -13,8 +13,8 @@ import { ObjectField } from './components/object-field';
 import Spacings from '@commercetools-uikit/spacings';
 import Text from '@commercetools-uikit/text';
 import { useFormikContext } from 'formik';
-import { PropertyEditorFormValues } from '.';
 import { StringField } from './components/string-field';
+import { PropertyEditorFormValues } from './property-editor-core';
 
 type Props = {
   propKey: string;

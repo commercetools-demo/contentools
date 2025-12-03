@@ -47,11 +47,8 @@ const ContentTypeCard = ({ contentType, ...props }: Props & HTMLAttributes<HTMLD
           {contentType.metadata.name}
         </Text.Subheadline>
         <Text.Detail tone="secondary">{contentType.metadata.type}</Text.Detail>
-        <Text.Detail tone="secondary">
-          <small>
-            {Object.keys(contentType.metadata.propertySchema || {}).length}
-            properties
-          </small>
+        <Text.Detail tone="secondary" as="small">
+          {`${Object.keys(contentType.metadata.propertySchema || {}).length} properties`}
         </Text.Detail>
       </Spacings.Stack>
     </ComponentItem>
