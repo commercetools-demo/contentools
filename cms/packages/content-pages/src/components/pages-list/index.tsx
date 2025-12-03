@@ -22,7 +22,11 @@ interface Props {
   };
 }
 
-const Container = styled.div``;
+const Container = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
 
 const TableContainer = styled.div`
   background: white;
@@ -57,7 +61,7 @@ const PagesList: React.FC<Props> = ({
     history.push(`/new`);
   };
 
-  if (loading && pages.length === 0) {
+  if (loading) {
     return (
       <Container>
         <LoadingSpinner />

@@ -94,6 +94,7 @@ export const useContentType = (baseURL: string) => {
             text: '',
           };
         }
+        setState((prev) => ({ ...prev, loading: false }));
 
         return response;
       } catch (error) {

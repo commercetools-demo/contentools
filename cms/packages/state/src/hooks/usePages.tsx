@@ -42,6 +42,7 @@ export const usePages = () => {
   // Actions
   const fetchPages = useCallback(async (hydratedUrl: string) => {
     try {
+      setState((prev) => ({ ...prev, loading: true, error: null }));
       const pagesFromApi = await fetchPagesApi(hydratedUrl);
       const pages = pagesFromApi.map((item) => item.value);
       const states = pagesFromApi.reduce(
@@ -51,8 +52,6 @@ export const usePages = () => {
         },
         {} as Record<string, StateInfo<Page>>
       );
-      console.log('pages', pages);
-      console.log('states', states);
       setState((prev) => ({
         ...prev,
         pages: pages,
