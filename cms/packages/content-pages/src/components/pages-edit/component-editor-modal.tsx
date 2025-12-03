@@ -1,32 +1,27 @@
-import React, { useEffect, useState } from 'react';
-import {
-  getStateType,
-  Modal,
-  StateTag,
-  ConfirmationModal,
-  useModalState,
-} from '@commercetools-demo/contentools-ui-components';
-import Spacings from '@commercetools-uikit/spacings';
-import Text from '@commercetools-uikit/text';
-import {
-  ContentItem,
-  EContentType,
-  EStateType,
-  Page,
-  PageVersionInfo,
-} from '@commercetools-demo/contentools-types';
 import PropertyEditor from '@commercetools-demo/contentools-property-editor';
 import {
   useStatePages,
-  useStateStateManagement,
-  useStateVersion,
+  useStateStateManagement
 } from '@commercetools-demo/contentools-state';
-import SecondaryButton from '@commercetools-uikit/secondary-button';
+import {
+  ContentItem,
+  EContentType,
+  EStateType
+} from '@commercetools-demo/contentools-types';
+import {
+  ConfirmationModal,
+  getStateType,
+  Modal,
+  StateTag,
+  useModalState,
+} from '@commercetools-demo/contentools-ui-components';
 import PrimaryButton from '@commercetools-uikit/primary-button';
-import Stamp from '@commercetools-uikit/stamp';
-import styled from 'styled-components';
-import { CONETNT_ITEMS_IN_PAGE_SCOPE } from '../../constants';
+import SecondaryButton from '@commercetools-uikit/secondary-button';
+import Spacings from '@commercetools-uikit/spacings';
+import Text from '@commercetools-uikit/text';
 import isEqual from 'fast-deep-equal';
+import React, { useEffect, useState } from 'react';
+import { CONETNT_ITEMS_IN_PAGE_SCOPE } from '../../constants';
 
 interface Props {
   isOpen: boolean;
@@ -114,6 +109,7 @@ const ComponentEditorModal: React.FC<Props> = ({
 
   const handleClose = () => {
     onClose();
+    confirmationModalState.closeModal();
     setChangedContentItem(undefined);
   };
 

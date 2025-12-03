@@ -41,7 +41,7 @@ const ModalContainer = styled.div<{ isVisible: boolean; size: number }>`
   max-width: 600px;
   min-width: 400px;
   background-color: white;
-  border-radius: 8px;
+  border-radius: 4px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
   z-index: 1001;
   transform: scale(${(props) => (props.isVisible ? '1' : '0.9')});
