@@ -9,7 +9,7 @@ import Text from '@commercetools-uikit/text';
 import LoadingSpinner from '@commercetools-uikit/loading-spinner';
 import styled from 'styled-components';
 import { ContentTypeData } from '@commercetools-demo/contentools-types';
-
+import { ContentTypeCard } from '@commercetools-demo/contentools-ui-components';
 interface Props {
   isOpen: boolean;
   onClose: () => void;
@@ -19,30 +19,6 @@ const ComponentLibraryGrid = styled.div`
   display: grid;
   grid-template-columns: 1fr;
   gap: 12px;
-`;
-
-const ComponentItem = styled.div`
-  padding: 12px;
-  border: 1px solid #e0e0e0;
-  border-radius: 4px;
-  cursor: grab;
-  background: white;
-  transition: all 0.2s;
-  user-select: none;
-
-  &:hover {
-    border-color: #007acc;
-    background: #f0f8ff;
-  }
-
-  &:active {
-    cursor: grabbing;
-  }
-
-  &.dragging {
-    opacity: 0.5;
-    transform: rotate(2deg);
-  }
 `;
 
 const LoadingContainer = styled.div`
@@ -85,34 +61,6 @@ const ComponentLibraryModal: React.FC<Props> = ({ isOpen, onClose }) => {
     setDraggingComponentType?.(null);
   };
 
-  const renderContentTypeItem = (contentType: ContentTypeData) => (
-    <ComponentItem
-      key={contentType.id}
-      className={draggingItemId === contentType.id ? 'dragging' : ''}
-      draggable
-      onDragStart={() => handleDragStart(contentType)}
-      onDragEnd={handleDragEnd}
-    >
-      <Spacings.Stack scale="xs">
-        <Text.Subheadline as="h4">
-          {contentType.metadata.icon && (
-            <span style={{ marginRight: '8px' }}>
-              {contentType.metadata.icon}
-            </span>
-          )}
-          {contentType.metadata.name}
-        </Text.Subheadline>
-        <Text.Detail tone="secondary">{contentType.metadata.type}</Text.Detail>
-        <Text.Detail tone="secondary">
-          <small>
-            {Object.keys(contentType.metadata.propertySchema || {}).length}{' '}
-            properties
-          </small>
-        </Text.Detail>
-      </Spacings.Stack>
-    </ComponentItem>
-  );
-
   return (
     <Modal
       isOpen={isOpen}
@@ -139,7 +87,16 @@ const ComponentLibraryModal: React.FC<Props> = ({ isOpen, onClose }) => {
 
         {contentTypes && contentTypes.length > 0 && (
           <ComponentLibraryGrid>
-            {contentTypes.map(renderContentTypeItem)}
+            {contentTypes.map((contentType) => (
+              <ContentTypeCard
+                key={contentType.id}
+                contentType={contentType}
+                className={draggingItemId === contentType.id ? 'dragging' : ''}
+                draggable
+                onDragStart={() => handleDragStart(contentType)}
+                onDragEnd={handleDragEnd}
+              />
+            ))}
           </ComponentLibraryGrid>
         )}
 

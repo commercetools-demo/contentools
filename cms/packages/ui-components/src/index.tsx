@@ -5,3 +5,4 @@ export type { ModalState } from './hooks/use-modal-state';
 export { default as SelectInput } from './components/select';
 export { default as MultilineTextInput } from './components/text-area';
 export { default as StateTag, getStateType } from './components/state-tag';
+export { default as ContentTypeCard } from './components/content-type-card';
