@@ -154,6 +154,7 @@ export async function updateContentItemEndpoint(
       method: 'PUT',
       body: JSON.stringify({ value: data }),
       headers: {
+        'Content-Type': 'application/json',
         'x-project-key': projectKey,
         'Authorization': `Bearer ${jwtToken}`,
       },
