@@ -15,8 +15,8 @@ export class GCPFileController implements FileController {
     this.storage = new Storage({
       projectId: process.env.GCP_PROJECT_ID,
       credentials: {
-        client_email: process.env.GCP_CLIENT_EMAIL,
-        private_key: process.env.GCP_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+        client_email: process.env.GCP_STORAGE_SERVICE_ACCOUNT_CLIENT_EMAIL,
+        private_key: process.env.GCP_STORAGE_SERVICE_ACCOUNT_PRIVATE_KEY?.replace(/\\n/g, '\n'),
       },
     });
   }

@@ -19,8 +19,8 @@ export function initializeFirestore(): Firestore {
   try {
     const projectId = process.env.GCP_PROJECT_ID;
     const databaseId = process.env.GCP_FIRESTORE_DATABASE_ID;
-    const clientEmail = process.env.GCP_SERVICE_ACCOUNT_CLIENT_EMAIL;
-    const privateKey = process.env.GCP_SERVICE_ACCOUNT_PRIVATE_KEY;
+    const clientEmail = process.env.GCP_FIRESTORE_SERVICE_ACCOUNT_CLIENT_EMAIL;
+    const privateKey = process.env.GCP_FIRESTORE_SERVICE_ACCOUNT_PRIVATE_KEY;
 
     if (!projectId || !databaseId) {
       throw new Error(
