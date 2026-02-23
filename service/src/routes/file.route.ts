@@ -7,6 +7,7 @@ import { bundleCode } from '../utils/bundler.utils';
 import { CONTENT_TYPE_CONTAINER } from '../constants';
 import { validateJwt } from '../middleware/jwt.middleware';
 import { validateProject } from '../middleware/project.middleware';
+import { requireProjectKey } from '../middleware/project-key.middleware';
 
 const fileRouter = Router();
 
@@ -45,7 +46,7 @@ fileRouter.post(
   }) as RequestHandler
 );
 
-fileRouter.get('/:businessUnitKey/media-library', (async (req, res, next) => {
+fileRouter.get('/:businessUnitKey/media-library', requireProjectKey, (async (req, res, next) => {
   try {
     const { businessUnitKey } = req.params;
 

@@ -16,6 +16,7 @@ import { CONTENT_PAGE_CONTAINER, PAGE_STATE_CONTAINER } from '../constants';
 import { PageState } from '../controllers/page.controller';
 import { validateJwt } from '../middleware/jwt.middleware';
 import { validateProject } from '../middleware/project.middleware';
+import { requireProjectKey } from '../middleware/project-key.middleware';
 
 const pageStateRouter = Router();
 const dependencies: StateControllerDependencies = {
@@ -27,6 +28,7 @@ const PageStateController = withDependencies<PageState>(dependencies);
 // Get states for a content item
 pageStateRouter.get(
   '/:businessUnitKey/pages/:key/states',
+  requireProjectKey,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { businessUnitKey, key } = req.params;

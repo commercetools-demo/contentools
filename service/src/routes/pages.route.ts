@@ -4,10 +4,11 @@ import * as PageController from '../controllers/page.controller';
 import CustomError from '../errors/custom.error';
 import { validateJwt } from '../middleware/jwt.middleware';
 import { validateProject } from '../middleware/project.middleware';
+import { requireProjectKey } from '../middleware/project-key.middleware';
 
 const pagesRouter = Router();
 
-pagesRouter.get('/:businessUnitKey/pages', async (req, res, next) => {
+pagesRouter.get('/:businessUnitKey/pages', requireProjectKey, async (req, res, next) => {
   try {
     const { businessUnitKey } = req.params;
 
@@ -19,7 +20,7 @@ pagesRouter.get('/:businessUnitKey/pages', async (req, res, next) => {
   }
 });
 
-pagesRouter.get('/:businessUnitKey/pages/:key', async (req, res, next) => {
+pagesRouter.get('/:businessUnitKey/pages/:key', requireProjectKey, async (req, res, next) => {
   try {
     const { businessUnitKey, key } = req.params;
     const object = await PageController.getPageWithStates(businessUnitKey, key);
@@ -95,6 +96,7 @@ pagesRouter.delete('/:businessUnitKey/pages/:key', validateJwt, validateProject,
 
 pagesRouter.post(
   '/:businessUnitKey/published/pages/query',
+  requireProjectKey,
   async (req, res, next) => {
     try {
       const { businessUnitKey } = req.params;
@@ -125,6 +127,7 @@ pagesRouter.post(
 
 pagesRouter.post(
   '/:businessUnitKey/preview/pages/query',
+  requireProjectKey,
   async (req, res, next) => {
     try {
       const { businessUnitKey } = req.params;
@@ -154,6 +157,7 @@ pagesRouter.post(
 
 pagesRouter.get(
   '/:businessUnitKey/published/pages/:key',
+  requireProjectKey,
   async (req, res, next) => {
     try {
       const { key, businessUnitKey } = req.params;
@@ -178,6 +182,7 @@ pagesRouter.get(
 
 pagesRouter.get(
   '/:businessUnitKey/preview/pages/:key',
+  requireProjectKey,
   async (req, res, next) => {
     try {
       const { key, businessUnitKey } = req.params;
