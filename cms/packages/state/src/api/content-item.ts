@@ -3,7 +3,7 @@ import { fetchApi } from '../api';
 /**
  * Fetch all content items
  */
-export async function fetchContentItemsEndpoint(baseURL: string): Promise<
+export async function fetchContentItemsEndpoint(baseURL: string, projectKey: string): Promise<
   {
     container: string;
     key: string;
@@ -12,7 +12,11 @@ export async function fetchContentItemsEndpoint(baseURL: string): Promise<
     states: StateInfo<ContentItem>;
   }[]
 > {
-  const response = await fetch(`${baseURL}/content-items`);
+  const response = await fetch(`${baseURL}/content-items`, {
+    headers: {
+      'x-project-key': projectKey,
+    },
+  });
 
   if (!response.ok) {
     throw new Error(
@@ -29,10 +33,12 @@ export async function fetchContentItemsEndpoint(baseURL: string): Promise<
  */
 export async function fetchPreviewContentItemEndpoint(
   baseURL: string,
+  projectKey: string,
   key: string
 ): Promise<ContentItem> {
   const response = await fetch(`${baseURL}/preview/content-items/${key}`, {
     headers: {
+      'x-project-key': projectKey,
       'Content-Type': 'application/json',
     },
   }).then((response) => response.json());
@@ -44,12 +50,14 @@ export async function fetchPreviewContentItemEndpoint(
  */
 export async function queryContentItemEndpoint(
   baseURL: string,
+  projectKey: string,
   query: string
 ): Promise<ContentItem> {
   const response = await fetch(`${baseURL}/preview/content-items/query`, {
     method: 'POST',
     body: JSON.stringify({ query }),
     headers: {
+      'x-project-key': projectKey,
       'Content-Type': 'application/json',
     },
   }).then((response) => response.json());
@@ -61,10 +69,12 @@ export async function queryContentItemEndpoint(
  */
 export async function fetchRawContentItemEndpoint(
   baseURL: string,
+  projectKey: string,
   key: string
 ): Promise<ContentItem> {
   const response = await fetch(`${baseURL}/content-items/${key}`, {
     headers: {
+      'x-project-key': projectKey,
       'Content-Type': 'application/json',
     },
   }).then((response) => response.json());
@@ -76,10 +86,12 @@ export async function fetchRawContentItemEndpoint(
  */
 export async function fetchPublishedContentItemEndpoint(
   baseURL: string,
+  projectKey: string,
   key: string
 ): Promise<ContentItem> {
   const response = await fetch(`${baseURL}/published/content-items/${key}`, {
     headers: {
+      'x-project-key': projectKey,
       'Content-Type': 'application/json',
     },
   }).then((response) => response.json());
@@ -91,12 +103,14 @@ export async function fetchPublishedContentItemEndpoint(
  */
 export async function queryPublishedContentItemEndpoint(
   baseURL: string,
+  projectKey: string,
   query: string
 ): Promise<ContentItem> {
   const response = await fetch(`${baseURL}/published/content-items/query`, {
     method: 'POST',
     body: JSON.stringify({ query }),
     headers: {
+      'x-project-key': projectKey,
       'Content-Type': 'application/json',
     },
   }).then((response) => response.json());
@@ -108,12 +122,16 @@ export async function queryPublishedContentItemEndpoint(
  */
 export async function createContentItemEndpoint(
   baseURL: string,
+  projectKey: string,
+  jwtToken: string | undefined,
   data: ContentItem
 ): Promise<ContentItem> {
   const response = await fetchApi<ContentItem>(`${baseURL}/content-items`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      'x-project-key': projectKey,
+      'Authorization': `Bearer ${jwtToken}`,
     },
     body: JSON.stringify({ value: data }),
   });
@@ -125,6 +143,8 @@ export async function createContentItemEndpoint(
  */
 export async function updateContentItemEndpoint(
   baseURL: string,
+  projectKey: string,
+  jwtToken: string | undefined,
   key: string,
   data: ContentItem
 ): Promise<ContentItem> {
@@ -133,6 +153,10 @@ export async function updateContentItemEndpoint(
     {
       method: 'PUT',
       body: JSON.stringify({ value: data }),
+      headers: {
+        'x-project-key': projectKey,
+        'Authorization': `Bearer ${jwtToken}`,
+      },
     }
   );
   return response.value;
@@ -143,10 +167,16 @@ export async function updateContentItemEndpoint(
  */
 export async function deleteContentItemEndpoint(
   baseURL: string,
+  projectKey: string,
+  jwtToken: string | undefined,
   key: string
 ): Promise<void> {
   const response = await fetch(`${baseURL}/content-items/${key}`, {
     method: 'DELETE',
+    headers: {
+      'x-project-key': projectKey,
+      'Authorization': `Bearer ${jwtToken}`,
+    },
   });
 
   if (!response.ok) {

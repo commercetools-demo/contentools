@@ -21,6 +21,10 @@ export interface PageRendererProps {
   businessUnitKey?: string;
   /** Locale for rendering (optional) */
   locale?: string;
+  /** The JWT token to use for API calls */
+  jwtToken?: string;
+  /** The project key to use for API calls */
+  projectKey: string;
   /** Additional CSS class name */
   className?: string;
   /** Show loading state */

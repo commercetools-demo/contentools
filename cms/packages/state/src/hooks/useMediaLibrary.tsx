@@ -33,7 +33,7 @@ const initialState: MediaLibraryState = {
   uploadError: null,
 };
 
-export const useMediaLibrary = () => {
+export const useMediaLibrary = (projectKey: string, jwtToken?: string) => {
   const [state, setState] = useState<MediaLibraryState>(initialState);
 
   // Actions
@@ -48,6 +48,8 @@ export const useMediaLibrary = () => {
         setState((prev) => ({ ...prev, loading: true, error: null }));
         const result = await fetchMediaLibrary(
           hydratedUrl,
+          projectKey,
+          jwtToken,
           extensions,
           page,
           limit
@@ -85,7 +87,7 @@ export const useMediaLibrary = () => {
     ) => {
       try {
         setState((prev) => ({ ...prev, uploading: true, uploadError: null }));
-        const result = await uploadFile(hydratedUrl, file, title, description);
+        const result = await uploadFile(hydratedUrl, projectKey, jwtToken, file, title, description);
 
         // Create a new MediaFile object for the uploaded file
         const newMediaFile: MediaFile = {

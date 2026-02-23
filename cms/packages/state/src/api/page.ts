@@ -11,6 +11,8 @@ import { fetchApi } from '../api';
  */
 export async function addComponentToPageApi(
   baseURL: string,
+  projectKey: string,
+  jwtToken: string | undefined,
   key: string,
   componentType: string,
   rowId: string,
@@ -19,6 +21,10 @@ export async function addComponentToPageApi(
   return fetchApi<Page>(`${baseURL}/pages/${key}/components`, {
     method: 'POST',
     body: JSON.stringify({ componentType, rowId, cellId }),
+    headers: {
+      'x-project-key': projectKey,
+      'Authorization': `Bearer ${jwtToken}`,
+    },
   });
 }
 
@@ -27,6 +33,8 @@ export async function addComponentToPageApi(
  */
 export async function moveComponentInPageApi(
   baseURL: string,
+  projectKey: string,
+  jwtToken: string | undefined,
   key: string,
   contentItemKey: string,
   sourceRowId: string,
@@ -44,6 +52,10 @@ export async function moveComponentInPageApi(
         targetRowId,
         targetCellId,
       }),
+      headers: {
+        'x-project-key': projectKey,
+        'Authorization': `Bearer ${jwtToken}`,
+      },
     }
   );
 }
@@ -53,11 +65,17 @@ export async function moveComponentInPageApi(
  */
 export async function removeRowFromPageApi(
   baseURL: string,
+  projectKey: string,
+  jwtToken: string | undefined,
   key: string,
   rowId: string
 ): Promise<ApiResponse<Page>> {
   return fetchApi<Page>(`${baseURL}/pages/${key}/rows/${rowId}`, {
     method: 'DELETE',
+    headers: {
+      'x-project-key': projectKey,
+      'Authorization': `Bearer ${jwtToken}`,
+    },
   });
 }
 
@@ -66,10 +84,16 @@ export async function removeRowFromPageApi(
  */
 export async function addRowToPageApi(
   baseURL: string,
+  projectKey: string,
+  jwtToken: string | undefined,
   key: string
 ): Promise<ApiResponse<Page>> {
   return fetchApi<Page>(`${baseURL}/pages/${key}/rows`, {
     method: 'POST',
+    headers: {
+      'x-project-key': projectKey,
+      'Authorization': `Bearer ${jwtToken}`,
+    },
   });
 }
 
@@ -78,6 +102,8 @@ export async function addRowToPageApi(
  */
 export async function updateCellSpanInPageApi(
   baseURL: string,
+  projectKey: string,
+  jwtToken: string | undefined,
   key: string,
   rowId: string,
   cellId: string,
@@ -92,6 +118,10 @@ export async function updateCellSpanInPageApi(
     {
       method: 'PUT',
       body: JSON.stringify({ updates }),
+      headers: {
+        'x-project-key': projectKey,
+        'Authorization': `Bearer ${jwtToken}`,
+      },
     }
   );
 }
@@ -101,6 +131,8 @@ export async function updateCellSpanInPageApi(
  */
 export async function updateComponentInPageApi(
   baseURL: string,
+  projectKey: string,
+  jwtToken: string | undefined,
   key: string,
   contentItemKey: string,
   updates: Partial<ContentItem>
@@ -110,6 +142,10 @@ export async function updateComponentInPageApi(
     {
       method: 'PUT',
       body: JSON.stringify({ updates }),
+      headers: {
+        'x-project-key': projectKey,
+        'Authorization': `Bearer ${jwtToken}`,
+      },
     }
   );
 }
@@ -119,6 +155,8 @@ export async function updateComponentInPageApi(
  */
 export async function removeComponentFromPageApi(
   baseURL: string,
+  projectKey: string,
+  jwtToken: string | undefined,
   key: string,
   contentItemKey: string
 ): Promise<ApiResponse<Page>> {
@@ -126,12 +164,17 @@ export async function removeComponentFromPageApi(
     `${baseURL}/pages/${key}/components/${contentItemKey}`,
     {
       method: 'DELETE',
+      headers: {
+        'x-project-key': projectKey,
+        'Authorization': `Bearer ${jwtToken}`,
+      },
     }
   );
 }
 
 export const fetchPagesApi = async (
-  baseUrl: string
+  baseUrl: string,
+  projectKey: string
 ): Promise<
   {
     container: string;
@@ -142,7 +185,11 @@ export const fetchPagesApi = async (
   }[]
 > => {
   try {
-    const response = await fetch(`${baseUrl}/pages`);
+    const response = await fetch(`${baseUrl}/pages`, {
+      headers: {
+        'x-project-key': projectKey,
+      },
+    });
 
     if (!response.ok) {
       throw new Error(
@@ -158,10 +205,15 @@ export const fetchPagesApi = async (
 
 export const fetchPageApi = async (
   baseUrl: string,
+  projectKey: string,
   key: string
 ): Promise<Page> => {
   try {
-    const response = await fetch(`${baseUrl}/pages/${key}`);
+    const response = await fetch(`${baseUrl}/pages/${key}`, {
+      headers: {
+        'x-project-key': projectKey,
+      },
+    });
     if (!response.ok) {
       throw new Error(
         `API request failed: ${response.status} ${response.statusText}`
@@ -175,10 +227,15 @@ export const fetchPageApi = async (
 
 export const fetchPublishedPageApi = async (
   baseUrl: string,
+  projectKey: string,
   key: string
 ): Promise<Page> => {
   try {
-    const response = await fetch(`${baseUrl}/published/pages/${key}`);
+    const response = await fetch(`${baseUrl}/published/pages/${key}`, {
+      headers: {
+        'x-project-key': projectKey,
+      },
+    });
     if (!response.ok) {
       throw new Error(
         `API request failed: ${response.status} ${response.statusText}`
@@ -192,12 +249,18 @@ export const fetchPublishedPageApi = async (
 
 export const createPageApi = async (
   hydratedUrl: string,
+  projectKey: string,
+  jwtToken: string | undefined,
   page: Omit<Page, 'key' | 'layout' | 'components'>
 ): Promise<Page> => {
   try {
     const response = await fetchApi<Page>(`${hydratedUrl}/pages`, {
       method: 'POST',
       body: JSON.stringify({ value: page }),
+      headers: {
+        'x-project-key': projectKey,
+        'Authorization': `Bearer ${jwtToken}`,
+      },
     });
     return response.value;
   } catch (error) {
@@ -207,12 +270,18 @@ export const createPageApi = async (
 
 export const updatePageApi = async (
   baseUrl: string,
+  projectKey: string,
+  jwtToken: string | undefined,
   page: Page
 ): Promise<Page> => {
   try {
     const response = await fetchApi<Page>(`${baseUrl}/pages/${page.key}`, {
       method: 'PUT',
       body: JSON.stringify({ value: page }),
+      headers: {
+        'x-project-key': projectKey,
+        'Authorization': `Bearer ${jwtToken}`,
+      },
     });
     return response.value as Page;
   } catch (error) {
@@ -222,11 +291,17 @@ export const updatePageApi = async (
 
 export const deletePageApi = async (
   baseUrl: string,
+  projectKey: string,
+  jwtToken: string | undefined,
   key: string
 ): Promise<void> => {
   try {
     const response = await fetch(`${baseUrl}/pages/${key}`, {
       method: 'DELETE',
+      headers: {
+        'x-project-key': projectKey,
+        'Authorization': `Bearer ${jwtToken}`,
+      },
     });
 
     if (!response.ok) {
@@ -244,6 +319,7 @@ export const deletePageApi = async (
  */
 export async function queryPageEndpoint(
   baseURL: string,
+  projectKey: string,
   query: string
 ): Promise<Page> {
   const response = await fetch(`${baseURL}/preview/pages/query`, {
@@ -251,6 +327,7 @@ export async function queryPageEndpoint(
     body: JSON.stringify({ query }),
     headers: {
       'Content-Type': 'application/json',
+      'x-project-key': projectKey,
     },
   }).then((response) => response.json());
   return response;
@@ -261,6 +338,7 @@ export async function queryPageEndpoint(
  */
 export async function queryPublishedPageEndpoint(
   baseURL: string,
+  projectKey: string,
   query: string
 ): Promise<Page> {
   const response = await fetch(`${baseURL}/published/pages/query`, {
@@ -268,6 +346,7 @@ export async function queryPublishedPageEndpoint(
     body: JSON.stringify({ query }),
     headers: {
       'Content-Type': 'application/json',
+      'x-project-key': projectKey,
     },
   }).then((response) => response.json());
   return response;

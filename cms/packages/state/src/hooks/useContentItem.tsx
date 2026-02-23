@@ -23,14 +23,14 @@ const initialState: ContentItemState = {
   error: null,
 };
 
-export const useContentItem = () => {
+export const useContentItem = (projectKey: string, jwtToken?: string) => {
   const [state, setState] = useState<ContentItemState>(initialState);
 
   // Actions
   const fetchContentItems = useCallback(async (hydratedUrl: string) => {
     try {
       setState((prev) => ({ ...prev, loading: true, error: null }));
-      const result = await fetchContentItemsEndpoint(hydratedUrl);
+      const result = await fetchContentItemsEndpoint(hydratedUrl, projectKey);
 
       const items = result.map((item) => item.value);
       const states = result.reduce((acc, item) => {
@@ -63,7 +63,7 @@ export const useContentItem = () => {
     async (hydratedUrl: string, key: string) => {
       try {
         setState((prev) => ({ ...prev, loading: true, error: null }));
-        const item = await fetchPreviewContentItemEndpoint(hydratedUrl, key);
+        const item = await fetchPreviewContentItemEndpoint(hydratedUrl, projectKey, key);
 
         setState((prev) => ({
           ...prev,
@@ -90,7 +90,7 @@ export const useContentItem = () => {
     async (hydratedUrl: string, key: string) => {
       try {
         setState((prev) => ({ ...prev, loading: true, error: null }));
-        const item = await fetchRawContentItemEndpoint(hydratedUrl, key);
+        const item = await fetchRawContentItemEndpoint(hydratedUrl, projectKey, key);
 
         setState((prev) => ({
           ...prev,
@@ -117,7 +117,7 @@ export const useContentItem = () => {
     async (hydratedUrl: string, key: string) => {
       try {
         setState((prev) => ({ ...prev, loading: true, error: null }));
-        const item = await fetchPublishedContentItemEndpoint(hydratedUrl, key);
+        const item = await fetchPublishedContentItemEndpoint(hydratedUrl, projectKey, key);
 
         setState((prev) => ({
           ...prev,
@@ -145,7 +145,7 @@ export const useContentItem = () => {
       try {
         setState((prev) => ({ ...prev, loading: true, error: null }));
 
-        const createdItem = await createContentItemEndpoint(hydratedUrl, item);
+        const createdItem = await createContentItemEndpoint(hydratedUrl, projectKey, jwtToken, item);
 
         setState((prev) => ({
           ...prev,
@@ -175,6 +175,8 @@ export const useContentItem = () => {
         setState((prev) => ({ ...prev, loading: true, error: null }));
         const updatedItem = await updateContentItemEndpoint(
           hydratedUrl,
+          projectKey,
+          jwtToken,
           key,
           item
         );
@@ -207,7 +209,7 @@ export const useContentItem = () => {
     async (hydratedUrl: string, key: string) => {
       try {
         setState((prev) => ({ ...prev, loading: true, error: null }));
-        await deleteContentItemEndpoint(hydratedUrl, key);
+        await deleteContentItemEndpoint(hydratedUrl, projectKey, jwtToken, key);
 
         setState((prev) => ({
           ...prev,
@@ -313,14 +315,14 @@ export const useContentItem = () => {
 
   const queryContentItem = useCallback(
     async (hydratedUrl: string, query: string) => {
-      return await queryContentItemEndpoint(hydratedUrl, query);
+      return await queryContentItemEndpoint(hydratedUrl, projectKey, query);
     },
     []
   );
 
   const queryPublishedContentItem = useCallback(
     async (hydratedUrl: string, query: string) => {
-      return await queryPublishedContentItemEndpoint(hydratedUrl, query);
+      return await queryPublishedContentItemEndpoint(hydratedUrl, projectKey, query);
     },
     []
   );
