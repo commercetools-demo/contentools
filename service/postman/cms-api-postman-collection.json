@@ -1,21 +1,19 @@
 {
   "info": {
     "name": "CMS Service API",
-    "description": "Comprehensive API collection for CMS Service endpoints",
-    "version": "1.0.0",
+    "description": "CMS Service API. Fetch endpoints require header x-project-key (set in environment). Create/Update/Delete require Authorization: Bearer {{bearer_token}} from POST /authenticate-project.",
+    "version": "2.0.0",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "auth": {
-    "type": "bearer",
-    "bearer": [
-      {
-        "key": "token",
-        "value": "{{bearer_token}}",
-        "type": "string"
-      }
-    ]
+    "type": "noauth"
   },
   "variable": [
+    {
+      "key": "project_key",
+      "value": "",
+      "type": "string"
+    },
     {
       "key": "base_url",
       "value": "http://localhost:8080/service",
@@ -69,6 +67,86 @@
   ],
   "item": [
     {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Authenticate Project",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"ct_client_id\": \"{{ct_client_id}}\",\n  \"ct_client_secret\": \"{{ct_client_secret}}\",\n  \"ct_project_key\": \"{{ct_project_key}}\",\n  \"ct_region\": \"europe-west1.gcp\",\n  \"ct_scope\": \"manage_project:my-project\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/authenticate-project",
+              "host": ["{{base_url}}"],
+              "path": ["authenticate-project"]
+            },
+            "description": "Returns JWT token. Set ct_client_id, ct_client_secret, ct_project_key in environment. Copy response token to bearer_token and project_key."
+          },
+          "response": []
+        },
+        {
+          "name": "Refresh JWT",
+          "request": {
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearer_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/refresh-jwt",
+              "host": ["{{base_url}}"],
+              "path": ["refresh-jwt"]
+            },
+            "description": "Requires valid or expired Bearer token. Returns new JWT."
+          },
+          "response": []
+        },
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-project-key",
+                "value": "{{project_key}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/health",
+              "host": ["{{base_url}}"],
+              "path": ["health"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
       "name": "Content Types",
       "item": [
         {
@@ -76,6 +154,11 @@
           "request": {
             "method": "GET",
             "header": [
+              {
+                "key": "x-project-key",
+                "value": "{{project_key}}",
+                "type": "text"
+              },
               {
                 "key": "Content-Type",
                 "value": "application/json"
@@ -95,6 +178,11 @@
             "method": "GET",
             "header": [
               {
+                "key": "x-project-key",
+                "value": "{{project_key}}",
+                "type": "text"
+              },
+              {
                 "key": "Content-Type",
                 "value": "application/json"
               }
@@ -111,20 +199,21 @@
           "name": "Create Content Type",
           "request": {
             "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [{"key": "token", "value": "{{bearer_token}}", "type": "string"}]
+            },
             "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
+              {"key": "Content-Type", "value": "application/json"}
             ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"value\": {\n    \"name\": \"Hero Banner\",\n    \"schema\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"title\": {\n          \"type\": \"string\"\n        },\n        \"subtitle\": {\n          \"type\": \"string\"\n        },\n        \"image\": {\n          \"type\": \"string\"\n        }\n      }\n    },\n    \"renderer\": \"HeroBannerRenderer\"\n  }\n}"
             },
             "url": {
-              "raw": "{{base_url}}/content-type/{{content_type_key}}",
+              "raw": "{{base_url}}/content-type",
               "host": ["{{base_url}}"],
-              "path": ["content-type", "{{content_type_key}}"]
+              "path": ["content-type"]
             }
           },
           "response": []
@@ -133,6 +222,10 @@
           "name": "Update Content Type",
           "request": {
             "method": "PUT",
+            "auth": {
+              "type": "bearer",
+              "bearer": [{"key": "token", "value": "{{bearer_token}}", "type": "string"}]
+            },
             "header": [
               {
                 "key": "Content-Type",
@@ -155,6 +248,10 @@
           "name": "Delete Content Type",
           "request": {
             "method": "DELETE",
+            "auth": {
+              "type": "bearer",
+              "bearer": [{"key": "token", "value": "{{bearer_token}}", "type": "string"}]
+            },
             "header": [
               {
                 "key": "Content-Type",
@@ -179,10 +276,8 @@
           "request": {
             "method": "GET",
             "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
+              {"key": "x-project-key", "value": "{{project_key}}", "type": "text"},
+              {"key": "Content-Type", "value": "application/json"}
             ],
             "url": {
               "raw": "{{base_url}}/{{business_unit_key}}/content-items",
@@ -197,10 +292,8 @@
           "request": {
             "method": "GET",
             "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
+              {"key": "x-project-key", "value": "{{project_key}}", "type": "text"},
+              {"key": "Content-Type", "value": "application/json"}
             ],
             "url": {
               "raw": "{{base_url}}/{{business_unit_key}}/content-items/content-type/{{content_type_key}}",
@@ -215,10 +308,8 @@
           "request": {
             "method": "GET",
             "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
+              {"key": "x-project-key", "value": "{{project_key}}", "type": "text"},
+              {"key": "Content-Type", "value": "application/json"}
             ],
             "url": {
               "raw": "{{base_url}}/{{business_unit_key}}/content-items/{{content_item_key}}",
@@ -233,10 +324,8 @@
           "request": {
             "method": "GET",
             "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
+              {"key": "x-project-key", "value": "{{project_key}}", "type": "text"},
+              {"key": "Content-Type", "value": "application/json"}
             ],
             "url": {
               "raw": "{{base_url}}/{{business_unit_key}}/published/content-items/{{content_item_key}}",
@@ -251,10 +340,8 @@
           "request": {
             "method": "GET",
             "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
+              {"key": "x-project-key", "value": "{{project_key}}", "type": "text"},
+              {"key": "Content-Type", "value": "application/json"}
             ],
             "url": {
               "raw": "{{base_url}}/{{business_unit_key}}/preview/content-items/{{content_item_key}}",
@@ -268,20 +355,21 @@
           "name": "Create Content Item",
           "request": {
             "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [{"key": "token", "value": "{{bearer_token}}", "type": "string"}]
+            },
             "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
+              {"key": "Content-Type", "value": "application/json"}
             ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"value\": {\n    \"type\": \"hero-banner\",\n    \"name\": \"Sample Hero Banner\",\n    \"data\": {\n      \"title\": \"Welcome to Our Site\",\n      \"subtitle\": \"Discover amazing content\",\n      \"image\": \"https://example.com/hero-image.jpg\"\n    }\n  }\n}"
             },
             "url": {
-              "raw": "{{base_url}}/{{business_unit_key}}/content-items/{{content_item_key}}",
+              "raw": "{{base_url}}/{{business_unit_key}}/content-items",
               "host": ["{{base_url}}"],
-              "path": ["{{business_unit_key}}", "content-items", "{{content_item_key}}"]
+              "path": ["{{business_unit_key}}", "content-items"]
             }
           },
           "response": []
@@ -290,6 +378,10 @@
           "name": "Update Content Item",
           "request": {
             "method": "PUT",
+            "auth": {
+              "type": "bearer",
+              "bearer": [{"key": "token", "value": "{{bearer_token}}", "type": "string"}]
+            },
             "header": [
               {
                 "key": "Content-Type",
@@ -312,6 +404,10 @@
           "name": "Delete Content Item",
           "request": {
             "method": "DELETE",
+            "auth": {
+              "type": "bearer",
+              "bearer": [{"key": "token", "value": "{{bearer_token}}", "type": "string"}]
+            },
             "header": [
               {
                 "key": "Content-Type",
@@ -331,10 +427,8 @@
           "request": {
             "method": "POST",
             "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
+              {"key": "x-project-key", "value": "{{project_key}}", "type": "text"},
+              {"key": "Content-Type", "value": "application/json"}
             ],
             "body": {
               "mode": "raw",
@@ -353,10 +447,8 @@
           "request": {
             "method": "POST",
             "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
+              {"key": "x-project-key", "value": "{{project_key}}", "type": "text"},
+              {"key": "Content-Type", "value": "application/json"}
             ],
             "body": {
               "mode": "raw",
@@ -380,10 +472,8 @@
           "request": {
             "method": "GET",
             "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
+              {"key": "x-project-key", "value": "{{project_key}}", "type": "text"},
+              {"key": "Content-Type", "value": "application/json"}
             ],
             "url": {
               "raw": "{{base_url}}/{{business_unit_key}}/pages",
@@ -398,10 +488,8 @@
           "request": {
             "method": "GET",
             "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
+              {"key": "x-project-key", "value": "{{project_key}}", "type": "text"},
+              {"key": "Content-Type", "value": "application/json"}
             ],
             "url": {
               "raw": "{{base_url}}/{{business_unit_key}}/pages/{{page_key}}",
@@ -415,20 +503,21 @@
           "name": "Create Page",
           "request": {
             "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [{"key": "token", "value": "{{bearer_token}}", "type": "string"}]
+            },
             "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
+              {"key": "Content-Type", "value": "application/json"}
             ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"value\": {\n    \"name\": \"Homepage\",\n    \"content\": {\n      \"layout\": \"default\",\n      \"sections\": [\n        {\n          \"type\": \"hero\",\n          \"data\": {\n            \"title\": \"Welcome\",\n            \"subtitle\": \"To our amazing site\"\n          }\n        }\n      ]\n    }\n  }\n}"
             },
             "url": {
-              "raw": "{{base_url}}/{{business_unit_key}}/pages/{{page_key}}",
+              "raw": "{{base_url}}/{{business_unit_key}}/pages",
               "host": ["{{base_url}}"],
-              "path": ["{{business_unit_key}}", "pages", "{{page_key}}"]
+              "path": ["{{business_unit_key}}", "pages"]
             }
           },
           "response": []
@@ -437,6 +526,10 @@
           "name": "Update Page",
           "request": {
             "method": "PUT",
+            "auth": {
+              "type": "bearer",
+              "bearer": [{"key": "token", "value": "{{bearer_token}}", "type": "string"}]
+            },
             "header": [
               {
                 "key": "Content-Type",
@@ -459,6 +552,10 @@
           "name": "Delete Page",
           "request": {
             "method": "DELETE",
+            "auth": {
+              "type": "bearer",
+              "bearer": [{"key": "token", "value": "{{bearer_token}}", "type": "string"}]
+            },
             "header": [
               {
                 "key": "Content-Type",
@@ -478,10 +575,8 @@
           "request": {
             "method": "POST",
             "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
+              {"key": "x-project-key", "value": "{{project_key}}", "type": "text"},
+              {"key": "Content-Type", "value": "application/json"}
             ],
             "body": {
               "mode": "raw",
@@ -500,10 +595,8 @@
           "request": {
             "method": "POST",
             "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
+              {"key": "x-project-key", "value": "{{project_key}}", "type": "text"},
+              {"key": "Content-Type", "value": "application/json"}
             ],
             "body": {
               "mode": "raw",
@@ -522,10 +615,8 @@
           "request": {
             "method": "GET",
             "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
+              {"key": "x-project-key", "value": "{{project_key}}", "type": "text"},
+              {"key": "Content-Type", "value": "application/json"}
             ],
             "url": {
               "raw": "{{base_url}}/{{business_unit_key}}/published/pages/{{page_key}}",
@@ -540,10 +631,8 @@
           "request": {
             "method": "GET",
             "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
+              {"key": "x-project-key", "value": "{{project_key}}", "type": "text"},
+              {"key": "Content-Type", "value": "application/json"}
             ],
             "url": {
               "raw": "{{base_url}}/{{business_unit_key}}/preview/pages/{{page_key}}",
@@ -562,6 +651,10 @@
           "name": "Upload File",
           "request": {
             "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [{"key": "token", "value": "{{bearer_token}}", "type": "string"}]
+            },
             "header": [],
             "body": {
               "mode": "formdata",
@@ -596,10 +689,8 @@
           "request": {
             "method": "GET",
             "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
+              {"key": "x-project-key", "value": "{{project_key}}", "type": "text"},
+              {"key": "Content-Type", "value": "application/json"}
             ],
             "url": {
               "raw": "{{base_url}}/{{business_unit_key}}/media-library?extensions=jpg,png,gif&page=1&limit=20",
@@ -627,11 +718,12 @@
           "name": "Compile and Upload",
           "request": {
             "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [{"key": "token", "value": "{{bearer_token}}", "type": "string"}]
+            },
             "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
+              {"key": "Content-Type", "value": "application/json"}
             ],
             "body": {
               "mode": "raw",
@@ -655,10 +747,8 @@
           "request": {
             "method": "GET",
             "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
+              {"key": "x-project-key", "value": "{{project_key}}", "type": "text"},
+              {"key": "Content-Type", "value": "application/json"}
             ],
             "url": {
               "raw": "{{base_url}}/datasource",
@@ -673,10 +763,8 @@
           "request": {
             "method": "GET",
             "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
+              {"key": "x-project-key", "value": "{{project_key}}", "type": "text"},
+              {"key": "Content-Type", "value": "application/json"}
             ],
             "url": {
               "raw": "{{base_url}}/datasource/{{datasource_key}}",
@@ -690,11 +778,12 @@
           "name": "Create Datasource",
           "request": {
             "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [{"key": "token", "value": "{{bearer_token}}", "type": "string"}]
+            },
             "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
+              {"key": "Content-Type", "value": "application/json"}
             ],
             "body": {
               "mode": "raw",
@@ -712,6 +801,10 @@
           "name": "Update Datasource",
           "request": {
             "method": "PUT",
+            "auth": {
+              "type": "bearer",
+              "bearer": [{"key": "token", "value": "{{bearer_token}}", "type": "string"}]
+            },
             "header": [
               {
                 "key": "Content-Type",
@@ -734,6 +827,10 @@
           "name": "Delete Datasource",
           "request": {
             "method": "DELETE",
+            "auth": {
+              "type": "bearer",
+              "bearer": [{"key": "token", "value": "{{bearer_token}}", "type": "string"}]
+            },
             "header": [
               {
                 "key": "Content-Type",
@@ -752,11 +849,12 @@
           "name": "Test Datasource",
           "request": {
             "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [{"key": "token", "value": "{{bearer_token}}", "type": "string"}]
+            },
             "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
+              {"key": "Content-Type", "value": "application/json"}
             ],
             "body": {
               "mode": "raw",
@@ -783,10 +881,8 @@
               "request": {
                 "method": "GET",
                 "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  }
+                  {"key": "x-project-key", "value": "{{project_key}}", "type": "text"},
+                  {"key": "Content-Type", "value": "application/json"}
                 ],
                 "url": {
                   "raw": "{{base_url}}/{{business_unit_key}}/content-items/{{content_item_key}}/states",
@@ -822,6 +918,10 @@
               "name": "Publish Content Item State",
               "request": {
                 "method": "PUT",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [{"key": "token", "value": "{{bearer_token}}", "type": "string"}]
+                },
                 "header": [
                   {
                     "key": "Content-Type",
@@ -850,6 +950,10 @@
               "name": "Delete Content Item Draft State",
               "request": {
                 "method": "DELETE",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [{"key": "token", "value": "{{bearer_token}}", "type": "string"}]
+                },
                 "header": [
                   {
                     "key": "Content-Type",
@@ -874,10 +978,8 @@
               "request": {
                 "method": "GET",
                 "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  }
+                  {"key": "x-project-key", "value": "{{project_key}}", "type": "text"},
+                  {"key": "Content-Type", "value": "application/json"}
                 ],
                 "url": {
                   "raw": "{{base_url}}/{{business_unit_key}}/pages/{{page_key}}/states",
@@ -913,6 +1015,10 @@
               "name": "Publish Page State",
               "request": {
                 "method": "PUT",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [{"key": "token", "value": "{{bearer_token}}", "type": "string"}]
+                },
                 "header": [
                   {
                     "key": "Content-Type",
@@ -941,6 +1047,10 @@
               "name": "Delete Page Draft State",
               "request": {
                 "method": "DELETE",
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [{"key": "token", "value": "{{bearer_token}}", "type": "string"}]
+                },
                 "header": [
                   {
                     "key": "Content-Type",
@@ -970,10 +1080,8 @@
               "request": {
                 "method": "GET",
                 "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  }
+                  {"key": "x-project-key", "value": "{{project_key}}", "type": "text"},
+                  {"key": "Content-Type", "value": "application/json"}
                 ],
                 "url": {
                   "raw": "{{base_url}}/{{business_unit_key}}/content-items/{{content_item_key}}/versions",
@@ -1051,10 +1159,8 @@
               "request": {
                 "method": "GET",
                 "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  }
+                  {"key": "x-project-key", "value": "{{project_key}}", "type": "text"},
+                  {"key": "Content-Type", "value": "application/json"}
                 ],
                 "url": {
                   "raw": "{{base_url}}/{{business_unit_key}}/pages/{{page_key}}/versions",
@@ -1133,11 +1239,12 @@
           "name": "Add Component to Page",
           "request": {
             "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [{"key": "token", "value": "{{bearer_token}}", "type": "string"}]
+            },
             "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
+              {"key": "Content-Type", "value": "application/json"}
             ],
             "body": {
               "mode": "raw",
@@ -1152,14 +1259,38 @@
           "response": []
         },
         {
+          "name": "Move Component in Page",
+          "request": {
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [{"key": "token", "value": "{{bearer_token}}", "type": "string"}]
+            },
+            "header": [
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sourceRowId\": \"{{row_id}}\",\n  \"sourceCellId\": \"{{cell_id}}\",\n  \"targetRowId\": \"row-2\",\n  \"targetCellId\": \"cell-2\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/pages/{{page_key}}/components/{{content_item_key_for_page}}/move",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "pages", "{{page_key}}", "components", "{{content_item_key_for_page}}", "move"]
+            }
+          },
+          "response": []
+        },
+        {
           "name": "Update Component in Page",
           "request": {
             "method": "PUT",
+            "auth": {
+              "type": "bearer",
+              "bearer": [{"key": "token", "value": "{{bearer_token}}", "type": "string"}]
+            },
             "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
+              {"key": "Content-Type", "value": "application/json"}
             ],
             "body": {
               "mode": "raw",
@@ -1177,11 +1308,12 @@
           "name": "Remove Component from Page",
           "request": {
             "method": "DELETE",
+            "auth": {
+              "type": "bearer",
+              "bearer": [{"key": "token", "value": "{{bearer_token}}", "type": "string"}]
+            },
             "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
+              {"key": "Content-Type", "value": "application/json"}
             ],
             "url": {
               "raw": "{{base_url}}/{{business_unit_key}}/pages/{{page_key}}/components/{{content_item_key_for_page}}",
@@ -1201,10 +1333,8 @@
           "request": {
             "method": "GET",
             "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
+              {"key": "x-project-key", "value": "{{project_key}}", "type": "text"},
+              {"key": "Content-Type", "value": "application/json"}
             ],
             "url": {
               "raw": "{{base_url}}/{{business_unit_key}}/page-items/{{content_item_key_for_page}}/states",
@@ -1218,11 +1348,12 @@
           "name": "Publish Page Content Item State",
           "request": {
             "method": "PUT",
+            "auth": {
+              "type": "bearer",
+              "bearer": [{"key": "token", "value": "{{bearer_token}}", "type": "string"}]
+            },
             "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
+              {"key": "Content-Type", "value": "application/json"}
             ],
             "body": {
               "mode": "raw",
@@ -1246,11 +1377,12 @@
           "name": "Delete Page Content Item Draft State",
           "request": {
             "method": "DELETE",
+            "auth": {
+              "type": "bearer",
+              "bearer": [{"key": "token", "value": "{{bearer_token}}", "type": "string"}]
+            },
             "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
+              {"key": "Content-Type", "value": "application/json"}
             ],
             "url": {
               "raw": "{{base_url}}/{{business_unit_key}}/page-items/{{content_item_key_for_page}}/states/draft",
@@ -1269,11 +1401,12 @@
           "name": "Add Row to Page",
           "request": {
             "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [{"key": "token", "value": "{{bearer_token}}", "type": "string"}]
+            },
             "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
+              {"key": "Content-Type", "value": "application/json"}
             ],
             "url": {
               "raw": "{{base_url}}/{{business_unit_key}}/pages/{{page_key}}/rows",
@@ -1287,15 +1420,16 @@
           "name": "Update Cell Span in Page",
           "request": {
             "method": "PUT",
+            "auth": {
+              "type": "bearer",
+              "bearer": [{"key": "token", "value": "{{bearer_token}}", "type": "string"}]
+            },
             "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
+              {"key": "Content-Type", "value": "application/json"}
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"updates\": {\n    \"span\": 6,\n    \"offset\": 0\n  }\n}"
+              "raw": "{\n  \"updates\": {\n    \"colSpan\": 6,\n    \"shouldRemoveEmptyCell\": false,\n    \"shouldAddEmptyCell\": false\n  }\n}"
             },
             "url": {
               "raw": "{{base_url}}/{{business_unit_key}}/pages/{{page_key}}/rows/{{row_id}}/cells/{{cell_id}}",
@@ -1309,11 +1443,12 @@
           "name": "Remove Row from Page",
           "request": {
             "method": "DELETE",
+            "auth": {
+              "type": "bearer",
+              "bearer": [{"key": "token", "value": "{{bearer_token}}", "type": "string"}]
+            },
             "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
+              {"key": "Content-Type", "value": "application/json"}
             ],
             "url": {
               "raw": "{{base_url}}/{{business_unit_key}}/pages/{{page_key}}/rows/{{row_id}}",
@@ -1333,10 +1468,8 @@
           "request": {
             "method": "GET",
             "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
+              {"key": "x-project-key", "value": "{{project_key}}", "type": "text"},
+              {"key": "Content-Type", "value": "application/json"}
             ],
             "url": {
               "raw": "{{base_url}}/health",
@@ -1356,10 +1489,8 @@
           "request": {
             "method": "GET",
             "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
+              {"key": "x-project-key", "value": "{{project_key}}", "type": "text"},
+              {"key": "Content-Type", "value": "application/json"}
             ],
             "url": {
               "raw": "{{base_url}}/proxy-script?url=https://example.com/script.js",
