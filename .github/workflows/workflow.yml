@@ -36,7 +36,6 @@ jobs:
       run: |
         set -e
         ENV_ARGS=(
-          --set-env-vars "CORS_ALLOWED_ORIGINS=${{ vars.CORS_ALLOWED_ORIGINS }}"
           --set-env-vars "GCP_FIRESTORE_DATABASE_ID=${{ vars.GCP_FIRESTORE_DATABASE_ID }}"
           --set-env-vars "GCP_FIRESTORE_SERVICE_ACCOUNT_CLIENT_EMAIL=${{ vars.GCP_FIRESTORE_SERVICE_ACCOUNT_CLIENT_EMAIL }}"
           --set-env-vars "GCP_FIRESTORE_SERVICE_ACCOUNT_PRIVATE_KEY=${{ secrets.GCP_FIRESTORE_SERVICE_ACCOUNT_PRIVATE_KEY }}"
