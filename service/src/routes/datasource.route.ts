@@ -3,6 +3,8 @@ import { logger } from '../utils/logger.utils';
 import { CustomObjectController } from '../controllers/custom-object.controller';
 import { DATASOURCE_CONTAINER } from '../constants';
 import { resolveDatasource } from '../controllers/datasource-resolution.route';
+import { validateJwt } from '../middleware/jwt.middleware';
+import { validateProject } from '../middleware/project.middleware';
 
 const datasourceController = new CustomObjectController(DATASOURCE_CONTAINER);
 const datasourceRouter = Router();
@@ -31,7 +33,7 @@ datasourceRouter.get('/datasource/:key', async (req, res, next) => {
   }
 });
 
-datasourceRouter.post('/datasource/:key', (async (req, res, next) => {
+datasourceRouter.post('/datasource/:key', validateJwt, validateProject, (async (req, res, next) => {
   try {
     // return error if key exists
     const { key } = req.params;
@@ -57,7 +59,7 @@ datasourceRouter.post('/datasource/:key', (async (req, res, next) => {
   }
 }) as RequestHandler);
 
-datasourceRouter.put('/datasource/:key', async (req, res, next) => {
+datasourceRouter.put('/datasource/:key', validateJwt, validateProject, async (req, res, next) => {
   try {
     const { key } = req.params;
     const { value } = req.body;
@@ -72,7 +74,7 @@ datasourceRouter.put('/datasource/:key', async (req, res, next) => {
   }
 });
 
-datasourceRouter.delete('/datasource/:key', async (req, res, next) => {
+datasourceRouter.delete('/datasource/:key', validateJwt, validateProject, async (req, res, next) => {
   try {
     const { key } = req.params;
     await datasourceController.deleteCustomObject(key);
@@ -86,7 +88,7 @@ datasourceRouter.delete('/datasource/:key', async (req, res, next) => {
   }
 });
 
-datasourceRouter.post('/datasource/:key/test', async (req, res, next) => {
+datasourceRouter.post('/datasource/:key/test', validateJwt, validateProject, async (req, res, next) => {
   try {
     const { key } = req.params;
     const { params } = req.body;

@@ -16,6 +16,8 @@ import {
   CONTENT_ITEM_STATE_CONTAINER,
 } from '../constants';
 import { ContentItemState } from '../controllers/content-item.controller';
+import { validateJwt } from '../middleware/jwt.middleware';
+import { validateProject } from '../middleware/project.middleware';
 
 const contentItemStateRouter = Router();
 const dependencies: StateControllerDependencies = {
@@ -57,6 +59,8 @@ contentItemStateRouter.get(
 // Publish state (move draft to published)
 contentItemStateRouter.put(
   '/:businessUnitKey/content-items/:key/states/published',
+  validateJwt,
+  validateProject,
   (async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { clearDraft } = req.query;
@@ -80,6 +84,8 @@ contentItemStateRouter.put(
 // Delete draft state (revert to published)
 contentItemStateRouter.delete(
   '/:businessUnitKey/content-items/:key/states/draft',
+  validateJwt,
+  validateProject,
   (async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { businessUnitKey, key } = req.params;

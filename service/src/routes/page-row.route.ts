@@ -1,11 +1,15 @@
 import { Router } from 'express';
 import { logger } from '../utils/logger.utils';
 import * as PageController from '../controllers/page.controller';
+import { validateJwt } from '../middleware/jwt.middleware';
+import { validateProject } from '../middleware/project.middleware';
 
 const pageRowRouter = Router();
 
 pageRowRouter.delete(
   '/:businessUnitKey/pages/:key/rows/:rowId',
+  validateJwt,
+  validateProject,
   async (req, res, next) => {
     try {
       const { businessUnitKey, key, rowId } = req.params;
@@ -27,6 +31,8 @@ pageRowRouter.delete(
 
 pageRowRouter.post(
   '/:businessUnitKey/pages/:key/rows',
+  validateJwt,
+  validateProject,
   async (req, res, next) => {
     try {
       const { businessUnitKey, key } = req.params;
@@ -44,6 +50,8 @@ pageRowRouter.post(
 
 pageRowRouter.put(
   '/:businessUnitKey/pages/:key/rows/:rowId/cells/:cellId',
+  validateJwt,
+  validateProject,
   async (req, res, next) => {
     try {
       const { businessUnitKey, key, rowId, cellId } = req.params;

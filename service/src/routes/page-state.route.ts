@@ -14,6 +14,8 @@ import CustomError from '../errors/custom.error';
 import { CustomObjectController } from '../controllers/custom-object.controller';
 import { CONTENT_PAGE_CONTAINER, PAGE_STATE_CONTAINER } from '../constants';
 import { PageState } from '../controllers/page.controller';
+import { validateJwt } from '../middleware/jwt.middleware';
+import { validateProject } from '../middleware/project.middleware';
 
 const pageStateRouter = Router();
 const dependencies: StateControllerDependencies = {
@@ -53,7 +55,7 @@ pageStateRouter.get(
 );
 
 // Publish state (move draft to published)
-pageStateRouter.put('/:businessUnitKey/pages/:key/states/published', (async (
+pageStateRouter.put('/:businessUnitKey/pages/:key/states/published', validateJwt, validateProject, (async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -84,7 +86,7 @@ pageStateRouter.put('/:businessUnitKey/pages/:key/states/published', (async (
 }) as RequestHandler);
 
 // Delete draft state (revert to published)
-pageStateRouter.delete('/:businessUnitKey/pages/:key/states/draft', (async (
+pageStateRouter.delete('/:businessUnitKey/pages/:key/states/draft', validateJwt, validateProject, (async (
   req: Request,
   res: Response,
   next: NextFunction

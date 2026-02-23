@@ -2,6 +2,8 @@ import { Router, RequestHandler } from 'express';
 import { logger } from '../utils/logger.utils';
 import * as PageController from '../controllers/page.controller';
 import CustomError from '../errors/custom.error';
+import { validateJwt } from '../middleware/jwt.middleware';
+import { validateProject } from '../middleware/project.middleware';
 
 const pagesRouter = Router();
 
@@ -34,7 +36,7 @@ pagesRouter.get('/:businessUnitKey/pages/:key', async (req, res, next) => {
   }
 });
 
-pagesRouter.post('/:businessUnitKey/pages', (async (req, res, next) => {
+pagesRouter.post('/:businessUnitKey/pages', validateJwt, validateProject, (async (req, res, next) => {
   try {
     const { businessUnitKey } = req.params;
     const { value } = req.body;
@@ -55,7 +57,7 @@ pagesRouter.post('/:businessUnitKey/pages', (async (req, res, next) => {
   }
 }) as RequestHandler);
 
-pagesRouter.put('/:businessUnitKey/pages/:key', (async (req, res, next) => {
+pagesRouter.put('/:businessUnitKey/pages/:key', validateJwt, validateProject, (async (req, res, next) => {
   try {
     const { businessUnitKey, key } = req.params;
     const { value } = req.body;
@@ -77,7 +79,7 @@ pagesRouter.put('/:businessUnitKey/pages/:key', (async (req, res, next) => {
   }
 }) as RequestHandler);
 
-pagesRouter.delete('/:businessUnitKey/pages/:key', async (req, res, next) => {
+pagesRouter.delete('/:businessUnitKey/pages/:key', validateJwt, validateProject, async (req, res, next) => {
   try {
     const { businessUnitKey, key } = req.params;
     await PageController.deletePage(businessUnitKey, key);

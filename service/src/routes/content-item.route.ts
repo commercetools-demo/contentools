@@ -8,6 +8,8 @@ import {
 import * as ContentItemController from '../controllers/content-item.controller';
 import { logger } from '../utils/logger.utils';
 import CustomError from '../errors/custom.error';
+import { validateJwt } from '../middleware/jwt.middleware';
+import { validateProject } from '../middleware/project.middleware';
 
 const contentItemRouter = Router();
 
@@ -173,7 +175,7 @@ contentItemRouter.get(
   }
 );
 
-contentItemRouter.post('/:businessUnitKey/content-items', (async (
+contentItemRouter.post('/:businessUnitKey/content-items', validateJwt, validateProject, (async (
   req,
   res,
   next
@@ -202,7 +204,7 @@ contentItemRouter.post('/:businessUnitKey/content-items', (async (
   }
 }) as RequestHandler);
 
-contentItemRouter.put('/:businessUnitKey/content-items/:key', (async (
+contentItemRouter.put('/:businessUnitKey/content-items/:key', validateJwt, validateProject, (async (
   req,
   res,
   next
@@ -233,6 +235,8 @@ contentItemRouter.put('/:businessUnitKey/content-items/:key', (async (
 
 contentItemRouter.delete(
   '/:businessUnitKey/content-items/:key',
+  validateJwt,
+  validateProject,
   async (req, res, next) => {
     try {
       const { key, businessUnitKey } = req.params;
