@@ -1,11 +1,15 @@
 import { logger } from '../utils/logger.utils';
 import { Router } from 'express';
 import * as PageController from '../controllers/page.controller';
+import { validateJwt } from '../middleware/jwt.middleware';
+import { validateProject } from '../middleware/project.middleware';
 
 const pageComponentRouter = Router();
 
 pageComponentRouter.post(
   '/:businessUnitKey/pages/:key/components',
+  validateJwt,
+  validateProject,
   async (req, res, next) => {
     try {
       const { businessUnitKey, key } = req.params;
@@ -30,6 +34,8 @@ pageComponentRouter.post(
 
 pageComponentRouter.post(
   '/:businessUnitKey/pages/:key/components/:contentItemKey/move',
+  validateJwt,
+  validateProject,
   async (req, res, next) => {
     try {
       const { businessUnitKey, key, contentItemKey } = req.params;
@@ -56,6 +62,8 @@ pageComponentRouter.post(
 
 pageComponentRouter.put(
   '/:businessUnitKey/pages/:key/components/:contentItemKey',
+  validateJwt,
+  validateProject,
   async (req, res, next) => {
     try {
       const { businessUnitKey, key, contentItemKey } = req.params;
@@ -79,6 +87,8 @@ pageComponentRouter.put(
 
 pageComponentRouter.delete(
   '/:businessUnitKey/pages/:key/components/:contentItemKey',
+  validateJwt,
+  validateProject,
   async (req, res, next) => {
     try {
       const { businessUnitKey, key, contentItemKey } = req.params;

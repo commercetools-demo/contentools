@@ -12,6 +12,8 @@ import CustomError from '../errors/custom.error';
 
 import { ContentItemState } from '../controllers/content-item.controller';
 import { PAGE_CONTENT_ITEM_STATE_CONTAINER, PAGE_CONTENT_ITEMS_CONTAINER } from '../constants';
+import { validateJwt } from '../middleware/jwt.middleware';
+import { validateProject } from '../middleware/project.middleware';
 
 const pageContentItemStateRouter = Router();
 const PageContentItemStateController =
@@ -53,6 +55,8 @@ pageContentItemStateRouter.get(
 // Publish state (move draft to published)
 pageContentItemStateRouter.put(
   '/:businessUnitKey/page-items/:key/states/published',
+  validateJwt,
+  validateProject,
   (async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { clearDraft } = req.query;
@@ -76,6 +80,8 @@ pageContentItemStateRouter.put(
 // Delete draft state (revert to published)
 pageContentItemStateRouter.delete(
   '/:businessUnitKey/page-items/:key/states/draft',
+  validateJwt,
+  validateProject,
   (async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { businessUnitKey, key } = req.params;

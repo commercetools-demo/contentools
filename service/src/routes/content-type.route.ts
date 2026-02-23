@@ -3,6 +3,8 @@ import { logger } from '../utils/logger.utils';
 import { CustomObjectController } from '../controllers/custom-object.controller';
 import { CONTENT_TYPE_CONTAINER } from '../constants';
 import { v4 as uuidv4 } from 'uuid';
+import { validateJwt } from '../middleware/jwt.middleware';
+import { validateProject } from '../middleware/project.middleware';
 
 const contentTypeController = new CustomObjectController(
   CONTENT_TYPE_CONTAINER
@@ -44,7 +46,7 @@ contentTypeRouter.get('/content-type/:key', async (req, res, next) => {
   }
 });
 
-contentTypeRouter.post('/content-type', (async (req, res, next) => {
+contentTypeRouter.post('/content-type', validateJwt, validateProject, (async (req, res, next) => {
   try {
     const key = `type-${uuidv4()}`;
     const { value } = req.body;
@@ -62,7 +64,7 @@ contentTypeRouter.post('/content-type', (async (req, res, next) => {
   }
 }) as RequestHandler);
 
-contentTypeRouter.put('/content-type/:key', async (req, res, next) => {
+contentTypeRouter.put('/content-type/:key', validateJwt, validateProject, async (req, res, next) => {
   try {
     const { key } = req.params;
     const { value } = req.body;
@@ -77,7 +79,7 @@ contentTypeRouter.put('/content-type/:key', async (req, res, next) => {
   }
 });
 
-contentTypeRouter.delete('/content-type/:key', async (req, res, next) => {
+contentTypeRouter.delete('/content-type/:key', validateJwt, validateProject, async (req, res, next) => {
   try {
     const { key } = req.params;
     await contentTypeController.deleteCustomObject(key);

@@ -5,6 +5,8 @@ import { Router, RequestHandler } from 'express';
 import { CustomObjectController } from '../controllers/custom-object.controller';
 import { bundleCode } from '../utils/bundler.utils';
 import { CONTENT_TYPE_CONTAINER } from '../constants';
+import { validateJwt } from '../middleware/jwt.middleware';
+import { validateProject } from '../middleware/project.middleware';
 
 const fileRouter = Router();
 
@@ -13,6 +15,8 @@ const fileController = FileControllerFactory.createFileController();
 
 fileRouter.post(
   '/:businessUnitKey/upload-file',
+  validateJwt,
+  validateProject,
   upload.single('file') as any,
   (async (req, res, next) => {
     try {
@@ -64,7 +68,7 @@ fileRouter.get('/:businessUnitKey/media-library', (async (req, res, next) => {
   }
 }) as RequestHandler);
 
-fileRouter.post('/compile-upload', (async (req, res, next) => {
+fileRouter.post('/compile-upload', validateJwt, validateProject, (async (req, res, next) => {
   try {
     const { files, key } = req.body;
 
