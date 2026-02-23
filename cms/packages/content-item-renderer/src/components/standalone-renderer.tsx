@@ -11,7 +11,7 @@ const StandaloneRenderer: React.FC<
   }
 
   return (
-    <StateProvider baseURL={props.baseURL} minimal={true}>
+    <StateProvider baseURL={props.baseURL} projectKey={props.projectKey} jwtToken={props.jwtToken} minimal={true}>
       <ContentItemResolver {...props} />
     </StateProvider>
   );

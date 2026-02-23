@@ -22,14 +22,14 @@ const initialState: ContentTypeState = {
   availableDatasources: [],
 };
 
-export const useContentType = (baseURL: string) => {
+export const useContentType = (baseURL: string, projectKey: string, jwtToken?: string) => {
   const [state, setState] = useState<ContentTypeState>(initialState);
 
   // Actions
   const fetchContentTypes = useCallback(async () => {
     try {
       setState((prev) => ({ ...prev, loading: true, error: null }));
-      const response = await fetchContentTypesEndpoint(baseURL);
+      const response = await fetchContentTypesEndpoint(baseURL, projectKey);
       const contentTypes = response.map((item) => {
         try {
           const base64Code = atob(item.code?.transpiledCode || '');
@@ -75,6 +75,7 @@ export const useContentType = (baseURL: string) => {
         setState((prev) => ({ ...prev, loading: true, error: null }));
         const response = await fetchContentTypeEndpoint<ContentTypeData>(
           baseURL,
+          projectKey,
           key
         );
         try {
@@ -116,7 +117,8 @@ export const useContentType = (baseURL: string) => {
     try {
       setState((prev) => ({ ...prev, loading: true, error: null }));
       const response = await getAvailableDatasourcesEndpoint<DatasourceInfo>(
-        baseURL
+        baseURL,
+        projectKey
       );
       const datasources = response.map((item) => item.value as DatasourceInfo);
 
@@ -146,6 +148,8 @@ export const useContentType = (baseURL: string) => {
         setState((prev) => ({ ...prev, loading: true, error: null }));
         const response = await createContentTypeEndpoint<ContentTypeData>(
           baseURL,
+          projectKey,
+          jwtToken,
           contentType
         );
         const newContentType = response.value;
@@ -178,6 +182,8 @@ export const useContentType = (baseURL: string) => {
         setState((prev) => ({ ...prev, loading: true, error: null }));
         const response = await createContentTypeEndpoint<ContentTypeData>(
           baseURL,
+          projectKey,
+          jwtToken,
           data
         );
         const newContentType = response.value;
@@ -219,6 +225,8 @@ export const useContentType = (baseURL: string) => {
         };
         const response = await updateContentTypeEndpoint<ContentTypeData>(
           baseURL,
+          projectKey,
+          jwtToken,
           key,
           contentType
         );
@@ -252,7 +260,7 @@ export const useContentType = (baseURL: string) => {
     async (key: string) => {
       try {
         setState((prev) => ({ ...prev, loading: true, error: null }));
-        await deleteContentTypeEndpoint(baseURL, key);
+        await deleteContentTypeEndpoint(baseURL, projectKey, jwtToken, key);
 
         setState((prev) => ({
           ...prev,

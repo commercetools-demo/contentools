@@ -6,6 +6,8 @@ import { BrowserRouter as Router } from 'react-router-dom';
 interface WrappedContentPagesAppProps {
   parentUrl: string;
   baseURL: string;
+  projectKey: string;
+  jwtToken?: string;
   businessUnitKey: string;
   locale?: string;
   backButton?: {
@@ -18,13 +20,15 @@ interface WrappedContentPagesAppProps {
 const WrappedContentPagesApp: React.FC<WrappedContentPagesAppProps> = ({
   parentUrl,
   baseURL,
+  projectKey,
+  jwtToken,
   businessUnitKey,
   locale = 'en-US',
   backButton,
 }) => {
   return (
     <Router basename={`/${parentUrl}`}>
-      <StateProvider baseURL={baseURL}>
+      <StateProvider baseURL={baseURL} projectKey={projectKey} jwtToken={jwtToken}>
         <PagesRouter
           backButton={backButton}
           parentUrl={parentUrl}

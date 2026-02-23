@@ -53,6 +53,8 @@ const StateStackContext = createContext<ScopedStateContext<VersionInfo> | null>(
 export interface StateProviderProps {
   children: ReactNode;
   baseURL: string;
+  projectKey: string;
+  jwtToken?: string;
   scope?: string;
 
   // Minimal
@@ -62,21 +64,23 @@ export interface StateProviderProps {
 export const StateProvider = <T extends VersionInfo>({
   children,
   baseURL,
+  projectKey,
+  jwtToken,
   scope = 'default',
   minimal = false,
 }: StateProviderProps) => {
   const parentStack = useContext(StateStackContext);
 
   // Initialize all hooks
-  const contentType = useContentType(baseURL);
-  const contentItem = useContentItem();
-  const pages = usePages();
+  const contentType = useContentType(baseURL, projectKey, jwtToken);
+  const contentItem = useContentItem(projectKey, jwtToken);
+  const pages = usePages(projectKey, jwtToken);
   // Initialize Full
   const editor = !minimal ? useEditor() : undefined;
-  const version = !minimal ? useVersion<T>() : undefined;
-  const stateManagement = !minimal ? useStateManagement() : undefined;
-  const mediaLibrary = !minimal ? useMediaLibrary() : undefined;
-  const datasource = !minimal ? useDatasource(baseURL) : undefined;
+  const version = !minimal ? useVersion<T>(projectKey, jwtToken) : undefined;
+  const stateManagement = !minimal ? useStateManagement(projectKey, jwtToken) : undefined;
+  const mediaLibrary = !minimal ? useMediaLibrary(projectKey, jwtToken) : undefined;
+  const datasource = !minimal ? useDatasource(baseURL, projectKey, jwtToken) : undefined;
 
   const contextValue: StateContextValue<T> = {
     pages,
