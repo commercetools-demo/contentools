@@ -33,7 +33,7 @@ pageContentItemStateRouter.get(
       const stateKey = `${businessUnitKey}_${key}`;
 
       try {
-        const object = await PageContentItemStateController.getState(stateKey);
+        const object = await PageContentItemStateController.getState(req, stateKey);
         res.json(object);
       } catch (error) {
         // If not found, return empty states object
@@ -66,6 +66,7 @@ pageContentItemStateRouter.put(
       const { value } = req.body;
 
       const state = await PageContentItemStateController.createPublishedState(
+        req,
         businessUnitKey,
         key,
         value,
@@ -89,6 +90,7 @@ pageContentItemStateRouter.delete(
       const { businessUnitKey, key } = req.params;
 
       const state = await PageContentItemStateController.deleteDraftState(
+        req,
         businessUnitKey,
         key
       );

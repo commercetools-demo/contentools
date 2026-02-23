@@ -11,17 +11,18 @@ import CustomError from '../errors/custom.error';
 import { validateJwt } from '../middleware/jwt.middleware';
 import { validateProject } from '../middleware/project.middleware';
 import { requireProjectKey } from '../middleware/project-key.middleware';
+import { AuthenticatedRequest } from '../types/service.types';
 
 const contentItemRouter = Router();
 
 contentItemRouter.get(
   '/:businessUnitKey/content-items',
   requireProjectKey,
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     try {
       const { businessUnitKey } = req.params;
       const contentItems =
-        await ContentItemController.getContentItems(businessUnitKey);
+        await ContentItemController.getContentItems(req, businessUnitKey);
 
       res.json(contentItems);
     } catch (error) {
@@ -33,10 +34,11 @@ contentItemRouter.get(
 contentItemRouter.get(
   '/:businessUnitKey/content-items/content-type/:contentType',
   requireProjectKey,
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     try {
       const { businessUnitKey, contentType } = req.params;
       const contentItems = await ContentItemController.getContentItems(
+        req,
         businessUnitKey,
         `value(type = "${contentType}")`
       );
@@ -52,10 +54,10 @@ contentItemRouter.get(
 contentItemRouter.get(
   '/:businessUnitKey/content-items/:key',
   requireProjectKey,
-  async (req, res, next) => {
+  async (req: AuthenticatedRequest, res, next) => {
     try {
       const { key, businessUnitKey } = req.params;
-      const contentItem = await ContentItemController.getContentItem(key);
+      const contentItem = await ContentItemController.getContentItem(req, key);
 
       if (!contentItem) {
         throw new CustomError(404, 'Content item not found');
@@ -74,11 +76,12 @@ contentItemRouter.get(
 contentItemRouter.get(
   '/:businessUnitKey/published/content-items/:key',
   requireProjectKey,
-  async (req, res, next) => {
+  async (req: AuthenticatedRequest, res, next) => {
     try {
       const { key, businessUnitKey } = req.params;
 
       const object = await ContentItemController.getPublishedContentItem(
+        req,
         businessUnitKey,
         key
       );
@@ -99,7 +102,7 @@ contentItemRouter.get(
 contentItemRouter.post(
   '/:businessUnitKey/published/content-items/query',
   requireProjectKey,
-  async (req, res, next) => {
+  async (req: AuthenticatedRequest, res, next) => {
     try {
       const { businessUnitKey } = req.params;
       const { query } = req.body;
@@ -109,6 +112,7 @@ contentItemRouter.post(
       }
 
       const object = await ContentItemController.queryContentItem(
+        req,
         businessUnitKey,
         query,
         'published'
@@ -130,7 +134,7 @@ contentItemRouter.post(
 contentItemRouter.post(
   '/:businessUnitKey/preview/content-items/query',
   requireProjectKey,
-  async (req, res, next) => {
+  async (req: AuthenticatedRequest, res, next) => {
     try {
       const { businessUnitKey } = req.params;
       const { query } = req.body;
@@ -140,6 +144,7 @@ contentItemRouter.post(
       }
 
       const object = await ContentItemController.queryContentItem(
+        req,
         businessUnitKey,
         query,
         ['draft', 'published']
@@ -161,13 +166,14 @@ contentItemRouter.post(
 contentItemRouter.get(
   '/:businessUnitKey/preview/content-items/:key',
   requireProjectKey,
-  async (req, res, next) => {
+  async (req: AuthenticatedRequest, res, next) => {
     try {
       const { key, businessUnitKey } = req.params;
       logger.info(
         `Getting preview for content item ${key} in business unit ${businessUnitKey}`
       );
       const object = await ContentItemController.getPreviewContentItem(
+        req,
         businessUnitKey,
         key
       );
@@ -184,7 +190,7 @@ contentItemRouter.get(
 );
 
 contentItemRouter.post('/:businessUnitKey/content-items', validateJwt, validateProject, (async (
-  req,
+  req: AuthenticatedRequest,
   res,
   next
 ) => {
@@ -199,6 +205,7 @@ contentItemRouter.post('/:businessUnitKey/content-items', validateJwt, validateP
     }
 
     const object = await ContentItemController.createContentItem(
+      req,
       businessUnitKey,
       value
     );
@@ -227,6 +234,7 @@ contentItemRouter.put('/:businessUnitKey/content-items/:key', validateJwt, valid
         .json({ error: 'Value is required in the request body' });
     }
     const object = await ContentItemController.updateContentItem(
+      req,
       businessUnitKey,
       key,
       value
@@ -248,7 +256,7 @@ contentItemRouter.delete(
   async (req, res, next) => {
     try {
       const { key, businessUnitKey } = req.params;
-      await ContentItemController.deleteContentItem(businessUnitKey, key);
+      await ContentItemController.deleteContentItem(req, businessUnitKey, key);
       res.status(204).send();
     } catch (error) {
       logger.error(

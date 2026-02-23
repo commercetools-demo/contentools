@@ -7,13 +7,15 @@ import { validateJwt } from '../middleware/jwt.middleware';
 import { validateProject } from '../middleware/project.middleware';
 import { requireProjectKey } from '../middleware/project-key.middleware';
 
-const contentTypeController = new CustomObjectController(
-  CONTENT_TYPE_CONTAINER
-);
+
 const contentTypeRouter = Router();
 
 contentTypeRouter.get('/content-type', requireProjectKey, async (req, res, next) => {
   try {
+    const contentTypeController = new CustomObjectController(
+      req,
+      CONTENT_TYPE_CONTAINER
+    );
     const dynamicContentTypes = await contentTypeController.getCustomObjects();
 
     res.json([
@@ -31,6 +33,10 @@ contentTypeRouter.get('/content-type', requireProjectKey, async (req, res, next)
 
 contentTypeRouter.get('/content-type/:key', requireProjectKey, async (req, res, next) => {
   try {
+    const contentTypeController = new CustomObjectController(
+      req,
+      CONTENT_TYPE_CONTAINER
+    );
     const { key } = req.params;
     const object = await contentTypeController.getCustomObject(key);
     res.json({
@@ -49,6 +55,10 @@ contentTypeRouter.get('/content-type/:key', requireProjectKey, async (req, res, 
 
 contentTypeRouter.post('/content-type', validateJwt, validateProject, (async (req, res, next) => {
   try {
+    const contentTypeController = new CustomObjectController(
+      req,
+      CONTENT_TYPE_CONTAINER
+    );
     const key = `type-${uuidv4()}`;
     const { value } = req.body;
     const object = await contentTypeController.createCustomObject(key, {
@@ -67,6 +77,10 @@ contentTypeRouter.post('/content-type', validateJwt, validateProject, (async (re
 
 contentTypeRouter.put('/content-type/:key', validateJwt, validateProject, async (req, res, next) => {
   try {
+    const contentTypeController = new CustomObjectController(
+      req,
+      CONTENT_TYPE_CONTAINER
+    );
     const { key } = req.params;
     const { value } = req.body;
     const object = await contentTypeController.updateCustomObject(key, value);
@@ -82,6 +96,10 @@ contentTypeRouter.put('/content-type/:key', validateJwt, validateProject, async 
 
 contentTypeRouter.delete('/content-type/:key', validateJwt, validateProject, async (req, res, next) => {
   try {
+    const contentTypeController = new CustomObjectController(
+      req,
+      CONTENT_TYPE_CONTAINER
+    );
     const { key } = req.params;
     await contentTypeController.deleteCustomObject(key);
     res.status(204).send();

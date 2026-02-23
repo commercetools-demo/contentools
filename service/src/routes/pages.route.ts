@@ -12,7 +12,7 @@ pagesRouter.get('/:businessUnitKey/pages', requireProjectKey, async (req, res, n
   try {
     const { businessUnitKey } = req.params;
 
-    const objects = await PageController.getPages(businessUnitKey);
+    const objects = await PageController.getPages(req, businessUnitKey);
     res.json(objects);
   } catch (error) {
     logger.error('Failed to get custom objects:', error);
@@ -23,7 +23,7 @@ pagesRouter.get('/:businessUnitKey/pages', requireProjectKey, async (req, res, n
 pagesRouter.get('/:businessUnitKey/pages/:key', requireProjectKey, async (req, res, next) => {
   try {
     const { businessUnitKey, key } = req.params;
-    const object = await PageController.getPageWithStates(businessUnitKey, key);
+    const object = await PageController.getPageWithStates(req, businessUnitKey, key);
     if (!object) {
       throw new CustomError(404, 'Page not found');
     }
@@ -46,7 +46,7 @@ pagesRouter.post('/:businessUnitKey/pages', validateJwt, validateProject, (async
       throw new CustomError(400, 'Value is required in the request body');
     }
 
-    const object = await PageController.createPage(businessUnitKey, value);
+    const object = await PageController.createPage(req, businessUnitKey, value);
 
     res.status(201).json(object);
   } catch (error) {
@@ -69,7 +69,7 @@ pagesRouter.put('/:businessUnitKey/pages/:key', validateJwt, validateProject, (a
         .json({ error: 'Value is required in the request body' });
     }
 
-    const object = await PageController.updatePage(businessUnitKey, key, value);
+    const object = await PageController.updatePage(req, businessUnitKey, key, value);
     res.json(object);
   } catch (error) {
     logger.error(
@@ -83,7 +83,7 @@ pagesRouter.put('/:businessUnitKey/pages/:key', validateJwt, validateProject, (a
 pagesRouter.delete('/:businessUnitKey/pages/:key', validateJwt, validateProject, async (req, res, next) => {
   try {
     const { businessUnitKey, key } = req.params;
-    await PageController.deletePage(businessUnitKey, key);
+    await PageController.deletePage(req, businessUnitKey, key);
     res.status(204).send();
   } catch (error) {
     logger.error(
@@ -107,6 +107,7 @@ pagesRouter.post(
       }
 
       const object = await PageController.queryPage(
+        req,
         businessUnitKey,
         query,
         'published'
@@ -137,7 +138,7 @@ pagesRouter.post(
         throw new CustomError(400, 'Query is required in the request body');
       }
 
-      const object = await PageController.queryPage(businessUnitKey, query, [
+      const object = await PageController.queryPage(req, businessUnitKey, query, [
         'draft',
         'published',
       ]);
@@ -163,6 +164,7 @@ pagesRouter.get(
       const { key, businessUnitKey } = req.params;
 
       const object = await PageController.getPublishedPage(
+        req,
         businessUnitKey,
         key
       );
@@ -187,7 +189,7 @@ pagesRouter.get(
     try {
       const { key, businessUnitKey } = req.params;
 
-      const object = await PageController.getPreviewPage(businessUnitKey, key);
+      const object = await PageController.getPreviewPage(req, businessUnitKey, key);
       res.status(200).json(object);
     } catch (error) {
       logger.error(

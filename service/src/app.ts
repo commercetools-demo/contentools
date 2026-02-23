@@ -10,13 +10,10 @@ import ServiceRoutes from './routes/service.route';
 
 import CustomError from './errors/custom.error';
 import { errorMiddleware } from './middleware/error.middleware';
-import { readConfiguration } from './utils/config.utils';
 import { extractMainDomain } from './utils/domain';
 import { logger } from './utils/logger.utils';
 import { CORS_ALLOWED_ORIGINS } from './constants';
 
-// Read env variables
-readConfiguration();
 
 // Create the express app
 const app: Express = express();
@@ -27,8 +24,8 @@ app.use(
     origin: (origin, callback) => {
       if (!origin) return callback(null, true);
       const domain = extractMainDomain(origin);
+      logger.info(`Checking origin: ${origin} with domain: ${domain}`);
       if (CORS_ALLOWED_ORIGINS?.split(',').includes(domain)) {
-      if (process.env.CORS_ALLOWED_ORIGINS?.split(',').includes(domain)) {
         return callback(null, true);
       }
       return callback(new Error('Not allowed by CORS'));

@@ -13,6 +13,7 @@ import { withDependencies as withContentStateDependencies } from './content-stat
 import { withDependencies as withContentVersionDependencies } from './content-version-controller';
 import { CustomObjectController } from './custom-object.controller';
 import { resolveDatasource } from './datasource-resolution.route';
+import { AuthenticatedRequest } from '../types/service.types';
 
 export interface ContentItemState {
   key: string;
@@ -85,9 +86,11 @@ export interface Datasource {
 }
 
 export const resolveContentItemDatasource = async (
+  req: AuthenticatedRequest,
   contentItem: ContentItem['value']
 ): Promise<ContentItem['value']> => {
   const contentTypeController = new CustomObjectController(
+    req,
     CONTENT_TYPE_CONTAINER
   );
   // Get the content type associated with this content item
@@ -104,7 +107,7 @@ export const resolveContentItemDatasource = async (
       })) as ContentType;
     // If content type exists, resolve any datasource properties
     if (contentType) {
-      return resolveDatasourceProperties(contentItem, contentType);
+      return resolveDatasourceProperties(req, contentItem, contentType);
     }
   } catch (error) {
     logger.error(`Failed to get content type for item`, error);
@@ -120,6 +123,7 @@ export const resolveContentItemDatasource = async (
  * @returns The content item with resolved datasource properties
  */
 const resolveDatasourceProperties = async (
+  req: AuthenticatedRequest,
   contentItem: ContentItem['value'],
   contentType: ContentType
 ): Promise<ContentItem['value']> => {
@@ -153,6 +157,7 @@ const resolveDatasourceProperties = async (
       if (!datasourceKey) continue;
 
       const resolvedDatasource = await resolveDatasource(
+        req,
         datasourceKey,
         propertyValue.params
       );
@@ -173,10 +178,12 @@ const resolveDatasourceProperties = async (
 };
 
 export const getContentItems = async (
+  req: AuthenticatedRequest,
   businessUnitKey: string,
   criteria?: string
 ): Promise<ContentItem[]> => {
   const contentItemController = new CustomObjectController(
+    req,
     CONTENT_ITEM_CONTAINER
   );
   let contentItemWhereClause = `value(businessUnitKey = "${businessUnitKey}")`;
@@ -202,7 +209,7 @@ export const getContentItems = async (
     )
     .join(' OR ');
   const contentStates = whereClause
-    ? await ContentStateController.getContentStatesWithWhereClause(whereClause)
+    ? await ContentStateController.getContentStatesWithWhereClause(req, whereClause)
     : [];
   const contentItemsWithStates = contentItems.map((item) => {
     const states = contentStates.find((state) => state.key === item.key);
@@ -216,55 +223,61 @@ export const getContentItems = async (
 };
 
 export const getPreviewContentItem = async (
+  req: AuthenticatedRequest,
   businessUnitKey: string,
   key: string
 ): Promise<ContentItem['value']> => {
   const contentItemController = new CustomObjectController(
+    req,
     CONTENT_ITEM_CONTAINER
   );
   const contentItem = await contentItemController.getCustomObject(key);
   const item = contentItem.value;
-  const contentState = await getContentItemWithStateKey(businessUnitKey, key, [
+  const contentState = await getContentItemWithStateKey(req, businessUnitKey, key, [
     'draft',
     'published',
   ]);
   if (contentState) {
-    return resolveContentItemDatasource(contentState);
+    return resolveContentItemDatasource(req, contentState);
   }
 
   // fallback to the original content item
-  return resolveContentItemDatasource(item);
+  return resolveContentItemDatasource(req, item);
 };
 
 export const getPublishedContentItem = async (
+  req: AuthenticatedRequest,
   businessUnitKey: string,
   key: string
 ): Promise<ContentItem['value'] | undefined> => {
-  return getContentItemWithStateKey(businessUnitKey, key, 'published');
+  return getContentItemWithStateKey(req, businessUnitKey, key, 'published');
 };
 
 export const getContentItemWithStateKey = async (
+  req: AuthenticatedRequest,
   businessUnitKey: string,
   key: string,
   state: string | string[]
 ): Promise<ContentItem['value'] | undefined> => {
   const contentState = await ContentStateController.getFirstContentWithState<
     ContentItem['value']
-  >(`key = "${key}" AND businessUnitKey = "${businessUnitKey}"`, state);
+  >(req, `key = "${key}" AND businessUnitKey = "${businessUnitKey}"`, state);
 
   if (contentState) {
-    return resolveContentItemDatasource(contentState);
+    return resolveContentItemDatasource(req, contentState);
   }
 
   return undefined;
 };
 
 export const queryContentItem = async (
+  req: AuthenticatedRequest,
   businessUnitKey: string,
   query: string,
   state: string | string[]
 ): Promise<ContentItem['value'] | undefined> => {
   const contentItemController = new CustomObjectController(
+    req,
     CONTENT_ITEM_CONTAINER
   );
 
@@ -279,13 +292,14 @@ export const queryContentItem = async (
   const contentState = await ContentStateController.getFirstContentWithState<
     ContentItem['value']
   >(
+    req,
     `key = "${contentItems[0].key}" AND businessUnitKey = "${businessUnitKey}"`,
     state
   );
 
   if (contentState) {
     if (contentState) {
-      return resolveContentItemDatasource(contentState);
+      return resolveContentItemDatasource(req, contentState);
     }
   }
 
@@ -298,9 +312,11 @@ export const queryContentItem = async (
  * @returns The content item with resolved datasource properties
  */
 export const getContentItem = async (
+  req: AuthenticatedRequest,
   key: string
 ): Promise<ContentItem['value']> => {
   const contentItemController = new CustomObjectController(
+    req,
     CONTENT_ITEM_CONTAINER
   );
   const contentItem = await contentItemController.getCustomObject(key);
@@ -308,11 +324,13 @@ export const getContentItem = async (
 };
 
 export const createContentItem = async (
+  req: AuthenticatedRequest,
   businessUnitKey: string,
   item: ContentItem['value']
 ): Promise<ContentItem> => {
   const key = `item-${uuidv4()}`;
   const contentItemController = new CustomObjectController(
+    req,
     CONTENT_ITEM_CONTAINER
   );
 
@@ -322,8 +340,9 @@ export const createContentItem = async (
     key,
   });
 
-  await ContentStateController.createDraftState(businessUnitKey, key, item);
+  await ContentStateController.createDraftState(req, businessUnitKey, key, item);
   await ContentVersionController.createContentVersion(
+    req,
     businessUnitKey,
     key,
     item
@@ -332,11 +351,13 @@ export const createContentItem = async (
 };
 
 export const updateContentItem = async (
+  req: AuthenticatedRequest,
   businessUnitKey: string,
   key: string,
   item: ContentItem['value']
 ): Promise<ContentItem> => {
   const contentItemController = new CustomObjectController(
+    req,
     CONTENT_ITEM_CONTAINER
   );
 
@@ -344,8 +365,9 @@ export const updateContentItem = async (
     ...item,
     businessUnitKey,
   });
-  await ContentStateController.createDraftState(businessUnitKey, key, item);
+  await ContentStateController.createDraftState(req, businessUnitKey, key, item);
   await ContentVersionController.createContentVersion(
+    req,
     businessUnitKey,
     key,
     item
@@ -354,13 +376,15 @@ export const updateContentItem = async (
 };
 
 export const deleteContentItem = async (
+  req: AuthenticatedRequest,
   businessUnitKey: string,
   key: string
 ): Promise<void> => {
   const contentItemController = new CustomObjectController(
+    req,
     CONTENT_ITEM_CONTAINER
   );
   await contentItemController.deleteCustomObject(key);
-  await ContentStateController.deleteStates(businessUnitKey, key);
-  await ContentVersionController.deleteVersions(businessUnitKey, key);
+  await ContentStateController.deleteStates(req, businessUnitKey, key);
+  await ContentVersionController.deleteVersions(req, businessUnitKey, key);
 };

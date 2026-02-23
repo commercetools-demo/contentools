@@ -5,12 +5,14 @@ import {
 } from '@commercetools/platform-sdk';
 import { createApiRoot } from '../client/create.client';
 import { logger } from '../utils/logger.utils';
+import { AuthenticatedRequest } from '../types/service.types';
 export const searchProducts = async (
+  req: AuthenticatedRequest,
   searchParams: ProductSearchRequest
 ): Promise<ProductPagedSearchResponse> => {
   try {
     logger.info('Searching products with params:', searchParams);
-    const apiRoot = createApiRoot();
+    const apiRoot = createApiRoot(req)();
 
     const response = await apiRoot
       .products()
@@ -27,10 +29,10 @@ export const searchProducts = async (
   }
 };
 
-export const getProductTypeById = async (id: string): Promise<ProductType> => {
+export const getProductTypeById = async (req: AuthenticatedRequest, id: string): Promise<ProductType> => {
   try {
     logger.info(`Fetching product type with ID: ${id}`);
-    const apiRoot = createApiRoot();
+    const apiRoot = createApiRoot(req)();
 
     const response = await apiRoot
       .productTypes()

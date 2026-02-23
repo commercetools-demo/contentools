@@ -1,8 +1,9 @@
 import { searchProducts } from '../services/products';
 import { logger } from '../utils/logger.utils';
 import CustomError from '../errors/custom.error';
+import { AuthenticatedRequest } from '../types/service.types';
 
-export const getProductBySkuController = async (sku: string) => {
+export const getProductBySkuController = async (req: AuthenticatedRequest, sku: string) => {
   try {
     logger.info('Searching product by SKU:', sku);
 
@@ -10,7 +11,7 @@ export const getProductBySkuController = async (sku: string) => {
       throw new CustomError(400, 'Product SKU is required');
     }
 
-    const product = await searchProducts({
+    const product = await searchProducts(req, {
       query: {
         exact: {
           field: 'variants.sku',
@@ -26,7 +27,7 @@ export const getProductBySkuController = async (sku: string) => {
   }
 };
 
-export const getProductsBySkuController = async (skus: string) => {
+export const getProductsBySkuController = async (req: AuthenticatedRequest, skus: string) => {
   try {
     logger.info('Searching products by SKUs:', skus);
 
@@ -37,7 +38,7 @@ export const getProductsBySkuController = async (skus: string) => {
     }
 
     const products = await Promise.all(
-      skusArray.map((sku) => getProductBySkuController(sku))
+      skusArray.map((sku) => getProductBySkuController(req, sku))
     );
     return products;
   } catch (error) {

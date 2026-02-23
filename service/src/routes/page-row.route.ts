@@ -14,6 +14,7 @@ pageRowRouter.delete(
     try {
       const { businessUnitKey, key, rowId } = req.params;
       const object = await PageController.removeRowFromPage(
+        req,
         businessUnitKey,
         key,
         rowId
@@ -36,7 +37,7 @@ pageRowRouter.post(
   async (req, res, next) => {
     try {
       const { businessUnitKey, key } = req.params;
-      const object = await PageController.addRowToPage(businessUnitKey, key);
+      const object = await PageController.addRowToPage(req, businessUnitKey, key);
       res.status(201).json(object);
     } catch (error) {
       logger.error(
@@ -58,6 +59,7 @@ pageRowRouter.put(
       const { updates } = req.body;
 
       const object = await PageController.updateCellSpanInPage(
+        req,
         businessUnitKey,
         key,
         rowId,

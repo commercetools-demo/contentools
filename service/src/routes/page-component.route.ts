@@ -15,6 +15,7 @@ pageComponentRouter.post(
       const { businessUnitKey, key } = req.params;
       const { componentType, rowId, cellId } = req.body;
       const object = await PageController.addContentItemToPage(
+        req,
         businessUnitKey,
         key,
         componentType,
@@ -41,6 +42,7 @@ pageComponentRouter.post(
       const { businessUnitKey, key, contentItemKey } = req.params;
       const { sourceRowId, sourceCellId, targetRowId, targetCellId } = req.body;
       const object = await PageController.moveContentItemInPage(
+        req,
         businessUnitKey,
         key,
         contentItemKey,
@@ -69,6 +71,7 @@ pageComponentRouter.put(
       const { businessUnitKey, key, contentItemKey } = req.params;
       const { updates } = req.body;
       const object = await PageController.updateComponentInPage(
+        req,
         businessUnitKey,
         key,
         contentItemKey,
@@ -93,6 +96,7 @@ pageComponentRouter.delete(
     try {
       const { businessUnitKey, key, contentItemKey } = req.params;
       const object = await PageController.removeComponentFromPage(
+        req,
         businessUnitKey,
         key,
         contentItemKey

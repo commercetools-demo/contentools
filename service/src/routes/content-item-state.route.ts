@@ -19,6 +19,7 @@ import { ContentItemState } from '../controllers/content-item.controller';
 import { validateJwt } from '../middleware/jwt.middleware';
 import { validateProject } from '../middleware/project.middleware';
 import { requireProjectKey } from '../middleware/project-key.middleware';
+import { AuthenticatedRequest } from '../types/service.types';
 
 const contentItemStateRouter = Router();
 const dependencies: StateControllerDependencies = {
@@ -31,13 +32,13 @@ const ContentStateController = withDependencies<ContentItemState>(dependencies);
 contentItemStateRouter.get(
   '/:businessUnitKey/content-items/:key/states',
   requireProjectKey,
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     try {
       const { businessUnitKey, key } = req.params;
       const stateKey = `${businessUnitKey}_${key}`;
 
       try {
-        const object = await ContentStateController.getState(stateKey);
+        const object = await ContentStateController.getState(req, stateKey);
         res.json(object);
       } catch (error) {
         // If not found, return empty states object
@@ -70,6 +71,7 @@ contentItemStateRouter.put(
       const { value } = req.body;
 
       const state = await ContentStateController.createPublishedState(
+        req,
         businessUnitKey,
         key,
         value,
@@ -93,6 +95,7 @@ contentItemStateRouter.delete(
       const { businessUnitKey, key } = req.params;
 
       const state = await ContentStateController.deleteDraftState(
+        req,
         businessUnitKey,
         key
       );

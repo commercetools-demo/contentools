@@ -20,6 +20,7 @@ contentItemVersionRouter.get(
     try {
       const { businessUnitKey, key } = req.params;
       const versions = await ContentVersionController.getContentVersions(
+        req,
         businessUnitKey,
         key
       );

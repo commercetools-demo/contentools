@@ -1,5 +1,6 @@
 import { createApiRoot } from '../client/create.client';
 import CustomError from '../errors/custom.error';
+import { AuthenticatedRequest } from '../types/service.types';
 
 interface CommercetoolsError {
   statusCode: number;
@@ -7,9 +8,11 @@ interface CommercetoolsError {
 }
 
 export class CustomObjectController {
+  private req: AuthenticatedRequest;
   private container: string;
 
-  constructor(container: string) {
+  constructor(req: AuthenticatedRequest, container: string) {
+    this.req = req;
     this.container = container;
   }
 
@@ -22,7 +25,7 @@ export class CustomObjectController {
    */
   createCustomObject = async (key: string, value: any) => {
     try {
-      const apiRoot = createApiRoot();
+      const apiRoot = createApiRoot(this.req)();
       const response = await apiRoot
         .customObjects()
         .post({
@@ -52,7 +55,7 @@ export class CustomObjectController {
    */
   getCustomObject = async (key: string, expand?: string[]) => {
     try {
-      const apiRoot = createApiRoot();
+      const apiRoot = createApiRoot(this.req)();
       const response = await apiRoot
         .customObjects()
         .withContainerAndKey({ container: this.container, key })
@@ -85,7 +88,7 @@ export class CustomObjectController {
    */
   updateCustomObject = async (key: string, value: any, expand?: string[]) => {
     try {
-      const apiRoot = createApiRoot();
+      const apiRoot = createApiRoot(this.req)();
       const response = await apiRoot
         .customObjects()
         .post({
@@ -117,7 +120,7 @@ export class CustomObjectController {
    */
   deleteCustomObject = async (key: string) => {
     try {
-      const apiRoot = createApiRoot();
+      const apiRoot = createApiRoot(this.req)();
       return apiRoot
         .customObjects()
         .withContainerAndKey({ container: this.container, key })
@@ -142,7 +145,7 @@ export class CustomObjectController {
    */
   deleteCustomObjectById = async (id: string) => {
     try {
-      const apiRoot = createApiRoot();
+      const apiRoot = createApiRoot(this.req)();
       const response = await apiRoot
         .customObjects()
         .withContainer({ container: this.container })
@@ -184,7 +187,7 @@ export class CustomObjectController {
     }
     const whereClauseString = whereClause.join(' and ');
     try {
-      const apiRoot = createApiRoot();
+      const apiRoot = createApiRoot(this.req)();
       const response = await apiRoot
         .customObjects()
         .withContainer({ container: this.container })

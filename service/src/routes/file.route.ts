@@ -118,6 +118,7 @@ fileRouter.post('/compile-upload', validateJwt, validateProject, (async (req, re
     );
 
     const contentTypeController = new CustomObjectController(
+      req,
       CONTENT_TYPE_CONTAINER
     );
 
