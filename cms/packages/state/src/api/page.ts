@@ -22,6 +22,7 @@ export async function addComponentToPageApi(
     method: 'POST',
     body: JSON.stringify({ componentType, rowId, cellId }),
     headers: {
+      'Content-Type': 'application/json',
       'x-project-key': projectKey,
       'Authorization': `Bearer ${jwtToken}`,
     },
@@ -53,6 +54,7 @@ export async function moveComponentInPageApi(
         targetCellId,
       }),
       headers: {
+        'Content-Type': 'application/json',
         'x-project-key': projectKey,
         'Authorization': `Bearer ${jwtToken}`,
       },
@@ -119,6 +121,7 @@ export async function updateCellSpanInPageApi(
       method: 'PUT',
       body: JSON.stringify({ updates }),
       headers: {
+        'Content-Type': 'application/json',
         'x-project-key': projectKey,
         'Authorization': `Bearer ${jwtToken}`,
       },
@@ -143,6 +146,7 @@ export async function updateComponentInPageApi(
       method: 'PUT',
       body: JSON.stringify({ updates }),
       headers: {
+        'Content-Type': 'application/json',
         'x-project-key': projectKey,
         'Authorization': `Bearer ${jwtToken}`,
       },
@@ -258,6 +262,7 @@ export const createPageApi = async (
       method: 'POST',
       body: JSON.stringify({ value: page }),
       headers: {
+        'Content-Type': 'application/json',
         'x-project-key': projectKey,
         'Authorization': `Bearer ${jwtToken}`,
       },
@@ -279,6 +284,7 @@ export const updatePageApi = async (
       method: 'PUT',
       body: JSON.stringify({ value: page }),
       headers: {
+        'Content-Type': 'application/json',
         'x-project-key': projectKey,
         'Authorization': `Bearer ${jwtToken}`,
       },

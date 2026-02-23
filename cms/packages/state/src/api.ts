@@ -80,6 +80,7 @@ export async function createContentTypeEndpoint<T>(
     method: 'POST',
     body: JSON.stringify({ value: data }),
     headers: {
+      'Content-Type': 'application/json',
       'x-project-key': projectKey,
       'Authorization': `Bearer ${jwtToken}`,
     },
@@ -100,6 +101,7 @@ export async function updateContentTypeEndpoint<T>(
     method: 'PUT',
     body: JSON.stringify({ value: data }),
     headers: {
+      'Content-Type': 'application/json',
       'x-project-key': projectKey,
       'Authorization': `Bearer ${jwtToken}`,
     },
@@ -180,6 +182,7 @@ export async function testDatasourceEndpoint<T>(
     method: 'POST',
     body: JSON.stringify({ params }),
     headers: {
+      'Content-Type': 'application/json',
       'x-project-key': projectKey,
     },
   });
@@ -205,6 +208,7 @@ export async function compileAndUploadEndpoint<T>(
     body: JSON.stringify({ key, files }),
     headers: {
       'x-project-key': projectKey,
+      'Content-Type': 'application/json',
       'Authorization': `Bearer ${jwtToken}`,
     },
   });
