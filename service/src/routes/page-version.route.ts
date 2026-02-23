@@ -19,6 +19,7 @@ pageVersionRouter.get(
     try {
       const { businessUnitKey, key } = req.params;
       const versions = await PageVersionController.getContentVersions(
+        req,
         businessUnitKey,
         key
       );

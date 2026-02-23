@@ -1,3 +1,4 @@
+import { AuthenticatedRequest } from '../types/service.types';
 import { logger } from '../utils/logger.utils';
 import {
   getProductBySkuController,
@@ -5,15 +6,16 @@ import {
 } from './product.controller';
 
 export const resolveDatasource = async (
+  req: AuthenticatedRequest,
   datasourceKey: string,
   params: Record<string, any>
 ) => {
   try {
     switch (datasourceKey) {
       case 'product-by-sku':
-        return getProductBySkuController(params.sku);
+        return getProductBySkuController(req, params.sku);
       case 'products-by-sku':
-        return getProductsBySkuController(params.skus);
+        return getProductsBySkuController(req, params.skus);
     }
   } catch (error) {
     logger.error('Failed to resolve datasource:', error);

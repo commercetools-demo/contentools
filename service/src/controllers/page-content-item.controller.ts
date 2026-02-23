@@ -15,6 +15,7 @@ import { withDependencies as withContentVersionDependencies } from './content-ve
 import { CustomObjectController } from './custom-object.controller';
 import * as ContentItemController from './content-item.controller';
 import { CustomObject } from '@commercetools/platform-sdk';
+import { AuthenticatedRequest } from '../types/service.types';
 
 const PageContentItemStateController =
   withContentStateDependencies<ContentItemState>({
@@ -28,11 +29,13 @@ const PageContentItemVersionController =
     MAX_VERSIONS: MAX_VERSIONS,
   });
 export const createPageContentItem = async (
+  req: AuthenticatedRequest,
   businessUnitKey: string,
   item: ContentItem['value']
 ): Promise<ContentItem> => {
   const key = `page-item-${uuidv4()}`;
   const contentItemController = new CustomObjectController(
+    req,
     PAGE_CONTENT_ITEMS_CONTAINER
   );
 
@@ -43,24 +46,28 @@ export const createPageContentItem = async (
   });
 
   await PageContentItemStateController.createDraftState(
+    req,
     businessUnitKey,
     key,
     item
   );
   await PageContentItemVersionController.createContentVersion(
+    req,
     businessUnitKey,
-    key,
-    item
-  );
-  return object;
+  key,
+  item
+);
+return object;
 };
 
 export const updatePageContentItem = async (
+  req: AuthenticatedRequest,
   businessUnitKey: string,
   key: string,
   item: Partial<ContentItem['value']>
 ): Promise<ContentItem> => {
   const contentItemController = new CustomObjectController(
+    req,
     PAGE_CONTENT_ITEMS_CONTAINER
   );
 
@@ -69,11 +76,13 @@ export const updatePageContentItem = async (
     businessUnitKey,
   });
   await PageContentItemStateController.createDraftState(
+    req,
     businessUnitKey,
     key,
     item
   );
   await PageContentItemVersionController.createContentVersion(
+    req,
     businessUnitKey,
     key,
     item
@@ -82,20 +91,23 @@ export const updatePageContentItem = async (
 };
 
 export const deletePageContentItem = async (
+  req: AuthenticatedRequest,
   businessUnitKey: string,
   key: string
 ): Promise<CustomObject> => {
   const contentItemController = new CustomObjectController(
+    req,
     PAGE_CONTENT_ITEMS_CONTAINER
   );
   const deletedContentItem =
     await contentItemController.deleteCustomObject(key);
-  await PageContentItemStateController.deleteStates(businessUnitKey, key);
-  await PageContentItemVersionController.deleteVersions(businessUnitKey, key);
+  await PageContentItemStateController.deleteStates(req, businessUnitKey, key);
+  await PageContentItemVersionController.deleteVersions(req, businessUnitKey, key);
   return deletedContentItem.body;
 };
 
 export const getContentItemWithStateKey = async (
+  req: AuthenticatedRequest,
   businessUnitKey: string,
   key: string,
   state: string | string[]
@@ -103,10 +115,10 @@ export const getContentItemWithStateKey = async (
   const contentState =
     await PageContentItemStateController.getFirstContentWithState<
       ContentItem['value']
-    >(`key = "${key}" AND businessUnitKey = "${businessUnitKey}"`, state);
+    >(req, `key = "${key}" AND businessUnitKey = "${businessUnitKey}"`, state);
 
   if (contentState) {
-    return ContentItemController.resolveContentItemDatasource(contentState);
+    return ContentItemController.resolveContentItemDatasource(req, contentState);
   }
 
   return undefined;

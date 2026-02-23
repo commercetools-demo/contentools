@@ -1,6 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import { CustomObjectController } from './custom-object.controller';
 import CustomError from '../errors/custom.error';
+import { AuthenticatedRequest } from '../types/service.types';
 
 interface GenericContentItemVersion {
   key: string;
@@ -16,10 +17,12 @@ export interface ContentVersionControllerDependencies {
 // Internal function that accepts dependencies
 const _getContentVersions = async <T extends GenericContentItemVersion>(
   dependencies: ContentVersionControllerDependencies,
+  req: AuthenticatedRequest,
   businessUnitKey: string,
   key: string
 ): Promise<T> => {
   const contentVersionController = new CustomObjectController(
+    req,
     dependencies.CONTENT_VERSION_CONTAINER
   );
   try {
@@ -45,12 +48,14 @@ const _getContentVersions = async <T extends GenericContentItemVersion>(
 // TODO: Remove
 const _getContentVersion = async <T extends GenericContentItemVersion>(
   dependencies: ContentVersionControllerDependencies,
+  req: AuthenticatedRequest,
   businessUnitKey: string,
   key: string,
   versionId: string
 ): Promise<T> => {
   const versions = await _getContentVersions<T>(
     dependencies,
+    req,
     businessUnitKey,
     key
   );
@@ -60,6 +65,7 @@ const _getContentVersion = async <T extends GenericContentItemVersion>(
 // Internal function that accepts dependencies
 const _createContentVersion = async <T extends GenericContentItemVersion>(
   dependencies: ContentVersionControllerDependencies,
+  req: AuthenticatedRequest,
   businessUnitKey: string,
   key: string,
   value: any
@@ -67,6 +73,7 @@ const _createContentVersion = async <T extends GenericContentItemVersion>(
   const versionKey = `${businessUnitKey}_${key}`;
   const existingVersions = await _getContentVersions(
     dependencies,
+    req,
     businessUnitKey,
     key
   );
@@ -80,6 +87,7 @@ const _createContentVersion = async <T extends GenericContentItemVersion>(
   existingVersions.versions.unshift(newVersion);
 
   const contentVersionController = new CustomObjectController(
+    req,
     dependencies.CONTENT_VERSION_CONTAINER
   );
 
@@ -99,11 +107,13 @@ const _createContentVersion = async <T extends GenericContentItemVersion>(
 // Internal function that accepts dependencies
 const _deleteVersions = async (
   dependencies: ContentVersionControllerDependencies,
+  req: AuthenticatedRequest,
   businessUnitKey: string,
   key: string
 ): Promise<void> => {
   const versionKey = `${businessUnitKey}_${key}`;
   const contentVersionController = new CustomObjectController(
+    req,
     dependencies.CONTENT_VERSION_CONTAINER
   );
   await contentVersionController.deleteCustomObject(versionKey);
@@ -113,18 +123,19 @@ const _deleteVersions = async (
 export const withDependencies = <T extends GenericContentItemVersion>(
   dependencies: ContentVersionControllerDependencies
 ) => ({
-  getContentVersions: (businessUnitKey: string, key: string) =>
-    _getContentVersions<T>(dependencies, businessUnitKey, key),
+  getContentVersions: (req: AuthenticatedRequest, businessUnitKey: string, key: string) =>
+    _getContentVersions<T>(dependencies, req, businessUnitKey, key),
 
   getContentVersion: (
+    req: AuthenticatedRequest,
     businessUnitKey: string,
     key: string,
     versionId: string
-  ) => _getContentVersion<T>(dependencies, businessUnitKey, key, versionId),
+  ) => _getContentVersion<T>(dependencies, req, businessUnitKey, key, versionId),
 
-  createContentVersion: (businessUnitKey: string, key: string, value: any) =>
-    _createContentVersion<T>(dependencies, businessUnitKey, key, value),
+  createContentVersion: (req: AuthenticatedRequest, businessUnitKey: string, key: string, value: any) =>
+    _createContentVersion<T>(dependencies, req, businessUnitKey, key, value),
 
-  deleteVersions: (businessUnitKey: string, key: string) =>
-    _deleteVersions(dependencies, businessUnitKey, key),
+  deleteVersions: (req: AuthenticatedRequest, businessUnitKey: string, key: string) =>
+    _deleteVersions(dependencies, req, businessUnitKey, key),
 });

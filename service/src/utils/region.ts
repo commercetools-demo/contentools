@@ -1,4 +1,8 @@
-const regionToCloudIdentifier = (region: string) => {
+const regionToCloudIdentifier = (region?: string) => {
+  if (!region) {
+    return 'us-central1.gcp';
+  }
+
   switch (region) {
     case 'gcp-us':
       return 'us-central1.gcp';

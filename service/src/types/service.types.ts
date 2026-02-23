@@ -73,5 +73,4 @@ export interface AuthenticatedRequest extends Request {
     exp: number;
   };
   project?: Project;
-  credentials?: DecryptedCredentials;
 }

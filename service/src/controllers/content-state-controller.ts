@@ -1,5 +1,6 @@
 import { CustomObjectController } from './custom-object.controller';
 import CustomError from '../errors/custom.error';
+import { AuthenticatedRequest } from '../types/service.types';
 
 interface GenericState {
   key: string;
@@ -15,10 +16,12 @@ export interface StateControllerDependencies {
 // Internal function that accepts dependencies
 const _getContentStatesWithWhereClause = async <T>(
   dependencies: StateControllerDependencies,
+  req: AuthenticatedRequest,
   whereClause: string,
   expand?: string[]
 ): Promise<T[]> => {
   const contentStateController = new CustomObjectController(
+    req,
     dependencies.CONTENT_STATE_CONTAINER
   );
   const contentStates = await contentStateController.getCustomObjects(
@@ -30,12 +33,14 @@ const _getContentStatesWithWhereClause = async <T>(
 
 const _getFirstContentWithState = async <T extends GenericState, R>(
   dependencies: StateControllerDependencies,
+  req: AuthenticatedRequest,
   whereClause: string,
   stateKey: string | string[],
   expand?: string[]
 ): Promise<R | undefined> => {
   const contentStates = await _getContentStatesWithWhereClause<T>(
     dependencies,
+    req,
     whereClause,
     expand
   );
@@ -58,9 +63,11 @@ const _getFirstContentWithState = async <T extends GenericState, R>(
 // Internal function that accepts dependencies
 const _getState = async <T>(
   dependencies: StateControllerDependencies,
+  req: AuthenticatedRequest,
   key: string
 ): Promise<T> => {
   const contentStateController = new CustomObjectController(
+    req,
     dependencies.CONTENT_STATE_CONTAINER
   );
   const contentState = await contentStateController.getCustomObject(key);
@@ -70,6 +77,7 @@ const _getState = async <T>(
 // Internal function that accepts dependencies
 const _createDraftState = async <T extends GenericState>(
   dependencies: StateControllerDependencies,
+  req: AuthenticatedRequest,
   businessUnitKey: string,
   key: string,
   value: any
@@ -77,7 +85,7 @@ const _createDraftState = async <T extends GenericState>(
   const stateKey = `${businessUnitKey}_${key}`;
   let existingState: T;
   try {
-    existingState = await _getState(dependencies, stateKey);
+    existingState = await _getState(dependencies, req, stateKey);
   } catch (error) {
     if ((error as any).statusCode === 404) {
       existingState = {
@@ -95,6 +103,7 @@ const _createDraftState = async <T extends GenericState>(
   };
 
   const contentStateController = new CustomObjectController(
+    req,
     dependencies.CONTENT_STATE_CONTAINER
   );
   const contentState = await contentStateController.updateCustomObject(
@@ -107,6 +116,7 @@ const _createDraftState = async <T extends GenericState>(
 // Internal function that accepts dependencies
 const _createPublishedState = async <T extends GenericState>(
   dependencies: StateControllerDependencies,
+  req: AuthenticatedRequest,
   businessUnitKey: string,
   key: string,
   value: any,
@@ -115,7 +125,7 @@ const _createPublishedState = async <T extends GenericState>(
   const stateKey = `${businessUnitKey}_${key}`;
   let existingState: T;
   try {
-    existingState = await _getState(dependencies, stateKey);
+    existingState = await _getState(dependencies, req, stateKey);
   } catch (error) {
     if ((error as any).statusCode === 404) {
       existingState = {
@@ -139,6 +149,7 @@ const _createPublishedState = async <T extends GenericState>(
   }
 
   const contentStateController = new CustomObjectController(
+    req,
     dependencies.CONTENT_STATE_CONTAINER
   );
   const contentState = await contentStateController.updateCustomObject(
@@ -151,13 +162,14 @@ const _createPublishedState = async <T extends GenericState>(
 // Internal function that accepts dependencies
 const _deleteDraftState = async <T extends GenericState>(
   dependencies: StateControllerDependencies,
+  req: AuthenticatedRequest,
   businessUnitKey: string,
   key: string
 ): Promise<T> => {
   const stateKey = `${businessUnitKey}_${key}`;
   let existingState: T;
   try {
-    existingState = await _getState(dependencies, stateKey);
+    existingState = await _getState(dependencies, req, stateKey);
   } catch (error) {
     if ((error as any).statusCode === 404) {
       existingState = {
@@ -180,10 +192,12 @@ const _deleteDraftState = async <T extends GenericState>(
   };
 
   const contentItemController = new CustomObjectController(
+    req,
     dependencies.CONTENT_CONTAINER
   );
 
   const contentStateController = new CustomObjectController(
+    req,
     dependencies.CONTENT_STATE_CONTAINER
   );
   await contentItemController.updateCustomObject(key, {
@@ -201,11 +215,13 @@ const _deleteDraftState = async <T extends GenericState>(
 // Internal function that accepts dependencies
 const _deleteStates = async (
   dependencies: StateControllerDependencies,
+  req: AuthenticatedRequest,
   businessUnitKey: string,
   key: string
 ): Promise<void> => {
   const stateKey = `${businessUnitKey}_${key}`;
   const contentStateController = new CustomObjectController(
+    req,
     dependencies.CONTENT_STATE_CONTAINER
   );
   await contentStateController.deleteCustomObject(stateKey);
@@ -215,37 +231,40 @@ const _deleteStates = async (
 export const withDependencies = <T extends GenericState>(
   dependencies: StateControllerDependencies
 ) => ({
-  getContentStatesWithWhereClause: (whereClause: string, expand?: string[]) =>
-    _getContentStatesWithWhereClause<T>(dependencies, whereClause, expand),
+  getContentStatesWithWhereClause: (req: AuthenticatedRequest, whereClause: string, expand?: string[]) =>
+    _getContentStatesWithWhereClause<T>(dependencies, req, whereClause, expand),
 
   getFirstContentWithState: <R>(
+    req: AuthenticatedRequest,
     whereClause: string,
     stateKey: string | string[],
     expand?: string[]
   ) =>
     _getFirstContentWithState<T, R>(
       dependencies,
+      req,
       whereClause,
       stateKey,
       expand
     ),
 
-  getState: (key: string) => _getState<T>(dependencies, key),
+  getState: (req: AuthenticatedRequest, key: string) => _getState<T>(dependencies, req, key),
 
-  createDraftState: (businessUnitKey: string, key: string, value: any) =>
-    _createDraftState<T>(dependencies, businessUnitKey, key, value),
+  createDraftState: (req: AuthenticatedRequest, businessUnitKey: string, key: string, value: any) =>
+    _createDraftState<T>(dependencies, req, businessUnitKey, key, value),
 
   createPublishedState: (
+    req: AuthenticatedRequest,
     businessUnitKey: string,
     key: string,
     value: any,
     clear?: boolean
   ) =>
-    _createPublishedState<T>(dependencies, businessUnitKey, key, value, clear),
+    _createPublishedState<T>(dependencies, req, businessUnitKey, key, value, clear),
 
-  deleteDraftState: (businessUnitKey: string, key: string) =>
-    _deleteDraftState<T>(dependencies, businessUnitKey, key),
+  deleteDraftState: (req: AuthenticatedRequest, businessUnitKey: string, key: string) =>
+    _deleteDraftState<T>(dependencies, req, businessUnitKey, key),
 
-  deleteStates: (businessUnitKey: string, key: string) =>
-    _deleteStates(dependencies, businessUnitKey, key),
+  deleteStates: (req: AuthenticatedRequest, businessUnitKey: string, key: string) =>
+    _deleteStates(dependencies, req, businessUnitKey, key),
 });

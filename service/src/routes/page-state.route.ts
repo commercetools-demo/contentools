@@ -35,7 +35,7 @@ pageStateRouter.get(
       const stateKey = `${businessUnitKey}_${key}`;
 
       try {
-        const object = await PageStateController.getState(stateKey);
+        const object = await PageStateController.getState(req, stateKey);
         res.json(object);
       } catch (error) {
         // If not found, return empty states object
@@ -65,13 +65,14 @@ pageStateRouter.put('/:businessUnitKey/pages/:key/states/published', validateJwt
   try {
     const { clearDraft } = req.query;
     const { businessUnitKey, key } = req.params;
-    const pageController = new CustomObjectController(CONTENT_PAGE_CONTAINER);
+    const pageController = new CustomObjectController(req, CONTENT_PAGE_CONTAINER);
     const page = await pageController.getCustomObject(key);
     const item = page.value;
 
     console.log('item >> ', item);
 
     const state = await PageStateController.createPublishedState(
+      req,
       businessUnitKey,
       key,
       item,
@@ -97,6 +98,7 @@ pageStateRouter.delete('/:businessUnitKey/pages/:key/states/draft', validateJwt,
     const { businessUnitKey, key } = req.params;
 
     const state = await PageStateController.deleteDraftState(
+      req,
       businessUnitKey,
       key
     );
