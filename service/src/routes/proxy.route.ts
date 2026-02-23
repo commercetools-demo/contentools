@@ -1,10 +1,11 @@
 import { Router, Request, Response, RequestHandler } from 'express';
 import { logger } from '../utils/logger.utils';
+import { requireProjectKey } from '../middleware/project-key.middleware';
 
 const proxyRouter = Router();
 
 // Proxy route for external scripts to avoid CORS issues
-proxyRouter.get('/proxy-script', (async (req: Request, res: Response) => {
+proxyRouter.get('/proxy-script', requireProjectKey, (async (req: Request, res: Response) => {
   try {
     const url = req.query.url as string;
     if (!url) {

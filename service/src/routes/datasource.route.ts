@@ -5,11 +5,12 @@ import { DATASOURCE_CONTAINER } from '../constants';
 import { resolveDatasource } from '../controllers/datasource-resolution.route';
 import { validateJwt } from '../middleware/jwt.middleware';
 import { validateProject } from '../middleware/project.middleware';
+import { requireProjectKey } from '../middleware/project-key.middleware';
 
 const datasourceController = new CustomObjectController(DATASOURCE_CONTAINER);
 const datasourceRouter = Router();
 
-datasourceRouter.get('/datasource', async (req, res, next) => {
+datasourceRouter.get('/datasource', requireProjectKey, async (req, res, next) => {
   try {
     const objects = await datasourceController.getCustomObjects();
     res.json(objects);
@@ -19,7 +20,7 @@ datasourceRouter.get('/datasource', async (req, res, next) => {
   }
 });
 
-datasourceRouter.get('/datasource/:key', async (req, res, next) => {
+datasourceRouter.get('/datasource/:key', requireProjectKey, async (req, res, next) => {
   try {
     const { key } = req.params;
     const object = await datasourceController.getCustomObject(key);

@@ -10,11 +10,13 @@ import { logger } from '../utils/logger.utils';
 import CustomError from '../errors/custom.error';
 import { validateJwt } from '../middleware/jwt.middleware';
 import { validateProject } from '../middleware/project.middleware';
+import { requireProjectKey } from '../middleware/project-key.middleware';
 
 const contentItemRouter = Router();
 
 contentItemRouter.get(
   '/:businessUnitKey/content-items',
+  requireProjectKey,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { businessUnitKey } = req.params;
@@ -30,6 +32,7 @@ contentItemRouter.get(
 );
 contentItemRouter.get(
   '/:businessUnitKey/content-items/content-type/:contentType',
+  requireProjectKey,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { businessUnitKey, contentType } = req.params;
@@ -48,6 +51,7 @@ contentItemRouter.get(
 
 contentItemRouter.get(
   '/:businessUnitKey/content-items/:key',
+  requireProjectKey,
   async (req, res, next) => {
     try {
       const { key, businessUnitKey } = req.params;
@@ -69,6 +73,7 @@ contentItemRouter.get(
 
 contentItemRouter.get(
   '/:businessUnitKey/published/content-items/:key',
+  requireProjectKey,
   async (req, res, next) => {
     try {
       const { key, businessUnitKey } = req.params;
@@ -93,6 +98,7 @@ contentItemRouter.get(
 
 contentItemRouter.post(
   '/:businessUnitKey/published/content-items/query',
+  requireProjectKey,
   async (req, res, next) => {
     try {
       const { businessUnitKey } = req.params;
@@ -123,6 +129,7 @@ contentItemRouter.post(
 
 contentItemRouter.post(
   '/:businessUnitKey/preview/content-items/query',
+  requireProjectKey,
   async (req, res, next) => {
     try {
       const { businessUnitKey } = req.params;
@@ -153,6 +160,7 @@ contentItemRouter.post(
 
 contentItemRouter.get(
   '/:businessUnitKey/preview/content-items/:key',
+  requireProjectKey,
   async (req, res, next) => {
     try {
       const { key, businessUnitKey } = req.params;

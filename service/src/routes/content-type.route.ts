@@ -5,13 +5,14 @@ import { CONTENT_TYPE_CONTAINER } from '../constants';
 import { v4 as uuidv4 } from 'uuid';
 import { validateJwt } from '../middleware/jwt.middleware';
 import { validateProject } from '../middleware/project.middleware';
+import { requireProjectKey } from '../middleware/project-key.middleware';
 
 const contentTypeController = new CustomObjectController(
   CONTENT_TYPE_CONTAINER
 );
 const contentTypeRouter = Router();
 
-contentTypeRouter.get('/content-type', async (req, res, next) => {
+contentTypeRouter.get('/content-type', requireProjectKey, async (req, res, next) => {
   try {
     const dynamicContentTypes = await contentTypeController.getCustomObjects();
 
@@ -28,7 +29,7 @@ contentTypeRouter.get('/content-type', async (req, res, next) => {
   }
 });
 
-contentTypeRouter.get('/content-type/:key', async (req, res, next) => {
+contentTypeRouter.get('/content-type/:key', requireProjectKey, async (req, res, next) => {
   try {
     const { key } = req.params;
     const object = await contentTypeController.getCustomObject(key);
