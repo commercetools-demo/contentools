@@ -1112,7 +1112,6 @@ The API may return the following error responses:
 ## Environment Variables
 
 - `MAX_VERSIONS`: Maximum number of versions to keep (default: 5)
-- `CORS_ALLOWED_ORIGINS`: Comma-separated list of allowed origins for CORS
 
 ## Authentication Setup
 
