@@ -1,0 +1,55 @@
+{
+  "name": "@commercetools-demo/contenttools-mcp",
+  "version": "1.0.0",
+  "description": "Content Tools MCP - AI/LangChain/Mastra tools for the CMS service API",
+  "type": "module",
+  "main": "./ai-sdk/index.js",
+  "exports": {
+    "./ai-sdk": {
+      "types": "./ai-sdk/index.d.ts",
+      "import": "./ai-sdk/index.js",
+      "require": "./ai-sdk/index.cjs"
+    },
+    "./langchain": {
+      "types": "./langchain/index.d.ts",
+      "import": "./langchain/index.js",
+      "require": "./langchain/index.cjs"
+    },
+    "./mastra": {
+      "types": "./mastra/index.d.ts",
+      "import": "./mastra/index.js",
+      "require": "./mastra/index.cjs"
+    }
+  },
+  "files": [
+    "ai-sdk/**/*",
+    "langchain/**/*",
+    "mastra/**/*",
+    "LICENSE",
+    "README.md",
+    "package.json"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "clean": "rm -rf ai-sdk langchain mastra"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "peerDependencies": {
+    "ai": "^6.0.0 || ^7.0.0",
+    "@langchain/core": ">=0.3.0",
+    "@mastra/core": ">=0.8.0",
+    "zod": ">=3.0.0"
+  },
+  "dependencies": {
+    "zod": "^3.24.0"
+  },
+  "devDependencies": {
+    "@langchain/core": "^0.3.0",
+    "@mastra/core": "^0.8.0",
+    "ai": "^6.0.0",
+    "tsup": "^8.3.0",
+    "typescript": "^5.7.0"
+  }
+}
