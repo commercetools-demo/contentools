@@ -11,13 +11,17 @@ function App() {
     <div className="App">
       <ContentItem
         baseURL="http://localhost:8080/service"
-        businessUnitKey="central-texas-animal-hospital"
+        businessUnitKey="1"
+        projectKey="us-store"
+        jwtToken="ttt"
         locale="en-us"
         parentUrl=""
       />
       <ContentType
         baseURL="http://localhost:8080/service"
-        businessUnitKey="central-texas-animal-hospital"
+        businessUnitKey="1"
+        projectKey="us-store"
+        jwtToken="ttt"
         locale="en-us"
         parentUrl=""
       />
