@@ -10,10 +10,12 @@ export {
   useStateStateManagement,
   useStateMediaLibrary,
   useStateDatasource,
+  useConfigurationState,
 } from './StateProvider';
 
 // API functions
 export * from './api';
+export * from './api/configuration';
 
 // Utility functions
 export { debounce } from './utils/debounce';

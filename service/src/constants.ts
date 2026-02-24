@@ -17,6 +17,12 @@ export const CONTENT_ITEM_VERSION_CONTAINER =
 export const CONTENT_TYPE_CONTAINER =
   process.env.CONTENT_TYPE_CONTAINER || 'content-type';
 
+export const CONFIGURATION_CONTAINER =
+  process.env.CONFIGURATION_CONTAINER || 'configuration';
+
+export const CONFIGURATION_THEME_KEY =
+  process.env.CONFIGURATION_THEME_KEY || 'theme';
+
 export const DATASOURCE_CONTAINER =
   process.env.DATASOURCE_CONTAINER || 'datasource';
 

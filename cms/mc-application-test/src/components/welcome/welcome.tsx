@@ -101,6 +101,11 @@ const Welcome = () => {
               content={intl.formatMessage(messages.cardTypesContent)}
               linkTo={`${path}/types`}
             />
+            <InfoCard
+              title={intl.formatMessage(messages.cardConfigurationTitle)}
+              content={intl.formatMessage(messages.cardConfigurationContent)}
+              linkTo={`${path}/configuration`}
+            />
           </Grid>
         </Spacings.Stack>
       </Spacings.Stack>

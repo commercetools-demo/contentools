@@ -2,6 +2,7 @@ import { type ReactNode } from 'react';
 import { Switch, Route, useRouteMatch, useHistory } from 'react-router-dom';
 import Spacings from '@commercetools-uikit/spacings';
 import Welcome from './components/welcome';
+import Configuration from '@commercetools-demo/contentools-configuration';
 import ContentItem from '@commercetools-demo/contentools-content-items';
 import ContentPage from '@commercetools-demo/contentools-content-pages';
 import ContentType from '@commercetools-demo/contentools-content-types';
@@ -76,9 +77,24 @@ const ApplicationRoutes = (_props: ApplicationRoutesProps) => {
         <Route path={`${match.path}/types`}>
           <ContentType
             baseURL={environment.CMS_API_URL}
+            projectKey={project.key}
             businessUnitKey={environment.BUSINESS_UNIT_KEY}
             locale={dataLocale ?? 'en-US'}
             parentUrl={`${match.url.slice(1)}/types`}
+            backButton={{
+              icon: <ListIcon />,
+              label: 'Back',
+              onClick: () => {
+                history.push(match.url);
+              },
+            }}
+          />
+        </Route>
+        <Route path={`${match.path}/configuration`}>
+          <Configuration
+            baseURL={environment.CMS_API_URL}
+            businessUnitKey={environment.BUSINESS_UNIT_KEY}
+            parentUrl={`${match.url.slice(1)}/configuration`}
             backButton={{
               icon: <ListIcon />,
               label: 'Back',

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Publish script for CMS packages
-# This script publishes content-item-renderer, content-types, and content-items packages to npmjs
+# This script publishes configuration, content-item-renderer, content-types, content-items, and other CMS packages to npmjs
 
 set -e  # Exit on any error
 
@@ -14,6 +14,7 @@ NC='\033[0m' # No Color
 
 # Package directories
 PACKAGES=(
+    "cms/packages/configuration"
     "cms/packages/content-item-renderer"
     "cms/packages/content-items"
     "cms/packages/content-pages"
@@ -30,6 +31,7 @@ PACKAGES=(
 
 # Package names for output
 PACKAGE_NAMES=(
+    "@commercetools-demo/contentools-configuration"
     "@commercetools-demo/contentools-content-item-renderer"
     "@commercetools-demo/contentools-content-items"
     "@commercetools-demo/contentools-content-pages"

@@ -33,6 +33,9 @@ export * from './api-types';
 // Datasource types
 export * from './datasource-types';
 
+// Configuration types
+export * from './configuration-types';
+
 // Event types
 export * from './event-types';
 

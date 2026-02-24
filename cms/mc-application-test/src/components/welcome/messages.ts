@@ -52,4 +52,12 @@ export default defineMessages({
     id: 'Welcome.cardTypesContent',
     defaultMessage: 'Manage your content types.',
   },
+  cardConfigurationTitle: {
+    id: 'Welcome.cardConfigurationTitle',
+    defaultMessage: 'Configuration',
+  },
+  cardConfigurationContent: {
+    id: 'Welcome.cardConfigurationContent',
+    defaultMessage: 'Manage theme and global configuration.',
+  },
 });

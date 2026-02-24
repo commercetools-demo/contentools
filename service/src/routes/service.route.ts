@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import configurationRouter from './configuration.route';
 import contentItemStateRouter from './content-item-state.route';
 import contentItemVersionRouter from './content-item-version.route';
 import contentItemRouter from './content-item.route';
@@ -16,6 +17,7 @@ import authRouter from './auth.route';
 
 const serviceRouter = Router();
 
+serviceRouter.use('/', configurationRouter);
 serviceRouter.use('/', contentTypeRouter);
 serviceRouter.use('/', contentItemRouter);
 serviceRouter.use('/', fileRouter);
