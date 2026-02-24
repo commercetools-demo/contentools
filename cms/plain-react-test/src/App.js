@@ -5,6 +5,7 @@ import ContentType from '@commercetools-demo/contentools-content-types';
 import ContentItemRenderer from '@commercetools-demo/contentools-content-item-renderer';
 import ContentPages from '@commercetools-demo/contentools-content-pages';
 import PageRenderer from '@commercetools-demo/contentools-page-renderer';
+import Configuration from '@commercetools-demo/contentools-configuration';
 
 function App() {
   return (
@@ -18,6 +19,14 @@ function App() {
         parentUrl=""
       />
       <ContentType
+        baseURL="http://localhost:8080/service"
+        businessUnitKey="1"
+        projectKey="us-store"
+        jwtToken="ttt"
+        locale="en-us"
+        parentUrl=""
+      />
+      <Configuration
         baseURL="http://localhost:8080/service"
         businessUnitKey="1"
         projectKey="us-store"
