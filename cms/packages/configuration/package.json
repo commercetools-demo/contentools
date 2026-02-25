@@ -18,6 +18,7 @@
     "@commercetools-uikit/card": "^20.2.2",
     "@commercetools-uikit/field-label": "^20.2.2",
     "@commercetools-uikit/flat-button": "^20.2.3",
+    "@commercetools-uikit/grid": "^20.4.0",
     "@commercetools-uikit/icons": "^20.2.1",
     "@commercetools-uikit/loading-spinner": "^20.2.2",
     "@commercetools-uikit/number-input": "^20.2.2",

@@ -15,6 +15,7 @@ import TextInput from '@commercetools-uikit/text-input';
 import LoadingSpinner from '@commercetools-uikit/loading-spinner';
 import styled from 'styled-components';
 import { DEFAULT_THEME } from '../constants';
+import Grid from '@commercetools-uikit/grid';
 
 const BORDER_RADIUS_OPTIONS = [
   { value: 'none', label: 'None' },
@@ -66,11 +67,15 @@ const Container = styled.div`
   align-items: center;
 `;
 
-const FormSection = styled.div`
+const FormSection = styled(Grid.Item)`
   margin-bottom: 1.5rem;
 `;
 
-const ThemeEditor: React.FC<Props> = ({ baseURL, businessUnitKey, backButton }) => {
+const ThemeEditor: React.FC<Props> = ({
+  baseURL,
+  businessUnitKey,
+  backButton,
+}) => {
   const hydratedUrl = `${baseURL}/${businessUnitKey}`;
   const history = useHistory();
   const {
@@ -104,7 +109,10 @@ const ThemeEditor: React.FC<Props> = ({ baseURL, businessUnitKey, backButton }) 
       borderWidth: t.borderWidth ?? DEFAULT_THEME.borderWidth,
       fontFamily: t.fontFamily ?? DEFAULT_THEME.fontFamily,
       fontHeading: t.fontHeading ?? DEFAULT_THEME.fontHeading,
-      spacingScale: typeof t.spacingScale === 'number' ? t.spacingScale : DEFAULT_THEME.spacingScale,
+      spacingScale:
+        typeof t.spacingScale === 'number'
+          ? t.spacingScale
+          : DEFAULT_THEME.spacingScale,
       buttonStyle: t.buttonStyle ?? DEFAULT_THEME.buttonStyle,
       cardShadow: t.cardShadow ?? DEFAULT_THEME.cardShadow,
       headerStyle: t.headerStyle ?? DEFAULT_THEME.headerStyle,
@@ -119,13 +127,13 @@ const ThemeEditor: React.FC<Props> = ({ baseURL, businessUnitKey, backButton }) 
     applyThemeToForm(theme);
   }, [theme, applyThemeToForm]);
 
-  const handleChange = useCallback(<K extends keyof ThemeTokens>(
-    key: K,
-    value: ThemeTokens[K]
-  ) => {
-    setFormValues((prev) => ({ ...prev, [key]: value }));
-    setSaveSuccess(false);
-  }, []);
+  const handleChange = useCallback(
+    <K extends keyof ThemeTokens>(key: K, value: ThemeTokens[K]) => {
+      setFormValues((prev) => ({ ...prev, [key]: value }));
+      setSaveSuccess(false);
+    },
+    []
+  );
 
   const handleSave = useCallback(async () => {
     setSaving(true);
@@ -194,7 +202,11 @@ const ThemeEditor: React.FC<Props> = ({ baseURL, businessUnitKey, backButton }) 
       <Card>
         <Spacings.Stack scale="xl">
           <Text.Headline as="h2">Colors</Text.Headline>
-          <Spacings.Stack scale="m">
+          <Grid
+            gridGap="16px"
+            gridAutoColumns="1fr"
+            gridTemplateColumns="repeat(4, 1fr)"
+          >
             <FormSection>
               <FieldLabel title="Primary" htmlFor="colorPrimary" />
               <Spacings.Inline alignItems="center" scale="s">
@@ -218,12 +230,16 @@ const ThemeEditor: React.FC<Props> = ({ baseURL, businessUnitKey, backButton }) 
                   type="color"
                   id="colorPrimaryHover"
                   value={formValues.colorPrimaryHover}
-                  onChange={(e) => handleChange('colorPrimaryHover', e.target.value)}
+                  onChange={(e) =>
+                    handleChange('colorPrimaryHover', e.target.value)
+                  }
                   style={{ width: 40, height: 32, cursor: 'pointer' }}
                 />
                 <TextInput
                   value={formValues.colorPrimaryHover}
-                  onChange={(e) => handleChange('colorPrimaryHover', e.target.value)}
+                  onChange={(e) =>
+                    handleChange('colorPrimaryHover', e.target.value)
+                  }
                 />
               </Spacings.Inline>
             </FormSection>
@@ -234,12 +250,16 @@ const ThemeEditor: React.FC<Props> = ({ baseURL, businessUnitKey, backButton }) 
                   type="color"
                   id="colorSecondary"
                   value={formValues.colorSecondary}
-                  onChange={(e) => handleChange('colorSecondary', e.target.value)}
+                  onChange={(e) =>
+                    handleChange('colorSecondary', e.target.value)
+                  }
                   style={{ width: 40, height: 32, cursor: 'pointer' }}
                 />
                 <TextInput
                   value={formValues.colorSecondary}
-                  onChange={(e) => handleChange('colorSecondary', e.target.value)}
+                  onChange={(e) =>
+                    handleChange('colorSecondary', e.target.value)
+                  }
                 />
               </Spacings.Inline>
             </FormSection>
@@ -250,12 +270,16 @@ const ThemeEditor: React.FC<Props> = ({ baseURL, businessUnitKey, backButton }) 
                   type="color"
                   id="colorBackground"
                   value={formValues.colorBackground}
-                  onChange={(e) => handleChange('colorBackground', e.target.value)}
+                  onChange={(e) =>
+                    handleChange('colorBackground', e.target.value)
+                  }
                   style={{ width: 40, height: 32, cursor: 'pointer' }}
                 />
                 <TextInput
                   value={formValues.colorBackground}
-                  onChange={(e) => handleChange('colorBackground', e.target.value)}
+                  onChange={(e) =>
+                    handleChange('colorBackground', e.target.value)
+                  }
                 />
               </Spacings.Inline>
             </FormSection>
@@ -298,19 +322,27 @@ const ThemeEditor: React.FC<Props> = ({ baseURL, businessUnitKey, backButton }) 
                   type="color"
                   id="colorTextMuted"
                   value={formValues.colorTextMuted}
-                  onChange={(e) => handleChange('colorTextMuted', e.target.value)}
+                  onChange={(e) =>
+                    handleChange('colorTextMuted', e.target.value)
+                  }
                   style={{ width: 40, height: 32, cursor: 'pointer' }}
                 />
                 <TextInput
                   value={formValues.colorTextMuted}
-                  onChange={(e) => handleChange('colorTextMuted', e.target.value)}
+                  onChange={(e) =>
+                    handleChange('colorTextMuted', e.target.value)
+                  }
                 />
               </Spacings.Inline>
             </FormSection>
-          </Spacings.Stack>
+          </Grid>
 
           <Text.Headline as="h2">Typography</Text.Headline>
-          <Spacings.Stack scale="m">
+          <Grid
+            gridGap="16px"
+            gridAutoColumns="1fr"
+            gridTemplateColumns="repeat(4, 1fr)"
+          >
             <FormSection>
               <FieldLabel title="Font Family" htmlFor="fontFamily" />
               <TextInput
@@ -327,10 +359,14 @@ const ThemeEditor: React.FC<Props> = ({ baseURL, businessUnitKey, backButton }) 
                 onChange={(e) => handleChange('fontHeading', e.target.value)}
               />
             </FormSection>
-          </Spacings.Stack>
+          </Grid>
 
           <Text.Headline as="h2">Layout &amp; Components</Text.Headline>
-          <Spacings.Stack scale="m">
+          <Grid
+            gridGap="16px"
+            gridAutoColumns="1fr"
+            gridTemplateColumns="repeat(4, 1fr)"
+          >
             <FormSection>
               <FieldLabel title="Spacing Scale" htmlFor="spacingScale" />
               <NumberInput
@@ -350,7 +386,10 @@ const ThemeEditor: React.FC<Props> = ({ baseURL, businessUnitKey, backButton }) 
                 id="borderRadius"
                 value={formValues.borderRadius}
                 onChange={(e) =>
-                  handleChange('borderRadius', e.target.value as ThemeTokens['borderRadius'])
+                  handleChange(
+                    'borderRadius',
+                    e.target.value as ThemeTokens['borderRadius']
+                  )
                 }
                 options={BORDER_RADIUS_OPTIONS}
               />
@@ -361,7 +400,10 @@ const ThemeEditor: React.FC<Props> = ({ baseURL, businessUnitKey, backButton }) 
                 id="borderWidth"
                 value={formValues.borderWidth}
                 onChange={(e) =>
-                  handleChange('borderWidth', e.target.value as ThemeTokens['borderWidth'])
+                  handleChange(
+                    'borderWidth',
+                    e.target.value as ThemeTokens['borderWidth']
+                  )
                 }
                 options={BORDER_WIDTH_OPTIONS}
               />
@@ -372,7 +414,10 @@ const ThemeEditor: React.FC<Props> = ({ baseURL, businessUnitKey, backButton }) 
                 id="buttonStyle"
                 value={formValues.buttonStyle}
                 onChange={(e) =>
-                  handleChange('buttonStyle', e.target.value as ThemeTokens['buttonStyle'])
+                  handleChange(
+                    'buttonStyle',
+                    e.target.value as ThemeTokens['buttonStyle']
+                  )
                 }
                 options={BUTTON_STYLE_OPTIONS}
               />
@@ -383,7 +428,10 @@ const ThemeEditor: React.FC<Props> = ({ baseURL, businessUnitKey, backButton }) 
                 id="cardShadow"
                 value={formValues.cardShadow}
                 onChange={(e) =>
-                  handleChange('cardShadow', e.target.value as ThemeTokens['cardShadow'])
+                  handleChange(
+                    'cardShadow',
+                    e.target.value as ThemeTokens['cardShadow']
+                  )
                 }
                 options={CARD_SHADOW_OPTIONS}
               />
@@ -394,12 +442,15 @@ const ThemeEditor: React.FC<Props> = ({ baseURL, businessUnitKey, backButton }) 
                 id="headerStyle"
                 value={formValues.headerStyle}
                 onChange={(e) =>
-                  handleChange('headerStyle', e.target.value as ThemeTokens['headerStyle'])
+                  handleChange(
+                    'headerStyle',
+                    e.target.value as ThemeTokens['headerStyle']
+                  )
                 }
                 options={HEADER_STYLE_OPTIONS}
               />
             </FormSection>
-          </Spacings.Stack>
+          </Grid>
 
           <Spacings.Inline>
             <PrimaryButton
