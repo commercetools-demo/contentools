@@ -57,3 +57,10 @@ const tools = agent.getTools();
 - `@commercetools-demo/contenttools-mcp/mastra` – ContentToolsAgent and types
 
 All CMS service routes (configuration, content types, content items, pages, datasources, file, auth, etc.) are exposed as tools. Optional `configuration.actions` can restrict which tools are enabled.
+
+
+## Inspector
+
+```shell
+npx @modelcontextprotocol/inspector yarn run mcp --baseUrl=http://localhost:8080/service --projectKey=xxx --businessUnitKey=1
+```
