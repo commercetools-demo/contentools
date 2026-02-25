@@ -1,8 +1,8 @@
 import { z } from 'zod';
 import type { Tool } from '../../types/tools';
+import { themeTokensSchema } from '../schemas';
 
 const businessUnitKeyParam = z.string().optional().describe('Business unit key (default from context)');
-const valueParam = z.record(z.unknown()).describe('Theme value object');
 
 const configurationTools: Tool[] = [
   {
@@ -16,14 +16,14 @@ const configurationTools: Tool[] = [
     method: 'create_theme',
     name: 'Create Configuration Theme',
     description: 'Create the configuration theme for a business unit.',
-    parameters: z.object({ businessUnitKey: businessUnitKeyParam, value: valueParam }),
+    parameters: z.object({ businessUnitKey: businessUnitKeyParam, value: themeTokensSchema }),
     actions: { configuration: { create: true } },
   },
   {
     method: 'update_theme',
     name: 'Update Configuration Theme',
     description: 'Update the configuration theme for a business unit.',
-    parameters: z.object({ businessUnitKey: businessUnitKeyParam, value: valueParam }),
+    parameters: z.object({ businessUnitKey: businessUnitKeyParam, value: themeTokensSchema }),
     actions: { configuration: { update: true } },
   },
   {

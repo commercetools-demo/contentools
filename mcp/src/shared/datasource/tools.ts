@@ -1,8 +1,8 @@
 import { z } from 'zod';
 import type { Tool } from '../../types/tools';
+import { datasourceInfoSchema } from '../schemas';
 
 const key = z.string().describe('Datasource key');
-const value = z.record(z.unknown()).describe('Datasource value');
 const params = z.record(z.unknown()).optional().describe('Parameters for testing the datasource');
 
 const datasourceTools: Tool[] = [
@@ -24,14 +24,14 @@ const datasourceTools: Tool[] = [
     method: 'create_datasource',
     name: 'Create Datasource',
     description: 'Create a new datasource.',
-    parameters: z.object({ key, value }),
+    parameters: z.object({ key, value: datasourceInfoSchema }),
     actions: { datasource: { create: true } },
   },
   {
     method: 'update_datasource',
     name: 'Update Datasource',
     description: 'Update a datasource by key.',
-    parameters: z.object({ key, value }),
+    parameters: z.object({ key, value: datasourceInfoSchema }),
     actions: { datasource: { update: true } },
   },
   {
