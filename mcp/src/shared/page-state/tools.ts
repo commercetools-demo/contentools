@@ -1,9 +1,10 @@
 import { z } from 'zod';
 import type { Tool } from '../../types/tools';
+import { pageSchema } from '../schemas';
 
 const bu = z.string().optional().describe('Business unit key (default from context)');
 const key = z.string().describe('Page key');
-const value = z.record(z.unknown()).optional().describe('State value');
+const value = pageSchema.optional().describe('Page value when publishing (optional)');
 const clearDraft = z.boolean().optional().describe('When true, clear draft after publishing');
 
 const pageStateTools: Tool[] = [

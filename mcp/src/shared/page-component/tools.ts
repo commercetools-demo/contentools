@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import type { Tool } from '../../types/tools';
+import { contentItemSchema } from '../schemas';
 
 const bu = z.string().optional().describe('Business unit key (default from context)');
 const key = z.string().describe('Page key');
@@ -7,7 +8,7 @@ const contentItemKey = z.string().describe('Content item key on the page');
 const componentType = z.string().describe('Component type');
 const rowId = z.string().describe('Row ID');
 const cellId = z.string().describe('Cell ID');
-const updates = z.record(z.unknown()).describe('Component updates');
+const updates = contentItemSchema.partial().describe('Partial content item fields to update on the component');
 
 const pageComponentTools: Tool[] = [
   {

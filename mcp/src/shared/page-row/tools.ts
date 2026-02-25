@@ -1,11 +1,11 @@
 import { z } from 'zod';
 import type { Tool } from '../../types/tools';
+import { cellSpanUpdatesSchema } from '../schemas';
 
 const bu = z.string().optional().describe('Business unit key (default from context)');
 const key = z.string().describe('Page key');
 const rowId = z.string().describe('Row ID');
 const cellId = z.string().describe('Cell ID');
-const updates = z.record(z.unknown()).describe('Cell span updates');
 
 const pageRowTools: Tool[] = [
   {
@@ -26,7 +26,7 @@ const pageRowTools: Tool[] = [
     method: 'update_page_cell_span',
     name: 'Update Page Cell Span',
     description: 'Update cell span in a page row.',
-    parameters: z.object({ businessUnitKey: bu, key, rowId, cellId, updates }),
+    parameters: z.object({ businessUnitKey: bu, key, rowId, cellId, updates: cellSpanUpdatesSchema }),
     actions: { page_row: { update: true } },
   },
 ];

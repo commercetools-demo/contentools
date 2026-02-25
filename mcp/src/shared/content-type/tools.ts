@@ -1,8 +1,8 @@
 import { z } from 'zod';
 import type { Tool } from '../../types/tools';
+import { contentTypeDataSchema } from '../schemas';
 
 const keyParam = z.string().describe('Content type key');
-const valueParam = z.record(z.unknown()).describe('Content type value (name, schema, renderer, etc.)');
 
 const contentTypeTools: Tool[] = [
   {
@@ -23,14 +23,14 @@ const contentTypeTools: Tool[] = [
     method: 'create_content_type',
     name: 'Create Content Type',
     description: 'Create a new content type.',
-    parameters: z.object({ value: valueParam }),
+    parameters: z.object({ value: contentTypeDataSchema }),
     actions: { content_type: { create: true } },
   },
   {
     method: 'update_content_type',
     name: 'Update Content Type',
     description: 'Update an existing content type by key.',
-    parameters: z.object({ key: keyParam, value: valueParam }),
+    parameters: z.object({ key: keyParam, value: contentTypeDataSchema }),
     actions: { content_type: { update: true } },
   },
   {

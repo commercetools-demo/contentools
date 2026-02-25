@@ -1,9 +1,9 @@
 import { z } from 'zod';
 import type { Tool } from '../../types/tools';
+import { pageSchema, pageCreateSchema } from '../schemas';
 
 const bu = z.string().optional().describe('Business unit key (default from context)');
 const key = z.string().describe('Page key');
-const value = z.record(z.unknown()).describe('Page value');
 const query = z.string().describe('Query string for filtering');
 
 const pageTools: Tool[] = [
@@ -25,14 +25,14 @@ const pageTools: Tool[] = [
     method: 'create_page',
     name: 'Create Page',
     description: 'Create a new page.',
-    parameters: z.object({ businessUnitKey: bu, value }),
+    parameters: z.object({ businessUnitKey: bu, value: pageCreateSchema }),
     actions: { page: { create: true } },
   },
   {
     method: 'update_page',
     name: 'Update Page',
     description: 'Update a page by key.',
-    parameters: z.object({ businessUnitKey: bu, key, value }),
+    parameters: z.object({ businessUnitKey: bu, key, value: pageSchema }),
     actions: { page: { update: true } },
   },
   {

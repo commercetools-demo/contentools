@@ -1,9 +1,9 @@
 import { z } from 'zod';
 import type { Tool } from '../../types/tools';
+import { contentItemSchema } from '../schemas';
 
 const bu = z.string().optional().describe('Business unit key (default from context)');
 const key = z.string().describe('Content item key');
-const value = z.record(z.unknown()).describe('Content item value (type, name, data, etc.)');
 const query = z.string().describe('Query string for filtering');
 
 const contentItemTools: Tool[] = [
@@ -60,14 +60,14 @@ const contentItemTools: Tool[] = [
     method: 'create_content_item',
     name: 'Create Content Item',
     description: 'Create a new content item.',
-    parameters: z.object({ businessUnitKey: bu, value }),
+    parameters: z.object({ businessUnitKey: bu, value: contentItemSchema }),
     actions: { content_item: { create: true } },
   },
   {
     method: 'update_content_item',
     name: 'Update Content Item',
     description: 'Update an existing content item by key.',
-    parameters: z.object({ businessUnitKey: bu, key, value }),
+    parameters: z.object({ businessUnitKey: bu, key, value: contentItemSchema }),
     actions: { content_item: { update: true } },
   },
   {
