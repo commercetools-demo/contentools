@@ -31,6 +31,8 @@ export interface ContentItemRendererProps {
   projectKey: string;
   /** Callback when component fails to render */
   onError?: (error: Error) => void;
+  /** The key of the page when rendered inside PageRenderer (sets data-page-key on root) */
+  pageKey?: string;
 }
 
 /**

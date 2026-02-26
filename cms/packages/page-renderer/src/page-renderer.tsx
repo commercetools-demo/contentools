@@ -55,6 +55,7 @@ const PageGridRenderer: React.FC<
               baseURL={baseURL}
               locale={locale}
               onError={onError}
+              pageKey={page.key}
             />
           </div>
         );
@@ -95,7 +96,10 @@ const PageGridRenderer: React.FC<
   };
 
   return (
-    <div className={`page-renderer ${className || ''}`}>
+    <div
+      className={`page-renderer ${className || ''}`}
+      data-page-key={page?.key ?? ''}
+    >
       {/* Page metadata could be rendered here if needed */}
       <div className="page-content">
         {page.layout?.rows?.map((row, rowIndex) => renderRow(row, rowIndex)) ||
