@@ -130,6 +130,7 @@ const ContentItemResolver: React.FC<
     <ComponentRenderer
       component={resolvedComponent}
       baseURL={baseURL}
+      pageKey={props.pageKey}
       {...otherProps}
     />
   );

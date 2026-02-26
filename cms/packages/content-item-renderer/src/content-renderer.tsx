@@ -25,8 +25,8 @@ const ComponentRenderer: React.FC<
   PropsWithChildren<
     Pick<
       ContentItemRendererProps,
-      'baseURL' | 'component' | 'locale' | 'className' | 'onError'
-    >
+      'baseURL' | 'component' | 'locale' | 'className' | 'onError' | 'pageKey'
+    > & { componentKey?: string }
   >
 > = ({
   component,
@@ -34,6 +34,7 @@ const ComponentRenderer: React.FC<
   locale = 'en-US',
   className,
   onError,
+  pageKey,
   children,
 }) => {
   const { fetchContentType } = useStateContentType();
@@ -123,7 +124,11 @@ const ComponentRenderer: React.FC<
   }
 
   return (
-    <div className={className}>
+    <div
+      className={className}
+      data-component-key={component?.key ?? ''}
+      {...(pageKey != null && pageKey !== '' && { 'data-page-key': pageKey })}
+    >
       <DynamicComponentErrorBoundary
         componentId={component?.id || ''}
         onError={onError}
