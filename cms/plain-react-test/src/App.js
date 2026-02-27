@@ -6,6 +6,7 @@ import ContentItemRenderer from '@commercetools-demo/contentools-content-item-re
 import ContentPages from '@commercetools-demo/contentools-content-pages';
 import PageRenderer from '@commercetools-demo/contentools-page-renderer';
 import Configuration from '@commercetools-demo/contentools-configuration';
+import { BackIcon } from '@commercetools-uikit/icons';
 
 function App() {
   return (
@@ -33,6 +34,11 @@ function App() {
         jwtToken="ttt"
         locale="en-us"
         parentUrl=""
+        backButton={{
+          label: 'Back',
+          onClick: () => console.log('Back'),
+          icon: <BackIcon />,
+        }}
       />
       {/* <ContentPages
         baseURL="http://localhost:8080/service"
