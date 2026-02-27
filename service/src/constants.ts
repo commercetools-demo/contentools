@@ -20,6 +20,9 @@ export const CONTENT_TYPE_CONTAINER =
 export const CONFIGURATION_CONTAINER =
   process.env.CONFIGURATION_CONTAINER || 'configuration';
 
+export const JWT_TOKEN_KEY =
+  process.env.JWT_TOKEN_KEY || 'contentools-jwt-token';
+
 export const CONFIGURATION_THEME_KEY =
   process.env.CONFIGURATION_THEME_KEY || 'theme';
 

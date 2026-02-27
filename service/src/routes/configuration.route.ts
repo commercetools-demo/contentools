@@ -23,6 +23,21 @@ configurationRouter.get(
   }
 );
 
+configurationRouter.get(
+  '/:businessUnitKey/configuration',
+  requireProjectKey,
+  async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+    try {
+      const { businessUnitKey } = req.params;
+      const theme = await ConfigurationController.getTheme(req, businessUnitKey);
+      res.status(200).json({theme});
+    } catch (error) {
+      logger.error('Failed to get configuration theme:', error);
+      next(error);
+    }
+  }
+);
+
 configurationRouter.post(
   '/:businessUnitKey/configuration/theme',
   validateJwt,
