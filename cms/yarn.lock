@@ -2016,6 +2016,7 @@ __metadata:
     "@commercetools-uikit/card": "npm:^20.2.2"
     "@commercetools-uikit/field-label": "npm:^20.2.2"
     "@commercetools-uikit/flat-button": "npm:^20.2.3"
+    "@commercetools-uikit/grid": "npm:^20.4.0"
     "@commercetools-uikit/icons": "npm:^20.2.1"
     "@commercetools-uikit/loading-spinner": "npm:^20.2.2"
     "@commercetools-uikit/number-input": "npm:^20.2.2"
@@ -4181,6 +4182,20 @@ __metadata:
   peerDependencies:
     react: 19.x
   checksum: 10/4167be868b8a882bb7b22ead17083ca272eff1ed540d5c367306b9d0d89efdc59d2eb14faba28b287c6cd16cd246ebf80745a04c47f14727ae58742d9c565420
+  languageName: node
+  linkType: hard
+
+"@commercetools-uikit/grid@npm:^20.4.0":
+  version: 20.4.0
+  resolution: "@commercetools-uikit/grid@npm:20.4.0"
+  dependencies:
+    "@babel/runtime": "npm:^7.20.13"
+    "@babel/runtime-corejs3": "npm:^7.20.13"
+    "@emotion/react": "npm:^11.10.5"
+    "@emotion/styled": "npm:^11.10.5"
+  peerDependencies:
+    react: 19.x
+  checksum: 10/406fdfbee65240cf3c650285229020a1ed0cab31358e791526b6b371d2f384a6ecd9ec61ff050ee76e2659be0cb33a66d59dcc81867a47fee2abcc9ae0961808
   languageName: node
   linkType: hard
 
