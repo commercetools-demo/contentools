@@ -26,6 +26,9 @@ export const JWT_TOKEN_KEY =
 export const CONFIGURATION_THEME_KEY =
   process.env.CONFIGURATION_THEME_KEY || 'theme';
 
+export const CONFIGURATION_HEADER_KEY =
+  process.env.CONFIGURATION_HEADER_KEY || 'header';
+
 export const DATASOURCE_CONTAINER =
   process.env.DATASOURCE_CONTAINER || 'datasource';
 
