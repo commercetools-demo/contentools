@@ -16,7 +16,11 @@ export class GCPFileController implements FileController {
       projectId: process.env.GCP_PROJECT_ID,
       credentials: {
         client_email: process.env.GCP_STORAGE_SERVICE_ACCOUNT_CLIENT_EMAIL,
-        private_key: process.env.GCP_STORAGE_SERVICE_ACCOUNT_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+        private_key:
+          process.env.GCP_STORAGE_SERVICE_ACCOUNT_PRIVATE_KEY?.replace(
+            /\\n/g,
+            '\n'
+          ),
       },
     });
   }

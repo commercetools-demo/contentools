@@ -1,5 +1,5 @@
-import { AuthenticatedRequest } from "../types/service.types";
-import { regionToCloudIdentifier } from "./region";
+import { AuthenticatedRequest } from '../types/service.types';
+import { regionToCloudIdentifier } from './region';
 
 /**
  * Read the configuration env vars

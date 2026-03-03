@@ -24,7 +24,7 @@ export async function addComponentToPageApi(
     headers: {
       'Content-Type': 'application/json',
       'x-project-key': projectKey,
-      'Authorization': `Bearer ${jwtToken}`,
+      Authorization: `Bearer ${jwtToken}`,
     },
   });
 }
@@ -56,7 +56,7 @@ export async function moveComponentInPageApi(
       headers: {
         'Content-Type': 'application/json',
         'x-project-key': projectKey,
-        'Authorization': `Bearer ${jwtToken}`,
+        Authorization: `Bearer ${jwtToken}`,
       },
     }
   );
@@ -76,7 +76,7 @@ export async function removeRowFromPageApi(
     method: 'DELETE',
     headers: {
       'x-project-key': projectKey,
-      'Authorization': `Bearer ${jwtToken}`,
+      Authorization: `Bearer ${jwtToken}`,
     },
   });
 }
@@ -94,7 +94,7 @@ export async function addRowToPageApi(
     method: 'POST',
     headers: {
       'x-project-key': projectKey,
-      'Authorization': `Bearer ${jwtToken}`,
+      Authorization: `Bearer ${jwtToken}`,
     },
   });
 }
@@ -123,7 +123,7 @@ export async function updateCellSpanInPageApi(
       headers: {
         'Content-Type': 'application/json',
         'x-project-key': projectKey,
-        'Authorization': `Bearer ${jwtToken}`,
+        Authorization: `Bearer ${jwtToken}`,
       },
     }
   );
@@ -148,7 +148,7 @@ export async function updateComponentInPageApi(
       headers: {
         'Content-Type': 'application/json',
         'x-project-key': projectKey,
-        'Authorization': `Bearer ${jwtToken}`,
+        Authorization: `Bearer ${jwtToken}`,
       },
     }
   );
@@ -170,7 +170,7 @@ export async function removeComponentFromPageApi(
       method: 'DELETE',
       headers: {
         'x-project-key': projectKey,
-        'Authorization': `Bearer ${jwtToken}`,
+        Authorization: `Bearer ${jwtToken}`,
       },
     }
   );
@@ -264,7 +264,7 @@ export const createPageApi = async (
       headers: {
         'Content-Type': 'application/json',
         'x-project-key': projectKey,
-        'Authorization': `Bearer ${jwtToken}`,
+        Authorization: `Bearer ${jwtToken}`,
       },
     });
     return response.value;
@@ -286,7 +286,7 @@ export const updatePageApi = async (
       headers: {
         'Content-Type': 'application/json',
         'x-project-key': projectKey,
-        'Authorization': `Bearer ${jwtToken}`,
+        Authorization: `Bearer ${jwtToken}`,
       },
     });
     return response.value as Page;
@@ -306,7 +306,7 @@ export const deletePageApi = async (
       method: 'DELETE',
       headers: {
         'x-project-key': projectKey,
-        'Authorization': `Bearer ${jwtToken}`,
+        Authorization: `Bearer ${jwtToken}`,
       },
     });
 

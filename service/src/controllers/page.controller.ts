@@ -137,7 +137,10 @@ export const getPages = async (
   businessUnitKey: string,
   criteria?: string
 ): Promise<Page[]> => {
-  const pageController = new CustomObjectController(req, CONTENT_PAGE_CONTAINER);
+  const pageController = new CustomObjectController(
+    req,
+    CONTENT_PAGE_CONTAINER
+  );
   let contentItemWhereClause = `value(businessUnitKey = "${businessUnitKey}")`;
   if (criteria) {
     contentItemWhereClause += ` AND ${criteria}`;
@@ -161,7 +164,10 @@ export const getPages = async (
     )
     .join(' OR ');
   const pageStates = whereClause
-    ? await PageStateController.getContentStatesWithWhereClause(req, whereClause)
+    ? await PageStateController.getContentStatesWithWhereClause(
+        req,
+        whereClause
+      )
     : [];
   const pageWithStates = contentItems.map((item) => {
     const states = pageStates.find((state) => state.key === item.key);
@@ -181,12 +187,19 @@ export const getPublishedPage = async (
 ): Promise<ResolvedPage['value'] | undefined> => {
   const pageState = await PageStateController.getFirstContentWithState<
     Page['value']
-  >(req, `key = "${key}" AND businessUnitKey = "${businessUnitKey}"`, 'published', [
-    'value.states.draft.components[*]',
-    'value.states.published.components[*]',
-  ]);
+  >(
+    req,
+    `key = "${key}" AND businessUnitKey = "${businessUnitKey}"`,
+    'published',
+    ['value.states.draft.components[*]', 'value.states.published.components[*]']
+  );
   if (pageState) {
-    return resolveContentItemsInPage(req, businessUnitKey, pageState, 'published');
+    return resolveContentItemsInPage(
+      req,
+      businessUnitKey,
+      pageState,
+      'published'
+    );
   }
 
   return undefined;
@@ -197,7 +210,10 @@ export const getPreviewPage = async (
   businessUnitKey: string,
   key: string
 ): Promise<ResolvedPage['value'] | undefined> => {
-  const pageController = new CustomObjectController(req, CONTENT_PAGE_CONTAINER);
+  const pageController = new CustomObjectController(
+    req,
+    CONTENT_PAGE_CONTAINER
+  );
   const page = await pageController.getCustomObject(key);
   const item = page.value;
   const pageState = await PageStateController.getFirstContentWithState<
@@ -226,7 +242,10 @@ export const getPageWithStates = async (
   businessUnitKey: string,
   key: string
 ): Promise<ResolvedPage['value']> => {
-  const pageController = new CustomObjectController(req, CONTENT_PAGE_CONTAINER);
+  const pageController = new CustomObjectController(
+    req,
+    CONTENT_PAGE_CONTAINER
+  );
   const page = await pageController.getCustomObject(key, [
     'value.components[*]',
   ]);
@@ -257,7 +276,10 @@ export const queryPage = async (
   query: string,
   state: string | string[]
 ): Promise<ResolvedPage['value'] | undefined> => {
-  const pageController = new CustomObjectController(req, CONTENT_PAGE_CONTAINER);
+  const pageController = new CustomObjectController(
+    req,
+    CONTENT_PAGE_CONTAINER
+  );
 
   const pages = await pageController.getCustomObjects(
     `value(${query} AND businessUnitKey = "${businessUnitKey}")`
@@ -278,7 +300,12 @@ export const queryPage = async (
 
   if (contentState) {
     if (contentState) {
-      return resolveContentItemsInPage(req, businessUnitKey, contentState, state);
+      return resolveContentItemsInPage(
+        req,
+        businessUnitKey,
+        contentState,
+        state
+      );
     }
   }
 
@@ -290,8 +317,14 @@ export const queryPage = async (
  * @param key The content item key
  * @returns The page with resolved datasource properties
  */
-export const getPage = async (req: AuthenticatedRequest, key: string): Promise<ResolvedPage> => {
-  const pageController = new CustomObjectController(req, CONTENT_PAGE_CONTAINER);
+export const getPage = async (
+  req: AuthenticatedRequest,
+  key: string
+): Promise<ResolvedPage> => {
+  const pageController = new CustomObjectController(
+    req,
+    CONTENT_PAGE_CONTAINER
+  );
   const page = await pageController.getCustomObject(key, [
     'value.components[*]',
   ]);
@@ -304,7 +337,10 @@ export const createPage = async (
   item: Page['value']
 ): Promise<Page> => {
   const key = `page-${uuidv4()}`;
-  const pageController = new CustomObjectController(req, CONTENT_PAGE_CONTAINER);
+  const pageController = new CustomObjectController(
+    req,
+    CONTENT_PAGE_CONTAINER
+  );
 
   const page = {
     ...item,
@@ -319,7 +355,12 @@ export const createPage = async (
   const object = await pageController.createCustomObject(key, page);
 
   await PageStateController.createDraftState(req, businessUnitKey, key, page);
-  await PageVersionController.createContentVersion(req, businessUnitKey, key, page);
+  await PageVersionController.createContentVersion(
+    req,
+    businessUnitKey,
+    key,
+    page
+  );
   return object;
 };
 
@@ -342,7 +383,12 @@ export const updatePage = async (
     'value.components[*]',
   ]);
   await PageStateController.createDraftState(req, businessUnitKey, key, page);
-  await PageVersionController.createContentVersion(req, businessUnitKey, key, page);
+  await PageVersionController.createContentVersion(
+    req,
+    businessUnitKey,
+    key,
+    page
+  );
   return mapPageContentItems(object);
 };
 
@@ -351,7 +397,10 @@ export const deletePage = async (
   businessUnitKey: string,
   key: string
 ): Promise<void> => {
-  const pageController = new CustomObjectController(req, CONTENT_PAGE_CONTAINER);
+  const pageController = new CustomObjectController(
+    req,
+    CONTENT_PAGE_CONTAINER
+  );
 
   const pageItemsController = new CustomObjectController(
     req,
@@ -382,7 +431,10 @@ export const removeRowFromPage = async (
   pageKey: string,
   rowId: string
 ): Promise<ResolvedPage> => {
-  const pageController = new CustomObjectController(req, CONTENT_PAGE_CONTAINER);
+  const pageController = new CustomObjectController(
+    req,
+    CONTENT_PAGE_CONTAINER
+  );
   const page = await pageController.getCustomObject(pageKey);
   const newLayout = JSON.parse(JSON.stringify(page.value.layout));
   const row = newLayout.rows.find((row: GridRow) => row.id === rowId);
@@ -419,7 +471,12 @@ export const removeRowFromPage = async (
       components: newComponents,
     },
   };
-  const updatedPage = await updatePage(req, businessUnitKey, pageKey, newPage.value);
+  const updatedPage = await updatePage(
+    req,
+    businessUnitKey,
+    pageKey,
+    newPage.value
+  );
   return updatedPage;
 };
 
@@ -428,7 +485,10 @@ export const addRowToPage = async (
   businessUnitKey: string,
   pageKey: string
 ): Promise<ResolvedPage> => {
-  const pageController = new CustomObjectController(req, CONTENT_PAGE_CONTAINER);
+  const pageController = new CustomObjectController(
+    req,
+    CONTENT_PAGE_CONTAINER
+  );
   const page = await pageController.getCustomObject(pageKey);
   const newLayout = JSON.parse(JSON.stringify(page.value.layout));
   newLayout.rows.push(createEmptyGridRow());
@@ -436,7 +496,12 @@ export const addRowToPage = async (
     ...page,
     value: { ...page.value, layout: newLayout },
   };
-  const updatedPage = await updatePage(req, businessUnitKey, pageKey, newPage.value);
+  const updatedPage = await updatePage(
+    req,
+    businessUnitKey,
+    pageKey,
+    newPage.value
+  );
   return updatedPage;
 };
 
@@ -452,7 +517,10 @@ export const updateCellSpanInPage = async (
     shouldAddEmptyCell?: boolean;
   }
 ): Promise<ResolvedPage> => {
-  const pageController = new CustomObjectController(req, CONTENT_PAGE_CONTAINER);
+  const pageController = new CustomObjectController(
+    req,
+    CONTENT_PAGE_CONTAINER
+  );
   const page = await pageController.getCustomObject(pageKey);
   const newLayout = JSON.parse(JSON.stringify(page.value.layout));
 
@@ -527,7 +595,12 @@ export const updateCellSpanInPage = async (
     ...page,
     value: { ...page.value, layout: newLayout },
   };
-  const updatedPage = await updatePage(req, businessUnitKey, pageKey, newPage.value);
+  const updatedPage = await updatePage(
+    req,
+    businessUnitKey,
+    pageKey,
+    newPage.value
+  );
   return updatedPage;
 };
 
@@ -539,7 +612,10 @@ export const addContentItemToPage = async (
   rowId: string,
   cellId: string
 ): Promise<ResolvedPage> => {
-  const pageController = new CustomObjectController(req, CONTENT_PAGE_CONTAINER);
+  const pageController = new CustomObjectController(
+    req,
+    CONTENT_PAGE_CONTAINER
+  );
 
   const page = await pageController.getCustomObject(pageKey);
 
@@ -583,7 +659,12 @@ export const addContentItemToPage = async (
     },
   };
 
-  const updatedPage = await updatePage(req, businessUnitKey, pageKey, newPage.value);
+  const updatedPage = await updatePage(
+    req,
+    businessUnitKey,
+    pageKey,
+    newPage.value
+  );
 
   return updatedPage;
 };
@@ -598,7 +679,10 @@ export const moveContentItemInPage = async (
   targetRowId: string,
   targetCellId: string
 ): Promise<ResolvedPage> => {
-  const pageController = new CustomObjectController(req, CONTENT_PAGE_CONTAINER);
+  const pageController = new CustomObjectController(
+    req,
+    CONTENT_PAGE_CONTAINER
+  );
 
   const page = await pageController.getCustomObject(pageKey);
 
@@ -640,7 +724,12 @@ export const moveContentItemInPage = async (
     },
   };
 
-  const updatedPage = await updatePage(req, businessUnitKey, pageKey, newPage.value);
+  const updatedPage = await updatePage(
+    req,
+    businessUnitKey,
+    pageKey,
+    newPage.value
+  );
 
   return updatedPage;
 };
@@ -652,7 +741,10 @@ export const updateComponentInPage = async (
   contentItemKey: string,
   updates: Partial<ContentItem['value']>
 ): Promise<ResolvedPage> => {
-  const pageController = new CustomObjectController(req, CONTENT_PAGE_CONTAINER);
+  const pageController = new CustomObjectController(
+    req,
+    CONTENT_PAGE_CONTAINER
+  );
   const page = await pageController.getCustomObject(pageKey, [
     'value.components[*]',
   ]);
@@ -683,7 +775,10 @@ export const removeComponentFromPage = async (
   pageKey: string,
   contentItemKey: string
 ): Promise<ResolvedPage> => {
-  const pageController = new CustomObjectController(req, CONTENT_PAGE_CONTAINER);
+  const pageController = new CustomObjectController(
+    req,
+    CONTENT_PAGE_CONTAINER
+  );
   const page = await pageController.getCustomObject(pageKey, [
     'value.components[*]',
   ]);
@@ -725,6 +820,11 @@ export const removeComponentFromPage = async (
     ...page,
     value: { ...page.value, components: newComponents, layout: newLayout },
   };
-  const updatedPage = await updatePage(req, businessUnitKey, pageKey, newPage.value);
+  const updatedPage = await updatePage(
+    req,
+    businessUnitKey,
+    pageKey,
+    newPage.value
+  );
   return updatedPage;
 };

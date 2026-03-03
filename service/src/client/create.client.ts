@@ -10,15 +10,15 @@ import { AuthenticatedRequest } from '../types/service.types';
  * Create client with apiRoot
  * apiRoot can now be used to build requests to de Composable Commerce API
  */
-export const createApiRoot = (req: AuthenticatedRequest) => ((root?: ByProjectKeyRequestBuilder) => () => {
-  if (root) {
+export const createApiRoot = (req: AuthenticatedRequest) =>
+  ((root?: ByProjectKeyRequestBuilder) => () => {
+    if (root) {
+      return root;
+    }
+
+    root = createApiBuilderFromCtpClient(createClient(req)).withProjectKey({
+      projectKey: readConfiguration(req).projectKey,
+    });
+
     return root;
-  }
-
-  root = createApiBuilderFromCtpClient(createClient(req)).withProjectKey({
-    projectKey: readConfiguration(req).projectKey,
-  });
-
-  return root;
-})();
-
+  })();

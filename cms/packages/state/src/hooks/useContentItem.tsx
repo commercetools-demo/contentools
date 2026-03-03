@@ -63,7 +63,11 @@ export const useContentItem = (projectKey: string, jwtToken?: string) => {
     async (hydratedUrl: string, key: string) => {
       try {
         setState((prev) => ({ ...prev, loading: true, error: null }));
-        const item = await fetchPreviewContentItemEndpoint(hydratedUrl, projectKey, key);
+        const item = await fetchPreviewContentItemEndpoint(
+          hydratedUrl,
+          projectKey,
+          key
+        );
 
         setState((prev) => ({
           ...prev,
@@ -90,7 +94,11 @@ export const useContentItem = (projectKey: string, jwtToken?: string) => {
     async (hydratedUrl: string, key: string) => {
       try {
         setState((prev) => ({ ...prev, loading: true, error: null }));
-        const item = await fetchRawContentItemEndpoint(hydratedUrl, projectKey, key);
+        const item = await fetchRawContentItemEndpoint(
+          hydratedUrl,
+          projectKey,
+          key
+        );
 
         setState((prev) => ({
           ...prev,
@@ -117,7 +125,11 @@ export const useContentItem = (projectKey: string, jwtToken?: string) => {
     async (hydratedUrl: string, key: string) => {
       try {
         setState((prev) => ({ ...prev, loading: true, error: null }));
-        const item = await fetchPublishedContentItemEndpoint(hydratedUrl, projectKey, key);
+        const item = await fetchPublishedContentItemEndpoint(
+          hydratedUrl,
+          projectKey,
+          key
+        );
 
         setState((prev) => ({
           ...prev,
@@ -145,7 +157,12 @@ export const useContentItem = (projectKey: string, jwtToken?: string) => {
       try {
         setState((prev) => ({ ...prev, loading: true, error: null }));
 
-        const createdItem = await createContentItemEndpoint(hydratedUrl, projectKey, jwtToken, item);
+        const createdItem = await createContentItemEndpoint(
+          hydratedUrl,
+          projectKey,
+          jwtToken,
+          item
+        );
 
         setState((prev) => ({
           ...prev,
@@ -322,7 +339,11 @@ export const useContentItem = (projectKey: string, jwtToken?: string) => {
 
   const queryPublishedContentItem = useCallback(
     async (hydratedUrl: string, query: string) => {
-      return await queryPublishedContentItemEndpoint(hydratedUrl, projectKey, query);
+      return await queryPublishedContentItemEndpoint(
+        hydratedUrl,
+        projectKey,
+        query
+      );
     },
     []
   );

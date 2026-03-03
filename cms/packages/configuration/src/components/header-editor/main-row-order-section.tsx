@@ -4,7 +4,10 @@ import Card from '@commercetools-uikit/card';
 import FlatButton from '@commercetools-uikit/flat-button';
 import Spacings from '@commercetools-uikit/spacings';
 import Text from '@commercetools-uikit/text';
-import { HeaderConfiguration, HeaderMainRowSlot } from '@commercetools-demo/contentools-types';
+import {
+  HeaderConfiguration,
+  HeaderMainRowSlot,
+} from '@commercetools-demo/contentools-types';
 import { DEFAULT_MAIN_ROW_ORDER } from '../../constants';
 
 const SLOT_LABELS: Record<HeaderMainRowSlot, string> = {
@@ -76,7 +79,11 @@ export const MainRowOrderSection: React.FC = () => {
             </Spacings.Inline>
           ))}
         </Spacings.Stack>
-        <FlatButton label="Reset to default" onClick={handleReset} tone="secondary" />
+        <FlatButton
+          label="Reset to default"
+          onClick={handleReset}
+          tone="secondary"
+        />
       </Spacings.Stack>
     </Card>
   );

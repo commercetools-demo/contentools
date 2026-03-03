@@ -29,34 +29,34 @@ const initialState: ConfigurationState = {
   error: null,
 };
 
-export const useConfiguration = (
-  projectKey: string,
-  jwtToken?: string
-) => {
+export const useConfiguration = (projectKey: string, jwtToken?: string) => {
   const [state, setState] = useState<ConfigurationState>(initialState);
 
-  const fetchTheme = useCallback(async (baseURL: string) => {
-    try {
-      setState((prev) => ({ ...prev, loading: true, error: null }));
-      const theme = await fetchThemeEndpoint(baseURL, projectKey);
-      setState((prev) => ({
-        ...prev,
-        theme,
-        loading: false,
-      }));
-      return theme;
-    } catch (error) {
-      setState((prev) => ({
-        ...prev,
-        loading: false,
-        error:
-          error instanceof Error
-            ? error.message
-            : 'Failed to fetch theme configuration',
-      }));
-      throw error;
-    }
-  }, [projectKey]);
+  const fetchTheme = useCallback(
+    async (baseURL: string) => {
+      try {
+        setState((prev) => ({ ...prev, loading: true, error: null }));
+        const theme = await fetchThemeEndpoint(baseURL, projectKey);
+        setState((prev) => ({
+          ...prev,
+          theme,
+          loading: false,
+        }));
+        return theme;
+      } catch (error) {
+        setState((prev) => ({
+          ...prev,
+          loading: false,
+          error:
+            error instanceof Error
+              ? error.message
+              : 'Failed to fetch theme configuration',
+        }));
+        throw error;
+      }
+    },
+    [projectKey]
+  );
 
   const createTheme = useCallback(
     async (baseURL: string, value: ThemeTokens) => {
@@ -120,27 +120,30 @@ export const useConfiguration = (
     [projectKey, jwtToken]
   );
 
-  const deleteTheme = useCallback(async (baseURL: string) => {
-    try {
-      setState((prev) => ({ ...prev, loading: true, error: null }));
-      await deleteThemeEndpoint(baseURL, projectKey, jwtToken);
-      setState((prev) => ({
-        ...prev,
-        theme: null,
-        loading: false,
-      }));
-    } catch (error) {
-      setState((prev) => ({
-        ...prev,
-        loading: false,
-        error:
-          error instanceof Error
-            ? error.message
-            : 'Failed to delete theme configuration',
-      }));
-      throw error;
-    }
-  }, [projectKey, jwtToken]);
+  const deleteTheme = useCallback(
+    async (baseURL: string) => {
+      try {
+        setState((prev) => ({ ...prev, loading: true, error: null }));
+        await deleteThemeEndpoint(baseURL, projectKey, jwtToken);
+        setState((prev) => ({
+          ...prev,
+          theme: null,
+          loading: false,
+        }));
+      } catch (error) {
+        setState((prev) => ({
+          ...prev,
+          loading: false,
+          error:
+            error instanceof Error
+              ? error.message
+              : 'Failed to delete theme configuration',
+        }));
+        throw error;
+      }
+    },
+    [projectKey, jwtToken]
+  );
 
   const saveTheme = useCallback(
     async (baseURL: string, value: ThemeTokens) => {
@@ -152,55 +155,61 @@ export const useConfiguration = (
     [state.theme, createTheme, updateTheme]
   );
 
-  const fetchAllConfigurations = useCallback(async (baseURL: string) => {
-    try {
-      setState((prev) => ({ ...prev, loading: true, error: null }));
-      const { theme, header } = await fetchAllConfigurationsEndpoint(
-        baseURL,
-        projectKey
-      );
-      setState((prev) => ({
-        ...prev,
-        theme,
-        header,
-        loading: false,
-      }));
-      return { theme, header };
-    } catch (error) {
-      setState((prev) => ({
-        ...prev,
-        loading: false,
-        error:
-          error instanceof Error
-            ? error.message
-            : 'Failed to fetch configurations',
-      }));
-      throw error;
-    }
-  }, [projectKey]);
+  const fetchAllConfigurations = useCallback(
+    async (baseURL: string) => {
+      try {
+        setState((prev) => ({ ...prev, loading: true, error: null }));
+        const { theme, header } = await fetchAllConfigurationsEndpoint(
+          baseURL,
+          projectKey
+        );
+        setState((prev) => ({
+          ...prev,
+          theme,
+          header,
+          loading: false,
+        }));
+        return { theme, header };
+      } catch (error) {
+        setState((prev) => ({
+          ...prev,
+          loading: false,
+          error:
+            error instanceof Error
+              ? error.message
+              : 'Failed to fetch configurations',
+        }));
+        throw error;
+      }
+    },
+    [projectKey]
+  );
 
-  const fetchHeader = useCallback(async (baseURL: string) => {
-    try {
-      setState((prev) => ({ ...prev, loading: true, error: null }));
-      const header = await fetchHeaderEndpoint(baseURL, projectKey);
-      setState((prev) => ({
-        ...prev,
-        header,
-        loading: false,
-      }));
-      return header;
-    } catch (error) {
-      setState((prev) => ({
-        ...prev,
-        loading: false,
-        error:
-          error instanceof Error
-            ? error.message
-            : 'Failed to fetch header configuration',
-      }));
-      throw error;
-    }
-  }, [projectKey]);
+  const fetchHeader = useCallback(
+    async (baseURL: string) => {
+      try {
+        setState((prev) => ({ ...prev, loading: true, error: null }));
+        const header = await fetchHeaderEndpoint(baseURL, projectKey);
+        setState((prev) => ({
+          ...prev,
+          header,
+          loading: false,
+        }));
+        return header;
+      } catch (error) {
+        setState((prev) => ({
+          ...prev,
+          loading: false,
+          error:
+            error instanceof Error
+              ? error.message
+              : 'Failed to fetch header configuration',
+        }));
+        throw error;
+      }
+    },
+    [projectKey]
+  );
 
   const createHeader = useCallback(
     async (baseURL: string, value: HeaderConfiguration) => {
@@ -264,27 +273,30 @@ export const useConfiguration = (
     [projectKey, jwtToken]
   );
 
-  const deleteHeader = useCallback(async (baseURL: string) => {
-    try {
-      setState((prev) => ({ ...prev, loading: true, error: null }));
-      await deleteHeaderEndpoint(baseURL, projectKey, jwtToken);
-      setState((prev) => ({
-        ...prev,
-        header: null,
-        loading: false,
-      }));
-    } catch (error) {
-      setState((prev) => ({
-        ...prev,
-        loading: false,
-        error:
-          error instanceof Error
-            ? error.message
-            : 'Failed to delete header configuration',
-      }));
-      throw error;
-    }
-  }, [projectKey, jwtToken]);
+  const deleteHeader = useCallback(
+    async (baseURL: string) => {
+      try {
+        setState((prev) => ({ ...prev, loading: true, error: null }));
+        await deleteHeaderEndpoint(baseURL, projectKey, jwtToken);
+        setState((prev) => ({
+          ...prev,
+          header: null,
+          loading: false,
+        }));
+      } catch (error) {
+        setState((prev) => ({
+          ...prev,
+          loading: false,
+          error:
+            error instanceof Error
+              ? error.message
+              : 'Failed to delete header configuration',
+        }));
+        throw error;
+      }
+    },
+    [projectKey, jwtToken]
+  );
 
   const saveHeader = useCallback(
     async (baseURL: string, value: HeaderConfiguration) => {

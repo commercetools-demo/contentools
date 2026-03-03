@@ -28,7 +28,11 @@ const WrappedContentPagesApp: React.FC<WrappedContentPagesAppProps> = ({
 }) => {
   return (
     <Router basename={`/${parentUrl}`}>
-      <StateProvider baseURL={baseURL} projectKey={projectKey} jwtToken={jwtToken}>
+      <StateProvider
+        baseURL={baseURL}
+        projectKey={projectKey}
+        jwtToken={jwtToken}
+      >
         <PagesRouter
           backButton={backButton}
           parentUrl={parentUrl}
@@ -36,8 +40,8 @@ const WrappedContentPagesApp: React.FC<WrappedContentPagesAppProps> = ({
           businessUnitKey={businessUnitKey}
           locale={locale}
         />
-        </StateProvider>
-      </Router>
+      </StateProvider>
+    </Router>
   );
 };
 

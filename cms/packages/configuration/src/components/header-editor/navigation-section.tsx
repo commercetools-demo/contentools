@@ -4,7 +4,10 @@ import Card from '@commercetools-uikit/card';
 import FlatButton from '@commercetools-uikit/flat-button';
 import Spacings from '@commercetools-uikit/spacings';
 import Text from '@commercetools-uikit/text';
-import { HeaderConfiguration, NavItemLink } from '@commercetools-demo/contentools-types';
+import {
+  HeaderConfiguration,
+  NavItemLink,
+} from '@commercetools-demo/contentools-types';
 import { NavigationItemForm } from './navigation-item-form';
 
 export const NavigationSection: React.FC = () => {
@@ -17,7 +20,10 @@ export const NavigationSection: React.FC = () => {
   };
 
   const handleAdd = () => {
-    const next = [...navigation, { type: 'link', label: '', href: '' } as NavItemLink];
+    const next = [
+      ...navigation,
+      { type: 'link', label: '', href: '' } as NavItemLink,
+    ];
     setFieldValue('navigation', next);
   };
 

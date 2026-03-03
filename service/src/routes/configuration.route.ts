@@ -14,7 +14,10 @@ configurationRouter.get(
   async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     try {
       const { businessUnitKey } = req.params;
-      const theme = await ConfigurationController.getTheme(req, businessUnitKey);
+      const theme = await ConfigurationController.getTheme(
+        req,
+        businessUnitKey
+      );
       res.status(200).json(theme);
     } catch (error) {
       logger.error('Failed to get configuration theme:', error);
@@ -29,10 +32,11 @@ configurationRouter.get(
   async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     try {
       const { businessUnitKey } = req.params;
-      const { theme, header } = await ConfigurationController.getAllConfigurations(
-        req,
-        businessUnitKey
-      );
+      const { theme, header } =
+        await ConfigurationController.getAllConfigurations(
+          req,
+          businessUnitKey
+        );
       res.status(200).json({ theme, header });
     } catch (error) {
       logger.error('Failed to get configurations:', error);

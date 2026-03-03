@@ -11,7 +11,7 @@ import { BackIcon } from '@commercetools-uikit/icons';
 function App() {
   return (
     <div className="App">
-       {/* <ContentItem
+      {/* <ContentItem
         baseURL="http://localhost:8080/service"
         businessUnitKey="default"
         projectKey="us-store"
@@ -27,7 +27,7 @@ function App() {
         locale="en-us"
         parentUrl=""
       />  */}
-       <Configuration
+      <Configuration
         baseURL="http://localhost:8080/service"
         businessUnitKey="default"
         projectKey="us-store"
@@ -39,7 +39,7 @@ function App() {
           onClick: () => console.log('Back'),
           icon: <BackIcon />,
         }}
-      /> 
+      />
       {/* <ContentPages
         baseURL="http://localhost:8080/service"
         businessUnitKey="central-texas-animal-hospital"

@@ -105,7 +105,13 @@ export const useStateManagement = (projectKey: string, jwtToken?: string) => {
     async (hydratedUrl: string, key: string, contentType: EContentType) => {
       try {
         setState((prev) => ({ ...prev, loading: true, error: null }));
-        await revertDraftEndpoint(hydratedUrl, projectKey, jwtToken, contentType, key);
+        await revertDraftEndpoint(
+          hydratedUrl,
+          projectKey,
+          jwtToken,
+          contentType,
+          key
+        );
 
         // After reverting, fetch the updated states
         const result = await getStatesEndpoint<ContentItemStates | PageStates>(

@@ -5,7 +5,9 @@ import { AuthenticatedRequest } from '../types/service.types';
 /**
  * Configure Middleware. Example only. Adapt on your own
  */
-export const httpMiddlewareOptions = (req: AuthenticatedRequest): HttpMiddlewareOptions => {
+export const httpMiddlewareOptions = (
+  req: AuthenticatedRequest
+): HttpMiddlewareOptions => {
   return {
     host: readConfiguration(req).apiUrl,
   };

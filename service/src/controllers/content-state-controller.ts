@@ -231,7 +231,11 @@ const _deleteStates = async (
 export const withDependencies = <T extends GenericState>(
   dependencies: StateControllerDependencies
 ) => ({
-  getContentStatesWithWhereClause: (req: AuthenticatedRequest, whereClause: string, expand?: string[]) =>
+  getContentStatesWithWhereClause: (
+    req: AuthenticatedRequest,
+    whereClause: string,
+    expand?: string[]
+  ) =>
     _getContentStatesWithWhereClause<T>(dependencies, req, whereClause, expand),
 
   getFirstContentWithState: <R>(
@@ -248,10 +252,15 @@ export const withDependencies = <T extends GenericState>(
       expand
     ),
 
-  getState: (req: AuthenticatedRequest, key: string) => _getState<T>(dependencies, req, key),
+  getState: (req: AuthenticatedRequest, key: string) =>
+    _getState<T>(dependencies, req, key),
 
-  createDraftState: (req: AuthenticatedRequest, businessUnitKey: string, key: string, value: any) =>
-    _createDraftState<T>(dependencies, req, businessUnitKey, key, value),
+  createDraftState: (
+    req: AuthenticatedRequest,
+    businessUnitKey: string,
+    key: string,
+    value: any
+  ) => _createDraftState<T>(dependencies, req, businessUnitKey, key, value),
 
   createPublishedState: (
     req: AuthenticatedRequest,
@@ -260,11 +269,24 @@ export const withDependencies = <T extends GenericState>(
     value: any,
     clear?: boolean
   ) =>
-    _createPublishedState<T>(dependencies, req, businessUnitKey, key, value, clear),
+    _createPublishedState<T>(
+      dependencies,
+      req,
+      businessUnitKey,
+      key,
+      value,
+      clear
+    ),
 
-  deleteDraftState: (req: AuthenticatedRequest, businessUnitKey: string, key: string) =>
-    _deleteDraftState<T>(dependencies, req, businessUnitKey, key),
+  deleteDraftState: (
+    req: AuthenticatedRequest,
+    businessUnitKey: string,
+    key: string
+  ) => _deleteDraftState<T>(dependencies, req, businessUnitKey, key),
 
-  deleteStates: (req: AuthenticatedRequest, businessUnitKey: string, key: string) =>
-    _deleteStates(dependencies, req, businessUnitKey, key),
+  deleteStates: (
+    req: AuthenticatedRequest,
+    businessUnitKey: string,
+    key: string
+  ) => _deleteStates(dependencies, req, businessUnitKey, key),
 });

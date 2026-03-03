@@ -209,7 +209,10 @@ export const getContentItems = async (
     )
     .join(' OR ');
   const contentStates = whereClause
-    ? await ContentStateController.getContentStatesWithWhereClause(req, whereClause)
+    ? await ContentStateController.getContentStatesWithWhereClause(
+        req,
+        whereClause
+      )
     : [];
   const contentItemsWithStates = contentItems.map((item) => {
     const states = contentStates.find((state) => state.key === item.key);
@@ -233,10 +236,12 @@ export const getPreviewContentItem = async (
   );
   const contentItem = await contentItemController.getCustomObject(key);
   const item = contentItem.value;
-  const contentState = await getContentItemWithStateKey(req, businessUnitKey, key, [
-    'draft',
-    'published',
-  ]);
+  const contentState = await getContentItemWithStateKey(
+    req,
+    businessUnitKey,
+    key,
+    ['draft', 'published']
+  );
   if (contentState) {
     return resolveContentItemDatasource(req, contentState);
   }
@@ -340,7 +345,12 @@ export const createContentItem = async (
     key,
   });
 
-  await ContentStateController.createDraftState(req, businessUnitKey, key, item);
+  await ContentStateController.createDraftState(
+    req,
+    businessUnitKey,
+    key,
+    item
+  );
   await ContentVersionController.createContentVersion(
     req,
     businessUnitKey,
@@ -365,7 +375,12 @@ export const updateContentItem = async (
     ...item,
     businessUnitKey,
   });
-  await ContentStateController.createDraftState(req, businessUnitKey, key, item);
+  await ContentStateController.createDraftState(
+    req,
+    businessUnitKey,
+    key,
+    item
+  );
   await ContentVersionController.createContentVersion(
     req,
     businessUnitKey,

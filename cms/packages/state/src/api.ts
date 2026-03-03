@@ -82,7 +82,7 @@ export async function createContentTypeEndpoint<T>(
     headers: {
       'Content-Type': 'application/json',
       'x-project-key': projectKey,
-      'Authorization': `Bearer ${jwtToken}`,
+      Authorization: `Bearer ${jwtToken}`,
     },
   });
 }
@@ -103,7 +103,7 @@ export async function updateContentTypeEndpoint<T>(
     headers: {
       'Content-Type': 'application/json',
       'x-project-key': projectKey,
-      'Authorization': `Bearer ${jwtToken}`,
+      Authorization: `Bearer ${jwtToken}`,
     },
   });
 }
@@ -121,7 +121,7 @@ export async function deleteContentTypeEndpoint(
     method: 'DELETE',
     headers: {
       'x-project-key': projectKey,
-      'Authorization': `Bearer ${jwtToken}`,
+      Authorization: `Bearer ${jwtToken}`,
     },
   });
 
@@ -209,7 +209,7 @@ export async function compileAndUploadEndpoint<T>(
     headers: {
       'x-project-key': projectKey,
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${jwtToken}`,
+      Authorization: `Bearer ${jwtToken}`,
     },
   });
 }
@@ -239,7 +239,7 @@ export async function fetchMediaLibrary(
   const response = await fetch(url, {
     headers: {
       'x-project-key': projectKey,
-      'Authorization': `Bearer ${jwtToken}`,
+      Authorization: `Bearer ${jwtToken}`,
     },
   });
 
@@ -279,7 +279,7 @@ export async function uploadFile(
     body: formData,
     headers: {
       'x-project-key': projectKey,
-      'Authorization': `Bearer ${jwtToken}`,
+      Authorization: `Bearer ${jwtToken}`,
     },
   });
 

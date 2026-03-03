@@ -1,6 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
 import { AuthenticatedRequest } from '../types/service.types';
-import { getProjectByKey, updateProjectLastAccessed } from '../utils/firestore.utils';
+import {
+  getProjectByKey,
+  updateProjectLastAccessed,
+} from '../utils/firestore.utils';
 import CustomError from '../errors/custom.error';
 import { logger } from '../utils/logger.utils';
 
@@ -39,10 +42,7 @@ export async function requireProjectKey(
     (req as AuthenticatedRequest).project = project;
 
     updateProjectLastAccessed(value).catch((error) => {
-      logger.warn(
-        `Failed to update last accessed time for ${value}`,
-        error
-      );
+      logger.warn(`Failed to update last accessed time for ${value}`, error);
     });
 
     logger.debug(`Project resolved from header: ${value}`);

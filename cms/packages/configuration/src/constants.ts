@@ -5,7 +5,6 @@ import {
   HeaderMainRowSlot,
 } from '@commercetools-demo/contentools-types';
 
-
 /** Default order of main header row slots when mainRowOrder is not specified. */
 export const DEFAULT_MAIN_ROW_ORDER: HeaderMainRowSlot[] = [
   'logo',

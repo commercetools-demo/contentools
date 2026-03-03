@@ -11,7 +11,10 @@ import { withDependencies as withContentStateDependencies } from '../controllers
 import CustomError from '../errors/custom.error';
 
 import { ContentItemState } from '../controllers/content-item.controller';
-import { PAGE_CONTENT_ITEM_STATE_CONTAINER, PAGE_CONTENT_ITEMS_CONTAINER } from '../constants';
+import {
+  PAGE_CONTENT_ITEM_STATE_CONTAINER,
+  PAGE_CONTENT_ITEMS_CONTAINER,
+} from '../constants';
 import { validateJwt } from '../middleware/jwt.middleware';
 import { validateProject } from '../middleware/project.middleware';
 import { requireProjectKey } from '../middleware/project-key.middleware';
@@ -33,7 +36,10 @@ pageContentItemStateRouter.get(
       const stateKey = `${businessUnitKey}_${key}`;
 
       try {
-        const object = await PageContentItemStateController.getState(req, stateKey);
+        const object = await PageContentItemStateController.getState(
+          req,
+          stateKey
+        );
         res.json(object);
       } catch (error) {
         // If not found, return empty states object

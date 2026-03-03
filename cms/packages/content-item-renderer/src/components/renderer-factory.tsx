@@ -1,5 +1,8 @@
 import React, { PropsWithChildren } from 'react';
-import { StateProvider, useStateContext } from '@commercetools-demo/contentools-state';
+import {
+  StateProvider,
+  useStateContext,
+} from '@commercetools-demo/contentools-state';
 
 interface BaseRendererProps {
   baseURL?: string;
@@ -51,8 +54,9 @@ export function createRenderer<TProps extends BaseRendererProps>(
   ResolverComponent: React.ComponentType<PropsWithChildren<TProps>>,
   rendererName: string
 ) {
-  const { ContextualRenderer, StandaloneRenderer } = createRenderers(ResolverComponent);
-  
+  const { ContextualRenderer, StandaloneRenderer } =
+    createRenderers(ResolverComponent);
+
   return {
     ContextualRenderer,
     StandaloneRenderer,

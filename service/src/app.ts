@@ -14,7 +14,6 @@ import { extractMainDomain } from './utils/domain';
 import { logger } from './utils/logger.utils';
 import { CORS_ALLOWED_ORIGINS } from './constants';
 
-
 // Create the express app
 const app: Express = express();
 app.disable('x-powered-by');

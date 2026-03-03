@@ -1,12 +1,12 @@
 import PropertyEditor from '@commercetools-demo/contentools-property-editor';
 import {
   useStatePages,
-  useStateStateManagement
+  useStateStateManagement,
 } from '@commercetools-demo/contentools-state';
 import {
   ContentItem,
   EContentType,
-  EStateType
+  EStateType,
 } from '@commercetools-demo/contentools-types';
 import {
   ConfirmationModal,

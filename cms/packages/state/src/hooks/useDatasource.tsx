@@ -18,7 +18,11 @@ const initialState: DatasourceState = {
   error: null,
 };
 
-export const useDatasource = (baseURL: string, projectKey: string, jwtToken?: string) => {
+export const useDatasource = (
+  baseURL: string,
+  projectKey: string,
+  jwtToken?: string
+) => {
   const [state, setState] = useState<DatasourceState>(initialState);
 
   // Actions

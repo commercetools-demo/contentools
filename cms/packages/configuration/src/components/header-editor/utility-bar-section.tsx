@@ -7,10 +7,14 @@ import TextInput from '@commercetools-uikit/text-input';
 import FlatButton from '@commercetools-uikit/flat-button';
 import Spacings from '@commercetools-uikit/spacings';
 import Text from '@commercetools-uikit/text';
-import { HeaderConfiguration, UtilityBarItem } from '@commercetools-demo/contentools-types';
+import {
+  HeaderConfiguration,
+  UtilityBarItem,
+} from '@commercetools-demo/contentools-types';
 
 export const UtilityBarSection: React.FC = () => {
-  const { values, setFieldValue, handleBlur } = useFormikContext<HeaderConfiguration>();
+  const { values, setFieldValue, handleBlur } =
+    useFormikContext<HeaderConfiguration>();
   const utilityBar = values.utilityBar ?? { enabled: false, items: [] };
   const items = utilityBar.items ?? [];
 
@@ -35,7 +39,9 @@ export const UtilityBarSection: React.FC = () => {
           name="utilityBar.enabled"
           value="enabled"
           isChecked={!!utilityBar.enabled}
-          onChange={(e) => setFieldValue('utilityBar.enabled', e.target.checked)}
+          onChange={(e) =>
+            setFieldValue('utilityBar.enabled', e.target.checked)
+          }
         >
           Enable utility bar
         </CheckboxInput>
@@ -47,7 +53,10 @@ export const UtilityBarSection: React.FC = () => {
                   name={`utilityBar.items.${index}.label`}
                   value={item.label ?? ''}
                   onChange={(e) =>
-                    setFieldValue(`utilityBar.items.${index}.label`, e.target.value)
+                    setFieldValue(
+                      `utilityBar.items.${index}.label`,
+                      e.target.value
+                    )
                   }
                   onBlur={handleBlur}
                   placeholder="Label"
@@ -56,12 +65,19 @@ export const UtilityBarSection: React.FC = () => {
                   name={`utilityBar.items.${index}.href`}
                   value={item.href ?? ''}
                   onChange={(e) =>
-                    setFieldValue(`utilityBar.items.${index}.href`, e.target.value)
+                    setFieldValue(
+                      `utilityBar.items.${index}.href`,
+                      e.target.value
+                    )
                   }
                   onBlur={handleBlur}
                   placeholder="URL"
                 />
-                <FlatButton label="Remove" onClick={() => handleRemove(index)} tone="secondary" />
+                <FlatButton
+                  label="Remove"
+                  onClick={() => handleRemove(index)}
+                  tone="secondary"
+                />
               </Spacings.Inline>
             ))}
             <FlatButton label="Add utility item" onClick={handleAdd} />

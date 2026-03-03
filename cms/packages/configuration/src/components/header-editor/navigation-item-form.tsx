@@ -62,13 +62,15 @@ export const NavigationItemForm: React.FC<NavigationItemFormProps> = ({
     <Grid
       gridGap="16px"
       gridAutoColumns="1fr"
-      gridTemplateColumns={`repeat(${type === 'category-mega-menu' ? 10 : 8}, 1fr)`}
+      gridTemplateColumns={`repeat(${
+        type === 'category-mega-menu' ? 10 : 8
+      }, 1fr)`}
       alignItems="center"
     >
       <Grid.Item>
         <FieldLabel title={`Item ${index + 1}`} />
       </Grid.Item>
-      
+
       <Grid.Item gridColumn="span 2">
         <SelectInput
           value={type}
@@ -85,8 +87,8 @@ export const NavigationItemForm: React.FC<NavigationItemFormProps> = ({
           placeholder="Label"
         />
       </Grid.Item>
-        {(type === 'link' || type === 'menu') && (
-      <Grid.Item gridColumn="span 2">
+      {(type === 'link' || type === 'menu') && (
+        <Grid.Item gridColumn="span 2">
           <TextInput
             name={`${namePrefix}.href`}
             value={
@@ -99,10 +101,10 @@ export const NavigationItemForm: React.FC<NavigationItemFormProps> = ({
             onBlur={handleBlur}
             placeholder="URL (optional for menu)"
           />
-      </Grid.Item>
-        )}
-        {type === 'category-mega-menu' && (
-      <Grid.Item gridColumn="span 2">
+        </Grid.Item>
+      )}
+      {type === 'category-mega-menu' && (
+        <Grid.Item gridColumn="span 2">
           <TextInput
             name={`${namePrefix}.categoryRoots`}
             value={
@@ -122,10 +124,10 @@ export const NavigationItemForm: React.FC<NavigationItemFormProps> = ({
             onBlur={handleBlur}
             placeholder="Category IDs or keys (comma-separated)"
           />
-      </Grid.Item>
-        )}
-        {type === 'category-mega-menu' && (
-      <Grid.Item gridColumn="span 2">
+        </Grid.Item>
+      )}
+      {type === 'category-mega-menu' && (
+        <Grid.Item gridColumn="span 2">
           <TextInput
             name={`${namePrefix}.maxDepth`}
             value={String((value as NavItemCategoryMegaMenu).maxDepth ?? '')}
@@ -139,10 +141,15 @@ export const NavigationItemForm: React.FC<NavigationItemFormProps> = ({
             onBlur={handleBlur}
             placeholder="Max depth (optional)"
           />
-      </Grid.Item>
-        )}
+        </Grid.Item>
+      )}
       <Grid.Item gridColumn="span 1">
-        <FlatButton label="Remove" onClick={onRemove} tone="secondary" icon={<BinLinearIcon />} />
+        <FlatButton
+          label="Remove"
+          onClick={onRemove}
+          tone="secondary"
+          icon={<BinLinearIcon />}
+        />
       </Grid.Item>
     </Grid>
   );

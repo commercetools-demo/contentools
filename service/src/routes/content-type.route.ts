@@ -7,53 +7,65 @@ import { validateJwt } from '../middleware/jwt.middleware';
 import { validateProject } from '../middleware/project.middleware';
 import { requireProjectKey } from '../middleware/project-key.middleware';
 
-
 const contentTypeRouter = Router();
 
-contentTypeRouter.get('/content-type', requireProjectKey, async (req, res, next) => {
-  try {
-    const contentTypeController = new CustomObjectController(
-      req,
-      CONTENT_TYPE_CONTAINER
-    );
-    const dynamicContentTypes = await contentTypeController.getCustomObjects();
+contentTypeRouter.get(
+  '/content-type',
+  requireProjectKey,
+  async (req, res, next) => {
+    try {
+      const contentTypeController = new CustomObjectController(
+        req,
+        CONTENT_TYPE_CONTAINER
+      );
+      const dynamicContentTypes =
+        await contentTypeController.getCustomObjects();
 
-    res.json([
-      ...dynamicContentTypes.map((item) => ({
-        id: item.id,
-        key: item.key,
-        ...item.value,
-      })),
-    ]);
-  } catch (error) {
-    logger.error('Failed to get content-type objects:', error);
-    next(error);
+      res.json([
+        ...dynamicContentTypes.map((item) => ({
+          id: item.id,
+          key: item.key,
+          ...item.value,
+        })),
+      ]);
+    } catch (error) {
+      logger.error('Failed to get content-type objects:', error);
+      next(error);
+    }
   }
-});
+);
 
-contentTypeRouter.get('/content-type/:key', requireProjectKey, async (req, res, next) => {
-  try {
-    const contentTypeController = new CustomObjectController(
-      req,
-      CONTENT_TYPE_CONTAINER
-    );
-    const { key } = req.params;
-    const object = await contentTypeController.getCustomObject(key);
-    res.json({
-      id: object.key,
-      key: object.key,
-      ...object.value,
-    });
-  } catch (error) {
-    logger.error(
-      `Failed to get content-type object with key ${req.params.key}:`,
-      error
-    );
-    next(error);
+contentTypeRouter.get(
+  '/content-type/:key',
+  requireProjectKey,
+  async (req, res, next) => {
+    try {
+      const contentTypeController = new CustomObjectController(
+        req,
+        CONTENT_TYPE_CONTAINER
+      );
+      const { key } = req.params;
+      const object = await contentTypeController.getCustomObject(key);
+      res.json({
+        id: object.key,
+        key: object.key,
+        ...object.value,
+      });
+    } catch (error) {
+      logger.error(
+        `Failed to get content-type object with key ${req.params.key}:`,
+        error
+      );
+      next(error);
+    }
   }
-});
+);
 
-contentTypeRouter.post('/content-type', validateJwt, validateProject, (async (req, res, next) => {
+contentTypeRouter.post('/content-type', validateJwt, validateProject, (async (
+  req,
+  res,
+  next
+) => {
   try {
     const contentTypeController = new CustomObjectController(
       req,
@@ -75,41 +87,51 @@ contentTypeRouter.post('/content-type', validateJwt, validateProject, (async (re
   }
 }) as RequestHandler);
 
-contentTypeRouter.put('/content-type/:key', validateJwt, validateProject, async (req, res, next) => {
-  try {
-    const contentTypeController = new CustomObjectController(
-      req,
-      CONTENT_TYPE_CONTAINER
-    );
-    const { key } = req.params;
-    const { value } = req.body;
-    const object = await contentTypeController.updateCustomObject(key, value);
-    res.json(object);
-  } catch (error) {
-    logger.error(
-      `Failed to update registry object with key ${req.params.key}:`,
-      error
-    );
-    next(error);
+contentTypeRouter.put(
+  '/content-type/:key',
+  validateJwt,
+  validateProject,
+  async (req, res, next) => {
+    try {
+      const contentTypeController = new CustomObjectController(
+        req,
+        CONTENT_TYPE_CONTAINER
+      );
+      const { key } = req.params;
+      const { value } = req.body;
+      const object = await contentTypeController.updateCustomObject(key, value);
+      res.json(object);
+    } catch (error) {
+      logger.error(
+        `Failed to update registry object with key ${req.params.key}:`,
+        error
+      );
+      next(error);
+    }
   }
-});
+);
 
-contentTypeRouter.delete('/content-type/:key', validateJwt, validateProject, async (req, res, next) => {
-  try {
-    const contentTypeController = new CustomObjectController(
-      req,
-      CONTENT_TYPE_CONTAINER
-    );
-    const { key } = req.params;
-    await contentTypeController.deleteCustomObject(key);
-    res.status(204).send();
-  } catch (error) {
-    logger.error(
-      `Failed to update registry object with key ${req.params.key}:`,
-      error
-    );
-    next(error);
+contentTypeRouter.delete(
+  '/content-type/:key',
+  validateJwt,
+  validateProject,
+  async (req, res, next) => {
+    try {
+      const contentTypeController = new CustomObjectController(
+        req,
+        CONTENT_TYPE_CONTAINER
+      );
+      const { key } = req.params;
+      await contentTypeController.deleteCustomObject(key);
+      res.status(204).send();
+    } catch (error) {
+      logger.error(
+        `Failed to update registry object with key ${req.params.key}:`,
+        error
+      );
+      next(error);
+    }
   }
-});
+);
 
 export default contentTypeRouter;
