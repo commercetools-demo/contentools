@@ -59,6 +59,17 @@ const ConfigurationList: React.FC<Props> = ({ backButton }) => {
             </Text.Body>
           </Spacings.Stack>
         </StyledCard>
+        <StyledCard
+          onClick={() => history.push('/header')}
+          data-testid="configuration-header-card"
+        >
+          <Spacings.Stack scale="m">
+            <Text.Headline as="h3">Header</Text.Headline>
+            <Text.Body>
+              Configure navigation, logo, visibility, and utility bar.
+            </Text.Body>
+          </Spacings.Stack>
+        </StyledCard>
       </CardGrid>
     </Spacings.Stack>
   );

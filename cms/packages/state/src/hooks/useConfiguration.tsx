@@ -1,20 +1,30 @@
 import { useState, useCallback } from 'react';
-import { ThemeTokens } from '@commercetools-demo/contentools-types';
 import {
+  ThemeTokens,
+  HeaderConfiguration,
+} from '@commercetools-demo/contentools-types';
+import {
+  fetchAllConfigurationsEndpoint,
   fetchThemeEndpoint,
   createThemeEndpoint,
   updateThemeEndpoint,
   deleteThemeEndpoint,
+  fetchHeaderEndpoint,
+  createHeaderEndpoint,
+  updateHeaderEndpoint,
+  deleteHeaderEndpoint,
 } from '../api/configuration';
 
 interface ConfigurationState {
   theme: ThemeTokens | null;
+  header: HeaderConfiguration | null;
   loading: boolean;
   error: string | null;
 }
 
 const initialState: ConfigurationState = {
   theme: null,
+  header: null,
   loading: false,
   error: null,
 };
@@ -142,12 +152,157 @@ export const useConfiguration = (
     [state.theme, createTheme, updateTheme]
   );
 
+  const fetchAllConfigurations = useCallback(async (baseURL: string) => {
+    try {
+      setState((prev) => ({ ...prev, loading: true, error: null }));
+      const { theme, header } = await fetchAllConfigurationsEndpoint(
+        baseURL,
+        projectKey
+      );
+      setState((prev) => ({
+        ...prev,
+        theme,
+        header,
+        loading: false,
+      }));
+      return { theme, header };
+    } catch (error) {
+      setState((prev) => ({
+        ...prev,
+        loading: false,
+        error:
+          error instanceof Error
+            ? error.message
+            : 'Failed to fetch configurations',
+      }));
+      throw error;
+    }
+  }, [projectKey]);
+
+  const fetchHeader = useCallback(async (baseURL: string) => {
+    try {
+      setState((prev) => ({ ...prev, loading: true, error: null }));
+      const header = await fetchHeaderEndpoint(baseURL, projectKey);
+      setState((prev) => ({
+        ...prev,
+        header,
+        loading: false,
+      }));
+      return header;
+    } catch (error) {
+      setState((prev) => ({
+        ...prev,
+        loading: false,
+        error:
+          error instanceof Error
+            ? error.message
+            : 'Failed to fetch header configuration',
+      }));
+      throw error;
+    }
+  }, [projectKey]);
+
+  const createHeader = useCallback(
+    async (baseURL: string, value: HeaderConfiguration) => {
+      try {
+        setState((prev) => ({ ...prev, loading: true, error: null }));
+        const header = await createHeaderEndpoint(
+          baseURL,
+          projectKey,
+          jwtToken,
+          value
+        );
+        setState((prev) => ({
+          ...prev,
+          header,
+          loading: false,
+        }));
+        return header;
+      } catch (error) {
+        setState((prev) => ({
+          ...prev,
+          loading: false,
+          error:
+            error instanceof Error
+              ? error.message
+              : 'Failed to create header configuration',
+        }));
+        throw error;
+      }
+    },
+    [projectKey, jwtToken]
+  );
+
+  const updateHeader = useCallback(
+    async (baseURL: string, value: HeaderConfiguration) => {
+      try {
+        setState((prev) => ({ ...prev, loading: true, error: null }));
+        const header = await updateHeaderEndpoint(
+          baseURL,
+          projectKey,
+          jwtToken,
+          value
+        );
+        setState((prev) => ({
+          ...prev,
+          header,
+          loading: false,
+        }));
+        return header;
+      } catch (error) {
+        setState((prev) => ({
+          ...prev,
+          loading: false,
+          error:
+            error instanceof Error
+              ? error.message
+              : 'Failed to update header configuration',
+        }));
+        throw error;
+      }
+    },
+    [projectKey, jwtToken]
+  );
+
+  const deleteHeader = useCallback(async (baseURL: string) => {
+    try {
+      setState((prev) => ({ ...prev, loading: true, error: null }));
+      await deleteHeaderEndpoint(baseURL, projectKey, jwtToken);
+      setState((prev) => ({
+        ...prev,
+        header: null,
+        loading: false,
+      }));
+    } catch (error) {
+      setState((prev) => ({
+        ...prev,
+        loading: false,
+        error:
+          error instanceof Error
+            ? error.message
+            : 'Failed to delete header configuration',
+      }));
+      throw error;
+    }
+  }, [projectKey, jwtToken]);
+
+  const saveHeader = useCallback(
+    async (baseURL: string, value: HeaderConfiguration) => {
+      if (state.header == null) {
+        return createHeader(baseURL, value);
+      }
+      return updateHeader(baseURL, value);
+    },
+    [state.header, createHeader, updateHeader]
+  );
+
   const clearError = useCallback(() => {
     setState((prev) => ({ ...prev, error: null }));
   }, []);
 
   return {
     theme: state.theme,
+    header: state.header,
     loading: state.loading,
     error: state.error,
     fetchTheme,
@@ -155,6 +310,12 @@ export const useConfiguration = (
     updateTheme,
     deleteTheme,
     saveTheme,
+    fetchAllConfigurations,
+    fetchHeader,
+    createHeader,
+    updateHeader,
+    deleteHeader,
+    saveHeader,
     clearError,
   };
 };
