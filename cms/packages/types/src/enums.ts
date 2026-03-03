@@ -20,3 +20,6 @@ export enum EPropertyType {
   DATASOURCE = 'datasource',
   RICH_TEXT = 'richText',
 }
+
+/** Tenant/business model type for header and other configuration. */
+export type TenantType = 'b2c' | 'b2b';
