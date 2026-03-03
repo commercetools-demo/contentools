@@ -52,7 +52,7 @@ export async function publishEndpoint<
     headers: {
       'Content-Type': 'application/json',
       'x-project-key': projectKey,
-      'Authorization': `Bearer ${jwtToken}`,
+      Authorization: `Bearer ${jwtToken}`,
     },
   }).then((response) => response.json());
 }
@@ -72,7 +72,7 @@ export async function revertDraftEndpoint(
       headers: {
         'Content-Type': 'application/json',
         'x-project-key': projectKey,
-        'Authorization': `Bearer ${jwtToken}`,
+        Authorization: `Bearer ${jwtToken}`,
       },
     }
   );

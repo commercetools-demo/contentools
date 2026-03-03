@@ -123,19 +123,30 @@ const _deleteVersions = async (
 export const withDependencies = <T extends GenericContentItemVersion>(
   dependencies: ContentVersionControllerDependencies
 ) => ({
-  getContentVersions: (req: AuthenticatedRequest, businessUnitKey: string, key: string) =>
-    _getContentVersions<T>(dependencies, req, businessUnitKey, key),
+  getContentVersions: (
+    req: AuthenticatedRequest,
+    businessUnitKey: string,
+    key: string
+  ) => _getContentVersions<T>(dependencies, req, businessUnitKey, key),
 
   getContentVersion: (
     req: AuthenticatedRequest,
     businessUnitKey: string,
     key: string,
     versionId: string
-  ) => _getContentVersion<T>(dependencies, req, businessUnitKey, key, versionId),
+  ) =>
+    _getContentVersion<T>(dependencies, req, businessUnitKey, key, versionId),
 
-  createContentVersion: (req: AuthenticatedRequest, businessUnitKey: string, key: string, value: any) =>
-    _createContentVersion<T>(dependencies, req, businessUnitKey, key, value),
+  createContentVersion: (
+    req: AuthenticatedRequest,
+    businessUnitKey: string,
+    key: string,
+    value: any
+  ) => _createContentVersion<T>(dependencies, req, businessUnitKey, key, value),
 
-  deleteVersions: (req: AuthenticatedRequest, businessUnitKey: string, key: string) =>
-    _deleteVersions(dependencies, req, businessUnitKey, key),
+  deleteVersions: (
+    req: AuthenticatedRequest,
+    businessUnitKey: string,
+    key: string
+  ) => _deleteVersions(dependencies, req, businessUnitKey, key),
 });

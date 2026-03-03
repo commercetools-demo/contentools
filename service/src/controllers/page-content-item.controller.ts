@@ -54,10 +54,10 @@ export const createPageContentItem = async (
   await PageContentItemVersionController.createContentVersion(
     req,
     businessUnitKey,
-  key,
-  item
-);
-return object;
+    key,
+    item
+  );
+  return object;
 };
 
 export const updatePageContentItem = async (
@@ -102,7 +102,11 @@ export const deletePageContentItem = async (
   const deletedContentItem =
     await contentItemController.deleteCustomObject(key);
   await PageContentItemStateController.deleteStates(req, businessUnitKey, key);
-  await PageContentItemVersionController.deleteVersions(req, businessUnitKey, key);
+  await PageContentItemVersionController.deleteVersions(
+    req,
+    businessUnitKey,
+    key
+  );
   return deletedContentItem.body;
 };
 
@@ -118,7 +122,10 @@ export const getContentItemWithStateKey = async (
     >(req, `key = "${key}" AND businessUnitKey = "${businessUnitKey}"`, state);
 
   if (contentState) {
-    return ContentItemController.resolveContentItemDatasource(req, contentState);
+    return ContentItemController.resolveContentItemDatasource(
+      req,
+      contentState
+    );
   }
 
   return undefined;

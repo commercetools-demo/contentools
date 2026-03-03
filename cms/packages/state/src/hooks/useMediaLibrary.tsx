@@ -87,7 +87,14 @@ export const useMediaLibrary = (projectKey: string, jwtToken?: string) => {
     ) => {
       try {
         setState((prev) => ({ ...prev, uploading: true, uploadError: null }));
-        const result = await uploadFile(hydratedUrl, projectKey, jwtToken, file, title, description);
+        const result = await uploadFile(
+          hydratedUrl,
+          projectKey,
+          jwtToken,
+          file,
+          title,
+          description
+        );
 
         // Create a new MediaFile object for the uploaded file
         const newMediaFile: MediaFile = {

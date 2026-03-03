@@ -83,9 +83,15 @@ export const StateProvider = <T extends VersionInfo>({
   // Initialize Full
   const editor = !minimal ? useEditor() : undefined;
   const version = !minimal ? useVersion<T>(projectKey, jwtToken) : undefined;
-  const stateManagement = !minimal ? useStateManagement(projectKey, jwtToken) : undefined;
-  const mediaLibrary = !minimal ? useMediaLibrary(projectKey, jwtToken) : undefined;
-  const datasource = !minimal ? useDatasource(baseURL, projectKey, jwtToken) : undefined;
+  const stateManagement = !minimal
+    ? useStateManagement(projectKey, jwtToken)
+    : undefined;
+  const mediaLibrary = !minimal
+    ? useMediaLibrary(projectKey, jwtToken)
+    : undefined;
+  const datasource = !minimal
+    ? useDatasource(baseURL, projectKey, jwtToken)
+    : undefined;
 
   const contextValue: StateContextValue<T> = {
     pages,

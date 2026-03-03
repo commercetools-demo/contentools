@@ -40,7 +40,8 @@ function validateDecodedClaims(decoded: JwtPayload): void {
   }
 
   const expectedIssuer = process.env.JWT_ISSUER || 'multitenant-contentools';
-  const expectedAudience = process.env.JWT_AUDIENCE || 'multitenant-contentools';
+  const expectedAudience =
+    process.env.JWT_AUDIENCE || 'multitenant-contentools';
 
   if (decoded.iss && decoded.iss !== expectedIssuer) {
     throw new CustomError(401, 'Invalid token issuer');

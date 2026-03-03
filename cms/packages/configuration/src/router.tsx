@@ -24,10 +24,7 @@ const ConfigurationRouter: React.FC<Props> = ({
   return (
     <>
       <Route path="/">
-        <ConfigurationList
-          parentUrl={parentUrl}
-          backButton={backButton}
-        />
+        <ConfigurationList parentUrl={parentUrl} backButton={backButton} />
       </Route>
       <Route path="/theme" exact>
         <ThemeEditor

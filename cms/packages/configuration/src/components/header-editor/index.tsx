@@ -49,7 +49,9 @@ function getInitialValues(
     navigation: Array.isArray(header.navigation) ? header.navigation : [],
     utilityBar: header.utilityBar ?? DEFAULT_HEADER.utilityBar,
     logo: header.logo ?? DEFAULT_HEADER.logo,
-    mainRowOrder: (header as { mainRowOrder?: unknown }).mainRowOrder ?? [...DEFAULT_MAIN_ROW_ORDER],
+    mainRowOrder: (header as { mainRowOrder?: unknown }).mainRowOrder ?? [
+      ...DEFAULT_MAIN_ROW_ORDER,
+    ],
     businessModel: header.businessModel ?? DEFAULT_HEADER.businessModel,
     tenantOverrides: header.tenantOverrides,
   };

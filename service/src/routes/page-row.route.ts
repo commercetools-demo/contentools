@@ -37,7 +37,11 @@ pageRowRouter.post(
   async (req, res, next) => {
     try {
       const { businessUnitKey, key } = req.params;
-      const object = await PageController.addRowToPage(req, businessUnitKey, key);
+      const object = await PageController.addRowToPage(
+        req,
+        businessUnitKey,
+        key
+      );
       res.status(201).json(object);
     } catch (error) {
       logger.error(

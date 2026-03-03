@@ -3,7 +3,10 @@ import { fetchApi } from '../api';
 /**
  * Fetch all content items
  */
-export async function fetchContentItemsEndpoint(baseURL: string, projectKey: string): Promise<
+export async function fetchContentItemsEndpoint(
+  baseURL: string,
+  projectKey: string
+): Promise<
   {
     container: string;
     key: string;
@@ -131,7 +134,7 @@ export async function createContentItemEndpoint(
     headers: {
       'Content-Type': 'application/json',
       'x-project-key': projectKey,
-      'Authorization': `Bearer ${jwtToken}`,
+      Authorization: `Bearer ${jwtToken}`,
     },
     body: JSON.stringify({ value: data }),
   });
@@ -156,7 +159,7 @@ export async function updateContentItemEndpoint(
       headers: {
         'Content-Type': 'application/json',
         'x-project-key': projectKey,
-        'Authorization': `Bearer ${jwtToken}`,
+        Authorization: `Bearer ${jwtToken}`,
       },
     }
   );
@@ -176,7 +179,7 @@ export async function deleteContentItemEndpoint(
     method: 'DELETE',
     headers: {
       'x-project-key': projectKey,
-      'Authorization': `Bearer ${jwtToken}`,
+      Authorization: `Bearer ${jwtToken}`,
     },
   });
 

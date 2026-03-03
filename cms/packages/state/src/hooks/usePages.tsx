@@ -132,7 +132,12 @@ export const usePages = (projectKey: string, jwtToken?: string) => {
   const updatePage = useCallback(async (hydratedUrl: string, page: Page) => {
     try {
       setState((prev) => ({ ...prev, loading: true, error: null }));
-      const updatedPage = await updatePageApi(hydratedUrl, projectKey, jwtToken, page);
+      const updatedPage = await updatePageApi(
+        hydratedUrl,
+        projectKey,
+        jwtToken,
+        page
+      );
 
       setState((prev) => ({
         ...prev,
@@ -204,7 +209,12 @@ export const usePages = (projectKey: string, jwtToken?: string) => {
         name: page.name,
         route: page.route,
       };
-      const createdPage = await createPageApi(hydratedUrl, projectKey, jwtToken, newPage);
+      const createdPage = await createPageApi(
+        hydratedUrl,
+        projectKey,
+        jwtToken,
+        newPage
+      );
 
       setState((prev) => ({
         ...prev,

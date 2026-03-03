@@ -4,11 +4,16 @@ import Card from '@commercetools-uikit/card';
 import CheckboxInput from '@commercetools-uikit/checkbox-input';
 import Spacings from '@commercetools-uikit/spacings';
 import Text from '@commercetools-uikit/text';
-import { HeaderConfiguration, HeaderVariant } from '@commercetools-demo/contentools-types';
+import {
+  HeaderConfiguration,
+  HeaderVariant,
+} from '@commercetools-demo/contentools-types';
 
 const VARIANTS: HeaderVariant[] = ['full', 'minimal', 'custom'];
 
-const VISIBILITY_KEYS: (keyof NonNullable<HeaderConfiguration['variantMap']['full']>)[] = [
+const VISIBILITY_KEYS: (keyof NonNullable<
+  HeaderConfiguration['variantMap']['full']
+>)[] = [
   'showNavigation',
   'showSearch',
   'showCart',
@@ -31,7 +36,8 @@ const LABELS: Record<string, string> = {
 };
 
 export const VariantVisibilitySection: React.FC = () => {
-  const { values, setFieldValue, handleBlur } = useFormikContext<HeaderConfiguration>();
+  const { values, setFieldValue, handleBlur } =
+    useFormikContext<HeaderConfiguration>();
 
   return (
     <Card>
@@ -47,19 +53,24 @@ export const VariantVisibilitySection: React.FC = () => {
             <Spacings.Stack key={variant} scale="s">
               <Text.Subheadline as="h4">{variant}</Text.Subheadline>
               <Spacings.Inline scale="s" alignItems="center">
-                {VISIBILITY_KEYS.filter((k) => visibility[k] !== undefined).map((key) => (
-                  <CheckboxInput
-                    key={key}
-                    name={`variantMap.${variant}.${key}`}
-                    value={key}
-                    isChecked={!!visibility[key]}
-                    onChange={(e) =>
-                      setFieldValue(`variantMap.${variant}.${key}`, e.target.checked)
-                    }
-                  >
-                    {LABELS[key] ?? key}
-                  </CheckboxInput>
-                ))}
+                {VISIBILITY_KEYS.filter((k) => visibility[k] !== undefined).map(
+                  (key) => (
+                    <CheckboxInput
+                      key={key}
+                      name={`variantMap.${variant}.${key}`}
+                      value={key}
+                      isChecked={!!visibility[key]}
+                      onChange={(e) =>
+                        setFieldValue(
+                          `variantMap.${variant}.${key}`,
+                          e.target.checked
+                        )
+                      }
+                    >
+                      {LABELS[key] ?? key}
+                    </CheckboxInput>
+                  )
+                )}
               </Spacings.Inline>
             </Spacings.Stack>
           );

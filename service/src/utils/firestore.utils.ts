@@ -5,7 +5,6 @@ import { logger } from './logger.utils';
 
 let firestoreClient: Firestore | null = null;
 
-
 const PROJECTS_COLLECTION = 'projects';
 
 /**
@@ -192,4 +191,3 @@ export async function deleteProject(projectKey: string): Promise<void> {
     throw new CustomError(500, 'Failed to delete project');
   }
 }
-

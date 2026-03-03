@@ -29,7 +29,10 @@ export const searchProducts = async (
   }
 };
 
-export const getProductTypeById = async (req: AuthenticatedRequest, id: string): Promise<ProductType> => {
+export const getProductTypeById = async (
+  req: AuthenticatedRequest,
+  id: string
+): Promise<ProductType> => {
   try {
     logger.info(`Fetching product type with ID: ${id}`);
     const apiRoot = createApiRoot(req)();

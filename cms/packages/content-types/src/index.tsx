@@ -31,7 +31,11 @@ const WrappedContentTypeApp = ({
 }) => {
   return (
     <Router basename={`/${parentUrl}`}>
-      <StateProvider baseURL={baseURL} projectKey={projectKey} jwtToken={jwtToken}>
+      <StateProvider
+        baseURL={baseURL}
+        projectKey={projectKey}
+        jwtToken={jwtToken}
+      >
         <ContentTypeRouter
           backButton={backButton}
           parentUrl={parentUrl}

@@ -24,17 +24,21 @@ const WrappedContentItemApp = ({
   };
 }) => {
   return (
-      <Router basename={`/${parentUrl}`}>
-        <StateProvider baseURL={baseURL} projectKey={projectKey} jwtToken={jwtToken}>
-          <ContentItemRouter
-            backButton={backButton}
-            parentUrl={parentUrl}
-            baseURL={baseURL}
-            businessUnitKey={businessUnitKey}
-            locale={locale}
-          />
-        </StateProvider>
-      </Router>
+    <Router basename={`/${parentUrl}`}>
+      <StateProvider
+        baseURL={baseURL}
+        projectKey={projectKey}
+        jwtToken={jwtToken}
+      >
+        <ContentItemRouter
+          backButton={backButton}
+          parentUrl={parentUrl}
+          baseURL={baseURL}
+          businessUnitKey={businessUnitKey}
+          locale={locale}
+        />
+      </StateProvider>
+    </Router>
   );
 };
 

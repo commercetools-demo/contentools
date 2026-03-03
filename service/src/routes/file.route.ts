@@ -46,7 +46,11 @@ fileRouter.post(
   }) as RequestHandler
 );
 
-fileRouter.get('/:businessUnitKey/media-library', requireProjectKey, (async (req, res, next) => {
+fileRouter.get('/:businessUnitKey/media-library', requireProjectKey, (async (
+  req,
+  res,
+  next
+) => {
   try {
     const { businessUnitKey } = req.params;
 
@@ -69,7 +73,11 @@ fileRouter.get('/:businessUnitKey/media-library', requireProjectKey, (async (req
   }
 }) as RequestHandler);
 
-fileRouter.post('/compile-upload', validateJwt, validateProject, (async (req, res, next) => {
+fileRouter.post('/compile-upload', validateJwt, validateProject, (async (
+  req,
+  res,
+  next
+) => {
   try {
     const { files, key } = req.body;
 

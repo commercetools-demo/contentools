@@ -22,7 +22,11 @@ const initialState: ContentTypeState = {
   availableDatasources: [],
 };
 
-export const useContentType = (baseURL: string, projectKey: string, jwtToken?: string) => {
+export const useContentType = (
+  baseURL: string,
+  projectKey: string,
+  jwtToken?: string
+) => {
   const [state, setState] = useState<ContentTypeState>(initialState);
 
   // Actions

@@ -1,8 +1,8 @@
 import { ContentTypeData } from '@commercetools-demo/contentools-types';
-import React, { HTMLAttributes } from 'react'
-import styled from 'styled-components'
-import Spacings from '@commercetools-uikit/spacings'
-import Text from '@commercetools-uikit/text'
+import React, { HTMLAttributes } from 'react';
+import styled from 'styled-components';
+import Spacings from '@commercetools-uikit/spacings';
+import Text from '@commercetools-uikit/text';
 
 const ComponentItem = styled.div`
   padding: 12px;
@@ -29,14 +29,15 @@ const ComponentItem = styled.div`
 `;
 
 type Props = {
-  contentType: ContentTypeData
-}
+  contentType: ContentTypeData;
+};
 
-const ContentTypeCard = ({ contentType, ...props }: Props & HTMLAttributes<HTMLDivElement>) => {
+const ContentTypeCard = ({
+  contentType,
+  ...props
+}: Props & HTMLAttributes<HTMLDivElement>) => {
   return (
-    <ComponentItem
-      {...props}
-    >
+    <ComponentItem {...props}>
       <Spacings.Stack scale="xs">
         <Text.Subheadline as="h4">
           {contentType.metadata.icon && (
@@ -48,11 +49,13 @@ const ContentTypeCard = ({ contentType, ...props }: Props & HTMLAttributes<HTMLD
         </Text.Subheadline>
         <Text.Detail tone="secondary">{contentType.metadata.type}</Text.Detail>
         <Text.Detail tone="secondary" as="small">
-          {`${Object.keys(contentType.metadata.propertySchema || {}).length} properties`}
+          {`${
+            Object.keys(contentType.metadata.propertySchema || {}).length
+          } properties`}
         </Text.Detail>
       </Spacings.Stack>
     </ComponentItem>
-  )
-}
+  );
+};
 
-export default ContentTypeCard
+export default ContentTypeCard;
