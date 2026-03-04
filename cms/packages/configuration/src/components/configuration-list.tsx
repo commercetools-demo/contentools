@@ -70,6 +70,18 @@ const ConfigurationList: React.FC<Props> = ({ backButton }) => {
             </Text.Body>
           </Spacings.Stack>
         </StyledCard>
+        <StyledCard
+          onClick={() => history.push('/import-content-types')}
+          data-testid="configuration-import-content-types-card"
+        >
+          <Spacings.Stack scale="m">
+            <Text.Headline as="h3">Import default content types</Text.Headline>
+            <Text.Body>
+              Import default content type definitions from samples into your
+              project.
+            </Text.Body>
+          </Spacings.Stack>
+        </StyledCard>
       </CardGrid>
     </Spacings.Stack>
   );

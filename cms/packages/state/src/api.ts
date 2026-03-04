@@ -132,6 +132,37 @@ export async function deleteContentTypeEndpoint(
   }
 }
 
+export interface ImportResult {
+  imported: string[];
+  failed: Array<{ key: string; error: string }>;
+}
+
+/**
+ * Import default content types from samples
+ */
+export async function importDefaultContentTypesEndpoint(
+  baseURL: string,
+  projectKey: string,
+  jwtToken: string | undefined
+): Promise<ImportResult> {
+  const response = await fetch(`${baseURL}/content-type/import`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-project-key': projectKey,
+      Authorization: `Bearer ${jwtToken}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(
+      `API request failed: ${response.status} ${response.statusText}`
+    );
+  }
+
+  return response.json();
+}
+
 /**
  * Fetch available datasources
  */
