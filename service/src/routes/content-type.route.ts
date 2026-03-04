@@ -1,6 +1,7 @@
 import { Router, RequestHandler } from 'express';
 import { logger } from '../utils/logger.utils';
 import { CustomObjectController } from '../controllers/custom-object.controller';
+import { importDefaultContentTypes } from '../controllers/content-type-import.controller';
 import { CONTENT_TYPE_CONTAINER } from '../constants';
 import { v4 as uuidv4 } from 'uuid';
 import { validateJwt } from '../middleware/jwt.middleware';
@@ -59,6 +60,21 @@ contentTypeRouter.get(
       next(error);
     }
   }
+);
+
+contentTypeRouter.post(
+  '/content-type/import',
+  validateJwt,
+  validateProject,
+  (async (req, res, next) => {
+    try {
+      const result = await importDefaultContentTypes(req);
+      res.status(200).json(result);
+    } catch (error) {
+      logger.error('Failed to import default content types:', error);
+      next(error);
+    }
+  }) as RequestHandler
 );
 
 contentTypeRouter.post('/content-type', validateJwt, validateProject, (async (

@@ -11,6 +11,8 @@ import {
   deleteContentTypeEndpoint,
   getAvailableDatasourcesEndpoint,
   fetchContentTypeEndpoint,
+  importDefaultContentTypesEndpoint,
+  type ImportResult,
 } from '../api';
 import { decodeFromBase64, encodeToBase64 } from '../utils/text-encoder';
 
@@ -288,6 +290,30 @@ export const useContentType = (
     [baseURL]
   );
 
+  const importDefaultContentTypes = useCallback(async (): Promise<ImportResult> => {
+    try {
+      setState((prev) => ({ ...prev, loading: true, error: null }));
+      const result = await importDefaultContentTypesEndpoint(
+        baseURL,
+        projectKey,
+        jwtToken
+      );
+      await fetchContentTypes();
+      setState((prev) => ({ ...prev, loading: false }));
+      return result;
+    } catch (error) {
+      setState((prev) => ({
+        ...prev,
+        loading: false,
+        error:
+          error instanceof Error
+            ? error.message
+            : 'Failed to import default content types',
+      }));
+      throw error;
+    }
+  }, [baseURL, projectKey, jwtToken, fetchContentTypes]);
+
   const clearError = useCallback(() => {
     setState((prev) => ({ ...prev, error: null }));
   }, []);
@@ -330,6 +356,7 @@ export const useContentType = (
     addContentType,
     updateContentType,
     removeContentType,
+    importDefaultContentTypes,
     clearError,
 
     // Selectors
