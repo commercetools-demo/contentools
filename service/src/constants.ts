@@ -31,6 +31,19 @@ export const CONFIGURATION_THEME_KEY =
 export const CONFIGURATION_HEADER_KEY =
   process.env.CONFIGURATION_HEADER_KEY || 'header';
 
+export const CONFIGURATION_FACET_KEY =
+  process.env.CONFIGURATION_FACET_KEY || 'facet';
+export const CONFIGURATION_FOOTER_KEY =
+  process.env.CONFIGURATION_FOOTER_KEY || 'footer';
+export const CONFIGURATION_SITE_METADATA_KEY =
+  process.env.CONFIGURATION_SITE_METADATA_KEY || 'site-metadata';
+export const CONFIGURATION_CATEGORY_LISTING_KEY =
+  process.env.CONFIGURATION_CATEGORY_LISTING_KEY || 'category-listing';
+export const CONFIGURATION_TRANSLATIONS_KEY =
+  process.env.CONFIGURATION_TRANSLATIONS_KEY || 'translations';
+export const CONFIGURATION_CONTENTOOLS_BASE_URL_KEY =
+  process.env.CONFIGURATION_CONTENTOOLS_BASE_URL_KEY || 'contentools-base-url';
+
 export const DATASOURCE_CONTAINER =
   process.env.DATASOURCE_CONTAINER || 'datasource';
 
