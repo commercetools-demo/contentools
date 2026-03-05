@@ -98,6 +98,8 @@ const ThemeEditor: React.FC<Props> = ({
       return;
     }
     setFormValues({
+      ...DEFAULT_THEME,
+      ...t,
       colorPrimary: t.colorPrimary ?? DEFAULT_THEME.colorPrimary,
       colorPrimaryHover: t.colorPrimaryHover ?? DEFAULT_THEME.colorPrimaryHover,
       colorSecondary: t.colorSecondary ?? DEFAULT_THEME.colorSecondary,
@@ -116,6 +118,19 @@ const ThemeEditor: React.FC<Props> = ({
       buttonStyle: t.buttonStyle ?? DEFAULT_THEME.buttonStyle,
       cardShadow: t.cardShadow ?? DEFAULT_THEME.cardShadow,
       headerStyle: t.headerStyle ?? DEFAULT_THEME.headerStyle,
+      // Extended optional ThemeTokens
+      colorPrimaryForeground: t.colorPrimaryForeground ?? undefined,
+      colorSecondaryForeground: t.colorSecondaryForeground ?? undefined,
+      colorForeground: t.colorForeground ?? undefined,
+      colorMuted: t.colorMuted ?? undefined,
+      colorMutedForeground: t.colorMutedForeground ?? undefined,
+      colorDestructive: t.colorDestructive ?? undefined,
+      colorDestructiveForeground: t.colorDestructiveForeground ?? undefined,
+      colorAccent: t.colorAccent ?? undefined,
+      colorAccentForeground: t.colorAccentForeground ?? undefined,
+      colorBorder: t.colorBorder ?? undefined,
+      colorInput: t.colorInput ?? undefined,
+      colorRing: t.colorRing ?? undefined,
     });
   }, []);
 
@@ -331,6 +346,257 @@ const ThemeEditor: React.FC<Props> = ({
                   value={formValues.colorTextMuted}
                   onChange={(e) =>
                     handleChange('colorTextMuted', e.target.value)
+                  }
+                />
+              </Spacings.Inline>
+            </FormSection>
+          </Grid>
+
+          <Text.Headline as="h2">Extended colors</Text.Headline>
+          <Text.Body tone="secondary">
+            Optional theme tokens for foregrounds, muted, destructive, accent, border, input, and ring.
+          </Text.Body>
+          <Grid
+            gridGap="16px"
+            gridAutoColumns="1fr"
+            gridTemplateColumns="repeat(4, 1fr)"
+          >
+            <FormSection>
+              <FieldLabel title="Primary Foreground" htmlFor="colorPrimaryForeground" />
+              <Spacings.Inline alignItems="center" scale="s">
+                <input
+                  type="color"
+                  id="colorPrimaryForeground"
+                  value={formValues.colorPrimaryForeground || '#000000'}
+                  onChange={(e) =>
+                    handleChange('colorPrimaryForeground', e.target.value)
+                  }
+                  style={{ width: 40, height: 32, cursor: 'pointer' }}
+                />
+                <TextInput
+                  value={formValues.colorPrimaryForeground ?? ''}
+                  onChange={(e) =>
+                    handleChange('colorPrimaryForeground', (e.target as HTMLInputElement).value)
+                  }
+                />
+              </Spacings.Inline>
+            </FormSection>
+            <FormSection>
+              <FieldLabel title="Secondary Foreground" htmlFor="colorSecondaryForeground" />
+              <Spacings.Inline alignItems="center" scale="s">
+                <input
+                  type="color"
+                  id="colorSecondaryForeground"
+                  value={formValues.colorSecondaryForeground || '#000000'}
+                  onChange={(e) =>
+                    handleChange('colorSecondaryForeground', e.target.value)
+                  }
+                  style={{ width: 40, height: 32, cursor: 'pointer' }}
+                />
+                <TextInput
+                  value={formValues.colorSecondaryForeground ?? ''}
+                  onChange={(e) =>
+                    handleChange('colorSecondaryForeground', (e.target as HTMLInputElement).value)
+                  }
+                />
+              </Spacings.Inline>
+            </FormSection>
+            <FormSection>
+              <FieldLabel title="Foreground" htmlFor="colorForeground" />
+              <Spacings.Inline alignItems="center" scale="s">
+                <input
+                  type="color"
+                  id="colorForeground"
+                  value={formValues.colorForeground || '#000000'}
+                  onChange={(e) =>
+                    handleChange('colorForeground', e.target.value)
+                  }
+                  style={{ width: 40, height: 32, cursor: 'pointer' }}
+                />
+                <TextInput
+                  value={formValues.colorForeground ?? ''}
+                  onChange={(e) =>
+                    handleChange('colorForeground', (e.target as HTMLInputElement).value)
+                  }
+                />
+              </Spacings.Inline>
+            </FormSection>
+            <FormSection>
+              <FieldLabel title="Muted" htmlFor="colorMuted" />
+              <Spacings.Inline alignItems="center" scale="s">
+                <input
+                  type="color"
+                  id="colorMuted"
+                  value={formValues.colorMuted || '#000000'}
+                  onChange={(e) =>
+                    handleChange('colorMuted', e.target.value)
+                  }
+                  style={{ width: 40, height: 32, cursor: 'pointer' }}
+                />
+                <TextInput
+                  value={formValues.colorMuted ?? ''}
+                  onChange={(e) =>
+                    handleChange('colorMuted', (e.target as HTMLInputElement).value)
+                  }
+                />
+              </Spacings.Inline>
+            </FormSection>
+            <FormSection>
+              <FieldLabel title="Muted Foreground" htmlFor="colorMutedForeground" />
+              <Spacings.Inline alignItems="center" scale="s">
+                <input
+                  type="color"
+                  id="colorMutedForeground"
+                  value={formValues.colorMutedForeground || '#000000'}
+                  onChange={(e) =>
+                    handleChange('colorMutedForeground', e.target.value)
+                  }
+                  style={{ width: 40, height: 32, cursor: 'pointer' }}
+                />
+                <TextInput
+                  value={formValues.colorMutedForeground ?? ''}
+                  onChange={(e) =>
+                    handleChange('colorMutedForeground', (e.target as HTMLInputElement).value)
+                  }
+                />
+              </Spacings.Inline>
+            </FormSection>
+            <FormSection>
+              <FieldLabel title="Destructive" htmlFor="colorDestructive" />
+              <Spacings.Inline alignItems="center" scale="s">
+                <input
+                  type="color"
+                  id="colorDestructive"
+                  value={formValues.colorDestructive || '#000000'}
+                  onChange={(e) =>
+                    handleChange('colorDestructive', e.target.value)
+                  }
+                  style={{ width: 40, height: 32, cursor: 'pointer' }}
+                />
+                <TextInput
+                  value={formValues.colorDestructive ?? ''}
+                  onChange={(e) =>
+                    handleChange('colorDestructive', (e.target as HTMLInputElement).value)
+                  }
+                />
+              </Spacings.Inline>
+            </FormSection>
+            <FormSection>
+              <FieldLabel title="Destructive Foreground" htmlFor="colorDestructiveForeground" />
+              <Spacings.Inline alignItems="center" scale="s">
+                <input
+                  type="color"
+                  id="colorDestructiveForeground"
+                  value={formValues.colorDestructiveForeground || '#000000'}
+                  onChange={(e) =>
+                    handleChange('colorDestructiveForeground', e.target.value)
+                  }
+                  style={{ width: 40, height: 32, cursor: 'pointer' }}
+                />
+                <TextInput
+                  value={formValues.colorDestructiveForeground ?? ''}
+                  onChange={(e) =>
+                    handleChange('colorDestructiveForeground', (e.target as HTMLInputElement).value)
+                  }
+                />
+              </Spacings.Inline>
+            </FormSection>
+            <FormSection>
+              <FieldLabel title="Accent" htmlFor="colorAccent" />
+              <Spacings.Inline alignItems="center" scale="s">
+                <input
+                  type="color"
+                  id="colorAccent"
+                  value={formValues.colorAccent || '#000000'}
+                  onChange={(e) =>
+                    handleChange('colorAccent', e.target.value)
+                  }
+                  style={{ width: 40, height: 32, cursor: 'pointer' }}
+                />
+                <TextInput
+                  value={formValues.colorAccent ?? ''}
+                  onChange={(e) =>
+                    handleChange('colorAccent', (e.target as HTMLInputElement).value)
+                  }
+                />
+              </Spacings.Inline>
+            </FormSection>
+            <FormSection>
+              <FieldLabel title="Accent Foreground" htmlFor="colorAccentForeground" />
+              <Spacings.Inline alignItems="center" scale="s">
+                <input
+                  type="color"
+                  id="colorAccentForeground"
+                  value={formValues.colorAccentForeground || '#000000'}
+                  onChange={(e) =>
+                    handleChange('colorAccentForeground', e.target.value)
+                  }
+                  style={{ width: 40, height: 32, cursor: 'pointer' }}
+                />
+                <TextInput
+                  value={formValues.colorAccentForeground ?? ''}
+                  onChange={(e) =>
+                    handleChange('colorAccentForeground', (e.target as HTMLInputElement).value)
+                  }
+                />
+              </Spacings.Inline>
+            </FormSection>
+            <FormSection>
+              <FieldLabel title="Border" htmlFor="colorBorder" />
+              <Spacings.Inline alignItems="center" scale="s">
+                <input
+                  type="color"
+                  id="colorBorder"
+                  value={formValues.colorBorder || '#000000'}
+                  onChange={(e) =>
+                    handleChange('colorBorder', e.target.value)
+                  }
+                  style={{ width: 40, height: 32, cursor: 'pointer' }}
+                />
+                <TextInput
+                  value={formValues.colorBorder ?? ''}
+                  onChange={(e) =>
+                    handleChange('colorBorder', (e.target as HTMLInputElement).value)
+                  }
+                />
+              </Spacings.Inline>
+            </FormSection>
+            <FormSection>
+              <FieldLabel title="Input" htmlFor="colorInput" />
+              <Spacings.Inline alignItems="center" scale="s">
+                <input
+                  type="color"
+                  id="colorInput"
+                  value={formValues.colorInput || '#000000'}
+                  onChange={(e) =>
+                    handleChange('colorInput', e.target.value)
+                  }
+                  style={{ width: 40, height: 32, cursor: 'pointer' }}
+                />
+                <TextInput
+                  value={formValues.colorInput ?? ''}
+                  onChange={(e) =>
+                    handleChange('colorInput', (e.target as HTMLInputElement).value)
+                  }
+                />
+              </Spacings.Inline>
+            </FormSection>
+            <FormSection>
+              <FieldLabel title="Ring" htmlFor="colorRing" />
+              <Spacings.Inline alignItems="center" scale="s">
+                <input
+                  type="color"
+                  id="colorRing"
+                  value={formValues.colorRing || '#000000'}
+                  onChange={(e) =>
+                    handleChange('colorRing', e.target.value)
+                  }
+                  style={{ width: 40, height: 32, cursor: 'pointer' }}
+                />
+                <TextInput
+                  value={formValues.colorRing ?? ''}
+                  onChange={(e) =>
+                    handleChange('colorRing', (e.target as HTMLInputElement).value)
                   }
                 />
               </Spacings.Inline>
