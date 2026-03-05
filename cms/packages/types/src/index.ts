@@ -41,3 +41,11 @@ export * from './event-types';
 
 // Media types
 export * from './media-types';
+
+// Config types (facet, footer, category-listing, frontend-configuration, feature-flags)
+// Note: header and theme-tokens are not re-exported to avoid clashing with configuration-types
+export * from './config/facet-configuration';
+export * from './config/footer-configuration';
+export * from './config/category-listing';
+export * from './config/frontend-configuration';
+export * from './config/feature-flags';

@@ -1,34 +1,4 @@
-import type { TenantType } from './enums';
-
-export interface ThemeTokens {
-  colorPrimary: string;
-  colorPrimaryHover: string;
-  colorPrimaryForeground?: string;
-  colorSecondary: string;
-  colorSecondaryForeground?: string;
-  colorBackground: string;
-  colorSurface: string;
-  colorText: string;
-  colorTextMuted: string;
-  colorForeground?: string;
-  colorMuted?: string;
-  colorMutedForeground?: string;
-  colorDestructive?: string;
-  colorDestructiveForeground?: string;
-  colorAccent?: string;
-  colorAccentForeground?: string;
-  colorBorder?: string;
-  colorInput?: string;
-  colorRing?: string;
-  borderRadius: 'none' | 'sm' | 'md' | 'lg' | 'full';
-  borderWidth: '0' | '1' | '2';
-  fontFamily: string;
-  fontHeading: string;
-  spacingScale: number;
-  buttonStyle: 'solid' | 'outline' | 'ghost';
-  cardShadow: 'none' | 'sm' | 'md' | 'lg';
-  headerStyle: 'transparent' | 'solid' | 'minimal';
-}
+import type { TenantType } from './tenant-type';
 
 // ---------------------------------------------------------------------------
 // Header & Navigation
@@ -71,6 +41,20 @@ export interface HeaderVisibility {
  * CMS provides defaults; pages can override by selecting a variant.
  */
 export type HeaderVariantMap = Record<HeaderVariant, HeaderVisibility>;
+
+/**
+ * Slots in the main header row (left to right).
+ * Order is controlled by mainRowOrder in header config.
+ */
+export type HeaderMainRowSlot = 'logo' | 'navigation' | 'search' | 'utility';
+
+/** Default order when mainRowOrder is not specified. */
+export const DEFAULT_HEADER_MAIN_ROW_ORDER: HeaderMainRowSlot[] = [
+  'logo',
+  'navigation',
+  'search',
+  'utility',
+];
 
 /** A simple link in the top-level navigation. No dropdown, no mega menu. */
 export interface NavItemLink {
@@ -166,12 +150,6 @@ export interface TenantHeaderOverrides {
   /** Additional visibility flags */
   visibility?: Partial<HeaderVisibility>;
 }
-
-/**
- * Slots in the main header row (left to right).
- * Order is controlled by mainRowOrder in header config.
- */
-export type HeaderMainRowSlot = 'logo' | 'navigation' | 'search' | 'utility';
 
 export interface HeaderConfiguration {
   /**
