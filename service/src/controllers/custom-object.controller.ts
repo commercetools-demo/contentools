@@ -180,7 +180,7 @@ export class CustomObjectController {
    * @param container The container name
    * @returns Array of custom objects
    */
-  getCustomObjects = async (query?: string, expand?: string[]) => {
+  getCustomObjects = async (query?: string, expand?: string[], limit?: number) => {
     const whereClause = [];
     if (query) {
       whereClause.push(query);
@@ -195,6 +195,7 @@ export class CustomObjectController {
           queryArgs: {
             ...(whereClauseString ? { where: whereClauseString } : {}),
             ...(expand ? { expand } : {}),
+            ...(limit ? { limit } : {}),
           },
         })
         .execute();

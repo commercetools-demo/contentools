@@ -20,7 +20,7 @@ contentTypeRouter.get(
         CONTENT_TYPE_CONTAINER
       );
       const dynamicContentTypes =
-        await contentTypeController.getCustomObjects();
+        await contentTypeController.getCustomObjects(undefined, undefined, 100);
 
       res.json([
         ...dynamicContentTypes.map((item) => ({
