@@ -36,6 +36,8 @@ interface Props {
   baseURL: string;
   businessUnitKey: string;
   locale: string;
+  projectKey: string;
+  jwtToken?: string;
 }
 
 interface RouteParams {
@@ -82,6 +84,8 @@ const PagesEdit: React.FC<Props> = ({
   parentUrl,
   baseURL,
   businessUnitKey,
+  projectKey,
+  jwtToken,
   locale,
 }) => {
   const history = useHistory();
@@ -355,7 +359,7 @@ const PagesEdit: React.FC<Props> = ({
         parentUrl={parentUrl}
       />
 
-      <StateProvider baseURL={baseURL} scope={CONETNT_ITEMS_IN_PAGE_SCOPE}>
+      <StateProvider baseURL={baseURL} scope={CONETNT_ITEMS_IN_PAGE_SCOPE} projectKey={projectKey} jwtToken={jwtToken}>
         <ComponentEditorModal
           isOpen={componentEditorModal.isModalOpen}
           onClose={handleCloseComponentEditor}

@@ -1,7 +1,7 @@
 {
   "name": "@commercetools-demo/contentools-content-pages",
   "description": "Content pages CMS",
-  "version": "2.0.1",
+  "version": "2.1.2",
   "license": "MIT",
   "publishConfig": {
     "access": "public"
