@@ -39,6 +39,8 @@ const WrappedContentPagesApp: React.FC<WrappedContentPagesAppProps> = ({
           baseURL={baseURL}
           businessUnitKey={businessUnitKey}
           locale={locale}
+          projectKey={projectKey}
+          jwtToken={jwtToken}
         />
       </StateProvider>
     </Router>
