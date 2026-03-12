@@ -34,7 +34,7 @@ export const fileTools: Tool[] = [
     name: 'Compile and Upload',
     description: 'Compile code files and upload as a content type. Body: files (record of filename -> { content }), key (content type key).',
     parameters: z.object({
-      files: z.record(z.object({ content: z.string() })).describe('Map of filename to file content'),
+      files: z.record(z.string(), z.object({ content: z.string() })).describe('Map of filename to file content'),
       key: z.string().describe('Content type key'),
     }),
     actions: { file: { create: true } },

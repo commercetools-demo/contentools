@@ -6,9 +6,9 @@ import { z } from 'zod';
 export const propertySchemaSchema = z.object({
   type: z.string(),
   label: z.string(),
-  defaultValue: z.unknown().optional(),
+  defaultValue: z.any().optional(),
   required: z.boolean().optional(),
-  options: z.array(z.object({ value: z.unknown(), label: z.string() })).optional(),
+  options: z.array(z.object({ value: z.any(), label: z.string() })).optional(),
   extensions: z.array(z.string()).optional(),
   order: z.number().optional(),
   datasourceType: z.string().optional(),
@@ -21,7 +21,7 @@ export const contentTypeMetadataSchema = z.object({
   type: z.string(),
   name: z.string(),
   icon: z.string().optional(),
-  defaultProperties: z.record(z.unknown()).optional(),
+  defaultProperties: z.record(z.any()).optional(),
   propertySchema: z.record(propertySchemaSchema),
   isBuiltIn: z.boolean().optional(),
 });

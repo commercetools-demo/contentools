@@ -3,7 +3,7 @@ import type { Tool } from '../../types/tools';
 import { datasourceInfoSchema } from '../schemas';
 
 const key = z.string().describe('Datasource key');
-const params = z.record(z.unknown()).optional().describe('Parameters for testing the datasource');
+const params = z.record(z.any()).optional().describe('Parameters for testing the datasource');
 
 export const datasourceTools: Tool[] = [
   {
