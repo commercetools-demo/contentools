@@ -1,6 +1,6 @@
 {
   "name": "@commercetools-demo/contenttools-mcp",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Content Tools MCP - AI/LangChain/Mastra tools for the CMS service API",
   "type": "module",
   "main": "./ai-sdk/index.js",
