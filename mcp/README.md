@@ -62,5 +62,5 @@ All CMS service routes (configuration, content types, content items, pages, data
 ## Inspector
 
 ```shell
-npx @modelcontextprotocol/inspector yarn run mcp --baseUrl=http://localhost:8080/service --projectKey=xxx --businessUnitKey=1
+npx @modelcontextprotocol/inspector node bin/run-mcp.cjs --baseUrl=http://localhost:8080/service --projectKey=xxx --businessUnitKey=1
 ```

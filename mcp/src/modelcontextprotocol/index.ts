@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 /**
  * Content Tools MCP server – run with:
- *   pnpm run mcp
+ *   pnpm run mcp   (not for MCP Inspector – use the bin below)
+ *   node bin/run-mcp.cjs   (for MCP Inspector; no yarn banner on stdout)
  *   npx tsx src/modelcontextprotocol/index.ts
  *
  * Pass configuration via CLI or env:
@@ -54,7 +55,7 @@ function getAuthConfig(): AuthConfig {
 
 async function main() {
   const authConfig = getAuthConfig();
-  const server = createContentToolsMcpServer(authConfig, {});
+  const server = createContentToolsMcpServer(authConfig);
   const transport = new StdioServerTransport();
   await server.connect(transport);
   console.error('Content Tools MCP server running on stdio');
