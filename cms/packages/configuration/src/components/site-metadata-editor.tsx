@@ -46,7 +46,9 @@ const SiteMetadataEditor: React.FC<Props> = ({
     clearError,
   } = useConfigurationState();
 
-  const [formValues, setFormValues] = useState<SiteMetadata>(DEFAULT_SITE_METADATA);
+  const [formValues, setFormValues] = useState<SiteMetadata>(
+    DEFAULT_SITE_METADATA
+  );
   const [saving, setSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
 
@@ -103,9 +105,7 @@ const SiteMetadataEditor: React.FC<Props> = ({
         />
       )}
       <Text.Headline as="h1">Site metadata</Text.Headline>
-      {error && (
-        <Text.Body tone="critical">{error}</Text.Body>
-      )}
+      {error && <Text.Body tone="critical">{error}</Text.Body>}
       <Card>
         <Spacings.Stack scale="m">
           <FormSection>

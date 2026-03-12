@@ -99,18 +99,18 @@ const ComponentEditorModal: React.FC<Props> = ({
     onRefresh();
   };
 
+  const handleClose = () => {
+    onClose();
+    confirmationModalState.closeModal();
+    setChangedContentItem(undefined);
+  };
+
   const handleCloseCheck = () => {
     if (changedContentItem && !isEqual(changedContentItem, selectedComponent)) {
       confirmationModalState.openModal();
       return;
     }
     handleClose();
-  };
-
-  const handleClose = () => {
-    onClose();
-    confirmationModalState.closeModal();
-    setChangedContentItem(undefined);
   };
 
   useEffect(() => {

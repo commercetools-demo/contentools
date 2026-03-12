@@ -169,6 +169,10 @@ const ContentItemEditorEditForm: React.FC<ContentItemEditorEditFormProps> = ({
     }
   };
 
+  const handleCloseVersionHistory = () => {
+    versionHistoryState.closeModal();
+  };
+
   const handleSelectionCancelled = () => {
     setSelectedVersionId(null);
     setContentVersion(null);
@@ -193,10 +197,6 @@ const ContentItemEditorEditForm: React.FC<ContentItemEditorEditFormProps> = ({
   const handleClose = () => {
     contentItemEditorState.closeModal();
     history.goBack();
-  };
-
-  const handleCloseVersionHistory = () => {
-    versionHistoryState.closeModal();
   };
 
   const handleOpenVersionHistory = () => {

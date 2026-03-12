@@ -322,8 +322,8 @@ const PropertyEditorCore: React.FC<PropertyEditorCoreProps> = ({
         >
           <Spacings.Stack scale="m">
             <Text.Body>
-              Are you sure you want to delete the component "{component.name}"?
-              This action cannot be undone.
+              {`Are you sure you want to delete the component "${component.name}"?
+              This action cannot be undone.`}
             </Text.Body>
           </Spacings.Stack>
         </ConfirmationModal>

@@ -52,7 +52,6 @@ export const PageRenderer: React.FC<PropsWithChildren<PageRendererProps>> = (
   const { ContextualRenderer, StandaloneRenderer } = useMemo(() => {
     return createRenderers(PageResolver, props.projectKey);
   }, [props.projectKey]);
-    
 
   return (
     <ContextErrorBoundary

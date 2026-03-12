@@ -43,7 +43,9 @@ interface SortOptionFormEntry {
   sortAttributeEntries: SortAttributeEntry[];
 }
 
-function sortAttributesToEntries(attrs: Record<string, string> | undefined): SortAttributeEntry[] {
+function sortAttributesToEntries(
+  attrs: Record<string, string> | undefined
+): SortAttributeEntry[] {
   if (!attrs || typeof attrs !== 'object') return [];
   return Object.entries(attrs).map(([key, val]) => ({
     key,
@@ -51,7 +53,9 @@ function sortAttributesToEntries(attrs: Record<string, string> | undefined): Sor
   }));
 }
 
-function entriesToSortAttributes(entries: SortAttributeEntry[]): Record<string, string> | undefined {
+function entriesToSortAttributes(
+  entries: SortAttributeEntry[]
+): Record<string, string> | undefined {
   const obj: Record<string, string> = {};
   for (const { key, order } of entries) {
     if (key.trim()) obj[key.trim()] = order;
@@ -59,15 +63,21 @@ function entriesToSortAttributes(entries: SortAttributeEntry[]): Record<string, 
   return Object.keys(obj).length > 0 ? obj : undefined;
 }
 
-function sortOptionToFormEntry(opt: CategoryListingSortOption): SortOptionFormEntry {
+function sortOptionToFormEntry(
+  opt: CategoryListingSortOption
+): SortOptionFormEntry {
   return {
     label: opt.label ?? '',
     value: opt.value ?? '',
-    sortAttributeEntries: sortAttributesToEntries(opt.sortAttributes as Record<string, string> | undefined),
+    sortAttributeEntries: sortAttributesToEntries(
+      opt.sortAttributes as Record<string, string> | undefined
+    ),
   };
 }
 
-function formEntryToSortOption(entry: SortOptionFormEntry): CategoryListingSortOption {
+function formEntryToSortOption(
+  entry: SortOptionFormEntry
+): CategoryListingSortOption {
   return {
     label: entry.label,
     value: entry.value,
@@ -81,7 +91,9 @@ interface FormValues {
   defaultSortValue: string;
 }
 
-function configToFormValues(config: CategoryListingConfiguration | null): FormValues {
+function configToFormValues(
+  config: CategoryListingConfiguration | null
+): FormValues {
   if (config == null || typeof config !== 'object') {
     return {
       sortOptionEntries: [],
@@ -89,7 +101,9 @@ function configToFormValues(config: CategoryListingConfiguration | null): FormVa
       defaultSortValue: '',
     };
   }
-  const sortOptions = Array.isArray(config.sortOptions) ? config.sortOptions : [];
+  const sortOptions = Array.isArray(config.sortOptions)
+    ? config.sortOptions
+    : [];
   return {
     sortOptionEntries: sortOptions.map(sortOptionToFormEntry),
     pageSize: config.pageSize ?? 24,
@@ -208,9 +222,7 @@ const CategoryListingEditor: React.FC<Props> = ({
         />
       )}
       <Text.Headline as="h1">Category listing configuration</Text.Headline>
-      {error && (
-        <Text.Body tone="critical">{error}</Text.Body>
-      )}
+      {error && <Text.Body tone="critical">{error}</Text.Body>}
       <Formik
         initialValues={initialValues}
         enableReinitialize
@@ -222,7 +234,8 @@ const CategoryListingEditor: React.FC<Props> = ({
               <Spacings.Stack scale="m">
                 <Text.Headline as="h2">Sort options</Text.Headline>
                 <Text.Body tone="secondary">
-                  Add sort options with label, value, and sort attributes (e.g. price: asc, name: desc).
+                  Add sort options with label, value, and sort attributes (e.g.
+                  price: asc, name: desc).
                 </Text.Body>
                 <FieldArray name="sortOptionEntries">
                   {({ push, remove }) => (
@@ -230,8 +243,12 @@ const CategoryListingEditor: React.FC<Props> = ({
                       {values.sortOptionEntries.map((entry, index) => (
                         <SortOptionCard key={index}>
                           <Spacings.Stack scale="m">
-                            <InlineRow style={{ justifyContent: 'space-between' }}>
-                              <Text.Subheadline as="h4">Sort option {index + 1}</Text.Subheadline>
+                            <InlineRow
+                              style={{ justifyContent: 'space-between' }}
+                            >
+                              <Text.Subheadline as="h4">
+                                Sort option {index + 1}
+                              </Text.Subheadline>
                               <FlatButton
                                 icon={<BinLinearIcon />}
                                 label="Remove sort option"
@@ -239,7 +256,10 @@ const CategoryListingEditor: React.FC<Props> = ({
                               />
                             </InlineRow>
                             <FormSection>
-                              <FieldLabel title="Label" htmlFor={`sortOptionEntries.${index}.label`} />
+                              <FieldLabel
+                                title="Label"
+                                htmlFor={`sortOptionEntries.${index}.label`}
+                              />
                               <TextInput
                                 id={`sortOptionEntries.${index}.label`}
                                 name={`sortOptionEntries.${index}.label`}
@@ -248,7 +268,10 @@ const CategoryListingEditor: React.FC<Props> = ({
                               />
                             </FormSection>
                             <FormSection>
-                              <FieldLabel title="Value" htmlFor={`sortOptionEntries.${index}.value`} />
+                              <FieldLabel
+                                title="Value"
+                                htmlFor={`sortOptionEntries.${index}.value`}
+                              />
                               <TextInput
                                 id={`sortOptionEntries.${index}.value`}
                                 name={`sortOptionEntries.${index}.value`}
@@ -257,42 +280,52 @@ const CategoryListingEditor: React.FC<Props> = ({
                               />
                             </FormSection>
                             <FormSection>
-                              <Text.Body fontWeight="bold">Sort attributes</Text.Body>
+                              <Text.Body fontWeight="bold">
+                                Sort attributes
+                              </Text.Body>
                               <Text.Body tone="secondary">
                                 e.g. price: asc, name: desc
                               </Text.Body>
-                              <FieldArray name={`sortOptionEntries.${index}.sortAttributeEntries`}>
+                              <FieldArray
+                                name={`sortOptionEntries.${index}.sortAttributeEntries`}
+                              >
                                 {({ push: pushAttr, remove: removeAttr }) => (
                                   <>
-                                    {(entry.sortAttributeEntries || []).map((attr, attrIndex) => (
-                                      <InlineRow key={attrIndex}>
-                                        <AttributeInputWrapper>
-                                          <TextInput
-                                            name={`sortOptionEntries.${index}.sortAttributeEntries.${attrIndex}.key`}
-                                            value={attr.key}
-                                            onChange={handleChange}
-                                            placeholder="e.g. price, name"
+                                    {(entry.sortAttributeEntries || []).map(
+                                      (attr, attrIndex) => (
+                                        <InlineRow key={attrIndex}>
+                                          <AttributeInputWrapper>
+                                            <TextInput
+                                              name={`sortOptionEntries.${index}.sortAttributeEntries.${attrIndex}.key`}
+                                              value={attr.key}
+                                              onChange={handleChange}
+                                              placeholder="e.g. price, name"
+                                            />
+                                          </AttributeInputWrapper>
+                                          <OrderSelectWrapper>
+                                            <SelectInput
+                                              name={`sortOptionEntries.${index}.sortAttributeEntries.${attrIndex}.order`}
+                                              value={attr.order}
+                                              onChange={handleChange}
+                                              options={SORT_ORDER_OPTIONS}
+                                            />
+                                          </OrderSelectWrapper>
+                                          <FlatButton
+                                            icon={<BinLinearIcon />}
+                                            label="Remove attribute"
+                                            onClick={() =>
+                                              removeAttr(attrIndex)
+                                            }
                                           />
-                                        </AttributeInputWrapper>
-                                        <OrderSelectWrapper>
-                                          <SelectInput
-                                            name={`sortOptionEntries.${index}.sortAttributeEntries.${attrIndex}.order`}
-                                            value={attr.order}
-                                            onChange={handleChange}
-                                            options={SORT_ORDER_OPTIONS}
-                                          />
-                                        </OrderSelectWrapper>
-                                        <FlatButton
-                                          icon={<BinLinearIcon />}
-                                          label="Remove attribute"
-                                          onClick={() => removeAttr(attrIndex)}
-                                        />
-                                      </InlineRow>
-                                    ))}
+                                        </InlineRow>
+                                      )
+                                    )}
                                     <SecondaryButton
                                       label="Add attribute"
                                       iconLeft={<PlusBoldIcon />}
-                                      onClick={() => pushAttr({ key: '', order: 'asc' })}
+                                      onClick={() =>
+                                        pushAttr({ key: '', order: 'asc' })
+                                      }
                                     />
                                   </>
                                 )}
@@ -326,7 +359,10 @@ const CategoryListingEditor: React.FC<Props> = ({
                   />
                 </FormSection>
                 <FormSection>
-                  <FieldLabel title="Default sort value" htmlFor="defaultSortValue" />
+                  <FieldLabel
+                    title="Default sort value"
+                    htmlFor="defaultSortValue"
+                  />
                   <TextInput
                     id="defaultSortValue"
                     name="defaultSortValue"
@@ -340,9 +376,7 @@ const CategoryListingEditor: React.FC<Props> = ({
                     label={saving ? 'Saving...' : 'Save'}
                     isDisabled={saving}
                   />
-                  {saveSuccess && (
-                    <Text.Body tone="positive">Saved.</Text.Body>
-                  )}
+                  {saveSuccess && <Text.Body tone="positive">Saved.</Text.Body>}
                 </Spacings.Inline>
               </Spacings.Stack>
             </Card>

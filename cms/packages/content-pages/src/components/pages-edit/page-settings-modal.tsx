@@ -116,8 +116,8 @@ const PageSettingsModal: React.FC<Props> = ({
         rejectTitle="Cancel"
       >
         <Text.Body>
-          Are you sure you want to delete "{currentPage.name}"? This action
-          cannot be undone.
+          {`Are you sure you want to delete "${currentPage.name}"? This action
+          cannot be undone.`}
         </Text.Body>
       </ConfirmationModal>
     </Modal>

@@ -354,7 +354,8 @@ const ThemeEditor: React.FC<Props> = ({
 
           <Text.Headline as="h2">Extended colors</Text.Headline>
           <Text.Body tone="secondary">
-            Optional theme tokens for foregrounds, muted, destructive, accent, border, input, and ring.
+            Optional theme tokens for foregrounds, muted, destructive, accent,
+            border, input, and ring.
           </Text.Body>
           <Grid
             gridGap="16px"
@@ -362,7 +363,10 @@ const ThemeEditor: React.FC<Props> = ({
             gridTemplateColumns="repeat(4, 1fr)"
           >
             <FormSection>
-              <FieldLabel title="Primary Foreground" htmlFor="colorPrimaryForeground" />
+              <FieldLabel
+                title="Primary Foreground"
+                htmlFor="colorPrimaryForeground"
+              />
               <Spacings.Inline alignItems="center" scale="s">
                 <input
                   type="color"
@@ -376,13 +380,19 @@ const ThemeEditor: React.FC<Props> = ({
                 <TextInput
                   value={formValues.colorPrimaryForeground ?? ''}
                   onChange={(e) =>
-                    handleChange('colorPrimaryForeground', (e.target as HTMLInputElement).value)
+                    handleChange(
+                      'colorPrimaryForeground',
+                      (e.target as HTMLInputElement).value
+                    )
                   }
                 />
               </Spacings.Inline>
             </FormSection>
             <FormSection>
-              <FieldLabel title="Secondary Foreground" htmlFor="colorSecondaryForeground" />
+              <FieldLabel
+                title="Secondary Foreground"
+                htmlFor="colorSecondaryForeground"
+              />
               <Spacings.Inline alignItems="center" scale="s">
                 <input
                   type="color"
@@ -396,7 +406,10 @@ const ThemeEditor: React.FC<Props> = ({
                 <TextInput
                   value={formValues.colorSecondaryForeground ?? ''}
                   onChange={(e) =>
-                    handleChange('colorSecondaryForeground', (e.target as HTMLInputElement).value)
+                    handleChange(
+                      'colorSecondaryForeground',
+                      (e.target as HTMLInputElement).value
+                    )
                   }
                 />
               </Spacings.Inline>
@@ -416,7 +429,10 @@ const ThemeEditor: React.FC<Props> = ({
                 <TextInput
                   value={formValues.colorForeground ?? ''}
                   onChange={(e) =>
-                    handleChange('colorForeground', (e.target as HTMLInputElement).value)
+                    handleChange(
+                      'colorForeground',
+                      (e.target as HTMLInputElement).value
+                    )
                   }
                 />
               </Spacings.Inline>
@@ -428,21 +444,25 @@ const ThemeEditor: React.FC<Props> = ({
                   type="color"
                   id="colorMuted"
                   value={formValues.colorMuted || '#000000'}
-                  onChange={(e) =>
-                    handleChange('colorMuted', e.target.value)
-                  }
+                  onChange={(e) => handleChange('colorMuted', e.target.value)}
                   style={{ width: 40, height: 32, cursor: 'pointer' }}
                 />
                 <TextInput
                   value={formValues.colorMuted ?? ''}
                   onChange={(e) =>
-                    handleChange('colorMuted', (e.target as HTMLInputElement).value)
+                    handleChange(
+                      'colorMuted',
+                      (e.target as HTMLInputElement).value
+                    )
                   }
                 />
               </Spacings.Inline>
             </FormSection>
             <FormSection>
-              <FieldLabel title="Muted Foreground" htmlFor="colorMutedForeground" />
+              <FieldLabel
+                title="Muted Foreground"
+                htmlFor="colorMutedForeground"
+              />
               <Spacings.Inline alignItems="center" scale="s">
                 <input
                   type="color"
@@ -456,7 +476,10 @@ const ThemeEditor: React.FC<Props> = ({
                 <TextInput
                   value={formValues.colorMutedForeground ?? ''}
                   onChange={(e) =>
-                    handleChange('colorMutedForeground', (e.target as HTMLInputElement).value)
+                    handleChange(
+                      'colorMutedForeground',
+                      (e.target as HTMLInputElement).value
+                    )
                   }
                 />
               </Spacings.Inline>
@@ -476,13 +499,19 @@ const ThemeEditor: React.FC<Props> = ({
                 <TextInput
                   value={formValues.colorDestructive ?? ''}
                   onChange={(e) =>
-                    handleChange('colorDestructive', (e.target as HTMLInputElement).value)
+                    handleChange(
+                      'colorDestructive',
+                      (e.target as HTMLInputElement).value
+                    )
                   }
                 />
               </Spacings.Inline>
             </FormSection>
             <FormSection>
-              <FieldLabel title="Destructive Foreground" htmlFor="colorDestructiveForeground" />
+              <FieldLabel
+                title="Destructive Foreground"
+                htmlFor="colorDestructiveForeground"
+              />
               <Spacings.Inline alignItems="center" scale="s">
                 <input
                   type="color"
@@ -496,7 +525,10 @@ const ThemeEditor: React.FC<Props> = ({
                 <TextInput
                   value={formValues.colorDestructiveForeground ?? ''}
                   onChange={(e) =>
-                    handleChange('colorDestructiveForeground', (e.target as HTMLInputElement).value)
+                    handleChange(
+                      'colorDestructiveForeground',
+                      (e.target as HTMLInputElement).value
+                    )
                   }
                 />
               </Spacings.Inline>
@@ -508,21 +540,25 @@ const ThemeEditor: React.FC<Props> = ({
                   type="color"
                   id="colorAccent"
                   value={formValues.colorAccent || '#000000'}
-                  onChange={(e) =>
-                    handleChange('colorAccent', e.target.value)
-                  }
+                  onChange={(e) => handleChange('colorAccent', e.target.value)}
                   style={{ width: 40, height: 32, cursor: 'pointer' }}
                 />
                 <TextInput
                   value={formValues.colorAccent ?? ''}
                   onChange={(e) =>
-                    handleChange('colorAccent', (e.target as HTMLInputElement).value)
+                    handleChange(
+                      'colorAccent',
+                      (e.target as HTMLInputElement).value
+                    )
                   }
                 />
               </Spacings.Inline>
             </FormSection>
             <FormSection>
-              <FieldLabel title="Accent Foreground" htmlFor="colorAccentForeground" />
+              <FieldLabel
+                title="Accent Foreground"
+                htmlFor="colorAccentForeground"
+              />
               <Spacings.Inline alignItems="center" scale="s">
                 <input
                   type="color"
@@ -536,7 +572,10 @@ const ThemeEditor: React.FC<Props> = ({
                 <TextInput
                   value={formValues.colorAccentForeground ?? ''}
                   onChange={(e) =>
-                    handleChange('colorAccentForeground', (e.target as HTMLInputElement).value)
+                    handleChange(
+                      'colorAccentForeground',
+                      (e.target as HTMLInputElement).value
+                    )
                   }
                 />
               </Spacings.Inline>
@@ -548,15 +587,16 @@ const ThemeEditor: React.FC<Props> = ({
                   type="color"
                   id="colorBorder"
                   value={formValues.colorBorder || '#000000'}
-                  onChange={(e) =>
-                    handleChange('colorBorder', e.target.value)
-                  }
+                  onChange={(e) => handleChange('colorBorder', e.target.value)}
                   style={{ width: 40, height: 32, cursor: 'pointer' }}
                 />
                 <TextInput
                   value={formValues.colorBorder ?? ''}
                   onChange={(e) =>
-                    handleChange('colorBorder', (e.target as HTMLInputElement).value)
+                    handleChange(
+                      'colorBorder',
+                      (e.target as HTMLInputElement).value
+                    )
                   }
                 />
               </Spacings.Inline>
@@ -568,15 +608,16 @@ const ThemeEditor: React.FC<Props> = ({
                   type="color"
                   id="colorInput"
                   value={formValues.colorInput || '#000000'}
-                  onChange={(e) =>
-                    handleChange('colorInput', e.target.value)
-                  }
+                  onChange={(e) => handleChange('colorInput', e.target.value)}
                   style={{ width: 40, height: 32, cursor: 'pointer' }}
                 />
                 <TextInput
                   value={formValues.colorInput ?? ''}
                   onChange={(e) =>
-                    handleChange('colorInput', (e.target as HTMLInputElement).value)
+                    handleChange(
+                      'colorInput',
+                      (e.target as HTMLInputElement).value
+                    )
                   }
                 />
               </Spacings.Inline>
@@ -588,15 +629,16 @@ const ThemeEditor: React.FC<Props> = ({
                   type="color"
                   id="colorRing"
                   value={formValues.colorRing || '#000000'}
-                  onChange={(e) =>
-                    handleChange('colorRing', e.target.value)
-                  }
+                  onChange={(e) => handleChange('colorRing', e.target.value)}
                   style={{ width: 40, height: 32, cursor: 'pointer' }}
                 />
                 <TextInput
                   value={formValues.colorRing ?? ''}
                   onChange={(e) =>
-                    handleChange('colorRing', (e.target as HTMLInputElement).value)
+                    handleChange(
+                      'colorRing',
+                      (e.target as HTMLInputElement).value
+                    )
                   }
                 />
               </Spacings.Inline>

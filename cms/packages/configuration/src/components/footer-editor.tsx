@@ -40,16 +40,11 @@ const FooterEditor: React.FC<Props> = ({
 }) => {
   const hydratedUrl = `${baseURL}/${businessUnitKey}`;
   const history = useHistory();
-  const {
-    footer,
-    loading,
-    error,
-    fetchFooter,
-    saveFooter,
-    clearError,
-  } = useConfigurationState();
+  const { footer, loading, error, fetchFooter, saveFooter, clearError } =
+    useConfigurationState();
 
-  const [formValues, setFormValues] = useState<FooterConfiguration>(DEFAULT_FOOTER);
+  const [formValues, setFormValues] =
+    useState<FooterConfiguration>(DEFAULT_FOOTER);
   const [saving, setSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
 
@@ -106,9 +101,7 @@ const FooterEditor: React.FC<Props> = ({
         />
       )}
       <Text.Headline as="h1">Footer configuration</Text.Headline>
-      {error && (
-        <Text.Body tone="critical">{error}</Text.Body>
-      )}
+      {error && <Text.Body tone="critical">{error}</Text.Body>}
       <Card>
         <Spacings.Stack scale="m">
           <FormSection>
