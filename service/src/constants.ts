@@ -3,7 +3,7 @@ dotenv.config();
 
 export const CORS_ALLOWED_ORIGINS =
   process.env.CORS_ALLOWED_ORIGINS ||
-  'localhost:5173,localhost:3000,localhost:3001,commercetools.com,frontend.site';
+  'localhost:5173,localhost:3000,localhost:3001,commercetools.com,frontend.site,ct-poc.net';
 
 export const MAX_VERSIONS = parseInt(process.env.MAX_VERSIONS || '5', 10);
 
