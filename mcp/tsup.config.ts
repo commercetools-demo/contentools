@@ -19,13 +19,4 @@ export default defineConfig([
     external: ['@langchain/core', 'zod'],
     noExternal: [],
   },
-  {
-    entry: ['src/mastra/index.ts'],
-    outDir: 'mastra',
-    format: ['cjs', 'esm'],
-    dts: true,
-    sourcemap: true,
-    external: ['@mastra/core', 'zod'],
-    noExternal: [],
-  },
 ]);

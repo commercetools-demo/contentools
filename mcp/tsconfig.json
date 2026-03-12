@@ -15,5 +15,5 @@
     "isolatedModules": true
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "ai-sdk", "langchain", "mastra"]
+  "exclude": ["node_modules", "dist", "ai-sdk", "langchain"]
 }
