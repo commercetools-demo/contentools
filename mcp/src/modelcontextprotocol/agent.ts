@@ -1,9 +1,7 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { AuthConfig } from '../types/auth.js';
-import type { Configuration } from '../types/configuration.js';
 import ContentToolsAPI from '../shared/api.js';
-import { isToolAllowed, processConfigurationDefaults } from '../shared/configuration.js';
-import { contextToTools } from '../shared/tools.js';
+import { allTools } from '../shared/tools.js';
 import { formatToolOutput } from '../shared/format.js';
 
 const SERVER_NAME = 'contenttools-mcp';
@@ -15,20 +13,15 @@ const SERVER_VERSION = '1.0.0';
  */
 export function createContentToolsMcpServer(
   authConfig: AuthConfig,
-  configuration?: Configuration
 ): McpServer {
-  const processedConfig = processConfigurationDefaults(configuration);
-  const api = new ContentToolsAPI(authConfig, processedConfig.context);
-  const tools = contextToTools(processedConfig.context).filter((t) =>
-    isToolAllowed(t, processedConfig)
-  );
+  const api = new ContentToolsAPI(authConfig);
 
   const server = new McpServer(
     { name: SERVER_NAME, version: SERVER_VERSION },
     {}
   );
 
-  for (const tool of tools) {
+  for (const tool of allTools) {
     server.registerTool(
       tool.method,
       {

@@ -6,7 +6,7 @@ const bu = z.string().optional().describe('Business unit key (default from conte
 const key = z.string().describe('Content item key');
 const query = z.string().describe('Query string for filtering');
 
-const contentItemTools: Tool[] = [
+export const contentItemTools: Tool[] = [
   {
     method: 'get_content_items',
     name: 'Get Content Items',
@@ -78,7 +78,3 @@ const contentItemTools: Tool[] = [
     actions: { content_item: { update: true } },
   },
 ];
-
-export function contextToContentItemTools(): Tool[] {
-  return contentItemTools;
-}

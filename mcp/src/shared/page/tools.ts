@@ -6,7 +6,7 @@ const bu = z.string().optional().describe('Business unit key (default from conte
 const key = z.string().describe('Page key');
 const query = z.string().describe('Query string for filtering');
 
-const pageTools: Tool[] = [
+export const pageTools: Tool[] = [
   {
     method: 'get_pages',
     name: 'Get Pages',
@@ -71,7 +71,3 @@ const pageTools: Tool[] = [
     actions: { page: { read: true } },
   },
 ];
-
-export function contextToPageTools(): Tool[] {
-  return pageTools;
-}

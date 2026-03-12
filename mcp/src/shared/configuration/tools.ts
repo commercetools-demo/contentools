@@ -5,7 +5,7 @@ import { themeTokensSchema } from '../schemas';
 const businessUnitKeyParam = z.string().optional().describe('Business unit key (default from context)');
 const configValueSchema = z.record(z.unknown()).describe('Configuration value (JSON object)');
 
-const configurationTools: Tool[] = [
+export const configurationTools: Tool[] = [
   {
     method: 'get_all_configurations',
     name: 'Get All Configurations',
@@ -72,7 +72,3 @@ const configurationTools: Tool[] = [
   { method: 'update_translations', name: 'Update Configuration Translations', description: 'Update translations configuration for a business unit.', parameters: z.object({ businessUnitKey: businessUnitKeyParam, value: configValueSchema }), actions: { configuration: { update: true } } },
   { method: 'delete_translations', name: 'Delete Configuration Translations', description: 'Delete translations configuration for a business unit.', parameters: z.object({ businessUnitKey: businessUnitKeyParam }), actions: { configuration: { update: true } } },
 ];
-
-export function contextToConfigurationTools(): Tool[] {
-  return configurationTools;
-}

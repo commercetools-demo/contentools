@@ -10,7 +10,7 @@ const rowId = z.string().describe('Row ID');
 const cellId = z.string().describe('Cell ID');
 const updates = contentItemSchema.partial().describe('Partial content item fields to update on the component');
 
-const pageComponentTools: Tool[] = [
+export const pageComponentTools: Tool[] = [
   {
     method: 'add_page_component',
     name: 'Add Page Component',
@@ -54,7 +54,3 @@ const pageComponentTools: Tool[] = [
     actions: { page_component: { update: true } },
   },
 ];
-
-export function contextToPageComponentTools(): Tool[] {
-  return pageComponentTools;
-}

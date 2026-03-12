@@ -3,7 +3,7 @@ import type { Tool } from '../../types/tools';
 
 const bu = z.string().optional().describe('Business unit key (default from context)');
 
-const fileTools: Tool[] = [
+export const fileTools: Tool[] = [
   {
     method: 'upload_file',
     name: 'Upload File',
@@ -40,7 +40,3 @@ const fileTools: Tool[] = [
     actions: { file: { create: true } },
   },
 ];
-
-export function contextToFileTools(): Tool[] {
-  return fileTools;
-}

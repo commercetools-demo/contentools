@@ -7,7 +7,7 @@ const key = z.string().describe('Page content item key');
 const value = contentItemSchema.optional().describe('Page content item value when publishing (optional)');
 const clearDraft = z.boolean().optional().describe('When true, clear draft after publishing');
 
-const pageContentItemStateTools: Tool[] = [
+export const pageContentItemStateTools: Tool[] = [
   {
     method: 'get_page_item_states',
     name: 'Get Page Item States',
@@ -30,7 +30,3 @@ const pageContentItemStateTools: Tool[] = [
     actions: { page_content_item_state: { update: true } },
   },
 ];
-
-export function contextToPageContentItemStateTools(): Tool[] {
-  return pageContentItemStateTools;
-}

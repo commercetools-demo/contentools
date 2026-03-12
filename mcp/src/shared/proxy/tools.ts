@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import type { Tool } from '../../types/tools';
 
-const proxyTools: Tool[] = [
+export const proxyTools: Tool[] = [
   {
     method: 'get_proxy_script',
     name: 'Get Proxy Script',
@@ -12,7 +12,3 @@ const proxyTools: Tool[] = [
     actions: { proxy: { read: true } },
   },
 ];
-
-export function contextToProxyTools(): Tool[] {
-  return proxyTools;
-}
