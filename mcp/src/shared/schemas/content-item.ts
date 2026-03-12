@@ -10,7 +10,7 @@ export const contentItemSchema = z.object({
   key: z.string().optional(),
   businessUnitKey: z.string().optional(),
   name: z.string(),
-  properties: z.record(z.unknown()).default({}),
+  properties: z.record(z.any()).default({}),
 });
 
 export type ContentItemInput = z.infer<typeof contentItemSchema>;

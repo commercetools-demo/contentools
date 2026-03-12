@@ -3,7 +3,7 @@ import type { Tool } from '../../types/tools';
 import { themeTokensSchema } from '../schemas';
 
 const businessUnitKeyParam = z.string().optional().describe('Business unit key (default from context)');
-const configValueSchema = z.record(z.unknown()).describe('Configuration value (JSON object)');
+const configValueSchema = z.record(z.any()).describe('Configuration value (JSON object)');
 
 export const configurationTools: Tool[] = [
   {
