@@ -40,6 +40,13 @@ const contentTypeTools: Tool[] = [
     parameters: z.object({ key: keyParam }),
     actions: { content_type: { update: true } },
   },
+  {
+    method: 'import_content_types',
+    name: 'Import Default Content Types',
+    description: 'Import default content types from samples. Requires JWT.',
+    parameters: z.object({}),
+    actions: { content_type: { create: true } },
+  },
 ];
 
 export function contextToContentTypeTools(): Tool[] {

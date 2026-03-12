@@ -3,8 +3,16 @@ import type { Tool } from '../../types/tools';
 import { themeTokensSchema } from '../schemas';
 
 const businessUnitKeyParam = z.string().optional().describe('Business unit key (default from context)');
+const configValueSchema = z.record(z.unknown()).describe('Configuration value (JSON object)');
 
 const configurationTools: Tool[] = [
+  {
+    method: 'get_all_configurations',
+    name: 'Get All Configurations',
+    description: 'Get all configuration slices for a business unit in one call.',
+    parameters: z.object({ businessUnitKey: businessUnitKeyParam }),
+    actions: { configuration: { read: true } },
+  },
   {
     method: 'get_theme',
     name: 'Get Configuration Theme',
@@ -33,6 +41,36 @@ const configurationTools: Tool[] = [
     parameters: z.object({ businessUnitKey: businessUnitKeyParam }),
     actions: { configuration: { update: true } },
   },
+  // Header
+  { method: 'get_header', name: 'Get Configuration Header', description: 'Get header configuration for a business unit.', parameters: z.object({ businessUnitKey: businessUnitKeyParam }), actions: { configuration: { read: true } } },
+  { method: 'create_header', name: 'Create Configuration Header', description: 'Create header configuration for a business unit.', parameters: z.object({ businessUnitKey: businessUnitKeyParam, value: configValueSchema }), actions: { configuration: { create: true } } },
+  { method: 'update_header', name: 'Update Configuration Header', description: 'Update header configuration for a business unit.', parameters: z.object({ businessUnitKey: businessUnitKeyParam, value: configValueSchema }), actions: { configuration: { update: true } } },
+  { method: 'delete_header', name: 'Delete Configuration Header', description: 'Delete header configuration for a business unit.', parameters: z.object({ businessUnitKey: businessUnitKeyParam }), actions: { configuration: { update: true } } },
+  // Facet
+  { method: 'get_facet', name: 'Get Configuration Facet', description: 'Get facet configuration for a business unit.', parameters: z.object({ businessUnitKey: businessUnitKeyParam }), actions: { configuration: { read: true } } },
+  { method: 'create_facet', name: 'Create Configuration Facet', description: 'Create facet configuration for a business unit.', parameters: z.object({ businessUnitKey: businessUnitKeyParam, value: configValueSchema }), actions: { configuration: { create: true } } },
+  { method: 'update_facet', name: 'Update Configuration Facet', description: 'Update facet configuration for a business unit.', parameters: z.object({ businessUnitKey: businessUnitKeyParam, value: configValueSchema }), actions: { configuration: { update: true } } },
+  { method: 'delete_facet', name: 'Delete Configuration Facet', description: 'Delete facet configuration for a business unit.', parameters: z.object({ businessUnitKey: businessUnitKeyParam }), actions: { configuration: { update: true } } },
+  // Footer
+  { method: 'get_footer', name: 'Get Configuration Footer', description: 'Get footer configuration for a business unit.', parameters: z.object({ businessUnitKey: businessUnitKeyParam }), actions: { configuration: { read: true } } },
+  { method: 'create_footer', name: 'Create Configuration Footer', description: 'Create footer configuration for a business unit.', parameters: z.object({ businessUnitKey: businessUnitKeyParam, value: configValueSchema }), actions: { configuration: { create: true } } },
+  { method: 'update_footer', name: 'Update Configuration Footer', description: 'Update footer configuration for a business unit.', parameters: z.object({ businessUnitKey: businessUnitKeyParam, value: configValueSchema }), actions: { configuration: { update: true } } },
+  { method: 'delete_footer', name: 'Delete Configuration Footer', description: 'Delete footer configuration for a business unit.', parameters: z.object({ businessUnitKey: businessUnitKeyParam }), actions: { configuration: { update: true } } },
+  // Site metadata
+  { method: 'get_site_metadata', name: 'Get Configuration Site Metadata', description: 'Get site metadata configuration for a business unit.', parameters: z.object({ businessUnitKey: businessUnitKeyParam }), actions: { configuration: { read: true } } },
+  { method: 'create_site_metadata', name: 'Create Configuration Site Metadata', description: 'Create site metadata configuration for a business unit.', parameters: z.object({ businessUnitKey: businessUnitKeyParam, value: configValueSchema }), actions: { configuration: { create: true } } },
+  { method: 'update_site_metadata', name: 'Update Configuration Site Metadata', description: 'Update site metadata configuration for a business unit.', parameters: z.object({ businessUnitKey: businessUnitKeyParam, value: configValueSchema }), actions: { configuration: { update: true } } },
+  { method: 'delete_site_metadata', name: 'Delete Configuration Site Metadata', description: 'Delete site metadata configuration for a business unit.', parameters: z.object({ businessUnitKey: businessUnitKeyParam }), actions: { configuration: { update: true } } },
+  // Category listing
+  { method: 'get_category_listing', name: 'Get Configuration Category Listing', description: 'Get category listing configuration for a business unit.', parameters: z.object({ businessUnitKey: businessUnitKeyParam }), actions: { configuration: { read: true } } },
+  { method: 'create_category_listing', name: 'Create Configuration Category Listing', description: 'Create category listing configuration for a business unit.', parameters: z.object({ businessUnitKey: businessUnitKeyParam, value: configValueSchema }), actions: { configuration: { create: true } } },
+  { method: 'update_category_listing', name: 'Update Configuration Category Listing', description: 'Update category listing configuration for a business unit.', parameters: z.object({ businessUnitKey: businessUnitKeyParam, value: configValueSchema }), actions: { configuration: { update: true } } },
+  { method: 'delete_category_listing', name: 'Delete Configuration Category Listing', description: 'Delete category listing configuration for a business unit.', parameters: z.object({ businessUnitKey: businessUnitKeyParam }), actions: { configuration: { update: true } } },
+  // Translations
+  { method: 'get_translations', name: 'Get Configuration Translations', description: 'Get translations configuration for a business unit.', parameters: z.object({ businessUnitKey: businessUnitKeyParam }), actions: { configuration: { read: true } } },
+  { method: 'create_translations', name: 'Create Configuration Translations', description: 'Create translations configuration for a business unit.', parameters: z.object({ businessUnitKey: businessUnitKeyParam, value: configValueSchema }), actions: { configuration: { create: true } } },
+  { method: 'update_translations', name: 'Update Configuration Translations', description: 'Update translations configuration for a business unit.', parameters: z.object({ businessUnitKey: businessUnitKeyParam, value: configValueSchema }), actions: { configuration: { update: true } } },
+  { method: 'delete_translations', name: 'Delete Configuration Translations', description: 'Delete translations configuration for a business unit.', parameters: z.object({ businessUnitKey: businessUnitKeyParam }), actions: { configuration: { update: true } } },
 ];
 
 export function contextToConfigurationTools(): Tool[] {

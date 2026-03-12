@@ -147,6 +147,511 @@
       ]
     },
     {
+      "name": "Configuration",
+      "item": [
+        {
+          "name": "Get All Configurations",
+          "request": {
+            "method": "GET",
+            "header": [
+              {"key": "x-project-key", "value": "{{project_key}}", "type": "text"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/configuration",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "configuration"]
+            },
+            "description": "Get all configuration slices for the business unit."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Theme",
+          "request": {
+            "method": "GET",
+            "header": [
+              {"key": "x-project-key", "value": "{{project_key}}", "type": "text"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/configuration/theme",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "configuration", "theme"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Theme",
+          "request": {
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [{"key": "token", "value": "{{bearer_token}}", "type": "string"}]
+            },
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {"mode": "raw", "raw": "{\n  \"value\": {}\n}"},
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/configuration/theme",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "configuration", "theme"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Theme",
+          "request": {
+            "method": "PUT",
+            "auth": {
+              "type": "bearer",
+              "bearer": [{"key": "token", "value": "{{bearer_token}}", "type": "string"}]
+            },
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {"mode": "raw", "raw": "{\n  \"value\": {}\n}"},
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/configuration/theme",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "configuration", "theme"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Theme",
+          "request": {
+            "method": "DELETE",
+            "auth": {
+              "type": "bearer",
+              "bearer": [{"key": "token", "value": "{{bearer_token}}", "type": "string"}]
+            },
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/configuration/theme",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "configuration", "theme"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Header",
+          "request": {
+            "method": "GET",
+            "header": [
+              {"key": "x-project-key", "value": "{{project_key}}", "type": "text"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/configuration/header",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "configuration", "header"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Header",
+          "request": {
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [{"key": "token", "value": "{{bearer_token}}", "type": "string"}]
+            },
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {"mode": "raw", "raw": "{\n  \"value\": {}\n}"},
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/configuration/header",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "configuration", "header"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Header",
+          "request": {
+            "method": "PUT",
+            "auth": {
+              "type": "bearer",
+              "bearer": [{"key": "token", "value": "{{bearer_token}}", "type": "string"}]
+            },
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {"mode": "raw", "raw": "{\n  \"value\": {}\n}"},
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/configuration/header",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "configuration", "header"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Header",
+          "request": {
+            "method": "DELETE",
+            "auth": {
+              "type": "bearer",
+              "bearer": [{"key": "token", "value": "{{bearer_token}}", "type": "string"}]
+            },
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/configuration/header",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "configuration", "header"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Facet",
+          "request": {
+            "method": "GET",
+            "header": [
+              {"key": "x-project-key", "value": "{{project_key}}", "type": "text"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/configuration/facet",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "configuration", "facet"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Facet",
+          "request": {
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [{"key": "token", "value": "{{bearer_token}}", "type": "string"}]
+            },
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {"mode": "raw", "raw": "{\n  \"value\": {}\n}"},
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/configuration/facet",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "configuration", "facet"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Facet",
+          "request": {
+            "method": "PUT",
+            "auth": {
+              "type": "bearer",
+              "bearer": [{"key": "token", "value": "{{bearer_token}}", "type": "string"}]
+            },
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {"mode": "raw", "raw": "{\n  \"value\": {}\n}"},
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/configuration/facet",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "configuration", "facet"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Facet",
+          "request": {
+            "method": "DELETE",
+            "auth": {
+              "type": "bearer",
+              "bearer": [{"key": "token", "value": "{{bearer_token}}", "type": "string"}]
+            },
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/configuration/facet",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "configuration", "facet"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Footer",
+          "request": {
+            "method": "GET",
+            "header": [
+              {"key": "x-project-key", "value": "{{project_key}}", "type": "text"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/configuration/footer",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "configuration", "footer"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Footer",
+          "request": {
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [{"key": "token", "value": "{{bearer_token}}", "type": "string"}]
+            },
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {"mode": "raw", "raw": "{\n  \"value\": {}\n}"},
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/configuration/footer",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "configuration", "footer"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Footer",
+          "request": {
+            "method": "PUT",
+            "auth": {
+              "type": "bearer",
+              "bearer": [{"key": "token", "value": "{{bearer_token}}", "type": "string"}]
+            },
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {"mode": "raw", "raw": "{\n  \"value\": {}\n}"},
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/configuration/footer",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "configuration", "footer"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Footer",
+          "request": {
+            "method": "DELETE",
+            "auth": {
+              "type": "bearer",
+              "bearer": [{"key": "token", "value": "{{bearer_token}}", "type": "string"}]
+            },
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/configuration/footer",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "configuration", "footer"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Site Metadata",
+          "request": {
+            "method": "GET",
+            "header": [
+              {"key": "x-project-key", "value": "{{project_key}}", "type": "text"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/configuration/site-metadata",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "configuration", "site-metadata"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Site Metadata",
+          "request": {
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [{"key": "token", "value": "{{bearer_token}}", "type": "string"}]
+            },
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {"mode": "raw", "raw": "{\n  \"value\": {}\n}"},
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/configuration/site-metadata",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "configuration", "site-metadata"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Site Metadata",
+          "request": {
+            "method": "PUT",
+            "auth": {
+              "type": "bearer",
+              "bearer": [{"key": "token", "value": "{{bearer_token}}", "type": "string"}]
+            },
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {"mode": "raw", "raw": "{\n  \"value\": {}\n}"},
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/configuration/site-metadata",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "configuration", "site-metadata"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Site Metadata",
+          "request": {
+            "method": "DELETE",
+            "auth": {
+              "type": "bearer",
+              "bearer": [{"key": "token", "value": "{{bearer_token}}", "type": "string"}]
+            },
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/configuration/site-metadata",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "configuration", "site-metadata"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Category Listing",
+          "request": {
+            "method": "GET",
+            "header": [
+              {"key": "x-project-key", "value": "{{project_key}}", "type": "text"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/configuration/category-listing",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "configuration", "category-listing"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Category Listing",
+          "request": {
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [{"key": "token", "value": "{{bearer_token}}", "type": "string"}]
+            },
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {"mode": "raw", "raw": "{\n  \"value\": {}\n}"},
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/configuration/category-listing",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "configuration", "category-listing"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Category Listing",
+          "request": {
+            "method": "PUT",
+            "auth": {
+              "type": "bearer",
+              "bearer": [{"key": "token", "value": "{{bearer_token}}", "type": "string"}]
+            },
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {"mode": "raw", "raw": "{\n  \"value\": {}\n}"},
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/configuration/category-listing",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "configuration", "category-listing"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Category Listing",
+          "request": {
+            "method": "DELETE",
+            "auth": {
+              "type": "bearer",
+              "bearer": [{"key": "token", "value": "{{bearer_token}}", "type": "string"}]
+            },
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/configuration/category-listing",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "configuration", "category-listing"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Translations",
+          "request": {
+            "method": "GET",
+            "header": [
+              {"key": "x-project-key", "value": "{{project_key}}", "type": "text"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/configuration/translations",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "configuration", "translations"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Translations",
+          "request": {
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [{"key": "token", "value": "{{bearer_token}}", "type": "string"}]
+            },
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {"mode": "raw", "raw": "{\n  \"value\": {}\n}"},
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/configuration/translations",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "configuration", "translations"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Translations",
+          "request": {
+            "method": "PUT",
+            "auth": {
+              "type": "bearer",
+              "bearer": [{"key": "token", "value": "{{bearer_token}}", "type": "string"}]
+            },
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {"mode": "raw", "raw": "{\n  \"value\": {}\n}"},
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/configuration/translations",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "configuration", "translations"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Translations",
+          "request": {
+            "method": "DELETE",
+            "auth": {
+              "type": "bearer",
+              "bearer": [{"key": "token", "value": "{{bearer_token}}", "type": "string"}]
+            },
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/configuration/translations",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "configuration", "translations"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
       "name": "Content Types",
       "item": [
         {
@@ -263,6 +768,30 @@
               "host": ["{{base_url}}"],
               "path": ["content-type", "{{content_type_key}}"]
             }
+          },
+          "response": []
+        },
+        {
+          "name": "Import Default Content Types",
+          "request": {
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [{"key": "token", "value": "{{bearer_token}}", "type": "string"}]
+            },
+            "header": [
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": {
+              "raw": "{{base_url}}/content-type/import",
+              "host": ["{{base_url}}"],
+              "path": ["content-type", "import"]
+            },
+            "description": "Import default content types from samples. Requires Bearer token."
           },
           "response": []
         }

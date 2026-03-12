@@ -109,6 +109,106 @@ export function createFunctionMap(
       const bu = (arg.businessUnitKey as string) ?? ctx.businessUnitKey;
       return request(ctx, 'DELETE', `/${encodeURIComponent(bu)}/configuration/theme`, true);
     },
+    get_all_configurations: async (ctx, arg) => {
+      const bu = (arg.businessUnitKey as string) ?? ctx.businessUnitKey;
+      return request(ctx, 'GET', `/${encodeURIComponent(bu)}/configuration`, false);
+    },
+    get_header: async (ctx, arg) => {
+      const bu = (arg.businessUnitKey as string) ?? ctx.businessUnitKey;
+      return request(ctx, 'GET', `/${encodeURIComponent(bu)}/configuration/header`, false);
+    },
+    create_header: async (ctx, arg) => {
+      const bu = (arg.businessUnitKey as string) ?? ctx.businessUnitKey;
+      return request(ctx, 'POST', `/${encodeURIComponent(bu)}/configuration/header`, true, { value: arg.value });
+    },
+    update_header: async (ctx, arg) => {
+      const bu = (arg.businessUnitKey as string) ?? ctx.businessUnitKey;
+      return request(ctx, 'PUT', `/${encodeURIComponent(bu)}/configuration/header`, true, { value: arg.value });
+    },
+    delete_header: async (ctx, arg) => {
+      const bu = (arg.businessUnitKey as string) ?? ctx.businessUnitKey;
+      return request(ctx, 'DELETE', `/${encodeURIComponent(bu)}/configuration/header`, true);
+    },
+    get_facet: async (ctx, arg) => {
+      const bu = (arg.businessUnitKey as string) ?? ctx.businessUnitKey;
+      return request(ctx, 'GET', `/${encodeURIComponent(bu)}/configuration/facet`, false);
+    },
+    create_facet: async (ctx, arg) => {
+      const bu = (arg.businessUnitKey as string) ?? ctx.businessUnitKey;
+      return request(ctx, 'POST', `/${encodeURIComponent(bu)}/configuration/facet`, true, { value: arg.value });
+    },
+    update_facet: async (ctx, arg) => {
+      const bu = (arg.businessUnitKey as string) ?? ctx.businessUnitKey;
+      return request(ctx, 'PUT', `/${encodeURIComponent(bu)}/configuration/facet`, true, { value: arg.value });
+    },
+    delete_facet: async (ctx, arg) => {
+      const bu = (arg.businessUnitKey as string) ?? ctx.businessUnitKey;
+      return request(ctx, 'DELETE', `/${encodeURIComponent(bu)}/configuration/facet`, true);
+    },
+    get_footer: async (ctx, arg) => {
+      const bu = (arg.businessUnitKey as string) ?? ctx.businessUnitKey;
+      return request(ctx, 'GET', `/${encodeURIComponent(bu)}/configuration/footer`, false);
+    },
+    create_footer: async (ctx, arg) => {
+      const bu = (arg.businessUnitKey as string) ?? ctx.businessUnitKey;
+      return request(ctx, 'POST', `/${encodeURIComponent(bu)}/configuration/footer`, true, { value: arg.value });
+    },
+    update_footer: async (ctx, arg) => {
+      const bu = (arg.businessUnitKey as string) ?? ctx.businessUnitKey;
+      return request(ctx, 'PUT', `/${encodeURIComponent(bu)}/configuration/footer`, true, { value: arg.value });
+    },
+    delete_footer: async (ctx, arg) => {
+      const bu = (arg.businessUnitKey as string) ?? ctx.businessUnitKey;
+      return request(ctx, 'DELETE', `/${encodeURIComponent(bu)}/configuration/footer`, true);
+    },
+    get_site_metadata: async (ctx, arg) => {
+      const bu = (arg.businessUnitKey as string) ?? ctx.businessUnitKey;
+      return request(ctx, 'GET', `/${encodeURIComponent(bu)}/configuration/site-metadata`, false);
+    },
+    create_site_metadata: async (ctx, arg) => {
+      const bu = (arg.businessUnitKey as string) ?? ctx.businessUnitKey;
+      return request(ctx, 'POST', `/${encodeURIComponent(bu)}/configuration/site-metadata`, true, { value: arg.value });
+    },
+    update_site_metadata: async (ctx, arg) => {
+      const bu = (arg.businessUnitKey as string) ?? ctx.businessUnitKey;
+      return request(ctx, 'PUT', `/${encodeURIComponent(bu)}/configuration/site-metadata`, true, { value: arg.value });
+    },
+    delete_site_metadata: async (ctx, arg) => {
+      const bu = (arg.businessUnitKey as string) ?? ctx.businessUnitKey;
+      return request(ctx, 'DELETE', `/${encodeURIComponent(bu)}/configuration/site-metadata`, true);
+    },
+    get_category_listing: async (ctx, arg) => {
+      const bu = (arg.businessUnitKey as string) ?? ctx.businessUnitKey;
+      return request(ctx, 'GET', `/${encodeURIComponent(bu)}/configuration/category-listing`, false);
+    },
+    create_category_listing: async (ctx, arg) => {
+      const bu = (arg.businessUnitKey as string) ?? ctx.businessUnitKey;
+      return request(ctx, 'POST', `/${encodeURIComponent(bu)}/configuration/category-listing`, true, { value: arg.value });
+    },
+    update_category_listing: async (ctx, arg) => {
+      const bu = (arg.businessUnitKey as string) ?? ctx.businessUnitKey;
+      return request(ctx, 'PUT', `/${encodeURIComponent(bu)}/configuration/category-listing`, true, { value: arg.value });
+    },
+    delete_category_listing: async (ctx, arg) => {
+      const bu = (arg.businessUnitKey as string) ?? ctx.businessUnitKey;
+      return request(ctx, 'DELETE', `/${encodeURIComponent(bu)}/configuration/category-listing`, true);
+    },
+    get_translations: async (ctx, arg) => {
+      const bu = (arg.businessUnitKey as string) ?? ctx.businessUnitKey;
+      return request(ctx, 'GET', `/${encodeURIComponent(bu)}/configuration/translations`, false);
+    },
+    create_translations: async (ctx, arg) => {
+      const bu = (arg.businessUnitKey as string) ?? ctx.businessUnitKey;
+      return request(ctx, 'POST', `/${encodeURIComponent(bu)}/configuration/translations`, true, { value: arg.value });
+    },
+    update_translations: async (ctx, arg) => {
+      const bu = (arg.businessUnitKey as string) ?? ctx.businessUnitKey;
+      return request(ctx, 'PUT', `/${encodeURIComponent(bu)}/configuration/translations`, true, { value: arg.value });
+    },
+    delete_translations: async (ctx, arg) => {
+      const bu = (arg.businessUnitKey as string) ?? ctx.businessUnitKey;
+      return request(ctx, 'DELETE', `/${encodeURIComponent(bu)}/configuration/translations`, true);
+    },
 
     // --- Content type ---
     list_content_types: async (ctx) => {
@@ -127,6 +227,9 @@ export function createFunctionMap(
     },
     delete_content_type: async (ctx, arg) => {
       return request(ctx, 'DELETE', `/content-type/${encodeURIComponent((arg.key as string) || '')}`, true);
+    },
+    import_content_types: async (ctx) => {
+      return request(ctx, 'POST', '/content-type/import', true, {});
     },
 
     // --- Content item ---
