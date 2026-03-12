@@ -107,9 +107,7 @@ const TranslationsEditor: React.FC<Props> = ({
       <Text.Body tone="secondary">
         Per-locale translation overrides. JSON: locale → key → value.
       </Text.Body>
-      {error && (
-        <Text.Body tone="critical">{error}</Text.Body>
-      )}
+      {error && <Text.Body tone="critical">{error}</Text.Body>}
       <Card>
         <Spacings.Stack scale="m">
           <FormSection>

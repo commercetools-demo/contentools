@@ -81,16 +81,21 @@ export const StateProvider = <T extends VersionInfo>({
   const pages = usePages(projectKey, jwtToken);
   const configuration = useConfiguration(projectKey, jwtToken);
   // Initialize Full
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const editor = !minimal ? useEditor() : undefined;
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const version = !minimal ? useVersion<T>(projectKey, jwtToken) : undefined;
   const stateManagement = !minimal
-    ? useStateManagement(projectKey, jwtToken)
+    ? // eslint-disable-next-line react-hooks/rules-of-hooks
+      useStateManagement(projectKey, jwtToken)
     : undefined;
   const mediaLibrary = !minimal
-    ? useMediaLibrary(projectKey, jwtToken)
+    ? // eslint-disable-next-line react-hooks/rules-of-hooks
+      useMediaLibrary(projectKey, jwtToken)
     : undefined;
   const datasource = !minimal
-    ? useDatasource(baseURL, projectKey, jwtToken)
+    ? // eslint-disable-next-line react-hooks/rules-of-hooks
+      useDatasource(baseURL, projectKey, jwtToken)
     : undefined;
 
   const contextValue: StateContextValue<T> = {

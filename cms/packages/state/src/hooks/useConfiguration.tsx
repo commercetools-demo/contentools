@@ -345,14 +345,20 @@ export const useConfiguration = (projectKey: string, jwtToken?: string) => {
     async (baseURL: string) => {
       try {
         setState((prev) => ({ ...prev, loading: true, error: null }));
-        const facetConfiguration = await fetchFacetEndpoint(baseURL, projectKey);
+        const facetConfiguration = await fetchFacetEndpoint(
+          baseURL,
+          projectKey
+        );
         setState((prev) => ({ ...prev, facetConfiguration, loading: false }));
         return facetConfiguration;
       } catch (error) {
         setState((prev) => ({
           ...prev,
           loading: false,
-          error: error instanceof Error ? error.message : 'Failed to fetch facet configuration',
+          error:
+            error instanceof Error
+              ? error.message
+              : 'Failed to fetch facet configuration',
         }));
         throw error;
       }
@@ -363,11 +369,23 @@ export const useConfiguration = (projectKey: string, jwtToken?: string) => {
     async (baseURL: string, value: FrontendFacetConfiguration) => {
       try {
         setState((prev) => ({ ...prev, loading: true, error: null }));
-        const facetConfiguration = await createFacetEndpoint(baseURL, projectKey, jwtToken, value);
+        const facetConfiguration = await createFacetEndpoint(
+          baseURL,
+          projectKey,
+          jwtToken,
+          value
+        );
         setState((prev) => ({ ...prev, facetConfiguration, loading: false }));
         return facetConfiguration;
       } catch (error) {
-        setState((prev) => ({ ...prev, loading: false, error: error instanceof Error ? error.message : 'Failed to create facet configuration' }));
+        setState((prev) => ({
+          ...prev,
+          loading: false,
+          error:
+            error instanceof Error
+              ? error.message
+              : 'Failed to create facet configuration',
+        }));
         throw error;
       }
     },
@@ -377,11 +395,23 @@ export const useConfiguration = (projectKey: string, jwtToken?: string) => {
     async (baseURL: string, value: FrontendFacetConfiguration) => {
       try {
         setState((prev) => ({ ...prev, loading: true, error: null }));
-        const facetConfiguration = await updateFacetEndpoint(baseURL, projectKey, jwtToken, value);
+        const facetConfiguration = await updateFacetEndpoint(
+          baseURL,
+          projectKey,
+          jwtToken,
+          value
+        );
         setState((prev) => ({ ...prev, facetConfiguration, loading: false }));
         return facetConfiguration;
       } catch (error) {
-        setState((prev) => ({ ...prev, loading: false, error: error instanceof Error ? error.message : 'Failed to update facet configuration' }));
+        setState((prev) => ({
+          ...prev,
+          loading: false,
+          error:
+            error instanceof Error
+              ? error.message
+              : 'Failed to update facet configuration',
+        }));
         throw error;
       }
     },
@@ -392,9 +422,20 @@ export const useConfiguration = (projectKey: string, jwtToken?: string) => {
       try {
         setState((prev) => ({ ...prev, loading: true, error: null }));
         await deleteFacetEndpoint(baseURL, projectKey, jwtToken);
-        setState((prev) => ({ ...prev, facetConfiguration: null, loading: false }));
+        setState((prev) => ({
+          ...prev,
+          facetConfiguration: null,
+          loading: false,
+        }));
       } catch (error) {
-        setState((prev) => ({ ...prev, loading: false, error: error instanceof Error ? error.message : 'Failed to delete facet configuration' }));
+        setState((prev) => ({
+          ...prev,
+          loading: false,
+          error:
+            error instanceof Error
+              ? error.message
+              : 'Failed to delete facet configuration',
+        }));
         throw error;
       }
     },
@@ -417,7 +458,14 @@ export const useConfiguration = (projectKey: string, jwtToken?: string) => {
         setState((prev) => ({ ...prev, footer, loading: false }));
         return footer;
       } catch (error) {
-        setState((prev) => ({ ...prev, loading: false, error: error instanceof Error ? error.message : 'Failed to fetch footer configuration' }));
+        setState((prev) => ({
+          ...prev,
+          loading: false,
+          error:
+            error instanceof Error
+              ? error.message
+              : 'Failed to fetch footer configuration',
+        }));
         throw error;
       }
     },
@@ -427,11 +475,23 @@ export const useConfiguration = (projectKey: string, jwtToken?: string) => {
     async (baseURL: string, value: FooterConfiguration) => {
       try {
         setState((prev) => ({ ...prev, loading: true, error: null }));
-        const footer = await createFooterEndpoint(baseURL, projectKey, jwtToken, value);
+        const footer = await createFooterEndpoint(
+          baseURL,
+          projectKey,
+          jwtToken,
+          value
+        );
         setState((prev) => ({ ...prev, footer, loading: false }));
         return footer;
       } catch (error) {
-        setState((prev) => ({ ...prev, loading: false, error: error instanceof Error ? error.message : 'Failed to create footer configuration' }));
+        setState((prev) => ({
+          ...prev,
+          loading: false,
+          error:
+            error instanceof Error
+              ? error.message
+              : 'Failed to create footer configuration',
+        }));
         throw error;
       }
     },
@@ -441,11 +501,23 @@ export const useConfiguration = (projectKey: string, jwtToken?: string) => {
     async (baseURL: string, value: FooterConfiguration) => {
       try {
         setState((prev) => ({ ...prev, loading: true, error: null }));
-        const footer = await updateFooterEndpoint(baseURL, projectKey, jwtToken, value);
+        const footer = await updateFooterEndpoint(
+          baseURL,
+          projectKey,
+          jwtToken,
+          value
+        );
         setState((prev) => ({ ...prev, footer, loading: false }));
         return footer;
       } catch (error) {
-        setState((prev) => ({ ...prev, loading: false, error: error instanceof Error ? error.message : 'Failed to update footer configuration' }));
+        setState((prev) => ({
+          ...prev,
+          loading: false,
+          error:
+            error instanceof Error
+              ? error.message
+              : 'Failed to update footer configuration',
+        }));
         throw error;
       }
     },
@@ -458,7 +530,14 @@ export const useConfiguration = (projectKey: string, jwtToken?: string) => {
         await deleteFooterEndpoint(baseURL, projectKey, jwtToken);
         setState((prev) => ({ ...prev, footer: null, loading: false }));
       } catch (error) {
-        setState((prev) => ({ ...prev, loading: false, error: error instanceof Error ? error.message : 'Failed to delete footer configuration' }));
+        setState((prev) => ({
+          ...prev,
+          loading: false,
+          error:
+            error instanceof Error
+              ? error.message
+              : 'Failed to delete footer configuration',
+        }));
         throw error;
       }
     },
@@ -477,11 +556,21 @@ export const useConfiguration = (projectKey: string, jwtToken?: string) => {
     async (baseURL: string) => {
       try {
         setState((prev) => ({ ...prev, loading: true, error: null }));
-        const siteMetadata = await fetchSiteMetadataEndpoint(baseURL, projectKey);
+        const siteMetadata = await fetchSiteMetadataEndpoint(
+          baseURL,
+          projectKey
+        );
         setState((prev) => ({ ...prev, siteMetadata, loading: false }));
         return siteMetadata;
       } catch (error) {
-        setState((prev) => ({ ...prev, loading: false, error: error instanceof Error ? error.message : 'Failed to fetch site metadata' }));
+        setState((prev) => ({
+          ...prev,
+          loading: false,
+          error:
+            error instanceof Error
+              ? error.message
+              : 'Failed to fetch site metadata',
+        }));
         throw error;
       }
     },
@@ -491,11 +580,23 @@ export const useConfiguration = (projectKey: string, jwtToken?: string) => {
     async (baseURL: string, value: SiteMetadata) => {
       try {
         setState((prev) => ({ ...prev, loading: true, error: null }));
-        const siteMetadata = await createSiteMetadataEndpoint(baseURL, projectKey, jwtToken, value);
+        const siteMetadata = await createSiteMetadataEndpoint(
+          baseURL,
+          projectKey,
+          jwtToken,
+          value
+        );
         setState((prev) => ({ ...prev, siteMetadata, loading: false }));
         return siteMetadata;
       } catch (error) {
-        setState((prev) => ({ ...prev, loading: false, error: error instanceof Error ? error.message : 'Failed to create site metadata' }));
+        setState((prev) => ({
+          ...prev,
+          loading: false,
+          error:
+            error instanceof Error
+              ? error.message
+              : 'Failed to create site metadata',
+        }));
         throw error;
       }
     },
@@ -505,11 +606,23 @@ export const useConfiguration = (projectKey: string, jwtToken?: string) => {
     async (baseURL: string, value: SiteMetadata) => {
       try {
         setState((prev) => ({ ...prev, loading: true, error: null }));
-        const siteMetadata = await updateSiteMetadataEndpoint(baseURL, projectKey, jwtToken, value);
+        const siteMetadata = await updateSiteMetadataEndpoint(
+          baseURL,
+          projectKey,
+          jwtToken,
+          value
+        );
         setState((prev) => ({ ...prev, siteMetadata, loading: false }));
         return siteMetadata;
       } catch (error) {
-        setState((prev) => ({ ...prev, loading: false, error: error instanceof Error ? error.message : 'Failed to update site metadata' }));
+        setState((prev) => ({
+          ...prev,
+          loading: false,
+          error:
+            error instanceof Error
+              ? error.message
+              : 'Failed to update site metadata',
+        }));
         throw error;
       }
     },
@@ -522,7 +635,14 @@ export const useConfiguration = (projectKey: string, jwtToken?: string) => {
         await deleteSiteMetadataEndpoint(baseURL, projectKey, jwtToken);
         setState((prev) => ({ ...prev, siteMetadata: null, loading: false }));
       } catch (error) {
-        setState((prev) => ({ ...prev, loading: false, error: error instanceof Error ? error.message : 'Failed to delete site metadata' }));
+        setState((prev) => ({
+          ...prev,
+          loading: false,
+          error:
+            error instanceof Error
+              ? error.message
+              : 'Failed to delete site metadata',
+        }));
         throw error;
       }
     },
@@ -541,11 +661,21 @@ export const useConfiguration = (projectKey: string, jwtToken?: string) => {
     async (baseURL: string) => {
       try {
         setState((prev) => ({ ...prev, loading: true, error: null }));
-        const categoryListing = await fetchCategoryListingEndpoint(baseURL, projectKey);
+        const categoryListing = await fetchCategoryListingEndpoint(
+          baseURL,
+          projectKey
+        );
         setState((prev) => ({ ...prev, categoryListing, loading: false }));
         return categoryListing;
       } catch (error) {
-        setState((prev) => ({ ...prev, loading: false, error: error instanceof Error ? error.message : 'Failed to fetch category listing configuration' }));
+        setState((prev) => ({
+          ...prev,
+          loading: false,
+          error:
+            error instanceof Error
+              ? error.message
+              : 'Failed to fetch category listing configuration',
+        }));
         throw error;
       }
     },
@@ -555,11 +685,23 @@ export const useConfiguration = (projectKey: string, jwtToken?: string) => {
     async (baseURL: string, value: CategoryListingConfiguration) => {
       try {
         setState((prev) => ({ ...prev, loading: true, error: null }));
-        const categoryListing = await createCategoryListingEndpoint(baseURL, projectKey, jwtToken, value);
+        const categoryListing = await createCategoryListingEndpoint(
+          baseURL,
+          projectKey,
+          jwtToken,
+          value
+        );
         setState((prev) => ({ ...prev, categoryListing, loading: false }));
         return categoryListing;
       } catch (error) {
-        setState((prev) => ({ ...prev, loading: false, error: error instanceof Error ? error.message : 'Failed to create category listing configuration' }));
+        setState((prev) => ({
+          ...prev,
+          loading: false,
+          error:
+            error instanceof Error
+              ? error.message
+              : 'Failed to create category listing configuration',
+        }));
         throw error;
       }
     },
@@ -569,11 +711,23 @@ export const useConfiguration = (projectKey: string, jwtToken?: string) => {
     async (baseURL: string, value: CategoryListingConfiguration) => {
       try {
         setState((prev) => ({ ...prev, loading: true, error: null }));
-        const categoryListing = await updateCategoryListingEndpoint(baseURL, projectKey, jwtToken, value);
+        const categoryListing = await updateCategoryListingEndpoint(
+          baseURL,
+          projectKey,
+          jwtToken,
+          value
+        );
         setState((prev) => ({ ...prev, categoryListing, loading: false }));
         return categoryListing;
       } catch (error) {
-        setState((prev) => ({ ...prev, loading: false, error: error instanceof Error ? error.message : 'Failed to update category listing configuration' }));
+        setState((prev) => ({
+          ...prev,
+          loading: false,
+          error:
+            error instanceof Error
+              ? error.message
+              : 'Failed to update category listing configuration',
+        }));
         throw error;
       }
     },
@@ -584,9 +738,20 @@ export const useConfiguration = (projectKey: string, jwtToken?: string) => {
       try {
         setState((prev) => ({ ...prev, loading: true, error: null }));
         await deleteCategoryListingEndpoint(baseURL, projectKey, jwtToken);
-        setState((prev) => ({ ...prev, categoryListing: null, loading: false }));
+        setState((prev) => ({
+          ...prev,
+          categoryListing: null,
+          loading: false,
+        }));
       } catch (error) {
-        setState((prev) => ({ ...prev, loading: false, error: error instanceof Error ? error.message : 'Failed to delete category listing configuration' }));
+        setState((prev) => ({
+          ...prev,
+          loading: false,
+          error:
+            error instanceof Error
+              ? error.message
+              : 'Failed to delete category listing configuration',
+        }));
         throw error;
       }
     },
@@ -594,7 +759,8 @@ export const useConfiguration = (projectKey: string, jwtToken?: string) => {
   );
   const saveCategoryListing = useCallback(
     async (baseURL: string, value: CategoryListingConfiguration) => {
-      if (state.categoryListing == null) return createCategoryListing(baseURL, value);
+      if (state.categoryListing == null)
+        return createCategoryListing(baseURL, value);
       return updateCategoryListing(baseURL, value);
     },
     [state.categoryListing, createCategoryListing, updateCategoryListing]
@@ -605,11 +771,21 @@ export const useConfiguration = (projectKey: string, jwtToken?: string) => {
     async (baseURL: string) => {
       try {
         setState((prev) => ({ ...prev, loading: true, error: null }));
-        const translations = await fetchTranslationsEndpoint(baseURL, projectKey);
+        const translations = await fetchTranslationsEndpoint(
+          baseURL,
+          projectKey
+        );
         setState((prev) => ({ ...prev, translations, loading: false }));
         return translations;
       } catch (error) {
-        setState((prev) => ({ ...prev, loading: false, error: error instanceof Error ? error.message : 'Failed to fetch translations' }));
+        setState((prev) => ({
+          ...prev,
+          loading: false,
+          error:
+            error instanceof Error
+              ? error.message
+              : 'Failed to fetch translations',
+        }));
         throw error;
       }
     },
@@ -619,11 +795,23 @@ export const useConfiguration = (projectKey: string, jwtToken?: string) => {
     async (baseURL: string, value: Record<string, Record<string, unknown>>) => {
       try {
         setState((prev) => ({ ...prev, loading: true, error: null }));
-        const translations = await createTranslationsEndpoint(baseURL, projectKey, jwtToken, value);
+        const translations = await createTranslationsEndpoint(
+          baseURL,
+          projectKey,
+          jwtToken,
+          value
+        );
         setState((prev) => ({ ...prev, translations, loading: false }));
         return translations;
       } catch (error) {
-        setState((prev) => ({ ...prev, loading: false, error: error instanceof Error ? error.message : 'Failed to create translations' }));
+        setState((prev) => ({
+          ...prev,
+          loading: false,
+          error:
+            error instanceof Error
+              ? error.message
+              : 'Failed to create translations',
+        }));
         throw error;
       }
     },
@@ -633,11 +821,23 @@ export const useConfiguration = (projectKey: string, jwtToken?: string) => {
     async (baseURL: string, value: Record<string, Record<string, unknown>>) => {
       try {
         setState((prev) => ({ ...prev, loading: true, error: null }));
-        const translations = await updateTranslationsEndpoint(baseURL, projectKey, jwtToken, value);
+        const translations = await updateTranslationsEndpoint(
+          baseURL,
+          projectKey,
+          jwtToken,
+          value
+        );
         setState((prev) => ({ ...prev, translations, loading: false }));
         return translations;
       } catch (error) {
-        setState((prev) => ({ ...prev, loading: false, error: error instanceof Error ? error.message : 'Failed to update translations' }));
+        setState((prev) => ({
+          ...prev,
+          loading: false,
+          error:
+            error instanceof Error
+              ? error.message
+              : 'Failed to update translations',
+        }));
         throw error;
       }
     },
@@ -650,7 +850,14 @@ export const useConfiguration = (projectKey: string, jwtToken?: string) => {
         await deleteTranslationsEndpoint(baseURL, projectKey, jwtToken);
         setState((prev) => ({ ...prev, translations: null, loading: false }));
       } catch (error) {
-        setState((prev) => ({ ...prev, loading: false, error: error instanceof Error ? error.message : 'Failed to delete translations' }));
+        setState((prev) => ({
+          ...prev,
+          loading: false,
+          error:
+            error instanceof Error
+              ? error.message
+              : 'Failed to delete translations',
+        }));
         throw error;
       }
     },

@@ -280,10 +280,14 @@ export async function fetchFacetEndpoint(
   });
   if (!response.ok) {
     if (response.status === 404) return null;
-    throw new Error(`API request failed: ${response.status} ${response.statusText}`);
+    throw new Error(
+      `API request failed: ${response.status} ${response.statusText}`
+    );
   }
   const data = await response.json();
-  return data === null || data === undefined ? null : (data as FrontendFacetConfiguration);
+  return data === null || data === undefined
+    ? null
+    : (data as FrontendFacetConfiguration);
 }
 
 export async function createFacetEndpoint(
@@ -301,7 +305,10 @@ export async function createFacetEndpoint(
     },
     body: JSON.stringify({ value }),
   });
-  if (!response.ok) throw new Error(`API request failed: ${response.status} ${response.statusText}`);
+  if (!response.ok)
+    throw new Error(
+      `API request failed: ${response.status} ${response.statusText}`
+    );
   return (await response.json()) as FrontendFacetConfiguration;
 }
 
@@ -320,7 +327,10 @@ export async function updateFacetEndpoint(
     },
     body: JSON.stringify({ value }),
   });
-  if (!response.ok) throw new Error(`API request failed: ${response.status} ${response.statusText}`);
+  if (!response.ok)
+    throw new Error(
+      `API request failed: ${response.status} ${response.statusText}`
+    );
   return (await response.json()) as FrontendFacetConfiguration;
 }
 
@@ -331,9 +341,15 @@ export async function deleteFacetEndpoint(
 ): Promise<void> {
   const response = await fetch(`${baseURL}/configuration/facet`, {
     method: 'DELETE',
-    headers: { 'x-project-key': projectKey, Authorization: `Bearer ${jwtToken}` },
+    headers: {
+      'x-project-key': projectKey,
+      Authorization: `Bearer ${jwtToken}`,
+    },
   });
-  if (!response.ok) throw new Error(`API request failed: ${response.status} ${response.statusText}`);
+  if (!response.ok)
+    throw new Error(
+      `API request failed: ${response.status} ${response.statusText}`
+    );
 }
 
 // ---------------------------------------------------------------------------
@@ -349,10 +365,14 @@ export async function fetchFooterEndpoint(
   });
   if (!response.ok) {
     if (response.status === 404) return null;
-    throw new Error(`API request failed: ${response.status} ${response.statusText}`);
+    throw new Error(
+      `API request failed: ${response.status} ${response.statusText}`
+    );
   }
   const data = await response.json();
-  return data === null || data === undefined ? null : (data as FooterConfiguration);
+  return data === null || data === undefined
+    ? null
+    : (data as FooterConfiguration);
 }
 
 export async function createFooterEndpoint(
@@ -370,7 +390,10 @@ export async function createFooterEndpoint(
     },
     body: JSON.stringify({ value }),
   });
-  if (!response.ok) throw new Error(`API request failed: ${response.status} ${response.statusText}`);
+  if (!response.ok)
+    throw new Error(
+      `API request failed: ${response.status} ${response.statusText}`
+    );
   return (await response.json()) as FooterConfiguration;
 }
 
@@ -389,7 +412,10 @@ export async function updateFooterEndpoint(
     },
     body: JSON.stringify({ value }),
   });
-  if (!response.ok) throw new Error(`API request failed: ${response.status} ${response.statusText}`);
+  if (!response.ok)
+    throw new Error(
+      `API request failed: ${response.status} ${response.statusText}`
+    );
   return (await response.json()) as FooterConfiguration;
 }
 
@@ -400,9 +426,15 @@ export async function deleteFooterEndpoint(
 ): Promise<void> {
   const response = await fetch(`${baseURL}/configuration/footer`, {
     method: 'DELETE',
-    headers: { 'x-project-key': projectKey, Authorization: `Bearer ${jwtToken}` },
+    headers: {
+      'x-project-key': projectKey,
+      Authorization: `Bearer ${jwtToken}`,
+    },
   });
-  if (!response.ok) throw new Error(`API request failed: ${response.status} ${response.statusText}`);
+  if (!response.ok)
+    throw new Error(
+      `API request failed: ${response.status} ${response.statusText}`
+    );
 }
 
 // ---------------------------------------------------------------------------
@@ -418,7 +450,9 @@ export async function fetchSiteMetadataEndpoint(
   });
   if (!response.ok) {
     if (response.status === 404) return null;
-    throw new Error(`API request failed: ${response.status} ${response.statusText}`);
+    throw new Error(
+      `API request failed: ${response.status} ${response.statusText}`
+    );
   }
   const data = await response.json();
   return data === null || data === undefined ? null : (data as SiteMetadata);
@@ -439,7 +473,10 @@ export async function createSiteMetadataEndpoint(
     },
     body: JSON.stringify({ value }),
   });
-  if (!response.ok) throw new Error(`API request failed: ${response.status} ${response.statusText}`);
+  if (!response.ok)
+    throw new Error(
+      `API request failed: ${response.status} ${response.statusText}`
+    );
   return (await response.json()) as SiteMetadata;
 }
 
@@ -458,7 +495,10 @@ export async function updateSiteMetadataEndpoint(
     },
     body: JSON.stringify({ value }),
   });
-  if (!response.ok) throw new Error(`API request failed: ${response.status} ${response.statusText}`);
+  if (!response.ok)
+    throw new Error(
+      `API request failed: ${response.status} ${response.statusText}`
+    );
   return (await response.json()) as SiteMetadata;
 }
 
@@ -469,9 +509,15 @@ export async function deleteSiteMetadataEndpoint(
 ): Promise<void> {
   const response = await fetch(`${baseURL}/configuration/site-metadata`, {
     method: 'DELETE',
-    headers: { 'x-project-key': projectKey, Authorization: `Bearer ${jwtToken}` },
+    headers: {
+      'x-project-key': projectKey,
+      Authorization: `Bearer ${jwtToken}`,
+    },
   });
-  if (!response.ok) throw new Error(`API request failed: ${response.status} ${response.statusText}`);
+  if (!response.ok)
+    throw new Error(
+      `API request failed: ${response.status} ${response.statusText}`
+    );
 }
 
 // ---------------------------------------------------------------------------
@@ -487,10 +533,14 @@ export async function fetchCategoryListingEndpoint(
   });
   if (!response.ok) {
     if (response.status === 404) return null;
-    throw new Error(`API request failed: ${response.status} ${response.statusText}`);
+    throw new Error(
+      `API request failed: ${response.status} ${response.statusText}`
+    );
   }
   const data = await response.json();
-  return data === null || data === undefined ? null : (data as CategoryListingConfiguration);
+  return data === null || data === undefined
+    ? null
+    : (data as CategoryListingConfiguration);
 }
 
 export async function createCategoryListingEndpoint(
@@ -508,7 +558,10 @@ export async function createCategoryListingEndpoint(
     },
     body: JSON.stringify({ value }),
   });
-  if (!response.ok) throw new Error(`API request failed: ${response.status} ${response.statusText}`);
+  if (!response.ok)
+    throw new Error(
+      `API request failed: ${response.status} ${response.statusText}`
+    );
   return (await response.json()) as CategoryListingConfiguration;
 }
 
@@ -527,7 +580,10 @@ export async function updateCategoryListingEndpoint(
     },
     body: JSON.stringify({ value }),
   });
-  if (!response.ok) throw new Error(`API request failed: ${response.status} ${response.statusText}`);
+  if (!response.ok)
+    throw new Error(
+      `API request failed: ${response.status} ${response.statusText}`
+    );
   return (await response.json()) as CategoryListingConfiguration;
 }
 
@@ -538,9 +594,15 @@ export async function deleteCategoryListingEndpoint(
 ): Promise<void> {
   const response = await fetch(`${baseURL}/configuration/category-listing`, {
     method: 'DELETE',
-    headers: { 'x-project-key': projectKey, Authorization: `Bearer ${jwtToken}` },
+    headers: {
+      'x-project-key': projectKey,
+      Authorization: `Bearer ${jwtToken}`,
+    },
   });
-  if (!response.ok) throw new Error(`API request failed: ${response.status} ${response.statusText}`);
+  if (!response.ok)
+    throw new Error(
+      `API request failed: ${response.status} ${response.statusText}`
+    );
 }
 
 // ---------------------------------------------------------------------------
@@ -556,10 +618,14 @@ export async function fetchTranslationsEndpoint(
   });
   if (!response.ok) {
     if (response.status === 404) return null;
-    throw new Error(`API request failed: ${response.status} ${response.statusText}`);
+    throw new Error(
+      `API request failed: ${response.status} ${response.statusText}`
+    );
   }
   const data = await response.json();
-  return data === null || data === undefined ? null : (data as Record<string, Record<string, unknown>>);
+  return data === null || data === undefined
+    ? null
+    : (data as Record<string, Record<string, unknown>>);
 }
 
 export async function createTranslationsEndpoint(
@@ -577,7 +643,10 @@ export async function createTranslationsEndpoint(
     },
     body: JSON.stringify({ value }),
   });
-  if (!response.ok) throw new Error(`API request failed: ${response.status} ${response.statusText}`);
+  if (!response.ok)
+    throw new Error(
+      `API request failed: ${response.status} ${response.statusText}`
+    );
   return (await response.json()) as Record<string, Record<string, unknown>>;
 }
 
@@ -596,7 +665,10 @@ export async function updateTranslationsEndpoint(
     },
     body: JSON.stringify({ value }),
   });
-  if (!response.ok) throw new Error(`API request failed: ${response.status} ${response.statusText}`);
+  if (!response.ok)
+    throw new Error(
+      `API request failed: ${response.status} ${response.statusText}`
+    );
   return (await response.json()) as Record<string, Record<string, unknown>>;
 }
 
@@ -607,7 +679,13 @@ export async function deleteTranslationsEndpoint(
 ): Promise<void> {
   const response = await fetch(`${baseURL}/configuration/translations`, {
     method: 'DELETE',
-    headers: { 'x-project-key': projectKey, Authorization: `Bearer ${jwtToken}` },
+    headers: {
+      'x-project-key': projectKey,
+      Authorization: `Bearer ${jwtToken}`,
+    },
   });
-  if (!response.ok) throw new Error(`API request failed: ${response.status} ${response.statusText}`);
+  if (!response.ok)
+    throw new Error(
+      `API request failed: ${response.status} ${response.statusText}`
+    );
 }

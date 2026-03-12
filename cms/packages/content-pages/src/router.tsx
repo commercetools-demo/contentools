@@ -48,7 +48,8 @@ const PagesRouter = ({
             businessUnitKey={businessUnitKey}
             locale={locale}
             projectKey={projectKey}
-            jwtToken={jwtToken} />
+            jwtToken={jwtToken}
+          />
         </Route>
       </Switch>
 

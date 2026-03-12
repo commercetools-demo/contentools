@@ -1,8 +1,6 @@
-
 // ---------------------------------------------------------------------------
 // Category listing configuration (from Contentful)
 // ---------------------------------------------------------------------------
-
 
 export interface SortAttributes {
   [key: string]: any;

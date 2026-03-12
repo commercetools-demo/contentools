@@ -564,122 +564,127 @@ const FacetEditor: React.FC<Props> = ({
                         gridAutoColumns="1fr"
                         gridTemplateColumns="repeat(3, 1fr)"
                       >
-                      {values.routeSpecificEntries.map(
-                        (routeEntry, routeIndex) => (
-                          <FacetCard key={routeIndex}>
-                            <Spacings.Stack scale="m">
-                              <InlineRow
-                                style={{ justifyContent: 'space-between' }}
-                              >
-                                <Text.Subheadline as="h4">
-                                  Route: {routeEntry.routeSlug || '(new)'}
-                                </Text.Subheadline>
-                                <FlatButton
-                                  icon={<BinLinearIcon />}
-                                  label="Remove route"
-                                  onClick={() => removeRoute(routeIndex)}
-                                />
-                              </InlineRow>
-                              <FormSection>
-                                <FieldLabel
-                                  title="Route slug"
-                                  htmlFor={`routeSpecificEntries.${routeIndex}.routeSlug`}
-                                />
-                                <TextInput
-                                  name={`routeSpecificEntries.${routeIndex}.routeSlug`}
-                                  value={routeEntry.routeSlug}
-                                  onChange={handleChange}
-                                  placeholder="e.g. category-slug"
-                                />
-                              </FormSection>
-                              <FieldArray
-                                name={`routeSpecificEntries.${routeIndex}.facets`}
-                              >
-                                {({ push: pushFacet, remove: removeFacet }) => (
-                                  <>
-                                    <Spacings.Inline
-                                      scale="m"
-                                      justifyContent="space-between"
-                                      alignItems="center"
-                                    >
-                                      <Spacings.Stack
+                        {values.routeSpecificEntries.map(
+                          (routeEntry, routeIndex) => (
+                            <FacetCard key={routeIndex}>
+                              <Spacings.Stack scale="m">
+                                <InlineRow
+                                  style={{ justifyContent: 'space-between' }}
+                                >
+                                  <Text.Subheadline as="h4">
+                                    Route: {routeEntry.routeSlug || '(new)'}
+                                  </Text.Subheadline>
+                                  <FlatButton
+                                    icon={<BinLinearIcon />}
+                                    label="Remove route"
+                                    onClick={() => removeRoute(routeIndex)}
+                                  />
+                                </InlineRow>
+                                <FormSection>
+                                  <FieldLabel
+                                    title="Route slug"
+                                    htmlFor={`routeSpecificEntries.${routeIndex}.routeSlug`}
+                                  />
+                                  <TextInput
+                                    name={`routeSpecificEntries.${routeIndex}.routeSlug`}
+                                    value={routeEntry.routeSlug}
+                                    onChange={handleChange}
+                                    placeholder="e.g. category-slug"
+                                  />
+                                </FormSection>
+                                <FieldArray
+                                  name={`routeSpecificEntries.${routeIndex}.facets`}
+                                >
+                                  {({
+                                    push: pushFacet,
+                                    remove: removeFacet,
+                                  }) => (
+                                    <>
+                                      <Spacings.Inline
                                         scale="m"
-                                        alignItems="flex-start"
+                                        justifyContent="space-between"
+                                        alignItems="center"
                                       >
-                                        <Text.Body fontWeight="bold">
-                                          Facets
-                                        </Text.Body>
-                                      </Spacings.Stack>
-                                      <SecondaryButton
-                                        label="Add facet to route"
-                                        iconLeft={<PlusBoldIcon />}
-                                        onClick={() =>
-                                          pushFacet(emptyFacetEntry())
-                                        }
-                                      />
-                                    </Spacings.Inline>
+                                        <Spacings.Stack
+                                          scale="m"
+                                          alignItems="flex-start"
+                                        >
+                                          <Text.Body fontWeight="bold">
+                                            Facets
+                                          </Text.Body>
+                                        </Spacings.Stack>
+                                        <SecondaryButton
+                                          label="Add facet to route"
+                                          iconLeft={<PlusBoldIcon />}
+                                          onClick={() =>
+                                            pushFacet(emptyFacetEntry())
+                                          }
+                                        />
+                                      </Spacings.Inline>
 
-                                    {routeEntry.facets.map(
-                                      (facet, facetIndex) => (
-                                        <FacetCard key={facetIndex}>
-                                          <Spacings.Stack scale="s">
-                                            <InlineRow
-                                              style={{
-                                                justifyContent: 'space-between',
-                                              }}
-                                            >
-                                              <Text.Body fontWeight="bold">
-                                                Facet {facetIndex + 1}
-                                              </Text.Body>
-                                              <FlatButton
-                                                icon={<BinLinearIcon />}
-                                                label="Remove"
-                                                onClick={() =>
-                                                  removeFacet(facetIndex)
-                                                }
-                                              />
-                                            </InlineRow>
-                                            <InlineRow>
-                                              <TextInput
-                                                name={`routeSpecificEntries.${routeIndex}.facets.${facetIndex}.label`}
-                                                value={facet.label}
-                                                onChange={handleChange}
-                                                placeholder="Label"
-                                              />
-                                              <SelectInput
-                                                name={`routeSpecificEntries.${routeIndex}.facets.${facetIndex}.facetType`}
-                                                value={facet.facetType}
-                                                onChange={handleChange}
-                                                options={FACET_TYPE_OPTIONS}
-                                              />
-                                              <TextInput
-                                                name={`routeSpecificEntries.${routeIndex}.facets.${facetIndex}.name`}
-                                                value={facet.name}
-                                                onChange={handleChange}
-                                                placeholder="Name"
-                                              />
-                                              {(facet.facetType ===
-                                                'distinct' ||
-                                                facet.facetType === 'ranges' ||
-                                                facet.facetType ===
-                                                  'stats') && (
-                                                <TextInput
-                                                  name={`routeSpecificEntries.${routeIndex}.facets.${facetIndex}.field`}
-                                                  value={facet.field}
-                                                  onChange={handleChange}
-                                                  placeholder="Field"
+                                      {routeEntry.facets.map(
+                                        (facet, facetIndex) => (
+                                          <FacetCard key={facetIndex}>
+                                            <Spacings.Stack scale="s">
+                                              <InlineRow
+                                                style={{
+                                                  justifyContent:
+                                                    'space-between',
+                                                }}
+                                              >
+                                                <Text.Body fontWeight="bold">
+                                                  Facet {facetIndex + 1}
+                                                </Text.Body>
+                                                <FlatButton
+                                                  icon={<BinLinearIcon />}
+                                                  label="Remove"
+                                                  onClick={() =>
+                                                    removeFacet(facetIndex)
+                                                  }
                                                 />
-                                              )}
-                                            </InlineRow>
-                                          </Spacings.Stack>
-                                        </FacetCard>
-                                      )
-                                    )}
-                                  </>
-                                )}
-                              </FieldArray>
-                            </Spacings.Stack>
-                          </FacetCard>
+                                              </InlineRow>
+                                              <InlineRow>
+                                                <TextInput
+                                                  name={`routeSpecificEntries.${routeIndex}.facets.${facetIndex}.label`}
+                                                  value={facet.label}
+                                                  onChange={handleChange}
+                                                  placeholder="Label"
+                                                />
+                                                <SelectInput
+                                                  name={`routeSpecificEntries.${routeIndex}.facets.${facetIndex}.facetType`}
+                                                  value={facet.facetType}
+                                                  onChange={handleChange}
+                                                  options={FACET_TYPE_OPTIONS}
+                                                />
+                                                <TextInput
+                                                  name={`routeSpecificEntries.${routeIndex}.facets.${facetIndex}.name`}
+                                                  value={facet.name}
+                                                  onChange={handleChange}
+                                                  placeholder="Name"
+                                                />
+                                                {(facet.facetType ===
+                                                  'distinct' ||
+                                                  facet.facetType ===
+                                                    'ranges' ||
+                                                  facet.facetType ===
+                                                    'stats') && (
+                                                  <TextInput
+                                                    name={`routeSpecificEntries.${routeIndex}.facets.${facetIndex}.field`}
+                                                    value={facet.field}
+                                                    onChange={handleChange}
+                                                    placeholder="Field"
+                                                  />
+                                                )}
+                                              </InlineRow>
+                                            </Spacings.Stack>
+                                          </FacetCard>
+                                        )
+                                      )}
+                                    </>
+                                  )}
+                                </FieldArray>
+                              </Spacings.Stack>
+                            </FacetCard>
                           )
                         )}
                       </Grid>

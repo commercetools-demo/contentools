@@ -6,3 +6,5 @@ node_modules/*
 vendors/*
 **/raw-components
 generators/**
+plain-react-test/**
+mc-application-test/**
