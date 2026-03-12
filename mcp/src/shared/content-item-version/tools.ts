@@ -4,7 +4,7 @@ import type { Tool } from '../../types/tools';
 const bu = z.string().optional().describe('Business unit key (default from context)');
 const key = z.string().describe('Content item key');
 
-const contentItemVersionTools: Tool[] = [
+export const contentItemVersionTools: Tool[] = [
   {
     method: 'get_content_item_versions',
     name: 'Get Content Item Versions',
@@ -13,7 +13,3 @@ const contentItemVersionTools: Tool[] = [
     actions: { content_item_version: { read: true } },
   },
 ];
-
-export function contextToContentItemVersionTools(): Tool[] {
-  return contentItemVersionTools;
-}

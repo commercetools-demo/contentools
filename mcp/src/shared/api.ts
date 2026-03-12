@@ -1,5 +1,4 @@
 import type { AuthConfig } from '../types/auth';
-import type { Context } from '../types/auth';
 import { createFunctionMap } from './functions';
 
 class ContentToolsAPI {
@@ -9,11 +8,11 @@ class ContentToolsAPI {
   private jwtToken: string | undefined;
   private functionMap: ReturnType<typeof createFunctionMap>;
 
-  constructor(authConfig: AuthConfig, context?: Context) {
+  constructor(authConfig: AuthConfig) {
     this.baseUrl = authConfig.baseUrl.replace(/\/$/, '');
-    this.projectKey = context?.projectKey ?? authConfig.projectKey;
-    this.businessUnitKey = context?.businessUnitKey ?? authConfig.businessUnitKey;
-    this.jwtToken = context?.jwtToken ?? authConfig.jwtToken;
+    this.projectKey = authConfig.projectKey;
+    this.businessUnitKey = authConfig.businessUnitKey;
+    this.jwtToken = authConfig.jwtToken;
     this.functionMap = createFunctionMap(
       this.baseUrl,
       this.projectKey,

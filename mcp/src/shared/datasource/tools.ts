@@ -5,7 +5,7 @@ import { datasourceInfoSchema } from '../schemas';
 const key = z.string().describe('Datasource key');
 const params = z.record(z.unknown()).optional().describe('Parameters for testing the datasource');
 
-const datasourceTools: Tool[] = [
+export const datasourceTools: Tool[] = [
   {
     method: 'list_datasources',
     name: 'List Datasources',
@@ -49,7 +49,3 @@ const datasourceTools: Tool[] = [
     actions: { datasource: { read: true } },
   },
 ];
-
-export function contextToDatasourceTools(): Tool[] {
-  return datasourceTools;
-}

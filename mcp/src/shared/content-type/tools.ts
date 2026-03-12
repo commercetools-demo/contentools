@@ -4,7 +4,7 @@ import { contentTypeDataSchema } from '../schemas';
 
 const keyParam = z.string().describe('Content type key');
 
-const contentTypeTools: Tool[] = [
+export const contentTypeTools: Tool[] = [
   {
     method: 'list_content_types',
     name: 'List Content Types',
@@ -48,7 +48,3 @@ const contentTypeTools: Tool[] = [
     actions: { content_type: { create: true } },
   },
 ];
-
-export function contextToContentTypeTools(): Tool[] {
-  return contentTypeTools;
-}

@@ -8,12 +8,3 @@ export type AuthConfig = {
   businessUnitKey?: string;
   jwtToken?: string;
 };
-
-/**
- * Optional overrides per request. Merged with AuthConfig so callers can set once and tools can override.
- */
-export type Context = {
-  projectKey?: string;
-  businessUnitKey?: string;
-  jwtToken?: string;
-};

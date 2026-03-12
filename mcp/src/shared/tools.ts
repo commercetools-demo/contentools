@@ -1,37 +1,34 @@
-import type { Context } from '../types/auth';
 import type { Tool } from '../types/tools';
-import { contextToAuthTools } from './auth/tools';
-import { contextToConfigurationTools } from './configuration/tools';
-import { contextToContentTypeTools } from './content-type/tools';
-import { contextToContentItemTools } from './content-item/tools';
-import { contextToContentItemVersionTools } from './content-item-version/tools';
-import { contextToContentItemStateTools } from './content-item-state/tools';
-import { contextToDatasourceTools } from './datasource/tools';
-import { contextToFileTools } from './file/tools';
-import { contextToPageTools } from './page/tools';
-import { contextToPageVersionTools } from './page-version/tools';
-import { contextToPageStateTools } from './page-state/tools';
-import { contextToPageRowTools } from './page-row/tools';
-import { contextToPageContentItemStateTools } from './page-content-item-state/tools';
-import { contextToPageComponentTools } from './page-component/tools';
-import { contextToProxyTools } from './proxy/tools';
+import { authTools } from './auth/tools';
+import { configurationTools } from './configuration/tools';
+import { contentTypeTools } from './content-type/tools';
+import { contentItemTools } from './content-item/tools';
+import { contentItemVersionTools } from './content-item-version/tools';
+import { contentItemStateTools } from './content-item-state/tools';
+import { datasourceTools } from './datasource/tools';
+import { fileTools } from './file/tools';
+import { pageTools } from './page/tools';
+import { pageVersionTools } from './page-version/tools';
+import { pageStateTools } from './page-state/tools';
+import { pageRowTools } from './page-row/tools';
+import { pageContentItemStateTools } from './page-content-item-state/tools';
+import { pageComponentTools } from './page-component/tools';
+import { proxyTools } from './proxy/tools';
 
-export function contextToTools(_context?: Context): Tool[] {
-  return [
-    ...contextToAuthTools(),
-    ...contextToConfigurationTools(),
-    ...contextToContentTypeTools(),
-    ...contextToContentItemTools(),
-    ...contextToContentItemVersionTools(),
-    ...contextToContentItemStateTools(),
-    ...contextToDatasourceTools(),
-    ...contextToFileTools(),
-    ...contextToPageTools(),
-    ...contextToPageVersionTools(),
-    ...contextToPageStateTools(),
-    ...contextToPageRowTools(),
-    ...contextToPageContentItemStateTools(),
-    ...contextToPageComponentTools(),
-    ...contextToProxyTools(),
-  ];
-}
+export const allTools: Tool[] = [
+  ...authTools,
+  ...configurationTools,
+  ...contentTypeTools,
+  ...contentItemTools,
+  ...contentItemVersionTools,
+  ...contentItemStateTools,
+  ...datasourceTools,
+  ...fileTools,
+  ...pageTools,
+  ...pageVersionTools,
+  ...pageStateTools,
+  ...pageRowTools,
+  ...pageContentItemStateTools,
+  ...pageComponentTools,
+  ...proxyTools,
+];

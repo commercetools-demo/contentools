@@ -15,7 +15,7 @@ const healthParams = z.object({
   projectKey: z.string().optional().describe('Override project key for this request'),
 });
 
-const authTools: Tool[] = [
+export const authTools: Tool[] = [
   {
     method: 'authenticate_project',
     name: 'Authenticate Project',
@@ -38,7 +38,3 @@ const authTools: Tool[] = [
     actions: { auth: { read: true } },
   },
 ];
-
-export function contextToAuthTools(): Tool[] {
-  return authTools;
-}

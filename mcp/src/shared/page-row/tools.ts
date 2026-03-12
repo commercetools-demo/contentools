@@ -7,7 +7,7 @@ const key = z.string().describe('Page key');
 const rowId = z.string().describe('Row ID');
 const cellId = z.string().describe('Cell ID');
 
-const pageRowTools: Tool[] = [
+export const pageRowTools: Tool[] = [
   {
     method: 'add_page_row',
     name: 'Add Page Row',
@@ -30,7 +30,3 @@ const pageRowTools: Tool[] = [
     actions: { page_row: { update: true } },
   },
 ];
-
-export function contextToPageRowTools(): Tool[] {
-  return pageRowTools;
-}

@@ -4,7 +4,7 @@ import type { Tool } from '../../types/tools';
 const bu = z.string().optional().describe('Business unit key (default from context)');
 const key = z.string().describe('Page key');
 
-const pageVersionTools: Tool[] = [
+export const pageVersionTools: Tool[] = [
   {
     method: 'get_page_versions',
     name: 'Get Page Versions',
@@ -13,7 +13,3 @@ const pageVersionTools: Tool[] = [
     actions: { page_version: { read: true } },
   },
 ];
-
-export function contextToPageVersionTools(): Tool[] {
-  return pageVersionTools;
-}

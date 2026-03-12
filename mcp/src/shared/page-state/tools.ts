@@ -7,7 +7,7 @@ const key = z.string().describe('Page key');
 const value = pageSchema.optional().describe('Page value when publishing (optional)');
 const clearDraft = z.boolean().optional().describe('When true, clear draft after publishing');
 
-const pageStateTools: Tool[] = [
+export const pageStateTools: Tool[] = [
   {
     method: 'get_page_states',
     name: 'Get Page States',
@@ -30,7 +30,3 @@ const pageStateTools: Tool[] = [
     actions: { page_state: { update: true } },
   },
 ];
-
-export function contextToPageStateTools(): Tool[] {
-  return pageStateTools;
-}
