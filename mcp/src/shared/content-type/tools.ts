@@ -16,8 +16,8 @@ const contentTypeMetadataSchema = z.object({
   type: z.string(),
   name: z.string(),
   icon: z.string().optional(),
-  defaultProperties: z.record(z.any()).optional(),
-  propertySchema: z.record(propertySchemaSchema),
+  defaultProperties: z.record(z.string(), z.any()).optional(),
+  propertySchema: z.record(z.string(), propertySchemaSchema),
   isBuiltIn: z.boolean().optional(),
 });
 const contentTypeDataSchema = z.object({

@@ -9,7 +9,7 @@ const contentItemSchema = z.object({
   key: z.string().optional(),
   businessUnitKey: z.string().optional(),
   name: z.string(),
-  properties: z.record(z.any()).default({}),
+  properties: z.record(z.string(), z.any()).default({}),
 });
 const gridCellSchema = z.object({
   id: z.string(),
