@@ -1,9 +1,25 @@
 import { z } from 'zod';
 import type { Tool } from '../../types/tools';
-import { themeTokensSchema } from '../schemas';
 
 const businessUnitKeyParam = z.string().optional().describe('Business unit key (default from context)');
 const configValueSchema = z.record(z.any()).describe('Configuration value (JSON object)');
+const themeTokensSchema = z.object({
+  colorPrimary: z.string(),
+  colorPrimaryHover: z.string(),
+  colorSecondary: z.string(),
+  colorBackground: z.string(),
+  colorSurface: z.string(),
+  colorText: z.string(),
+  colorTextMuted: z.string(),
+  borderRadius: z.enum(['none', 'sm', 'md', 'lg', 'full']),
+  borderWidth: z.enum(['0', '1', '2']),
+  fontFamily: z.string(),
+  fontHeading: z.string(),
+  spacingScale: z.number(),
+  buttonStyle: z.enum(['solid', 'outline', 'ghost']),
+  cardShadow: z.enum(['none', 'sm', 'md', 'lg']),
+  headerStyle: z.enum(['transparent', 'solid', 'minimal']),
+});
 
 export const configurationTools: Tool[] = [
   {

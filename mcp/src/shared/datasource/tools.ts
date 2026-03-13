@@ -1,9 +1,19 @@
 import { z } from 'zod';
 import type { Tool } from '../../types/tools';
-import { datasourceInfoSchema } from '../schemas';
 
 const key = z.string().describe('Datasource key');
 const params = z.record(z.any()).optional().describe('Parameters for testing the datasource');
+const datasourceParamSchema = z.object({
+  key: z.string(),
+  type: z.string(),
+  required: z.boolean(),
+});
+const datasourceInfoSchema = z.object({
+  name: z.string(),
+  key: z.string(),
+  params: z.array(datasourceParamSchema),
+  deployedUrl: z.string(),
+});
 
 export const datasourceTools: Tool[] = [
   {

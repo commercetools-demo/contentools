@@ -1,10 +1,17 @@
 import { z } from 'zod';
 import type { Tool } from '../../types/tools';
-import { contentItemSchema } from '../schemas';
 
 const bu = z.string().optional().describe('Business unit key (default from context)');
 const key = z.string().describe('Content item key');
 const query = z.string().describe('Query string for filtering');
+const contentItemSchema = z.object({
+  id: z.string().optional(),
+  type: z.string(),
+  key: z.string().optional(),
+  businessUnitKey: z.string().optional(),
+  name: z.string(),
+  properties: z.record(z.any()).default({}),
+});
 
 export const contentItemTools: Tool[] = [
   {
