@@ -1,11 +1,15 @@
 import { z } from 'zod';
 import type { Tool } from '../../types/tools';
-import { cellSpanUpdatesSchema } from '../schemas';
 
 const bu = z.string().optional().describe('Business unit key (default from context)');
 const key = z.string().describe('Page key');
 const rowId = z.string().describe('Row ID');
 const cellId = z.string().describe('Cell ID');
+const cellSpanUpdatesSchema = z.object({
+  colSpan: z.number(),
+  shouldRemoveEmptyCell: z.boolean().optional(),
+  shouldAddEmptyCell: z.boolean().optional(),
+});
 
 export const pageRowTools: Tool[] = [
   {

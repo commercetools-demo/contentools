@@ -1,10 +1,40 @@
 import { z } from 'zod';
 import type { Tool } from '../../types/tools';
-import { pageSchema, pageCreateSchema } from '../schemas';
 
 const bu = z.string().optional().describe('Business unit key (default from context)');
 const key = z.string().describe('Page key');
 const query = z.string().describe('Query string for filtering');
+const contentItemSchema = z.object({
+  id: z.string().optional(),
+  type: z.string(),
+  key: z.string().optional(),
+  businessUnitKey: z.string().optional(),
+  name: z.string(),
+  properties: z.record(z.any()).default({}),
+});
+const gridCellSchema = z.object({
+  id: z.string(),
+  contentItemKey: z.string().nullable(),
+  colSpan: z.number(),
+});
+const gridRowSchema = z.object({
+  id: z.string(),
+  cells: z.array(gridCellSchema),
+});
+const layoutSchema = z.object({
+  rows: z.array(gridRowSchema),
+});
+const pageSchema = z.object({
+  key: z.string(),
+  name: z.string(),
+  route: z.string(),
+  layout: layoutSchema,
+  components: z.array(contentItemSchema),
+});
+const pageCreateSchema = z.object({
+  name: z.string(),
+  route: z.string(),
+});
 
 export const pageTools: Tool[] = [
   {
