@@ -2,7 +2,7 @@ import { z } from 'zod';
 import type { Tool } from '../../types/tools';
 
 const businessUnitKeyParam = z.string().optional().describe('Business unit key (default from context)');
-const configValueSchema = z.record(z.any()).describe('Configuration value (JSON object)');
+const configValueSchema = z.record(z.string(), z.any()).describe('Configuration value (JSON object)');
 const themeTokensSchema = z.object({
   colorPrimary: z.string(),
   colorPrimaryHover: z.string(),
