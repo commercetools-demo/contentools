@@ -48,4 +48,3 @@ export * from './config/facet-configuration';
 export * from './config/footer-configuration';
 export * from './config/category-listing';
 export * from './config/frontend-configuration';
-export * from './config/feature-flags';

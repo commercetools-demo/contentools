@@ -64,12 +64,22 @@ export const updatePageContentItem = async (
   req: AuthenticatedRequest,
   businessUnitKey: string,
   key: string,
-  item: Partial<ContentItem['value']>
+  baseItem: Partial<ContentItem['value']>
 ): Promise<ContentItem> => {
   const contentItemController = new CustomObjectController(
     req,
     PAGE_CONTENT_ITEMS_CONTAINER
   );
+
+  const existing = await contentItemController.getCustomObject(key);
+
+    const item: ContentItem['value'] = {
+      ...existing.value,
+      ...baseItem,
+      key: baseItem.key ?? key,
+      businessUnitKey: baseItem.businessUnitKey ?? businessUnitKey,
+      type: baseItem.type ?? existing.value.type,
+    };
 
   const object = await contentItemController.updateCustomObject(key, {
     ...item,
