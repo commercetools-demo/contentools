@@ -58,13 +58,13 @@ export const pageTools: Tool[] = [
     parameters: z.object({ businessUnitKey: bu, value: pageCreateSchema }),
     actions: { page: { create: true } },
   },
-  {
-    method: 'update_page',
-    name: 'Update Page',
-    description: 'Update a page by key.',
-    parameters: z.object({ businessUnitKey: bu, key, value: pageSchema }),
-    actions: { page: { update: true } },
-  },
+  // {
+  //   method: 'update_page',
+  //   name: 'Update Page',
+  //   description: 'Update a page by key.',
+  //   parameters: z.object({ businessUnitKey: bu, key, value: pageSchema }),
+  //   actions: { page: { update: true } },
+  // },
   {
     method: 'delete_page',
     name: 'Delete Page',
