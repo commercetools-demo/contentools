@@ -12,7 +12,8 @@
     "lint": "eslint . --ext .ts",
     "format": "prettier --write '**/*.{js,ts}'",
     "test": "echo 'No tests for now'",
-    "test:watch": "echo 'No tests for now'"
+    "test:watch": "echo 'No tests for now'",
+    "test:e2e": "jest --config=e2e/jest.config.js --runInBand"
   },
   "author": "",
   "license": "MIT",
