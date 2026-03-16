@@ -1,4 +1,5 @@
 import {
+  CONFIGURATION_B2B_ACCOUNT_MENU_LINKS_KEY,
   CONFIGURATION_CATEGORY_LISTING_KEY,
   CONFIGURATION_CONTAINER,
   CONFIGURATION_CONTENTOOLS_BASE_URL_KEY,
@@ -50,6 +51,10 @@ function getTranslationsKey(businessUnitKey: string): string {
 
 function getContentoolsBaseUrlKey(businessUnitKey: string): string {
   return `${businessUnitKey}-${CONFIGURATION_CONTENTOOLS_BASE_URL_KEY}`;
+}
+
+function getB2bAccountMenuLinksKey(businessUnitKey: string): string {
+  return `${businessUnitKey}-${CONFIGURATION_B2B_ACCOUNT_MENU_LINKS_KEY}`;
 }
 
 /**
@@ -123,6 +128,7 @@ export interface AllConfigurationsResult {
   categoryListing: Record<string, unknown> | null;
   translations: Record<string, Record<string, unknown>> | null;
   contentoolsBaseUrl: string | null;
+  b2bAccountMenuLinks: Record<string, unknown>[] | null;
 }
 
 const CONFIG_KEYS = [
@@ -134,6 +140,7 @@ const CONFIG_KEYS = [
   'categoryListing',
   'translations',
   'contentoolsBaseUrl',
+  'b2bAccountMenuLinks',
 ] as const;
 
 function getKeyForSlice(
@@ -157,6 +164,8 @@ function getKeyForSlice(
       return getTranslationsKey(businessUnitKey);
     case 'contentoolsBaseUrl':
       return getContentoolsBaseUrlKey(businessUnitKey);
+    case 'b2bAccountMenuLinks':
+      return getB2bAccountMenuLinksKey(businessUnitKey);
     default:
       return '';
   }
@@ -191,6 +200,7 @@ export const getAllConfigurations = async (
     categoryListing: null,
     translations: null,
     contentoolsBaseUrl: null,
+    b2bAccountMenuLinks: null,
   };
 
   for (const obj of results) {
@@ -204,7 +214,12 @@ export const getAllConfigurations = async (
       obj.value !== null
     ) {
       out.translations = obj.value as Record<string, Record<string, unknown>>;
-    } else if (slice !== 'contentoolsBaseUrl' && slice !== 'translations') {
+    } else if (
+      slice === 'b2bAccountMenuLinks' &&
+      Array.isArray(obj.value)
+    ) {
+      out.b2bAccountMenuLinks = obj.value as Record<string, unknown>[];
+    } else if (slice !== 'contentoolsBaseUrl' && slice !== 'translations' && slice !== 'b2bAccountMenuLinks') {
       (out as unknown as Record<string, unknown>)[slice] = obj.value as Record<
         string,
         unknown
@@ -446,3 +461,19 @@ export const updateContentoolsBaseUrl = async (
 };
 export const deleteContentoolsBaseUrl = (req: AuthenticatedRequest, businessUnitKey: string) =>
   deleteConfigByKey(req, getContentoolsBaseUrlKey(businessUnitKey));
+
+// B2B account menu links
+export const getB2bAccountMenuLinks = (req: AuthenticatedRequest, businessUnitKey: string) =>
+  getConfigByKey(req, getB2bAccountMenuLinksKey(businessUnitKey));
+export const createB2bAccountMenuLinks = (
+  req: AuthenticatedRequest,
+  businessUnitKey: string,
+  value: Record<string, unknown>[]
+) => createConfigByKey(req, getB2bAccountMenuLinksKey(businessUnitKey), value as unknown as Record<string, unknown>);
+export const updateB2bAccountMenuLinks = (
+  req: AuthenticatedRequest,
+  businessUnitKey: string,
+  value: Record<string, unknown>[]
+) => updateConfigByKey(req, getB2bAccountMenuLinksKey(businessUnitKey), value as unknown as Record<string, unknown>);
+export const deleteB2bAccountMenuLinks = (req: AuthenticatedRequest, businessUnitKey: string) =>
+  deleteConfigByKey(req, getB2bAccountMenuLinksKey(businessUnitKey));

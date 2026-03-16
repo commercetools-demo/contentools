@@ -43,6 +43,8 @@ export const CONFIGURATION_TRANSLATIONS_KEY =
   process.env.CONFIGURATION_TRANSLATIONS_KEY || 'translations';
 export const CONFIGURATION_CONTENTOOLS_BASE_URL_KEY =
   process.env.CONFIGURATION_CONTENTOOLS_BASE_URL_KEY || 'contentools-base-url';
+export const CONFIGURATION_B2B_ACCOUNT_MENU_LINKS_KEY =
+  process.env.CONFIGURATION_B2B_ACCOUNT_MENU_LINKS_KEY || 'b2b-account-menu-links';
 
 export const DATASOURCE_CONTAINER =
   process.env.DATASOURCE_CONTAINER || 'datasource';

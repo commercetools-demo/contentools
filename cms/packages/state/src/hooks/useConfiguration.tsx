@@ -6,6 +6,7 @@ import {
   FooterConfiguration,
   CategoryListingConfiguration,
   SiteMetadata,
+  B2BAccountMenuLink,
 } from '@commercetools-demo/contentools-types';
 import {
   fetchAllConfigurationsEndpoint,
@@ -37,6 +38,10 @@ import {
   createTranslationsEndpoint,
   updateTranslationsEndpoint,
   deleteTranslationsEndpoint,
+  fetchB2bAccountMenuLinksEndpoint,
+  createB2bAccountMenuLinksEndpoint,
+  updateB2bAccountMenuLinksEndpoint,
+  deleteB2bAccountMenuLinksEndpoint,
 } from '../api/configuration';
 
 interface ConfigurationState {
@@ -48,6 +53,7 @@ interface ConfigurationState {
   categoryListing: CategoryListingConfiguration | null;
   translations: Record<string, Record<string, unknown>> | null;
   contentoolsBaseUrl: string | null;
+  b2bAccountMenuLinks: B2BAccountMenuLink[] | null;
   loading: boolean;
   error: string | null;
 }
@@ -61,6 +67,7 @@ const initialState: ConfigurationState = {
   categoryListing: null,
   translations: null,
   contentoolsBaseUrl: null,
+  b2bAccountMenuLinks: null,
   loading: false,
   error: null,
 };
@@ -871,6 +878,112 @@ export const useConfiguration = (projectKey: string, jwtToken?: string) => {
     [state.translations, createTranslations, updateTranslations]
   );
 
+  // B2B account menu links
+  const fetchB2bAccountMenuLinks = useCallback(
+    async (baseURL: string) => {
+      try {
+        setState((prev) => ({ ...prev, loading: true, error: null }));
+        const b2bAccountMenuLinks = await fetchB2bAccountMenuLinksEndpoint(
+          baseURL,
+          projectKey
+        );
+        setState((prev) => ({ ...prev, b2bAccountMenuLinks, loading: false }));
+        return b2bAccountMenuLinks;
+      } catch (error) {
+        setState((prev) => ({
+          ...prev,
+          loading: false,
+          error:
+            error instanceof Error
+              ? error.message
+              : 'Failed to fetch B2B account menu links',
+        }));
+        throw error;
+      }
+    },
+    [projectKey]
+  );
+  const createB2bAccountMenuLinks = useCallback(
+    async (baseURL: string, value: B2BAccountMenuLink[]) => {
+      try {
+        setState((prev) => ({ ...prev, loading: true, error: null }));
+        const b2bAccountMenuLinks = await createB2bAccountMenuLinksEndpoint(
+          baseURL,
+          projectKey,
+          jwtToken,
+          value
+        );
+        setState((prev) => ({ ...prev, b2bAccountMenuLinks, loading: false }));
+        return b2bAccountMenuLinks;
+      } catch (error) {
+        setState((prev) => ({
+          ...prev,
+          loading: false,
+          error:
+            error instanceof Error
+              ? error.message
+              : 'Failed to create B2B account menu links',
+        }));
+        throw error;
+      }
+    },
+    [projectKey, jwtToken]
+  );
+  const updateB2bAccountMenuLinks = useCallback(
+    async (baseURL: string, value: B2BAccountMenuLink[]) => {
+      try {
+        setState((prev) => ({ ...prev, loading: true, error: null }));
+        const b2bAccountMenuLinks = await updateB2bAccountMenuLinksEndpoint(
+          baseURL,
+          projectKey,
+          jwtToken,
+          value
+        );
+        setState((prev) => ({ ...prev, b2bAccountMenuLinks, loading: false }));
+        return b2bAccountMenuLinks;
+      } catch (error) {
+        setState((prev) => ({
+          ...prev,
+          loading: false,
+          error:
+            error instanceof Error
+              ? error.message
+              : 'Failed to update B2B account menu links',
+        }));
+        throw error;
+      }
+    },
+    [projectKey, jwtToken]
+  );
+  const deleteB2bAccountMenuLinks = useCallback(
+    async (baseURL: string) => {
+      try {
+        setState((prev) => ({ ...prev, loading: true, error: null }));
+        await deleteB2bAccountMenuLinksEndpoint(baseURL, projectKey, jwtToken);
+        setState((prev) => ({ ...prev, b2bAccountMenuLinks: null, loading: false }));
+      } catch (error) {
+        setState((prev) => ({
+          ...prev,
+          loading: false,
+          error:
+            error instanceof Error
+              ? error.message
+              : 'Failed to delete B2B account menu links',
+        }));
+        throw error;
+      }
+    },
+    [projectKey, jwtToken]
+  );
+  const saveB2bAccountMenuLinks = useCallback(
+    async (baseURL: string, value: B2BAccountMenuLink[]) => {
+      if (state.b2bAccountMenuLinks == null)
+        return createB2bAccountMenuLinks(baseURL, value);
+      return updateB2bAccountMenuLinks(baseURL, value);
+    },
+    [state.b2bAccountMenuLinks, createB2bAccountMenuLinks, updateB2bAccountMenuLinks]
+  );
+
   const clearError = useCallback(() => {
     setState((prev) => ({ ...prev, error: null }));
   }, []);
@@ -922,6 +1035,12 @@ export const useConfiguration = (projectKey: string, jwtToken?: string) => {
     updateTranslations,
     deleteTranslations,
     saveTranslations,
+    b2bAccountMenuLinks: state.b2bAccountMenuLinks,
+    fetchB2bAccountMenuLinks,
+    createB2bAccountMenuLinks,
+    updateB2bAccountMenuLinks,
+    deleteB2bAccountMenuLinks,
+    saveB2bAccountMenuLinks,
     clearError,
   };
 };

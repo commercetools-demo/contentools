@@ -565,4 +565,78 @@ configurationRouter.delete(
   }
 );
 
+// B2B account menu links configuration
+configurationRouter.get(
+  '/:businessUnitKey/configuration/b2b-account-menu-links',
+  requireProjectKey,
+  async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+    try {
+      const { businessUnitKey } = req.params;
+      const b2bAccountMenuLinks = await ConfigurationController.getB2bAccountMenuLinks(
+        req,
+        businessUnitKey
+      );
+      res.status(200).json(b2bAccountMenuLinks);
+    } catch (error) {
+      logger.error('Failed to get configuration b2b-account-menu-links:', error);
+      next(error);
+    }
+  }
+);
+configurationRouter.post(
+  '/:businessUnitKey/configuration/b2b-account-menu-links',
+  validateJwt,
+  validateProject,
+  async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+    try {
+      const { value } = req.body;
+      const { businessUnitKey } = req.params;
+      const b2bAccountMenuLinks = await ConfigurationController.createB2bAccountMenuLinks(
+        req,
+        businessUnitKey,
+        value
+      );
+      res.status(201).json(b2bAccountMenuLinks);
+    } catch (error) {
+      logger.error('Failed to create configuration b2b-account-menu-links:', error);
+      next(error);
+    }
+  }
+);
+configurationRouter.put(
+  '/:businessUnitKey/configuration/b2b-account-menu-links',
+  validateJwt,
+  validateProject,
+  async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+    try {
+      const { value } = req.body;
+      const { businessUnitKey } = req.params;
+      const b2bAccountMenuLinks = await ConfigurationController.updateB2bAccountMenuLinks(
+        req,
+        businessUnitKey,
+        value
+      );
+      res.json(b2bAccountMenuLinks);
+    } catch (error) {
+      logger.error('Failed to update configuration b2b-account-menu-links:', error);
+      next(error);
+    }
+  }
+);
+configurationRouter.delete(
+  '/:businessUnitKey/configuration/b2b-account-menu-links',
+  validateJwt,
+  validateProject,
+  async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+    try {
+      const { businessUnitKey } = req.params;
+      await ConfigurationController.deleteB2bAccountMenuLinks(req, businessUnitKey);
+      res.status(204).send();
+    } catch (error) {
+      logger.error('Failed to delete configuration b2b-account-menu-links:', error);
+      next(error);
+    }
+  }
+);
+
 export default configurationRouter;

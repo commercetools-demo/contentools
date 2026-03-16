@@ -8,6 +8,7 @@ import FacetEditor from './components/facet-editor';
 import CategoryListingEditor from './components/category-listing-editor';
 import SiteMetadataEditor from './components/site-metadata-editor';
 import TranslationsEditor from './components/translations-editor';
+import B2bAccountMenuLinksEditor from './components/b2b-account-menu-links-editor';
 import ImportContentTypes from './components/import-content-types';
 
 interface Props {
@@ -82,6 +83,14 @@ const ConfigurationRouter: React.FC<Props> = ({
       </Route>
       <Route path="/translations" exact>
         <TranslationsEditor
+          parentUrl={parentUrl}
+          baseURL={baseURL}
+          businessUnitKey={businessUnitKey}
+          backButton={backButton}
+        />
+      </Route>
+      <Route path="/b2b-account-menu-links" exact>
+        <B2bAccountMenuLinksEditor
           parentUrl={parentUrl}
           baseURL={baseURL}
           businessUnitKey={businessUnitKey}
