@@ -126,6 +126,18 @@ const ConfigurationList: React.FC<Props> = ({ backButton }) => {
           </Spacings.Stack>
         </StyledCard>
         <StyledCard
+          onClick={() => history.push('/b2b-account-menu-links')}
+          data-testid="configuration-b2b-account-menu-links-card"
+        >
+          <Spacings.Stack scale="m">
+            <Text.Headline as="h3">B2B Account Menu Links</Text.Headline>
+            <Text.Body>
+              Links shown in the B2B My Account dropdown (Dashboard, Orders,
+              etc.).
+            </Text.Body>
+          </Spacings.Stack>
+        </StyledCard>
+        <StyledCard
           onClick={() => history.push('/import-content-types')}
           data-testid="configuration-import-content-types-card"
         >

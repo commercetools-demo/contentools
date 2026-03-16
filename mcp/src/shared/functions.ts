@@ -209,6 +209,22 @@ export function createFunctionMap(
       const bu = (arg.businessUnitKey as string) ?? ctx.businessUnitKey;
       return request(ctx, 'DELETE', `/${encodeURIComponent(bu)}/configuration/translations`, true);
     },
+    get_b2b_account_menu_links: async (ctx, arg) => {
+      const bu = (arg.businessUnitKey as string) ?? ctx.businessUnitKey;
+      return request(ctx, 'GET', `/${encodeURIComponent(bu)}/configuration/b2b-account-menu-links`, false);
+    },
+    create_b2b_account_menu_links: async (ctx, arg) => {
+      const bu = (arg.businessUnitKey as string) ?? ctx.businessUnitKey;
+      return request(ctx, 'POST', `/${encodeURIComponent(bu)}/configuration/b2b-account-menu-links`, true, { value: arg.value });
+    },
+    update_b2b_account_menu_links: async (ctx, arg) => {
+      const bu = (arg.businessUnitKey as string) ?? ctx.businessUnitKey;
+      return request(ctx, 'PUT', `/${encodeURIComponent(bu)}/configuration/b2b-account-menu-links`, true, { value: arg.value });
+    },
+    delete_b2b_account_menu_links: async (ctx, arg) => {
+      const bu = (arg.businessUnitKey as string) ?? ctx.businessUnitKey;
+      return request(ctx, 'DELETE', `/${encodeURIComponent(bu)}/configuration/b2b-account-menu-links`, true);
+    },
 
     // --- Content type ---
     list_content_types: async (ctx) => {

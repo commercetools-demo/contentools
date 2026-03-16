@@ -15,6 +15,15 @@ export interface SiteMetadata {
 }
 
 // ---------------------------------------------------------------------------
+// B2B account menu links (My Account dropdown: Dashboard, Orders, etc.)
+// ---------------------------------------------------------------------------
+
+export interface B2BAccountMenuLink {
+  label: string;
+  href: string;
+}
+
+// ---------------------------------------------------------------------------
 // Frontend configuration from Contentools /configuration (facet, header, theme)
 // ---------------------------------------------------------------------------
 
@@ -28,4 +37,6 @@ export interface FrontendConfiguration {
   categoryListing?: CategoryListingConfiguration;
   /** Per-locale translation overrides (merged over base message files). */
   translations?: Record<string, Record<string, unknown>>;
+  /** B2B: links shown in the My Account dropdown (e.g. Dashboard, Orders, Quotes). */
+  b2bAccountMenuLinks?: B2BAccountMenuLink[];
 }

@@ -3,6 +3,8 @@ import type { Tool } from '../../types/tools';
 
 const businessUnitKeyParam = z.string().optional().describe('Business unit key (default from context)');
 const configValueSchema = z.record(z.string(), z.any()).describe('Configuration value (JSON object)');
+const b2bAccountMenuLinkSchema = z.object({ label: z.string(), href: z.string() });
+const b2bAccountMenuLinksValueSchema = z.array(b2bAccountMenuLinkSchema).describe('Array of { label, href }');
 const themeTokensSchema = z.object({
   colorPrimary: z.string(),
   colorPrimaryHover: z.string(),
@@ -87,4 +89,9 @@ export const configurationTools: Tool[] = [
   { method: 'create_translations', name: 'Create Configuration Translations', description: 'Create translations configuration for a business unit.', parameters: z.object({ businessUnitKey: businessUnitKeyParam, value: configValueSchema }), actions: { configuration: { create: true } } },
   { method: 'update_translations', name: 'Update Configuration Translations', description: 'Update translations configuration for a business unit.', parameters: z.object({ businessUnitKey: businessUnitKeyParam, value: configValueSchema }), actions: { configuration: { update: true } } },
   { method: 'delete_translations', name: 'Delete Configuration Translations', description: 'Delete translations configuration for a business unit.', parameters: z.object({ businessUnitKey: businessUnitKeyParam }), actions: { configuration: { update: true } } },
+  // B2B account menu links
+  { method: 'get_b2b_account_menu_links', name: 'Get B2B Account Menu Links', description: 'Get B2B account menu links configuration for a business unit.', parameters: z.object({ businessUnitKey: businessUnitKeyParam }), actions: { configuration: { read: true } } },
+  { method: 'create_b2b_account_menu_links', name: 'Create B2B Account Menu Links', description: 'Create B2B account menu links for a business unit.', parameters: z.object({ businessUnitKey: businessUnitKeyParam, value: b2bAccountMenuLinksValueSchema }), actions: { configuration: { create: true } } },
+  { method: 'update_b2b_account_menu_links', name: 'Update B2B Account Menu Links', description: 'Update B2B account menu links for a business unit.', parameters: z.object({ businessUnitKey: businessUnitKeyParam, value: b2bAccountMenuLinksValueSchema }), actions: { configuration: { update: true } } },
+  { method: 'delete_b2b_account_menu_links', name: 'Delete B2B Account Menu Links', description: 'Delete B2B account menu links for a business unit.', parameters: z.object({ businessUnitKey: businessUnitKeyParam }), actions: { configuration: { update: true } } },
 ];

@@ -5,6 +5,7 @@ import {
   FooterConfiguration,
   CategoryListingConfiguration,
   SiteMetadata,
+  B2BAccountMenuLink,
 } from '@commercetools-demo/contentools-types';
 
 /** Full frontend configuration; each slice may be null if not stored. */
@@ -17,6 +18,7 @@ export interface AllConfigurationsResponse {
   categoryListing: CategoryListingConfiguration | null;
   translations: Record<string, Record<string, unknown>> | null;
   contentoolsBaseUrl: string | null;
+  b2bAccountMenuLinks: B2BAccountMenuLink[] | null;
 }
 
 /**
@@ -48,6 +50,7 @@ export async function fetchAllConfigurationsEndpoint(
     categoryListing: data.categoryListing ?? null,
     translations: data.translations ?? null,
     contentoolsBaseUrl: data.contentoolsBaseUrl ?? null,
+    b2bAccountMenuLinks: data.b2bAccountMenuLinks ?? null,
   };
 }
 
@@ -678,6 +681,89 @@ export async function deleteTranslationsEndpoint(
   jwtToken: string | undefined
 ): Promise<void> {
   const response = await fetch(`${baseURL}/configuration/translations`, {
+    method: 'DELETE',
+    headers: {
+      'x-project-key': projectKey,
+      Authorization: `Bearer ${jwtToken}`,
+    },
+  });
+  if (!response.ok)
+    throw new Error(
+      `API request failed: ${response.status} ${response.statusText}`
+    );
+}
+
+// ---------------------------------------------------------------------------
+// B2B account menu links configuration
+// ---------------------------------------------------------------------------
+
+export async function fetchB2bAccountMenuLinksEndpoint(
+  baseURL: string,
+  projectKey: string
+): Promise<B2BAccountMenuLink[] | null> {
+  const response = await fetch(`${baseURL}/configuration/b2b-account-menu-links`, {
+    headers: { 'x-project-key': projectKey },
+  });
+  if (!response.ok) {
+    if (response.status === 404) return null;
+    throw new Error(
+      `API request failed: ${response.status} ${response.statusText}`
+    );
+  }
+  const data = await response.json();
+  return data === null || data === undefined ? null : (data as B2BAccountMenuLink[]);
+}
+
+export async function createB2bAccountMenuLinksEndpoint(
+  baseURL: string,
+  projectKey: string,
+  jwtToken: string | undefined,
+  value: B2BAccountMenuLink[]
+): Promise<B2BAccountMenuLink[]> {
+  const response = await fetch(`${baseURL}/configuration/b2b-account-menu-links`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-project-key': projectKey,
+      Authorization: `Bearer ${jwtToken}`,
+    },
+    body: JSON.stringify({ value }),
+  });
+  if (!response.ok)
+    throw new Error(
+      `API request failed: ${response.status} ${response.statusText}`
+    );
+  return (await response.json()) as B2BAccountMenuLink[];
+}
+
+export async function updateB2bAccountMenuLinksEndpoint(
+  baseURL: string,
+  projectKey: string,
+  jwtToken: string | undefined,
+  value: B2BAccountMenuLink[]
+): Promise<B2BAccountMenuLink[]> {
+  const response = await fetch(`${baseURL}/configuration/b2b-account-menu-links`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-project-key': projectKey,
+      Authorization: `Bearer ${jwtToken}`,
+    },
+    body: JSON.stringify({ value }),
+  });
+  if (!response.ok)
+    throw new Error(
+      `API request failed: ${response.status} ${response.statusText}`
+    );
+  return (await response.json()) as B2BAccountMenuLink[];
+}
+
+export async function deleteB2bAccountMenuLinksEndpoint(
+  baseURL: string,
+  projectKey: string,
+  jwtToken: string | undefined
+): Promise<void> {
+  const response = await fetch(`${baseURL}/configuration/b2b-account-menu-links`, {
     method: 'DELETE',
     headers: {
       'x-project-key': projectKey,
