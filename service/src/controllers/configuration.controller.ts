@@ -14,6 +14,8 @@ import CustomError from '../errors/custom.error';
 import { CustomObjectController } from './custom-object.controller';
 import { AuthenticatedRequest } from '../types/service.types';
 
+const DEFAULT_BUSINESS_UNIT_KEY = 'default';
+
 /**
  * Build the custom object key for theme scoped by business unit.
  * Data in the configuration container is partitioned by business unit key.
@@ -60,6 +62,7 @@ function getB2bAccountMenuLinksKey(businessUnitKey: string): string {
 /**
  * Get theme configuration for a business unit.
  * Returns the theme value or null if not found (404 is converted to null).
+ * If businessUnitKey is not default and result is empty, returns default BU config.
  */
 export const getTheme = async (
   req: AuthenticatedRequest,
@@ -69,9 +72,16 @@ export const getTheme = async (
   const key = getThemeKey(businessUnitKey);
   try {
     const object = await controller.getCustomObject(key);
-    return (object?.value as Record<string, unknown>) ?? null;
+    const value = (object?.value as Record<string, unknown>) ?? null;
+    if (value != null || businessUnitKey === DEFAULT_BUSINESS_UNIT_KEY) {
+      return value;
+    }
+    return getTheme(req, DEFAULT_BUSINESS_UNIT_KEY);
   } catch (error) {
     if (error instanceof CustomError && error.statusCode === 404) {
+      if (businessUnitKey !== DEFAULT_BUSINESS_UNIT_KEY) {
+        return getTheme(req, DEFAULT_BUSINESS_UNIT_KEY);
+      }
       return null;
     }
     throw error;
@@ -227,12 +237,26 @@ export const getAllConfigurations = async (
     }
   }
 
+  if (businessUnitKey !== DEFAULT_BUSINESS_UNIT_KEY) {
+    const defaultResult = await getAllConfigurations(req, DEFAULT_BUSINESS_UNIT_KEY);
+    if (out.theme == null && defaultResult.theme != null) out.theme = defaultResult.theme;
+    if (out.header == null && defaultResult.header != null) out.header = defaultResult.header;
+    if (out.facetConfiguration == null && defaultResult.facetConfiguration != null) out.facetConfiguration = defaultResult.facetConfiguration;
+    if (out.footer == null && defaultResult.footer != null) out.footer = defaultResult.footer;
+    if (out.siteMetadata == null && defaultResult.siteMetadata != null) out.siteMetadata = defaultResult.siteMetadata;
+    if (out.categoryListing == null && defaultResult.categoryListing != null) out.categoryListing = defaultResult.categoryListing;
+    if (out.translations == null && defaultResult.translations != null) out.translations = defaultResult.translations;
+    if (out.contentoolsBaseUrl == null && defaultResult.contentoolsBaseUrl != null) out.contentoolsBaseUrl = defaultResult.contentoolsBaseUrl;
+    if (out.b2bAccountMenuLinks == null && defaultResult.b2bAccountMenuLinks != null) out.b2bAccountMenuLinks = defaultResult.b2bAccountMenuLinks;
+  }
+
   return out;
 };
 
 /**
  * Get header configuration for a business unit.
  * Returns the header value or null if not found (404 is converted to null).
+ * If businessUnitKey is not default and result is empty, returns default BU config.
  */
 export const getHeader = async (
   req: AuthenticatedRequest,
@@ -242,9 +266,16 @@ export const getHeader = async (
   const key = getHeaderKey(businessUnitKey);
   try {
     const object = await controller.getCustomObject(key);
-    return (object?.value as Record<string, unknown>) ?? null;
+    const value = (object?.value as Record<string, unknown>) ?? null;
+    if (value != null || businessUnitKey === DEFAULT_BUSINESS_UNIT_KEY) {
+      return value;
+    }
+    return getHeader(req, DEFAULT_BUSINESS_UNIT_KEY);
   } catch (error) {
     if (error instanceof CustomError && error.statusCode === 404) {
+      if (businessUnitKey !== DEFAULT_BUSINESS_UNIT_KEY) {
+        return getHeader(req, DEFAULT_BUSINESS_UNIT_KEY);
+      }
       return null;
     }
     throw error;
@@ -311,6 +342,19 @@ async function getConfigByKey(
   }
 }
 
+async function getConfigByKeyWithFallback(
+  req: AuthenticatedRequest,
+  keyRequested: string,
+  keyDefault: string,
+  businessUnitKey: string
+): Promise<Record<string, unknown> | null> {
+  const result = await getConfigByKey(req, keyRequested);
+  if (result != null || businessUnitKey === DEFAULT_BUSINESS_UNIT_KEY) {
+    return result;
+  }
+  return getConfigByKey(req, keyDefault);
+}
+
 async function getConfigByKeyAsString(
   req: AuthenticatedRequest,
   key: string
@@ -358,7 +402,7 @@ async function deleteConfigByKey(
 
 // Facet
 export const getFacet = (req: AuthenticatedRequest, businessUnitKey: string) =>
-  getConfigByKey(req, getFacetKey(businessUnitKey));
+  getConfigByKeyWithFallback(req, getFacetKey(businessUnitKey), getFacetKey(DEFAULT_BUSINESS_UNIT_KEY), businessUnitKey);
 export const createFacet = (
   req: AuthenticatedRequest,
   businessUnitKey: string,
@@ -374,7 +418,7 @@ export const deleteFacet = (req: AuthenticatedRequest, businessUnitKey: string) 
 
 // Footer
 export const getFooter = (req: AuthenticatedRequest, businessUnitKey: string) =>
-  getConfigByKey(req, getFooterKey(businessUnitKey));
+  getConfigByKeyWithFallback(req, getFooterKey(businessUnitKey), getFooterKey(DEFAULT_BUSINESS_UNIT_KEY), businessUnitKey);
 export const createFooter = (
   req: AuthenticatedRequest,
   businessUnitKey: string,
@@ -390,7 +434,7 @@ export const deleteFooter = (req: AuthenticatedRequest, businessUnitKey: string)
 
 // Site metadata
 export const getSiteMetadata = (req: AuthenticatedRequest, businessUnitKey: string) =>
-  getConfigByKey(req, getSiteMetadataKey(businessUnitKey));
+  getConfigByKeyWithFallback(req, getSiteMetadataKey(businessUnitKey), getSiteMetadataKey(DEFAULT_BUSINESS_UNIT_KEY), businessUnitKey);
 export const createSiteMetadata = (
   req: AuthenticatedRequest,
   businessUnitKey: string,
@@ -406,7 +450,7 @@ export const deleteSiteMetadata = (req: AuthenticatedRequest, businessUnitKey: s
 
 // Category listing
 export const getCategoryListing = (req: AuthenticatedRequest, businessUnitKey: string) =>
-  getConfigByKey(req, getCategoryListingKey(businessUnitKey));
+  getConfigByKeyWithFallback(req, getCategoryListingKey(businessUnitKey), getCategoryListingKey(DEFAULT_BUSINESS_UNIT_KEY), businessUnitKey);
 export const createCategoryListing = (
   req: AuthenticatedRequest,
   businessUnitKey: string,
@@ -422,7 +466,7 @@ export const deleteCategoryListing = (req: AuthenticatedRequest, businessUnitKey
 
 // Translations
 export const getTranslations = (req: AuthenticatedRequest, businessUnitKey: string) =>
-  getConfigByKey(req, getTranslationsKey(businessUnitKey)) as Promise<Record<string, Record<string, unknown>> | null>;
+  getConfigByKeyWithFallback(req, getTranslationsKey(businessUnitKey), getTranslationsKey(DEFAULT_BUSINESS_UNIT_KEY), businessUnitKey) as Promise<Record<string, Record<string, unknown>> | null>;
 export const createTranslations = (
   req: AuthenticatedRequest,
   businessUnitKey: string,
@@ -464,7 +508,7 @@ export const deleteContentoolsBaseUrl = (req: AuthenticatedRequest, businessUnit
 
 // B2B account menu links
 export const getB2bAccountMenuLinks = (req: AuthenticatedRequest, businessUnitKey: string) =>
-  getConfigByKey(req, getB2bAccountMenuLinksKey(businessUnitKey));
+  getConfigByKeyWithFallback(req, getB2bAccountMenuLinksKey(businessUnitKey), getB2bAccountMenuLinksKey(DEFAULT_BUSINESS_UNIT_KEY), businessUnitKey);
 export const createB2bAccountMenuLinks = (
   req: AuthenticatedRequest,
   businessUnitKey: string,
