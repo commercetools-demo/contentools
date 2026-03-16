@@ -72,8 +72,6 @@ pageStateRouter.put(
       const page = await pageController.getCustomObject(key);
       const item = page.value;
 
-      console.log('item >> ', item);
-
       const state = await PageStateController.createPublishedState(
         req,
         businessUnitKey,
