@@ -8,10 +8,10 @@ End-to-end tests run against the CMS service HTTP API. They are specified from *
    - From repo root: `cd service && yarn build && yarn start`
    - Or with Docker: `docker-compose -f service/docker-compose.e2e.yml --env-file service/.env up -d` (then wait for the service to be ready)
 
-2. **Set env** (e.g. in `service/.env` or export):
-   - `BASE_URL` – default `http://localhost:8080`
-   - `BUSINESS_UNIT_KEY` – tenant for path params (often same as `CTP_PROJECT_KEY`)
-   - `CTP_PROJECT_KEY`, `CTP_CLIENT_ID`, `CTP_CLIENT_SECRET` – used to get a JWT via `POST /service/authenticate-project`
+2. **Set env** (e.g. in `service/.env` or export). Prefer **E2E_**-prefixed names; non-prefixed are still read for backward compatibility:
+   - `E2E_BASE_URL` (or `BASE_URL`) – default `http://localhost:8080`
+   - `E2E_BUSINESS_UNIT_KEY` (or `BUSINESS_UNIT_KEY`) – tenant for path params
+   - `E2E_CTP_PROJECT_KEY`, `E2E_CTP_CLIENT_ID`, `E2E_CTP_CLIENT_SECRET` (or `CTP_*`) – for JWT via `POST /service/authenticate-project`
 
 3. **Run tests**:
    ```bash
@@ -26,13 +26,16 @@ The workflow in `.github/workflows/e2e.yml` builds the service Docker image, sta
 
 All env variable names, defaults, and resolved values are defined in **`e2e/constants.ts`** (`ENV_KEYS`, `E2E_ENV`, `ensureE2EEnv`).
 
-| Variable            | Required | Description                                      |
-|---------------------|----------|--------------------------------------------------|
-| BASE_URL            | Yes      | Service base URL (e.g. `http://localhost:8080`)  |
-| BUSINESS_UNIT_KEY   | No       | Defaults to CTP_PROJECT_KEY                     |
-| CTP_PROJECT_KEY     | Yes      | CommerceTools project key (and x-project-key)   |
-| CTP_CLIENT_ID       | Yes      | For authenticate-project                        |
-| CTP_CLIENT_SECRET   | Yes      | For authenticate-project                        |
-| CTP_AUTH_URL        | No       | Optional override                                |
-| CTP_API_URL         | No       | Optional override                                |
-| CTP_SCOPE           | No       | Optional override                                |
+| Variable (E2E_ prefix)   | Required | Description                                      |
+|--------------------------|----------|--------------------------------------------------|
+| E2E_BASE_URL             | Yes      | Service base URL (e.g. `http://localhost:8080`)  |
+| E2E_BUSINESS_UNIT_KEY    | No       | Defaults to E2E_CTP_PROJECT_KEY                  |
+| E2E_CTP_PROJECT_KEY      | Yes      | CommerceTools project key (and x-project-key)    |
+| E2E_CTP_CLIENT_ID        | Yes      | For authenticate-project                        |
+| E2E_CTP_CLIENT_SECRET    | Yes      | For authenticate-project                        |
+| E2E_CTP_AUTH_URL         | No       | Optional override                                |
+| E2E_CTP_API_URL          | No       | Optional override                                |
+| E2E_CTP_SCOPE            | No       | Optional override                                |
+| E2E_CTP_REGION           | No       | Optional override                                |
+
+Non-prefixed names (`BASE_URL`, `CTP_PROJECT_KEY`, etc.) are still read as fallback for local `.env`.
