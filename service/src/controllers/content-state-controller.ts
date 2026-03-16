@@ -97,9 +97,19 @@ const _createDraftState = async <T extends GenericState>(
       throw new CustomError(500, 'Failed to create draft state');
     }
   }
+
+  const contentItemController = new CustomObjectController(
+    req,
+    dependencies.CONTENT_CONTAINER
+  );
+
+  const existingContent = await contentItemController.getCustomObject(key);
   existingState.states = {
     ...existingState.states,
-    draft: value,
+    draft: {
+      ...(existingContent?.value ?? {}),
+      ...value,
+    },
   };
 
   const contentStateController = new CustomObjectController(
@@ -137,9 +147,17 @@ const _createPublishedState = async <T extends GenericState>(
       throw new CustomError(500, 'Failed to create published state');
     }
   }
+  const contentItemController = new CustomObjectController(
+    req,
+    dependencies.CONTENT_CONTAINER
+  );
+  const existingContent = await contentItemController.getCustomObject(key);
   existingState.states = {
     ...existingState.states,
-    published: value,
+    published: {
+      ...(existingContent?.value ?? {}),
+      ...value,
+    },
   };
   if (clear) {
     existingState.states = {

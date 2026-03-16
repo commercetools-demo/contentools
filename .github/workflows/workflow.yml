@@ -71,4 +71,5 @@ jobs:
           --memory 512Mi \
           --min-instances 1 \
           --timeout 300 \
+          --clear-base-image \
           "${ENV_ARGS[@]}"
