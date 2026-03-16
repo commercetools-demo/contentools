@@ -82,8 +82,6 @@ pageStateRouter.put(
         clearDraft === 'true'
       );
 
-      console.log('state >> ', state);
-
       res.json(state);
     } catch (error) {
       logger.error('Failed to publish state:', error);

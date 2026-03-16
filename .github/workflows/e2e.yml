@@ -10,12 +10,13 @@ jobs:
   e2e:
     runs-on: ubuntu-latest
     env:
-      BASE_URL: http://localhost:8080
-      BUSINESS_UNIT_KEY: ${{ vars.CTP_PROJECT_KEY }}
-      CTP_PROJECT_KEY: ${{ vars.CTP_PROJECT_KEY }}
-      CTP_CLIENT_ID: ${{ secrets.CTP_CLIENT_ID }}
-      CTP_CLIENT_SECRET: ${{ secrets.CTP_CLIENT_SECRET }}
-
+      E2E_BASE_URL: http://localhost:8080
+      E2E_BUSINESS_UNIT_KEY: ${{ vars.E2E_BUSINESS_UNIT_KEY }}
+      E2E_CTP_PROJECT_KEY: ${{ vars.E2E_CTP_PROJECT_KEY }}
+      E2E_CTP_CLIENT_ID: ${{ vars.E2E_CTP_CLIENT_ID }}
+      E2E_CTP_CLIENT_SECRET: ${{ secrets.E2E_CTP_CLIENT_SECRET }}
+      E2E_CTP_REGION: ${{ vars.E2E_CTP_REGION }}
+      E2E_CTP_SCOPE: ${{ vars.E2E_CTP_SCOPE }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -66,7 +67,7 @@ jobs:
       - name: Wait for service to be ready
         run: |
           for i in $(seq 1 30); do
-            code=$(curl -sS -o /dev/null -w "%{http_code}" -H "x-project-key: ${{ vars.CTP_PROJECT_KEY }}" ${{ env.BASE_URL }}/service/health || echo "000")
+            code=$(curl -sS -o /dev/null -w "%{http_code}" -H "x-project-key: ${{ vars.CTP_PROJECT_KEY }}" ${{ env.E2E_BASE_URL }}/service/health || echo "000")
             if [ "$code" = "200" ]; then
               echo "Service is healthy (project already registered)"
               exit 0
