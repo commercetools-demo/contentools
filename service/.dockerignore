@@ -1,0 +1,8 @@
+node_modules
+build
+e2e
+*.test.ts
+.env
+.env.*
+.git
+*.md
