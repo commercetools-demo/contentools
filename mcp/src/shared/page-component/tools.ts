@@ -15,7 +15,7 @@ const contentItemSchema = z.object({
   name: z.string(),
   properties: z.record(z.string(), z.any()).default({}),
 });
-const updates = contentItemSchema.partial().describe('Partial content item fields to update on the component');
+const updates = contentItemSchema.partial().describe('Full content item fields to update on the component. It must contain all fields, not just the ones that are being updated.');
 
 export const pageComponentTools: Tool[] = [
   {
