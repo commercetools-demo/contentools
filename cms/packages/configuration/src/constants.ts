@@ -29,6 +29,18 @@ export const DEFAULT_THEME: ThemeTokens = {
   buttonStyle: 'solid',
   cardShadow: 'md',
   headerStyle: 'solid',
+  colorShadowLight: '#ffffff',
+  colorShadowDark: '#b8bec7',
+  colorSurfaceGlass: 'rgba(255,255,255,0.18)',
+  shadowStyle: 'none',
+  surfaceBlur: 'none',
+  surfaceOpacity: 1,
+  fontWeightBase: '400',
+  fontWeightHeading: '700',
+  letterSpacing: 'normal',
+  textTransform: 'none',
+  borderStyle: 'solid',
+  backgroundStyle: 'solid',
 };
 
 const defaultVisibility: HeaderVisibility = {
