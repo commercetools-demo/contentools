@@ -11,6 +11,8 @@ import TextInput from '@commercetools-uikit/text-input';
 import CheckboxInput from '@commercetools-uikit/checkbox-input';
 import LoadingSpinner from '@commercetools-uikit/loading-spinner';
 import styled from 'styled-components';
+import TextField from '@commercetools-uikit/text-field';
+import FieldLabel from '@commercetools-uikit/field-label';
 
 const DEFAULT_FOOTER: FooterConfiguration = {
   copyrightText: '',
@@ -83,7 +85,7 @@ const FooterEditor: React.FC<Props> = ({
           <FlatButton
             onClick={backButton.onClick}
             label={backButton.label}
-            icon={backButton.icon as React.ReactElement}
+            icon={backButton.icon as any}
           />
         )}
         <LoadingSpinner scale="l" />
@@ -97,7 +99,7 @@ const FooterEditor: React.FC<Props> = ({
         <FlatButton
           onClick={backButton.onClick}
           label={backButton.label}
-          icon={backButton.icon as React.ReactElement}
+          icon={backButton.icon as any}
         />
       )}
       <Text.Headline as="h1">Footer configuration</Text.Headline>
@@ -105,7 +107,7 @@ const FooterEditor: React.FC<Props> = ({
       <Card>
         <Spacings.Stack scale="m">
           <FormSection>
-            <TextInput
+            <TextField
               title="Copyright text"
               value={formValues.copyrightText}
               onChange={(e) =>
@@ -117,15 +119,15 @@ const FooterEditor: React.FC<Props> = ({
             />
           </FormSection>
           <FormSection>
-            <CheckboxInput
+            <FieldLabel
               title="Show social links"
+              htmlFor="showSocialLinks"
+            />
+            <CheckboxInput
+              name="showSocialLinks"
               isChecked={formValues.showSocialLinks ?? false}
               onChange={(e) =>
-                setFormValues((prev) => ({
-                  ...prev,
-                  showSocialLinks: (e.target as HTMLInputElement).checked,
-                }))
-              }
+                setFormValues((prev) => ({ ...prev, showSocialLinks: e.target.checked }))}
             />
           </FormSection>
           <Spacings.Inline>

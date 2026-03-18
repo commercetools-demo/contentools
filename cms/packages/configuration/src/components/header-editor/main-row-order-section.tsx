@@ -9,6 +9,7 @@ import {
   HeaderMainRowSlot,
 } from '@commercetools-demo/contentools-types';
 import { DEFAULT_MAIN_ROW_ORDER } from '../../constants';
+import { ArrowDownIcon, ArrowUpIcon } from '@commercetools-uikit/icons';
 
 const SLOT_LABELS: Record<HeaderMainRowSlot, string> = {
   logo: 'Logo',
@@ -69,11 +70,13 @@ export const MainRowOrderSection: React.FC = () => {
                   label="Up"
                   onClick={() => handleMoveUp(index)}
                   isDisabled={index === 0}
+                  icon={<ArrowUpIcon />}
                 />
                 <FlatButton
                   label="Down"
                   onClick={() => handleMoveDown(index)}
                   isDisabled={index === order.length - 1}
+                  icon={<ArrowDownIcon />}
                 />
               </Spacings.Inline>
             </Spacings.Inline>
