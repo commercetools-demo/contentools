@@ -104,6 +104,10 @@ const BACKGROUND_STYLE_OPTIONS = [
   { value: 'noise', label: 'Noise' },
 ];
 
+const Padding = styled.div`
+  padding: 0 20px;
+`;
+
 interface Props {
   parentUrl: string;
   baseURL: string;
@@ -291,11 +295,14 @@ const ThemeEditor: React.FC<Props> = ({
           {backButton.label}
         </FlatButton>
       )}
-      <Text.Headline as="h1">Theme</Text.Headline>
-      <Text.Body tone="secondary">
-        Customize colors, typography, spacing, and component styles.
-      </Text.Body>
-
+      <Padding>
+        <Spacings.Stack scale="l" alignItems="flex-start">
+          <Text.Headline as="h1">Theme</Text.Headline>
+          <Text.Body tone="secondary">
+            Customize colors, typography, spacing, and component styles.
+          </Text.Body>
+        </Spacings.Stack>
+      </Padding>
       {error && (
         <Card>
           <Spacings.Stack scale="m">
@@ -310,11 +317,13 @@ const ThemeEditor: React.FC<Props> = ({
       )}
 
       <Spacings.Stack scale="l">
-        <Spacings.Inline scale="s">
-          <ThemePresetSelector onSelectPreset={applyThemeToForm} />
-        </Spacings.Inline>
-        <Card>
-          <Spacings.Stack scale="s">
+        <Padding>
+          <Spacings.Inline scale="s">
+            <ThemePresetSelector onSelectPreset={applyThemeToForm} />
+          </Spacings.Inline>
+        </Padding>
+        <Spacings.Stack scale="s">
+          <Padding>
             <ConfigHeader
               type="button"
               onClick={() => setIsConfigExpanded((prev) => !prev)}
@@ -323,14 +332,16 @@ const ThemeEditor: React.FC<Props> = ({
               <Text.Headline as="h2">Theme configuration</Text.Headline>
               <ConfigHeaderChevron expanded={isConfigExpanded} />
             </ConfigHeader>
-            {isConfigExpanded && (
+          </Padding>
+          {isConfigExpanded && (
+            <Padding>
               <Spacings.Stack scale="l">
                 <Spacings.Stack scale="xl">
                   <Text.Headline as="h2">Colors</Text.Headline>
                   <Grid
                     gridGap="16px"
                     gridAutoColumns="1fr"
-                    gridTemplateColumns="repeat(4, 1fr)"
+                    gridTemplateColumns="repeat(auto-fill, minmax(300px, 1fr))"
                   >
                     <FormSection>
                       <FieldLabel title="Primary" htmlFor="colorPrimary" />
@@ -349,6 +360,7 @@ const ThemeEditor: React.FC<Props> = ({
                           onChange={(e) =>
                             handleChange('colorPrimary', e.target.value)
                           }
+                          horizontalConstraint={3}
                         />
                       </Spacings.Inline>
                     </FormSection>
@@ -368,6 +380,7 @@ const ThemeEditor: React.FC<Props> = ({
                           style={{ width: 40, height: 32, cursor: 'pointer' }}
                         />
                         <TextInput
+                          horizontalConstraint={3}
                           value={formValues.colorPrimaryHover}
                           onChange={(e) =>
                             handleChange('colorPrimaryHover', e.target.value)
@@ -388,6 +401,7 @@ const ThemeEditor: React.FC<Props> = ({
                           style={{ width: 40, height: 32, cursor: 'pointer' }}
                         />
                         <TextInput
+                          horizontalConstraint={3}
                           value={formValues.colorSecondary}
                           onChange={(e) =>
                             handleChange('colorSecondary', e.target.value)
@@ -411,6 +425,7 @@ const ThemeEditor: React.FC<Props> = ({
                           style={{ width: 40, height: 32, cursor: 'pointer' }}
                         />
                         <TextInput
+                          horizontalConstraint={3}
                           value={formValues.colorBackground}
                           onChange={(e) =>
                             handleChange('colorBackground', e.target.value)
@@ -431,6 +446,7 @@ const ThemeEditor: React.FC<Props> = ({
                           style={{ width: 40, height: 32, cursor: 'pointer' }}
                         />
                         <TextInput
+                          horizontalConstraint={3}
                           value={formValues.colorSurface}
                           onChange={(e) =>
                             handleChange('colorSurface', e.target.value)
@@ -451,6 +467,7 @@ const ThemeEditor: React.FC<Props> = ({
                           style={{ width: 40, height: 32, cursor: 'pointer' }}
                         />
                         <TextInput
+                          horizontalConstraint={3}
                           value={formValues.colorText}
                           onChange={(e) =>
                             handleChange('colorText', e.target.value)
@@ -471,6 +488,7 @@ const ThemeEditor: React.FC<Props> = ({
                           style={{ width: 40, height: 32, cursor: 'pointer' }}
                         />
                         <TextInput
+                          horizontalConstraint={3}
                           value={formValues.colorTextMuted}
                           onChange={(e) =>
                             handleChange('colorTextMuted', e.target.value)
@@ -488,7 +506,7 @@ const ThemeEditor: React.FC<Props> = ({
                   <Grid
                     gridGap="16px"
                     gridAutoColumns="1fr"
-                    gridTemplateColumns="repeat(4, 1fr)"
+                    gridTemplateColumns="repeat(auto-fill, minmax(300px, 1fr))"
                   >
                     <FormSection>
                       <FieldLabel
@@ -509,6 +527,7 @@ const ThemeEditor: React.FC<Props> = ({
                           style={{ width: 40, height: 32, cursor: 'pointer' }}
                         />
                         <TextInput
+                          horizontalConstraint={3}
                           value={formValues.colorPrimaryForeground ?? ''}
                           onChange={(e) =>
                             handleChange(
@@ -540,6 +559,7 @@ const ThemeEditor: React.FC<Props> = ({
                           style={{ width: 40, height: 32, cursor: 'pointer' }}
                         />
                         <TextInput
+                          horizontalConstraint={3}
                           value={formValues.colorSecondaryForeground ?? ''}
                           onChange={(e) =>
                             handleChange(
@@ -566,6 +586,7 @@ const ThemeEditor: React.FC<Props> = ({
                           style={{ width: 40, height: 32, cursor: 'pointer' }}
                         />
                         <TextInput
+                          horizontalConstraint={3}
                           value={formValues.colorForeground ?? ''}
                           onChange={(e) =>
                             handleChange(
@@ -589,6 +610,7 @@ const ThemeEditor: React.FC<Props> = ({
                           style={{ width: 40, height: 32, cursor: 'pointer' }}
                         />
                         <TextInput
+                          horizontalConstraint={3}
                           value={formValues.colorMuted ?? ''}
                           onChange={(e) =>
                             handleChange(
@@ -615,6 +637,7 @@ const ThemeEditor: React.FC<Props> = ({
                           style={{ width: 40, height: 32, cursor: 'pointer' }}
                         />
                         <TextInput
+                          horizontalConstraint={3}
                           value={formValues.colorMutedForeground ?? ''}
                           onChange={(e) =>
                             handleChange(
@@ -641,6 +664,7 @@ const ThemeEditor: React.FC<Props> = ({
                           style={{ width: 40, height: 32, cursor: 'pointer' }}
                         />
                         <TextInput
+                          horizontalConstraint={3}
                           value={formValues.colorDestructive ?? ''}
                           onChange={(e) =>
                             handleChange(
@@ -672,6 +696,7 @@ const ThemeEditor: React.FC<Props> = ({
                           style={{ width: 40, height: 32, cursor: 'pointer' }}
                         />
                         <TextInput
+                          horizontalConstraint={3}
                           value={formValues.colorDestructiveForeground ?? ''}
                           onChange={(e) =>
                             handleChange(
@@ -695,6 +720,7 @@ const ThemeEditor: React.FC<Props> = ({
                           style={{ width: 40, height: 32, cursor: 'pointer' }}
                         />
                         <TextInput
+                          horizontalConstraint={3}
                           value={formValues.colorAccent ?? ''}
                           onChange={(e) =>
                             handleChange(
@@ -724,6 +750,7 @@ const ThemeEditor: React.FC<Props> = ({
                           style={{ width: 40, height: 32, cursor: 'pointer' }}
                         />
                         <TextInput
+                          horizontalConstraint={3}
                           value={formValues.colorAccentForeground ?? ''}
                           onChange={(e) =>
                             handleChange(
@@ -747,6 +774,7 @@ const ThemeEditor: React.FC<Props> = ({
                           style={{ width: 40, height: 32, cursor: 'pointer' }}
                         />
                         <TextInput
+                          horizontalConstraint={3}
                           value={formValues.colorBorder ?? ''}
                           onChange={(e) =>
                             handleChange(
@@ -770,6 +798,7 @@ const ThemeEditor: React.FC<Props> = ({
                           style={{ width: 40, height: 32, cursor: 'pointer' }}
                         />
                         <TextInput
+                          horizontalConstraint={3}
                           value={formValues.colorInput ?? ''}
                           onChange={(e) =>
                             handleChange(
@@ -793,6 +822,7 @@ const ThemeEditor: React.FC<Props> = ({
                           style={{ width: 40, height: 32, cursor: 'pointer' }}
                         />
                         <TextInput
+                          horizontalConstraint={3}
                           value={formValues.colorRing ?? ''}
                           onChange={(e) =>
                             handleChange(
@@ -809,11 +839,12 @@ const ThemeEditor: React.FC<Props> = ({
                   <Grid
                     gridGap="16px"
                     gridAutoColumns="1fr"
-                    gridTemplateColumns="repeat(4, 1fr)"
+                    gridTemplateColumns="repeat(auto-fill, minmax(300px, 1fr))"
                   >
                     <FormSection>
                       <FieldLabel title="Font Family" htmlFor="fontFamily" />
                       <TextInput
+                        horizontalConstraint={4}
                         id="fontFamily"
                         value={formValues.fontFamily}
                         onChange={(e) =>
@@ -824,6 +855,7 @@ const ThemeEditor: React.FC<Props> = ({
                     <FormSection>
                       <FieldLabel title="Heading Font" htmlFor="fontHeading" />
                       <TextInput
+                        horizontalConstraint={4}
                         id="fontHeading"
                         value={formValues.fontHeading}
                         onChange={(e) =>
@@ -837,7 +869,7 @@ const ThemeEditor: React.FC<Props> = ({
                   <Grid
                     gridGap="16px"
                     gridAutoColumns="1fr"
-                    gridTemplateColumns="repeat(4, 1fr)"
+                    gridTemplateColumns="repeat(auto-fill, minmax(300px, 1fr))"
                   >
                     <FormSection>
                       <FieldLabel
@@ -846,6 +878,7 @@ const ThemeEditor: React.FC<Props> = ({
                       />
                       <NumberInput
                         id="spacingScale"
+                        horizontalConstraint={3}
                         value={formValues.spacingScale}
                         onChange={(e) =>
                           handleChange(
@@ -862,6 +895,7 @@ const ThemeEditor: React.FC<Props> = ({
                       />
                       <SelectInput
                         id="borderRadius"
+                        horizontalConstraint={3}
                         value={formValues.borderRadius}
                         onChange={(e) =>
                           handleChange(
@@ -876,6 +910,7 @@ const ThemeEditor: React.FC<Props> = ({
                       <FieldLabel title="Border Width" htmlFor="borderWidth" />
                       <SelectInput
                         id="borderWidth"
+                        horizontalConstraint={3}
                         value={formValues.borderWidth}
                         onChange={(e) =>
                           handleChange(
@@ -890,6 +925,7 @@ const ThemeEditor: React.FC<Props> = ({
                       <FieldLabel title="Button Style" htmlFor="buttonStyle" />
                       <SelectInput
                         id="buttonStyle"
+                        horizontalConstraint={3}
                         value={formValues.buttonStyle}
                         onChange={(e) =>
                           handleChange(
@@ -904,6 +940,7 @@ const ThemeEditor: React.FC<Props> = ({
                       <FieldLabel title="Card Shadow" htmlFor="cardShadow" />
                       <SelectInput
                         id="cardShadow"
+                        horizontalConstraint={3}
                         value={formValues.cardShadow}
                         onChange={(e) =>
                           handleChange(
@@ -918,6 +955,7 @@ const ThemeEditor: React.FC<Props> = ({
                       <FieldLabel title="Header Style" htmlFor="headerStyle" />
                       <SelectInput
                         id="headerStyle"
+                        horizontalConstraint={3}
                         value={formValues.headerStyle}
                         onChange={(e) =>
                           handleChange(
@@ -934,7 +972,7 @@ const ThemeEditor: React.FC<Props> = ({
                   <Grid
                     gridGap="16px"
                     gridAutoColumns="1fr"
-                    gridTemplateColumns="repeat(4, 1fr)"
+                    gridTemplateColumns="repeat(auto-fill, minmax(300px, 1fr))"
                   >
                     <FormSection>
                       <FieldLabel
@@ -952,6 +990,7 @@ const ThemeEditor: React.FC<Props> = ({
                           style={{ width: 40, height: 32, cursor: 'pointer' }}
                         />
                         <TextInput
+                          horizontalConstraint={3}
                           value={formValues.colorShadowLight ?? ''}
                           onChange={(e) =>
                             handleChange(
@@ -978,6 +1017,7 @@ const ThemeEditor: React.FC<Props> = ({
                           style={{ width: 40, height: 32, cursor: 'pointer' }}
                         />
                         <TextInput
+                          horizontalConstraint={3}
                           value={formValues.colorShadowDark ?? ''}
                           onChange={(e) =>
                             handleChange(
@@ -994,6 +1034,7 @@ const ThemeEditor: React.FC<Props> = ({
                         htmlFor="colorSurfaceGlass"
                       />
                       <TextInput
+                        horizontalConstraint={3}
                         id="colorSurfaceGlass"
                         value={formValues.colorSurfaceGlass ?? ''}
                         onChange={(e) =>
@@ -1008,6 +1049,7 @@ const ThemeEditor: React.FC<Props> = ({
                       <FieldLabel title="Shadow Style" htmlFor="shadowStyle" />
                       <SelectInput
                         id="shadowStyle"
+                        horizontalConstraint={3}
                         value={
                           formValues.shadowStyle ?? DEFAULT_THEME.shadowStyle
                         }
@@ -1024,6 +1066,7 @@ const ThemeEditor: React.FC<Props> = ({
                       <FieldLabel title="Surface Blur" htmlFor="surfaceBlur" />
                       <SelectInput
                         id="surfaceBlur"
+                        horizontalConstraint={3}
                         value={
                           formValues.surfaceBlur ?? DEFAULT_THEME.surfaceBlur
                         }
@@ -1043,6 +1086,7 @@ const ThemeEditor: React.FC<Props> = ({
                       />
                       <NumberInput
                         id="surfaceOpacity"
+                        horizontalConstraint={3}
                         value={formValues.surfaceOpacity ?? 1}
                         onChange={(e) =>
                           handleChange(
@@ -1058,6 +1102,7 @@ const ThemeEditor: React.FC<Props> = ({
                       <FieldLabel title="Border Style" htmlFor="borderStyle" />
                       <SelectInput
                         id="borderStyle"
+                        horizontalConstraint={3}
                         value={
                           formValues.borderStyle ?? DEFAULT_THEME.borderStyle
                         }
@@ -1077,6 +1122,7 @@ const ThemeEditor: React.FC<Props> = ({
                       />
                       <SelectInput
                         id="backgroundStyle"
+                        horizontalConstraint={3}
                         value={
                           formValues.backgroundStyle ??
                           DEFAULT_THEME.backgroundStyle
@@ -1098,7 +1144,7 @@ const ThemeEditor: React.FC<Props> = ({
                   <Grid
                     gridGap="16px"
                     gridAutoColumns="1fr"
-                    gridTemplateColumns="repeat(4, 1fr)"
+                    gridTemplateColumns="repeat(auto-fill, minmax(300px, 1fr))"
                   >
                     <FormSection>
                       <FieldLabel
@@ -1107,6 +1153,7 @@ const ThemeEditor: React.FC<Props> = ({
                       />
                       <SelectInput
                         id="fontWeightBase"
+                        horizontalConstraint={3}
                         value={
                           formValues.fontWeightBase ??
                           DEFAULT_THEME.fontWeightBase
@@ -1127,6 +1174,7 @@ const ThemeEditor: React.FC<Props> = ({
                       />
                       <SelectInput
                         id="fontWeightHeading"
+                        horizontalConstraint={3}
                         value={
                           formValues.fontWeightHeading ??
                           DEFAULT_THEME.fontWeightHeading
@@ -1147,6 +1195,7 @@ const ThemeEditor: React.FC<Props> = ({
                       />
                       <SelectInput
                         id="letterSpacing"
+                        horizontalConstraint={3}
                         value={
                           formValues.letterSpacing ??
                           DEFAULT_THEME.letterSpacing
@@ -1167,6 +1216,7 @@ const ThemeEditor: React.FC<Props> = ({
                       />
                       <SelectInput
                         id="textTransform"
+                        horizontalConstraint={3}
                         value={
                           formValues.textTransform ??
                           DEFAULT_THEME.textTransform
@@ -1196,9 +1246,9 @@ const ThemeEditor: React.FC<Props> = ({
                   </Spacings.Inline>
                 </Spacings.Stack>
               </Spacings.Stack>
-            )}
-          </Spacings.Stack>
-        </Card>
+            </Padding>
+          )}
+        </Spacings.Stack>
       </Spacings.Stack>
     </Spacings.Stack>
   );
