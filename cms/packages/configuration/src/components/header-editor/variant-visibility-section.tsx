@@ -8,6 +8,8 @@ import {
   HeaderConfiguration,
   HeaderVariant,
 } from '@commercetools-demo/contentools-types';
+import Grid from '@commercetools-uikit/grid';
+import CollapsiblePanel from '@commercetools-uikit/collapsible-panel';
 
 const VARIANTS: HeaderVariant[] = ['full', 'minimal', 'custom'];
 
@@ -41,40 +43,54 @@ export const VariantVisibilitySection: React.FC = () => {
 
   return (
     <Card>
-      <Spacings.Stack scale="m">
+      <Spacings.Stack scale="m" alignItems='stretch'>
         <Text.Headline as="h2">Variant visibility</Text.Headline>
         <Text.Body tone="secondary">
           Toggle which elements are visible for each header variant.
         </Text.Body>
-        {VARIANTS.map((variant) => {
-          const visibility = values.variantMap?.[variant];
-          if (!visibility) return null;
-          return (
-            <Spacings.Stack key={variant} scale="s">
-              <Text.Subheadline as="h4">{variant}</Text.Subheadline>
-              <Spacings.Inline scale="s" alignItems="center">
-                {VISIBILITY_KEYS.filter((k) => visibility[k] !== undefined).map(
-                  (key) => (
-                    <CheckboxInput
-                      key={key}
-                      name={`variantMap.${variant}.${key}`}
-                      value={key}
-                      isChecked={!!visibility[key]}
-                      onChange={(e) =>
-                        setFieldValue(
-                          `variantMap.${variant}.${key}`,
-                          e.target.checked
-                        )
-                      }
+        <Grid
+          gridGap="16px"
+          gridAutoColumns="1fr"
+          gridTemplateColumns="repeat(auto-fill, minmax(300px, 1fr))"
+
+        >
+          {VARIANTS.map((variant) => {
+            const visibility = values.variantMap?.[variant];
+            if (!visibility) return null;
+            return (
+              <Grid.Item key={variant}>
+                <CollapsiblePanel header={variant} isDefaultClosed horizontalConstraint={12}>
+                  <Spacings.Inline scale="s" alignItems="center">
+                    <Grid
+                      gridGap="16px"
+                      gridAutoColumns="1fr"
+                      gridTemplateColumns="repeat(auto-fill, minmax(300px, 1fr))"
                     >
-                      {LABELS[key] ?? key}
-                    </CheckboxInput>
-                  )
-                )}
-              </Spacings.Inline>
-            </Spacings.Stack>
-          );
-        })}
+                      {VISIBILITY_KEYS.filter(
+                        (k) => visibility[k] !== undefined
+                      ).map((key) => (
+                        <CheckboxInput
+                          key={key}
+                          name={`variantMap.${variant}.${key}`}
+                          value={key}
+                          isChecked={!!visibility[key]}
+                          onChange={(e) =>
+                            setFieldValue(
+                              `variantMap.${variant}.${key}`,
+                              e.target.checked
+                            )
+                          }
+                        >
+                          {LABELS[key] ?? key}
+                        </CheckboxInput>
+                      ))}
+                    </Grid>
+                  </Spacings.Inline>
+                </CollapsiblePanel>
+              </Grid.Item>
+            );
+          })}
+        </Grid>
       </Spacings.Stack>
     </Card>
   );

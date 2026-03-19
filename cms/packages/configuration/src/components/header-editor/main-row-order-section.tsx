@@ -10,7 +10,7 @@ import {
 } from '@commercetools-demo/contentools-types';
 import { DEFAULT_MAIN_ROW_ORDER } from '../../constants';
 import { ArrowDownIcon, ArrowUpIcon } from '@commercetools-uikit/icons';
-
+import IconButton from '@commercetools-uikit/icon-button';
 const SLOT_LABELS: Record<HeaderMainRowSlot, string> = {
   logo: 'Logo',
   navigation: 'Navigation',
@@ -49,30 +49,29 @@ export const MainRowOrderSection: React.FC = () => {
 
   return (
     <Card>
-      <Spacings.Stack scale="m">
         <Text.Headline as="h2">Main row order</Text.Headline>
         <Text.Body tone="secondary">
           Order of slots in the main header row (left to right).
         </Text.Body>
-        <Spacings.Stack scale="s">
+        <Spacings.Stack scale="s" alignItems='stretch'>
           {order.map((slot, index) => (
             <Spacings.Inline
               key={slot}
               scale="s"
-              alignItems="center"
+              alignItems="stretch"
               justifyContent="space-between"
             >
               <Text.Body>
                 {index + 1}. {SLOT_LABELS[slot]}
               </Text.Body>
               <Spacings.Inline scale="xs">
-                <FlatButton
+                <IconButton
                   label="Up"
                   onClick={() => handleMoveUp(index)}
                   isDisabled={index === 0}
                   icon={<ArrowUpIcon />}
                 />
-                <FlatButton
+                <IconButton
                   label="Down"
                   onClick={() => handleMoveDown(index)}
                   isDisabled={index === order.length - 1}
@@ -85,9 +84,8 @@ export const MainRowOrderSection: React.FC = () => {
         <FlatButton
           label="Reset to default"
           onClick={handleReset}
-          tone="secondary"
+          tone="critical"
         />
-      </Spacings.Stack>
     </Card>
   );
 };

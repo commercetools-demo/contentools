@@ -29,7 +29,7 @@ export const NavigationSection: React.FC = () => {
 
   return (
     <Card>
-      <Spacings.Stack scale="m">
+      <Spacings.Stack scale="m" alignItems='flex-start'>
         <Text.Headline as="h2">Navigation</Text.Headline>
         <Text.Body tone="secondary">
           Top-level navigation items. Reorder and configure each item.

@@ -2015,9 +2015,12 @@ __metadata:
     "@commercetools-demo/contentools-types": "workspace:^"
     "@commercetools-uikit/card": "npm:^20.2.2"
     "@commercetools-uikit/checkbox-input": "npm:^20.2.2"
+    "@commercetools-uikit/collapsible-motion": "npm:^20.4.0"
+    "@commercetools-uikit/collapsible-panel": "npm:^20.4.0"
     "@commercetools-uikit/field-label": "npm:^20.2.2"
     "@commercetools-uikit/flat-button": "npm:^20.2.3"
     "@commercetools-uikit/grid": "npm:^20.4.0"
+    "@commercetools-uikit/icon-button": "npm:^20.4.0"
     "@commercetools-uikit/icons": "npm:^20.2.1"
     "@commercetools-uikit/loading-spinner": "npm:^20.2.2"
     "@commercetools-uikit/number-input": "npm:^20.2.2"
@@ -3637,6 +3640,48 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@commercetools-uikit/collapsible-motion@npm:20.4.0, @commercetools-uikit/collapsible-motion@npm:^20.4.0":
+  version: 20.4.0
+  resolution: "@commercetools-uikit/collapsible-motion@npm:20.4.0"
+  dependencies:
+    "@babel/runtime": "npm:^7.20.13"
+    "@babel/runtime-corejs3": "npm:^7.20.13"
+    "@commercetools-uikit/hooks": "npm:20.4.0"
+    "@commercetools-uikit/utils": "npm:20.4.0"
+    "@emotion/react": "npm:^11.10.5"
+    "@emotion/styled": "npm:^11.10.5"
+    lodash: "npm:4.17.23"
+  peerDependencies:
+    react: 19.x
+  checksum: 10/58d8bcc179bd300f5e508e81f1a9dac0ee4ea280b90ca564df2b189810300ad1992c82223696bfecc94937ff545e92c7d2ae8260e57e1d5f0cb19c273a26e6eb
+  languageName: node
+  linkType: hard
+
+"@commercetools-uikit/collapsible-panel@npm:^20.4.0":
+  version: 20.4.0
+  resolution: "@commercetools-uikit/collapsible-panel@npm:20.4.0"
+  dependencies:
+    "@babel/runtime": "npm:^7.20.13"
+    "@babel/runtime-corejs3": "npm:^7.20.13"
+    "@commercetools-uikit/accessible-button": "npm:20.4.0"
+    "@commercetools-uikit/collapsible-motion": "npm:20.4.0"
+    "@commercetools-uikit/constraints": "npm:20.4.0"
+    "@commercetools-uikit/design-system": "npm:20.4.0"
+    "@commercetools-uikit/hooks": "npm:20.4.0"
+    "@commercetools-uikit/icons": "npm:20.4.0"
+    "@commercetools-uikit/spacings": "npm:20.4.0"
+    "@commercetools-uikit/text": "npm:20.4.0"
+    "@commercetools-uikit/utils": "npm:20.4.0"
+    "@emotion/react": "npm:^11.10.5"
+    "@emotion/styled": "npm:^11.10.5"
+    lodash: "npm:4.17.23"
+    react-intl: "npm:^7.1.4"
+  peerDependencies:
+    react: 19.x
+  checksum: 10/9cf1f5285d94a5b026ef21c1bebf3d394c6b0147bfe5017047ecc777d3ffb9b2235bc07ecf9856f7a4b47663263fedc8c25da5439e9e79b299abedfe76fd3ece
+  languageName: node
+  linkType: hard
+
 "@commercetools-uikit/constraints@npm:20.0.0":
   version: 20.0.0
   resolution: "@commercetools-uikit/constraints@npm:20.0.0"
@@ -4438,7 +4483,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@commercetools-uikit/icon-button@npm:20.4.0":
+"@commercetools-uikit/icon-button@npm:20.4.0, @commercetools-uikit/icon-button@npm:^20.4.0":
   version: 20.4.0
   resolution: "@commercetools-uikit/icon-button@npm:20.4.0"
   dependencies:

@@ -20,6 +20,7 @@ import LoadingSpinner from '@commercetools-uikit/loading-spinner';
 import { BinLinearIcon, PlusBoldIcon } from '@commercetools-uikit/icons';
 import styled from 'styled-components';
 import Grid from '@commercetools-uikit/grid';
+import IconButton from '@commercetools-uikit/icon-button';
 
 const UI_TYPE_OPTIONS: { value: FacetUIType; label: string }[] = [
   { value: 'checkbox', label: 'Checkbox' },
@@ -208,7 +209,7 @@ interface Props {
   backButton?: {
     label: string;
     onClick: () => void;
-    icon: React.ReactElement;
+    icon: any;
   };
 }
 
@@ -278,7 +279,7 @@ const FacetEditor: React.FC<Props> = ({
           <FlatButton
             onClick={backButton.onClick}
             label={backButton.label}
-            icon={backButton.icon as React.ReactElement}
+            icon={backButton.icon as any}
           />
         )}
         <LoadingSpinner scale="l" />
@@ -292,7 +293,7 @@ const FacetEditor: React.FC<Props> = ({
         <FlatButton
           onClick={backButton.onClick}
           label={backButton.label}
-          icon={backButton.icon as React.ReactElement}
+          icon={backButton.icon as any}
         />
       )}
       <Text.Headline as="h1">Facet configuration</Text.Headline>
@@ -305,7 +306,7 @@ const FacetEditor: React.FC<Props> = ({
         {({ values, handleChange, setFieldValue }) => (
           <Form>
             <Card>
-              <Spacings.Stack scale="m">
+              <Spacings.Stack scale="m" alignItems="stretch">
                 <FormSection>
                   <FieldLabel title="Enable product type attributes (auto-generate facets)" />
                   <CheckboxInput
@@ -331,13 +332,13 @@ const FacetEditor: React.FC<Props> = ({
                       >
                         <Spacings.Stack scale="m" alignItems="flex-start">
                           <Text.Headline as="h2">Generic facets</Text.Headline>
-                          <Text.Body tone="secondary">
+                          <Text.Caption tone="secondary">
                             Facets shown on every product listing page.
-                          </Text.Body>
+                          </Text.Caption>
                         </Spacings.Stack>
-                        <SecondaryButton
+                        <IconButton
                           label="Add generic facet"
-                          iconLeft={<PlusBoldIcon />}
+                          icon={<PlusBoldIcon />}
                           onClick={() => push(emptyFacetEntry())}
                         />
                       </Spacings.Inline>
@@ -345,7 +346,7 @@ const FacetEditor: React.FC<Props> = ({
                       <Grid
                         gridGap="16px"
                         gridAutoColumns="1fr"
-                        gridTemplateColumns="repeat(3, 1fr)"
+                        gridTemplateColumns="repeat(auto-fill, minmax(300px, 1fr))"
                       >
                         {values.genericFacetEntries.map((facet, index) => (
                           <Grid.Item key={index}>
@@ -538,19 +539,19 @@ const FacetEditor: React.FC<Props> = ({
                       <Spacings.Inline
                         scale="m"
                         justifyContent="space-between"
-                        alignItems="center"
+                        alignItems="stretch"
                       >
                         <Spacings.Stack scale="m" alignItems="flex-start">
                           <Text.Headline as="h2">
                             Route-specific facets
                           </Text.Headline>
-                          <Text.Body tone="secondary">
+                          <Text.Caption tone="secondary">
                             Additional facets by route/category slug.
-                          </Text.Body>
+                          </Text.Caption>
                         </Spacings.Stack>
-                        <SecondaryButton
+                        <IconButton
                           label="Add route-specific facets"
-                          iconLeft={<PlusBoldIcon />}
+                          icon={<PlusBoldIcon />}
                           onClick={() =>
                             pushRoute({
                               routeSlug: '',
@@ -562,7 +563,7 @@ const FacetEditor: React.FC<Props> = ({
                       <Grid
                         gridGap="16px"
                         gridAutoColumns="1fr"
-                        gridTemplateColumns="repeat(3, 1fr)"
+                        gridTemplateColumns="repeat(auto-fill, minmax(300px, 1fr))"
                       >
                         {values.routeSpecificEntries.map(
                           (routeEntry, routeIndex) => (
@@ -574,8 +575,9 @@ const FacetEditor: React.FC<Props> = ({
                                   <Text.Subheadline as="h4">
                                     Route: {routeEntry.routeSlug || '(new)'}
                                   </Text.Subheadline>
-                                  <FlatButton
+                                  <IconButton
                                     icon={<BinLinearIcon />}
+                                    color="critical"
                                     label="Remove route"
                                     onClick={() => removeRoute(routeIndex)}
                                   />
@@ -635,15 +637,20 @@ const FacetEditor: React.FC<Props> = ({
                                                 <Text.Body fontWeight="bold">
                                                   Facet {facetIndex + 1}
                                                 </Text.Body>
-                                                <FlatButton
+                                                <IconButton
                                                   icon={<BinLinearIcon />}
+                                                  color="critical"
                                                   label="Remove"
                                                   onClick={() =>
                                                     removeFacet(facetIndex)
                                                   }
                                                 />
                                               </InlineRow>
-                                              <InlineRow>
+                                              <Grid
+                                                gridGap="16px"
+                                                gridAutoColumns="1fr"
+                                                gridTemplateColumns="repeat(auto-fill, minmax(300px, 1fr))"
+                                              >
                                                 <TextInput
                                                   name={`routeSpecificEntries.${routeIndex}.facets.${facetIndex}.label`}
                                                   value={facet.label}
@@ -675,7 +682,7 @@ const FacetEditor: React.FC<Props> = ({
                                                     placeholder="Field"
                                                   />
                                                 )}
-                                              </InlineRow>
+                                              </Grid>
                                             </Spacings.Stack>
                                           </FacetCard>
                                         )

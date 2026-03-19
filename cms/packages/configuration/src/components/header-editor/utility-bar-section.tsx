@@ -11,6 +11,8 @@ import {
   HeaderConfiguration,
   UtilityBarItem,
 } from '@commercetools-demo/contentools-types';
+import IconButton from '@commercetools-uikit/icon-button';
+import { BinLinearIcon } from '@commercetools-uikit/icons';
 
 export const UtilityBarSection: React.FC = () => {
   const { values, setFieldValue, handleBlur } =
@@ -30,7 +32,7 @@ export const UtilityBarSection: React.FC = () => {
 
   return (
     <Card>
-      <Spacings.Stack scale="m">
+      <Spacings.Stack scale="m" alignItems='flex-start'>
         <Text.Headline as="h2">Utility bar</Text.Headline>
         <Text.Body tone="secondary">
           Optional secondary bar above the main header.
@@ -73,10 +75,10 @@ export const UtilityBarSection: React.FC = () => {
                   onBlur={handleBlur}
                   placeholder="URL"
                 />
-                <FlatButton
+                <IconButton
                   label="Remove"
+                  icon={<BinLinearIcon />}
                   onClick={() => handleRemove(index)}
-                  tone="secondary"
                 />
               </Spacings.Inline>
             ))}
