@@ -23,7 +23,7 @@ export const DefaultVariantSection: React.FC = () => {
 
   return (
     <Card>
-      <Spacings.Stack scale="m">
+      <Spacings.Stack scale="m" alignItems='flex-start'>
         <Text.Headline as="h2">Default variant & route overrides</Text.Headline>
         <FieldLabel title="Default variant" htmlFor="defaultVariant" />
         <SelectInput

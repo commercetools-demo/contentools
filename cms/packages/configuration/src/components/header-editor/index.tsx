@@ -145,21 +145,21 @@ const HeaderEditor: React.FC<Props> = ({
             <Grid
               gridGap="16px"
               gridAutoColumns="1fr"
-              gridTemplateColumns="repeat(4, 1fr)"
+              gridTemplateColumns="repeat(auto-fill, minmax(300px, 1fr))"
             >
               <Grid.Item>
                 <DefaultVariantSection />
               </Grid.Item>
-              <Grid.Item gridColumn="span 2">
+              <Grid.Item>
                 <VariantVisibilitySection />
               </Grid.Item>
-              <Grid.Item gridColumn="span 1">
+              <Grid.Item>
                 <MainRowOrderSection />
               </Grid.Item>
-              <Grid.Item gridColumn="span 4">
+              <Grid.Item>
                 <NavigationSection />
               </Grid.Item>
-              <Grid.Item gridColumn="span 4">
+              <Grid.Item>
                 <UtilityBarSection />
               </Grid.Item>
               <Spacings.Inline>
