@@ -1,0 +1,23 @@
+{
+  "name": "@commercetools-demo/puck-workspace",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "puck-react-test"
+  ],
+  "packageManager": "yarn@4.5.1",
+  "scripts": {
+    "build": "yarn workspaces foreach --all --topological-dev run build",
+    "build:watch": "yarn workspaces foreach --all --parallel run build:watch",
+    "typecheck": "yarn workspaces foreach --all run typecheck",
+    "start:test": "yarn workspace puck-react-test dev",
+    "lint": "eslint \"packages/*/src/**/*.{ts,tsx}\""
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^8.18.0",
+    "@typescript-eslint/parser": "^8.18.0",
+    "eslint": "^8.57.1",
+    "prettier": "^3.4.2",
+    "typescript": "^5.7.2"
+  }
+}

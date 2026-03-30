@@ -14,6 +14,8 @@ import pagesRouter from './pages.route';
 import proxyRouter from './proxy.route';
 import pageContentItemStateRouter from './page-content-item-state.route';
 import authRouter from './auth.route';
+import puckPageRouter from './puck-page.route';
+import puckContentRouter from './puck-content.route';
 
 const serviceRouter = Router();
 
@@ -32,5 +34,7 @@ serviceRouter.use('/', pageStateRouter);
 serviceRouter.use('/', pageRowRouter);
 serviceRouter.use('/', pagesRouter);
 serviceRouter.use('/', authRouter);
+serviceRouter.use('/', puckPageRouter);
+serviceRouter.use('/', puckContentRouter);
 
 export default serviceRouter;
