@@ -8,6 +8,14 @@ import { Button } from '../components/Button';
 import { Card } from '../components/Card';
 import { Spacer } from '../components/Spacer';
 import { ProductTeaser } from '../components/ProductTeaser';
+import {
+  HeroBanner, TextBlock, CategoryGrid, CategoryHero,
+  CheckoutPromoBanner, CountdownBanner, CrossSellBlock, DeliveryMessage,
+  Divider, EmptyState, FAQAccordion, FooterBlock, ImageBlock,
+  NewsletterSignup, ProductBanner, ProductGridHeader, ProductSlider,
+  PromotionalBanner, RelatedProductsSlider, SocialLinks, TabContent,
+  TestimonialsSlider, ThankYouContent, TrustBadges, VideoBlock, WebsiteLogo,
+} from '../components/cms';
 
 /**
  * Default Puck configuration with built-in components.
@@ -31,6 +39,13 @@ export const defaultPuckConfig: Config = {
     Card,
     Spacer,
     ProductTeaser,
+    // CMS components
+    HeroBanner, TextBlock, CategoryGrid, CategoryHero,
+    CheckoutPromoBanner, CountdownBanner, CrossSellBlock, DeliveryMessage,
+    Divider, EmptyState, FAQAccordion, FooterBlock, ImageBlock,
+    NewsletterSignup, ProductBanner, ProductGridHeader, ProductSlider,
+    PromotionalBanner, RelatedProductsSlider, SocialLinks, TabContent,
+    TestimonialsSlider, ThankYouContent, TrustBadges, VideoBlock, WebsiteLogo,
   },
   root: {
     fields: {
