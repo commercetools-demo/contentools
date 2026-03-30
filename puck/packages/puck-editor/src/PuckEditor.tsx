@@ -6,6 +6,11 @@ import { usePuckPage } from '@commercetools-demo/puck-api';
 import type { PuckData } from '@commercetools-demo/puck-types';
 import { defaultPuckConfig } from './config/defaultPuckConfig';
 import { EditorToolbar } from './toolbar/EditorToolbar';
+import {
+  ComponentSearchProvider,
+  ComponentsPanel,
+  ComponentItemFilter,
+} from './overrides/ComponentListSearch';
 
 // ---------------------------------------------------------------------------
 // Inner component (uses context from PuckApiProvider)
@@ -119,24 +124,30 @@ const PuckEditorInner: React.FC<PuckEditorInnerProps> = ({
     };
 
   return (
-    <Puck
-      config={config}
-      data={activeData as Data}
-      onChange={handleChange}
-      onPublish={handlePublish}
-      overrides={{
-        headerActions: () => (
-          <EditorToolbar
-            saving={saving}
-            isDirty={isDirty}
-            states={states}
-            onPublish={() => void handlePublish(activeData as Data)}
-            onRevert={() => void handleRevert()}
-            showPublishButton={showPublishButton}
-          />
-        ),
-      }}
-    />
+    <ComponentSearchProvider>
+      <Puck
+        config={config}
+        data={activeData as Data}
+        onChange={handleChange}
+        onPublish={handlePublish}
+        overrides={{
+          headerActions: () => (
+            <EditorToolbar
+              saving={saving}
+              isDirty={isDirty}
+              states={states}
+              onPublish={() => void handlePublish(activeData as Data)}
+              onRevert={() => void handleRevert()}
+              showPublishButton={showPublishButton}
+            />
+          ),
+          components: ({ children }) => <ComponentsPanel>{children}</ComponentsPanel>,
+          componentItem: ({ children, name }) => (
+            <ComponentItemFilter name={name}>{children}</ComponentItemFilter>
+          ),
+        }}
+      />
+    </ComponentSearchProvider>
   );
 };
 

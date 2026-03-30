@@ -34,6 +34,9 @@ export type { ImagePickerFieldProps } from './fields/ImagePickerField';
 export { DatasourceField } from './fields/DatasourceField';
 export type { DatasourceFieldProps, DatasourceValue, DatasourceType } from './fields/DatasourceField';
 
+// CMS components
+export * from './components/cms';
+
 // Toolbar (in case consumers want to render it standalone)
 export { EditorToolbar } from './toolbar/EditorToolbar';
 export type { EditorToolbarProps } from './toolbar/EditorToolbar';
