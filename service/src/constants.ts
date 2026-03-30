@@ -3,7 +3,7 @@ dotenv.config();
 
 export const CORS_ALLOWED_ORIGINS =
   process.env.CORS_ALLOWED_ORIGINS ||
-  'localhost:5173,localhost:3000,localhost:3001,commercetools.com,frontend.site,ct-poc.net';
+  'localhost:5173,localhost:3000,localhost:3001,commercetools.com,frontend.site,ct-poc.net,localhost:5174';
 
 export const MAX_VERSIONS = parseInt(process.env.MAX_VERSIONS || '5', 10);
 
@@ -73,3 +73,21 @@ export const NUMBER_OF_COLUMNS = parseInt(
   process.env.NUMBER_OF_COLUMNS || '12',
   10
 );
+
+export const PUCK_PAGE_CONTAINER =
+  process.env.PUCK_PAGE_CONTAINER || 'puck-page';
+
+export const PUCK_PAGE_STATE_CONTAINER =
+  process.env.PUCK_PAGE_STATE_CONTAINER || 'puck-page-state';
+
+export const PUCK_PAGE_VERSION_CONTAINER =
+  process.env.PUCK_PAGE_VERSION_CONTAINER || 'puck-page-version';
+
+export const PUCK_CONTENT_CONTAINER =
+  process.env.PUCK_CONTENT_CONTAINER || 'puck-content';
+
+export const PUCK_CONTENT_STATE_CONTAINER =
+  process.env.PUCK_CONTENT_STATE_CONTAINER || 'puck-content-state';
+
+export const PUCK_CONTENT_VERSION_CONTAINER =
+  process.env.PUCK_CONTENT_VERSION_CONTAINER || 'puck-content-version';
