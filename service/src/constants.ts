@@ -46,8 +46,24 @@ export const CONFIGURATION_CONTENTOOLS_BASE_URL_KEY =
 export const CONFIGURATION_B2B_ACCOUNT_MENU_LINKS_KEY =
   process.env.CONFIGURATION_B2B_ACCOUNT_MENU_LINKS_KEY || 'b2b-account-menu-links';
 
-export const DATASOURCE_CONTAINER =
-  process.env.DATASOURCE_CONTAINER || 'datasource';
+export const DATASOURCES = [
+  {
+    key: 'product-by-sku',
+    value: {
+      name: 'Get Product by SKU',
+      key: 'product-by-sku',
+      params: [{ key: 'sku', type: 'string', required: true }],
+    },
+  },
+  {
+    key: 'products-by-sku',
+    value: {
+      name: 'Get Products by SKU',
+      key: 'products-by-sku',
+      params: [{ key: 'skus', type: 'string', required: true }],
+    },
+  },
+];
 
 export const SHARED_CONTAINER = 'shared-sellertools-container';
 export const CMS_DEPLOYED_URL_KEY = 'cms-app-deployed-url';

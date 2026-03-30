@@ -67,3 +67,8 @@ export type { UsePuckContentsReturn } from './hooks/usePuckContents';
 
 export { usePuckContent } from './hooks/usePuckContent';
 export type { UsePuckContentReturn } from './hooks/usePuckContent';
+
+// Datasource API & hook
+export { resolveDatasourceApi } from './api/datasource.api';
+export { useDatasource } from './hooks/useDatasource';
+export type { UseDatasourceReturn } from './hooks/useDatasource';

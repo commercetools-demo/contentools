@@ -14,6 +14,7 @@ export {
   Button,
   Card,
   Spacer,
+  ProductTeaser,
 } from './components';
 export type {
   HeroProps,
@@ -23,11 +24,15 @@ export type {
   ButtonProps,
   CardProps,
   SpacerProps,
+  ProductTeaserProps,
 } from './components';
 
 // Custom field components (reuse in your own component configs)
 export { ImagePickerField } from './fields/ImagePickerField';
 export type { ImagePickerFieldProps } from './fields/ImagePickerField';
+
+export { DatasourceField } from './fields/DatasourceField';
+export type { DatasourceFieldProps, DatasourceValue, DatasourceType } from './fields/DatasourceField';
 
 // Toolbar (in case consumers want to render it standalone)
 export { EditorToolbar } from './toolbar/EditorToolbar';

@@ -7,6 +7,7 @@ import { Image } from '../components/Image';
 import { Button } from '../components/Button';
 import { Card } from '../components/Card';
 import { Spacer } from '../components/Spacer';
+import { ProductTeaser } from '../components/ProductTeaser';
 
 /**
  * Default Puck configuration with built-in components.
@@ -29,6 +30,7 @@ export const defaultPuckConfig: Config = {
     Button,
     Card,
     Spacer,
+    ProductTeaser,
   },
   root: {
     fields: {

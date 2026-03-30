@@ -10,6 +10,7 @@ import { withDependencies as withContentStateDependencies } from './content-stat
 import { withDependencies as withContentVersionDependencies } from './content-version-controller';
 import { CustomObjectController } from './custom-object.controller';
 import { AuthenticatedRequest } from '../types/service.types';
+import { resolveDatasource } from './datasource-resolution.route';
 
 // ---------------------------------------------------------------------------
 // Domain types
@@ -91,10 +92,79 @@ const PuckPageVersionController =
   });
 
 // ---------------------------------------------------------------------------
-// Helper
+// Helpers
 // ---------------------------------------------------------------------------
 
 const now = (): string => new Date().toISOString();
+
+const isDatasourceValue = (
+  v: unknown
+): v is { type: string; skus: string[] } =>
+  typeof v === 'object' &&
+  v !== null &&
+  'type' in v &&
+  'skus' in v &&
+  Array.isArray((v as Record<string, unknown>).skus);
+
+const resolveComponentProps = async (
+  req: AuthenticatedRequest,
+  props: Record<string, unknown>
+): Promise<Record<string, unknown>> => {
+  const resolved: Record<string, unknown> = { ...props };
+  for (const [key, value] of Object.entries(props)) {
+    if (isDatasourceValue(value)) {
+      const skus = (value.skus as string[]).filter(Boolean);
+      if (skus.length === 0) continue;
+      const params =
+        value.type === 'product-by-sku'
+          ? { sku: skus[0] }
+          : { skus: skus.join(',') };
+      const data = await resolveDatasource(req, value.type, params);
+      resolved[key] = { ...value, resolvedData: data };
+    }
+  }
+  return resolved;
+};
+
+/**
+ * Walk all Puck components (content + zones) and resolve any datasource props
+ * in-place, injecting `resolvedData` alongside the original datasource config.
+ */
+const resolvePuckPageDatasources = async (
+  req: AuthenticatedRequest,
+  pageValue: PuckPageValue
+): Promise<PuckPageValue> => {
+  const resolveComponents = async (
+    components: PuckComponentData[]
+  ): Promise<PuckComponentData[]> =>
+    Promise.all(
+      components.map(async (component) => ({
+        ...component,
+        props: (await resolveComponentProps(
+          req,
+          component.props
+        )) as PuckComponentData['props'],
+      }))
+    );
+
+  const content = await resolveComponents(pageValue.puckData.content);
+
+  const zones: Record<string, PuckComponentData[]> = {};
+  if (pageValue.puckData.zones) {
+    for (const [zone, components] of Object.entries(pageValue.puckData.zones)) {
+      zones[zone] = await resolveComponents(components);
+    }
+  }
+
+  return {
+    ...pageValue,
+    puckData: {
+      ...pageValue.puckData,
+      content,
+      ...(pageValue.puckData.zones ? { zones } : {}),
+    },
+  };
+};
 
 // ---------------------------------------------------------------------------
 // Public controller functions
@@ -248,11 +318,14 @@ export const getPublishedPuckPage = async (
   businessUnitKey: string,
   key: string
 ): Promise<PuckPageValue | undefined> => {
-  return PuckPageStateController.getFirstContentWithState<PuckPageValue>(
-    req,
-    `key = "${key}" AND businessUnitKey = "${businessUnitKey}"`,
-    'published'
-  );
+  const pageValue =
+    await PuckPageStateController.getFirstContentWithState<PuckPageValue>(
+      req,
+      `key = "${key}" AND businessUnitKey = "${businessUnitKey}"`,
+      'published'
+    );
+  if (!pageValue) return undefined;
+  return resolvePuckPageDatasources(req, pageValue);
 };
 
 export const getPreviewPuckPage = async (
@@ -260,11 +333,14 @@ export const getPreviewPuckPage = async (
   businessUnitKey: string,
   key: string
 ): Promise<PuckPageValue | undefined> => {
-  return PuckPageStateController.getFirstContentWithState<PuckPageValue>(
-    req,
-    `key = "${key}" AND businessUnitKey = "${businessUnitKey}"`,
-    ['draft', 'published']
-  );
+  const pageValue =
+    await PuckPageStateController.getFirstContentWithState<PuckPageValue>(
+      req,
+      `key = "${key}" AND businessUnitKey = "${businessUnitKey}"`,
+      ['draft', 'published']
+    );
+  if (!pageValue) return undefined;
+  return resolvePuckPageDatasources(req, pageValue);
 };
 
 export const queryPuckPage = async (
@@ -281,11 +357,14 @@ export const queryPuckPage = async (
 
   if (pages.length === 0) return undefined;
 
-  return PuckPageStateController.getFirstContentWithState<PuckPageValue>(
-    req,
-    `key = "${pages[0].key}" AND businessUnitKey = "${businessUnitKey}"`,
-    state
-  );
+  const pageValue =
+    await PuckPageStateController.getFirstContentWithState<PuckPageValue>(
+      req,
+      `key = "${pages[0].key}" AND businessUnitKey = "${businessUnitKey}"`,
+      state
+    );
+  if (!pageValue) return undefined;
+  return resolvePuckPageDatasources(req, pageValue);
 };
 
 export const getPuckPageVersions = async (
