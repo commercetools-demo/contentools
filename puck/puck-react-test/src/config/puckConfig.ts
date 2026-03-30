@@ -7,6 +7,7 @@ import {
   Button,
   Card,
   Spacer,
+  ProductTeaser,
 } from '@commercetools-demo/puck-editor';
 import type { PuckConfig } from '@commercetools-demo/puck-types';
 
@@ -28,6 +29,6 @@ export const puckConfig: PuckConfig = {
     Button,
     Card,
     Spacer,
-    // Add custom components here
+    ProductTeaser,
   },
 };

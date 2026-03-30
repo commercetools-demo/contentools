@@ -18,3 +18,6 @@ export type { CardProps } from './Card';
 
 export { Spacer } from './Spacer';
 export type { SpacerProps } from './Spacer';
+
+export { ProductTeaser } from './ProductTeaser';
+export type { ProductTeaserProps } from './ProductTeaser';
