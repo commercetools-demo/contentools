@@ -63,13 +63,16 @@ const StatusBadge: React.FC<{ variant: 'draft' | 'published' | 'none' }> = ({ va
 // ---------------------------------------------------------------------------
 
 const NAV_BAR_STYLE: React.CSSProperties = {
+  position: 'sticky',
+  top: 0,
   display: 'flex',
   alignItems: 'center',
   gap: '12px',
   padding: '8px 16px',
   background: 'var(--color-surface, #fff)',
   borderBottom: '1px solid var(--color-neutral-90)',
-  zIndex: 10,
+  zIndex: 200,
+  flexShrink: 0,
 };
 
 // ---------------------------------------------------------------------------
