@@ -310,18 +310,20 @@ const App: React.FC = () => {
   };
 
   return (
-    <>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden' }}>
       <TabNav activeTab={activeTab} onChange={handleTabChange} />
-      {activeTab === 'pages' && <PageManager {...sharedProps} parentUrl="/" />}
-      {activeTab === 'contents' && <ContentManagerRouter {...sharedProps} parentUrl="/" />}
-      {activeTab === 'renderer' && (
-        <RendererPanel
-          baseURL={BASE_URL}
-          projectKey={PROJECT_KEY}
-          businessUnitKey={BUSINESS_UNIT_KEY}
-        />
-      )}
-    </>
+      <div style={{ flex: 1, overflow: 'hidden', minHeight: 0 }}>
+        {activeTab === 'pages' && <PageManager {...sharedProps} parentUrl="/" />}
+        {activeTab === 'contents' && <ContentManagerRouter {...sharedProps} parentUrl="/" />}
+        {activeTab === 'renderer' && (
+          <RendererPanel
+            baseURL={BASE_URL}
+            projectKey={PROJECT_KEY}
+            businessUnitKey={BUSINESS_UNIT_KEY}
+          />
+        )}
+      </div>
+    </div>
   );
 };
 

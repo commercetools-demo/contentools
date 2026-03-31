@@ -28,7 +28,7 @@
     "@commercetools-demo/puck-types": "workspace:^"
   },
   "peerDependencies": {
-    "react": ">=18.0.0"
+    "react": ">=19.0.0"
   },
   "devDependencies": {
     "@types/react": "^18",
