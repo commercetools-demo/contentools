@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { Puck, type Config, type Data } from '@measured/puck';
 import '@measured/puck/puck.css';
 import { PuckApiProvider, usePuckContent } from '@commercetools-demo/puck-api';
@@ -17,6 +17,7 @@ interface ContentToolbarProps {
   saving: boolean;
   isDirty: boolean;
   states: PuckContentStateInfo;
+  onSave: () => void;
   onPublish: () => void;
   onRevert: () => void;
 }
@@ -58,6 +59,7 @@ const ContentToolbar: React.FC<ContentToolbarProps> = ({
   saving,
   isDirty,
   states,
+  onSave,
   onPublish,
   onRevert,
 }) => {
@@ -94,6 +96,24 @@ const ContentToolbar: React.FC<ContentToolbarProps> = ({
           Revert to Published
         </button>
       )}
+
+      <button
+        onClick={onSave}
+        disabled={!isDirty || saving}
+        style={{
+          padding: '6px 14px',
+          borderRadius: '4px',
+          border: '1px solid var(--border-glow)',
+          background: 'transparent',
+          color: 'var(--text-muted)',
+          fontWeight: 500,
+          fontSize: '13px',
+          cursor: (!isDirty || saving) ? 'not-allowed' : 'pointer',
+          opacity: (!isDirty || saving) ? 0.4 : 1,
+        }}
+      >
+        Save
+      </button>
 
       <button
         onClick={onPublish}
@@ -142,25 +162,36 @@ const ContentEditorInner: React.FC<ContentEditorInnerProps> = ({
     saving,
     loading,
     error,
-    isDirty,
     saveDraft,
     publish,
     revertToPublished,
   } = usePuckContent(contentKey);
 
-  const handleChange = useCallback(
-    (data: Data) => {
-      saveDraft(data as PuckData)
-        .then(() => onSave?.(data as PuckData))
-        .catch((err: Error) => onError?.(err));
-    },
-    [saveDraft, onSave, onError]
-  );
+  const latestDataRef = useRef<Data | null>(null);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+
+  const handleChange = useCallback((data: Data) => {
+    latestDataRef.current = data;
+    setHasUnsavedChanges(true);
+  }, []);
+
+  const handleSave = useCallback(async () => {
+    const data = latestDataRef.current;
+    if (!data) return;
+    try {
+      await saveDraft(data as PuckData);
+      setHasUnsavedChanges(false);
+      onSave?.(data as PuckData);
+    } catch (err) {
+      onError?.(err as Error);
+    }
+  }, [saveDraft, onSave, onError]);
 
   const handlePublish = useCallback(
     async (data: Data) => {
       try {
         await saveDraft(data as PuckData);
+        setHasUnsavedChanges(false);
         await publish(false);
         onPublish?.(data as PuckData);
       } catch (err) {
@@ -173,6 +204,7 @@ const ContentEditorInner: React.FC<ContentEditorInnerProps> = ({
   const handleRevert = useCallback(async () => {
     try {
       await revertToPublished();
+      setHasUnsavedChanges(false);
     } catch (err) {
       onError?.(err as Error);
     }
@@ -257,8 +289,9 @@ const ContentEditorInner: React.FC<ContentEditorInnerProps> = ({
           headerActions: () => (
             <ContentToolbar
               saving={saving}
-              isDirty={isDirty}
+              isDirty={hasUnsavedChanges}
               states={states}
+              onSave={() => void handleSave()}
               onPublish={() => void handlePublish(activeData as Data)}
               onRevert={() => void handleRevert()}
             />

@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo, type ReactNode } from 'react';
+import React, { useState, useCallback, useMemo, useRef, type ReactNode } from 'react';
 import {
   BrowserRouter,
   Routes,
@@ -105,11 +105,12 @@ interface ContentToolbarProps {
   saving: boolean;
   isDirty: boolean;
   states: PuckContentStateInfo;
+  onSave: () => void;
   onPublish: () => void;
   onRevert: () => void;
 }
 
-const ContentToolbar: React.FC<ContentToolbarProps> = ({ saving, isDirty, states, onPublish, onRevert }) => {
+const ContentToolbar: React.FC<ContentToolbarProps> = ({ saving, isDirty, states, onSave, onPublish, onRevert }) => {
   const hasDraft = Boolean(states.draft);
   const hasPublished = Boolean(states.published);
   return (
@@ -139,6 +140,23 @@ const ContentToolbar: React.FC<ContentToolbarProps> = ({ saving, isDirty, states
           Revert to Published
         </button>
       )}
+      <button
+        onClick={onSave}
+        disabled={!isDirty || saving}
+        style={{
+          padding: '6px 14px',
+          borderRadius: '4px',
+          border: '1px solid var(--border-glow)',
+          background: 'transparent',
+          color: 'var(--text-muted)',
+          fontWeight: 500,
+          fontSize: '13px',
+          cursor: (!isDirty || saving) ? 'not-allowed' : 'pointer',
+          opacity: (!isDirty || saving) ? 0.4 : 1,
+        }}
+      >
+        Save
+      </button>
       <button
         onClick={onPublish}
         disabled={saving}
@@ -424,25 +442,35 @@ const ContentEditorRoute: React.FC<ContentEditorRouteProps> = ({ config, backBut
     saving,
     loading,
     error,
-    isDirty,
     saveDraft,
     publish,
     revertToPublished,
   } = usePuckContent(contentKey!);
 
-  const handleChange = useCallback(
-    (data: Data) => {
-      saveDraft(data as PuckData).catch((err: Error) => {
-        console.error('[ContentManagerRouter] save error:', err);
-      });
-    },
-    [saveDraft]
-  );
+  const latestDataRef = useRef<Data | null>(null);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+
+  const handleChange = useCallback((data: Data) => {
+    latestDataRef.current = data;
+    setHasUnsavedChanges(true);
+  }, []);
+
+  const handleSave = useCallback(async () => {
+    const data = latestDataRef.current;
+    if (!data) return;
+    try {
+      await saveDraft(data as PuckData);
+      setHasUnsavedChanges(false);
+    } catch (err) {
+      console.error('[ContentManagerRouter] save error:', err);
+    }
+  }, [saveDraft]);
 
   const handlePublish = useCallback(
     async (data: Data) => {
       try {
         await saveDraft(data as PuckData);
+        setHasUnsavedChanges(false);
         await publish(false);
       } catch (err) {
         console.error('[ContentManagerRouter] publish error:', err);
@@ -454,6 +482,7 @@ const ContentEditorRoute: React.FC<ContentEditorRouteProps> = ({ config, backBut
   const handleRevert = useCallback(async () => {
     try {
       await revertToPublished();
+      setHasUnsavedChanges(false);
     } catch (err) {
       console.error('[ContentManagerRouter] revert error:', err);
     }
@@ -549,8 +578,9 @@ const ContentEditorRoute: React.FC<ContentEditorRouteProps> = ({ config, backBut
               headerActions: () => (
                 <ContentToolbar
                   saving={saving}
-                  isDirty={isDirty}
+                  isDirty={hasUnsavedChanges}
                   states={states}
+                  onSave={() => void handleSave()}
                   onPublish={() => void handlePublish(activeData as Data)}
                   onRevert={() => void handleRevert()}
                 />
