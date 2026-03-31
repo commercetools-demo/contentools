@@ -1,8 +1,13 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { Puck, type Config, type Data } from '@measured/puck';
 import '@measured/puck/puck.css';
 import { PuckApiProvider, usePuckContent } from '@commercetools-demo/puck-api';
 import type { PuckContentStateInfo, PuckData } from '@commercetools-demo/puck-types';
+import {
+  ComponentSearchProvider,
+  ComponentsPanel,
+  ComponentItemFilter,
+} from '@commercetools-demo/puck-editor';
 
 // ---------------------------------------------------------------------------
 // Inline toolbar — mirrors EditorToolbar but uses PuckContentStateInfo
@@ -173,6 +178,31 @@ const ContentEditorInner: React.FC<ContentEditorInnerProps> = ({
     }
   }, [revertToPublished, onError]);
 
+
+  // Override root fields with content-specific labels and add slot field.
+  // Stored in content.data.root.props (title, slot, backgroundColor, etc.).
+  const contentConfig = useMemo((): Config => {
+    const otherRootFields = Object.fromEntries(
+      Object.entries(config.root?.fields ?? {}).filter(([k]) => k !== 'title')
+    );
+    return {
+      ...config,
+      root: {
+        ...config.root,
+        fields: {
+          title: { type: 'text', label: 'Content Title' },
+          slot: { type: 'text', label: 'Slot' },
+          ...otherRootFields,
+        },
+        defaultProps: {
+          title: 'New Content',
+          slot: '',
+          ...config.root?.defaultProps,
+        },
+      },
+    };
+  }, [config]);
+
   if (loading) {
     return (
       <div
@@ -215,24 +245,31 @@ const ContentEditorInner: React.FC<ContentEditorInnerProps> = ({
       root: { props: {} },
     };
 
+
   return (
-    <Puck
-      config={config}
-      data={activeData as Data}
-      onChange={handleChange}
-      onPublish={handlePublish}
-      overrides={{
-        headerActions: () => (
-          <ContentToolbar
-            saving={saving}
-            isDirty={isDirty}
-            states={states}
-            onPublish={() => void handlePublish(activeData as Data)}
-            onRevert={() => void handleRevert()}
-          />
-        ),
-      }}
-    />
+    <ComponentSearchProvider>
+      <Puck
+        config={contentConfig}
+        data={activeData as Data}
+        onChange={handleChange}
+        onPublish={handlePublish}
+        overrides={{
+          headerActions: () => (
+            <ContentToolbar
+              saving={saving}
+              isDirty={isDirty}
+              states={states}
+              onPublish={() => void handlePublish(activeData as Data)}
+              onRevert={() => void handleRevert()}
+            />
+          ),
+          components: ({ children }) => <ComponentsPanel>{children}</ComponentsPanel>,
+          componentItem: ({ children, name }) => (
+            <ComponentItemFilter name={name}>{children}</ComponentItemFilter>
+          ),
+        }}
+      />
+    </ComponentSearchProvider>
   );
 };
 

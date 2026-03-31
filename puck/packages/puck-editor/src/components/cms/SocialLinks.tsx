@@ -33,7 +33,7 @@ export const SocialLinks: ComponentConfig<SocialLinksProps> = {
       [props.link3Label, props.link3Url],
       [props.link4Label, props.link4Url],
     ].filter(([label, url]) => label && url) as [string, string][];
-    if (links.length === 0) return null;
+    if (links.length === 0) return <></>;
     return (
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', padding: '0.5rem 0' }}>
         {links.map(([label, url], i) => (

@@ -255,6 +255,7 @@ __metadata:
   resolution: "@commercetools-demo/puck-content-manager@workspace:packages/puck-content-manager"
   dependencies:
     "@commercetools-demo/puck-api": "workspace:^"
+    "@commercetools-demo/puck-editor": "workspace:^"
     "@commercetools-demo/puck-types": "workspace:^"
     "@commercetools-uikit/card": "npm:^20.5.0"
     "@commercetools-uikit/data-table": "npm:^20.5.0"
@@ -287,7 +288,7 @@ __metadata:
   languageName: node
   linkType: soft
 
-"@commercetools-demo/puck-editor@workspace:packages/puck-editor":
+"@commercetools-demo/puck-editor@workspace:^, @commercetools-demo/puck-editor@workspace:packages/puck-editor":
   version: 0.0.0-use.local
   resolution: "@commercetools-demo/puck-editor@workspace:packages/puck-editor"
   dependencies:
@@ -304,13 +305,51 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@commercetools-demo/puck-page-manager@link:../packages/puck-page-manager::locator=puck-react-test%40workspace%3Apuck-react-test":
+  version: 0.0.0-use.local
+  resolution: "@commercetools-demo/puck-page-manager@link:../packages/puck-page-manager::locator=puck-react-test%40workspace%3Apuck-react-test"
+  languageName: node
+  linkType: soft
+
+"@commercetools-demo/puck-page-manager@workspace:packages/puck-page-manager":
+  version: 0.0.0-use.local
+  resolution: "@commercetools-demo/puck-page-manager@workspace:packages/puck-page-manager"
+  dependencies:
+    "@commercetools-demo/puck-api": "workspace:^"
+    "@commercetools-demo/puck-editor": "workspace:^"
+    "@commercetools-demo/puck-renderer": "workspace:^"
+    "@commercetools-demo/puck-types": "workspace:^"
+    "@commercetools-uikit/card": "npm:^20.5.0"
+    "@commercetools-uikit/data-table": "npm:^20.5.0"
+    "@commercetools-uikit/flat-button": "npm:^20.5.0"
+    "@commercetools-uikit/icons": "npm:^20.5.0"
+    "@commercetools-uikit/label": "npm:^20.5.0"
+    "@commercetools-uikit/loading-spinner": "npm:^20.5.0"
+    "@commercetools-uikit/primary-button": "npm:^20.5.0"
+    "@commercetools-uikit/secondary-button": "npm:^20.5.0"
+    "@commercetools-uikit/spacings": "npm:^20.5.0"
+    "@commercetools-uikit/text": "npm:^20.5.0"
+    "@commercetools-uikit/text-input": "npm:^20.5.0"
+    "@measured/puck": "npm:^0.18.2"
+    "@types/react": "npm:^18"
+    "@types/react-dom": "npm:^18"
+    tsup: "npm:^8.3.0"
+    typescript: "npm:^5.7.2"
+  peerDependencies:
+    react: ">=18.0.0"
+    react-dom: ">=18.0.0"
+    react-intl: ">=6.0.0"
+    react-router-dom: ">=6.0.0"
+  languageName: unknown
+  linkType: soft
+
 "@commercetools-demo/puck-renderer@link:../packages/puck-renderer::locator=puck-react-test%40workspace%3Apuck-react-test":
   version: 0.0.0-use.local
   resolution: "@commercetools-demo/puck-renderer@link:../packages/puck-renderer::locator=puck-react-test%40workspace%3Apuck-react-test"
   languageName: node
   linkType: soft
 
-"@commercetools-demo/puck-renderer@workspace:packages/puck-renderer":
+"@commercetools-demo/puck-renderer@workspace:^, @commercetools-demo/puck-renderer@workspace:packages/puck-renderer":
   version: 0.0.0-use.local
   resolution: "@commercetools-demo/puck-renderer@workspace:packages/puck-renderer"
   dependencies:
@@ -4352,6 +4391,7 @@ __metadata:
     "@commercetools-demo/puck-api": "link:../packages/puck-api"
     "@commercetools-demo/puck-content-manager": "link:../packages/puck-content-manager"
     "@commercetools-demo/puck-editor": "link:../packages/puck-editor"
+    "@commercetools-demo/puck-page-manager": "link:../packages/puck-page-manager"
     "@commercetools-demo/puck-renderer": "link:../packages/puck-renderer"
     "@commercetools-demo/puck-types": "link:../packages/puck-types"
     "@commercetools-uikit/card": "npm:^20.5.0"

@@ -14,7 +14,7 @@ export const TabContent: ComponentConfig<TabContentProps> = {
   },
   defaultProps: { tabLabel: '', content: '' },
   render: ({ tabLabel, content }) => {
-    if (!content) return null;
+    if (!content) return <></>;
     return (
       <div style={{ padding: '1.5rem 0', lineHeight: 1.6, color: '#333' }}>
         {tabLabel && <h3 style={{ marginBottom: '1rem' }}>{tabLabel}</h3>}

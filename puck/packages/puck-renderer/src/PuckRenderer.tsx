@@ -4,8 +4,11 @@ import {
   getPublishedPuckPageApi,
   getPreviewPuckPageApi,
   queryPuckPageApi,
+  getPublishedPuckContentApi,
+  getPreviewPuckContentApi,
+  queryPuckContentApi,
 } from '@commercetools-demo/puck-api';
-import type { PuckConfig, PuckData, PuckPageValue } from '@commercetools-demo/puck-types';
+import type { PuckConfig, PuckData } from '@commercetools-demo/puck-types';
 import { PuckDataRenderer } from './PuckDataRenderer';
 
 // ---------------------------------------------------------------------------
@@ -13,8 +16,11 @@ import { PuckDataRenderer } from './PuckDataRenderer';
 // ---------------------------------------------------------------------------
 
 interface PuckRendererInnerProps {
+  type: 'page' | 'content';
   pageKey?: string;
   slug?: string;
+  contentKey?: string;
+  query?: string;
   mode: 'published' | 'preview';
   config: PuckConfig;
   loadingComponent?: ReactElement;
@@ -24,8 +30,11 @@ interface PuckRendererInnerProps {
 }
 
 const PuckRendererInner: React.FC<PuckRendererInnerProps> = ({
+  type,
   pageKey,
   slug,
+  contentKey,
+  query,
   mode,
   config,
   loadingComponent,
@@ -47,28 +56,46 @@ const PuckRendererInner: React.FC<PuckRendererInnerProps> = ({
       setError(null);
 
       try {
-        let pageValue: PuckPageValue | null = null;
+        if (type === 'content') {
+          let puckData: PuckData | null = null;
 
-        if (pageKey) {
-          pageValue =
-            mode === 'published'
-              ? await getPublishedPuckPageApi(baseURL, projectKey, businessUnitKey, pageKey)
-              : await getPreviewPuckPageApi(baseURL, projectKey, businessUnitKey, pageKey);
-        } else if (slug) {
-          pageValue = await queryPuckPageApi(
-            baseURL,
-            projectKey,
-            businessUnitKey,
-            slug,
-            mode
-          );
-        }
+          if (contentKey) {
+            const value =
+              mode === 'published'
+                ? await getPublishedPuckContentApi(baseURL, projectKey, businessUnitKey, contentKey)
+                : await getPreviewPuckContentApi(baseURL, projectKey, businessUnitKey, contentKey);
+            puckData = value.data;
+          } else if (query) {
+            const value = await queryPuckContentApi(baseURL, projectKey, businessUnitKey, query, mode);
+            puckData = value?.data ?? null;
+          }
 
-        if (!cancelled) {
-          if (pageValue) {
-            setData(pageValue.puckData);
-          } else {
-            setError('Page not found');
+          if (!cancelled) {
+            if (puckData) {
+              setData(puckData);
+            } else {
+              setError('Content not found');
+            }
+          }
+        } else {
+          // type === 'page'
+          let pageValue = null;
+
+          if (pageKey) {
+            pageValue =
+              mode === 'published'
+                ? await getPublishedPuckPageApi(baseURL, projectKey, businessUnitKey, pageKey)
+                : await getPreviewPuckPageApi(baseURL, projectKey, businessUnitKey, pageKey);
+          } else if (slug) {
+            pageValue = await queryPuckPageApi(baseURL, projectKey, businessUnitKey, slug, mode);
+          }
+
+          if (!cancelled) {
+            if (pageValue) {
+              setData(pageValue.puckData);
+            } else {
+              setError('Page not found');
+            }
           }
         }
       } catch (err) {
@@ -82,7 +109,7 @@ const PuckRendererInner: React.FC<PuckRendererInnerProps> = ({
     return () => {
       cancelled = true;
     };
-  }, [baseURL, projectKey, businessUnitKey, pageKey, slug, mode]);
+  }, [baseURL, projectKey, businessUnitKey, type, pageKey, slug, contentKey, query, mode]);
 
   if (loading) {
     return (
@@ -113,7 +140,7 @@ const PuckRendererInner: React.FC<PuckRendererInnerProps> = ({
             borderRadius: '8px',
           }}
         >
-          {error ?? 'Failed to load page'}
+          {error ?? 'Failed to load'}
         </div>
       )
     );
@@ -128,6 +155,13 @@ const PuckRendererInner: React.FC<PuckRendererInnerProps> = ({
 
 export interface PuckRendererProps {
   /**
+   * Whether to render a page or a content item. Defaults to 'page'.
+   * - 'page': use pageKey or slug to fetch
+   * - 'content': use contentKey or query (contentType) to fetch
+   */
+  type?: 'page' | 'content';
+
+  /**
    * Service base URL. Can be omitted if a PuckApiProvider is already in the tree.
    */
   baseURL?: string;
@@ -136,17 +170,21 @@ export interface PuckRendererProps {
   /** Business unit key. Can be omitted if provider is in tree. */
   businessUnitKey?: string;
 
-  /** Fetch by page key. */
+  /** [type=page] Fetch by page key. */
   pageKey?: string;
-  /** OR fetch by slug (URL path). */
+  /** [type=page] OR fetch by slug (URL path). */
   slug?: string;
+
+  /** [type=content] Fetch by content key. */
+  contentKey?: string;
+  /** [type=content] OR fetch by contentType query string. */
+  query?: string;
 
   /** 'published' (default) or 'preview' (draft || published). */
   mode?: 'published' | 'preview';
 
   /**
    * Puck config — must match the config used in the editor.
-   * Import defaultPuckConfig from @commercetools-demo/puck-editor and pass here.
    */
   config: PuckConfig;
 
@@ -159,19 +197,15 @@ export interface PuckRendererProps {
   style?: React.CSSProperties;
 }
 
-/**
- * Fetches a puck page from the API and renders it using Puck's Render component.
- *
- * Can be used with or without an external PuckApiProvider:
- * - With provider: omit baseURL/projectKey/businessUnitKey
- * - Without provider: provide all three props
- */
 export const PuckRenderer: React.FC<PuckRendererProps> = ({
+  type = 'page',
   baseURL,
   projectKey,
   businessUnitKey,
   pageKey,
   slug,
+  contentKey,
+  query,
   mode = 'published',
   config,
   loadingComponent,
@@ -181,8 +215,11 @@ export const PuckRenderer: React.FC<PuckRendererProps> = ({
 }) => {
   const inner = (
     <PuckRendererInner
+      type={type}
       pageKey={pageKey}
       slug={slug}
+      contentKey={contentKey}
+      query={query}
       mode={mode}
       config={config}
       loadingComponent={loadingComponent}
@@ -192,8 +229,6 @@ export const PuckRenderer: React.FC<PuckRendererProps> = ({
     />
   );
 
-  // If all connection props are provided, wrap in a provider.
-  // Otherwise assume a provider is already in the tree.
   if (baseURL && projectKey && businessUnitKey) {
     return (
       <PuckApiProvider
