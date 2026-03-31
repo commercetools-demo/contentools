@@ -18,7 +18,7 @@ export const CheckoutPromoBanner: ComponentConfig<CheckoutPromoBannerProps> = {
   },
   defaultProps: { title: '', message: '', ctaText: '', ctaLink: '' },
   render: ({ title, message, ctaText, ctaLink }) => {
-    if (!title && !message && !ctaText) return null;
+    if (!title && !message && !ctaText) return <></>;
     return (
       <div
         style={{

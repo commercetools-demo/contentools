@@ -1,7 +1,7 @@
 {
-  "name": "@commercetools-demo/puck-content-manager",
+  "name": "@commercetools-demo/puck-page-manager",
   "version": "0.1.0",
-  "description": "UI components for managing standalone Puck content items",
+  "description": "Router-aware page manager UI (list, editor, preview) for the Puck CMS integration",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
@@ -27,10 +27,10 @@
   "dependencies": {
     "@commercetools-demo/puck-api": "workspace:^",
     "@commercetools-demo/puck-editor": "workspace:^",
+    "@commercetools-demo/puck-renderer": "workspace:^",
     "@commercetools-demo/puck-types": "workspace:^",
     "@commercetools-uikit/card": "^20.5.0",
     "@commercetools-uikit/data-table": "^20.5.0",
-    "@commercetools-uikit/design-system": "^20.5.0",
     "@commercetools-uikit/flat-button": "^20.5.0",
     "@commercetools-uikit/icons": "^20.5.0",
     "@commercetools-uikit/label": "^20.5.0",
@@ -40,7 +40,7 @@
     "@commercetools-uikit/spacings": "^20.5.0",
     "@commercetools-uikit/text": "^20.5.0",
     "@commercetools-uikit/text-input": "^20.5.0",
-    "@measured/puck": "0.18.2"
+    "@measured/puck": "^0.18.2"
   },
   "peerDependencies": {
     "react": ">=18.0.0",

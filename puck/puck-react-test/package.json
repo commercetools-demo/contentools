@@ -12,6 +12,7 @@
     "@commercetools-demo/puck-api": "link:../packages/puck-api",
     "@commercetools-demo/puck-content-manager": "link:../packages/puck-content-manager",
     "@commercetools-demo/puck-editor": "link:../packages/puck-editor",
+    "@commercetools-demo/puck-page-manager": "link:../packages/puck-page-manager",
     "@commercetools-demo/puck-renderer": "link:../packages/puck-renderer",
     "@commercetools-demo/puck-types": "link:../packages/puck-types",
     "@commercetools-uikit/card": "^20.5.0",

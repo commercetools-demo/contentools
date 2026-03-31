@@ -12,7 +12,7 @@ export const TextBlock: ComponentConfig<TextBlockProps> = {
   },
   defaultProps: { content: '' },
   render: ({ content }) => {
-    if (!content) return null;
+    if (!content) return <></>;
     return (
       <div
         dangerouslySetInnerHTML={{ __html: content }}

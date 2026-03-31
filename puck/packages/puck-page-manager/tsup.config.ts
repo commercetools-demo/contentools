@@ -14,6 +14,6 @@ export default defineConfig({
     '@commercetools-demo/puck-types',
     '@commercetools-demo/puck-api',
     '@commercetools-demo/puck-editor',
+    '@commercetools-demo/puck-renderer',
   ],
-  // @measured/puck is bundled (not external) — same pattern as puck-editor
 });

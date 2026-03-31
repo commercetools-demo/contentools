@@ -40,3 +40,10 @@ export * from './components/cms';
 // Toolbar (in case consumers want to render it standalone)
 export { EditorToolbar } from './toolbar/EditorToolbar';
 export type { EditorToolbarProps } from './toolbar/EditorToolbar';
+
+// Puck overrides — component search panel and filter (reusable in any Puck editor)
+export {
+  ComponentSearchProvider,
+  ComponentsPanel,
+  ComponentItemFilter,
+} from './overrides/ComponentListSearch';

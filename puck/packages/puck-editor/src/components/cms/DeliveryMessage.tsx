@@ -14,7 +14,7 @@ export const DeliveryMessage: ComponentConfig<DeliveryMessageProps> = {
   },
   defaultProps: { message: 'Free delivery on orders over $50', threshold: '' },
   render: ({ message, threshold }) => {
-    if (!message) return null;
+    if (!message) return <></>;
     const text = threshold
       ? message.replace(/\$\d+/g, `$${threshold}`)
       : message;

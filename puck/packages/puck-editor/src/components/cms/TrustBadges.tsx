@@ -42,7 +42,7 @@ export const TrustBadges: ComponentConfig<TrustBadgesProps> = {
       [props.badge3Icon, props.badge3Label],
       [props.badge4Icon, props.badge4Label],
     ].filter(([, label]) => label) as [string, string][];
-    if (badges.length === 0) return null;
+    if (badges.length === 0) return <></>;
     return (
       <div
         style={{

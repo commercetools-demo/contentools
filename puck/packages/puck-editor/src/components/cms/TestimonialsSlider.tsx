@@ -31,7 +31,7 @@ export const TestimonialsSlider: ComponentConfig<TestimonialsSliderProps> = {
       [props.quote2, props.author2, props.role2],
       [props.quote3, props.author3, props.role3],
     ].filter(([q]) => q) as [string, string, string][];
-    if (items.length === 0) return null;
+    if (items.length === 0) return <></>;
     return (
       <div style={{ padding: '2rem 1rem', background: '#f9f9f9', borderRadius: '8px', margin: '1rem 0' }}>
         {items.map(([quote, author, role], i) => (
