@@ -41,6 +41,7 @@ export interface EditorToolbarProps {
   saving: boolean;
   isDirty: boolean;
   states: PuckStateInfo;
+  onSave: () => void;
   onPublish: () => void;
   onRevert: () => void;
   showPublishButton: boolean;
@@ -50,6 +51,7 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
   saving,
   isDirty,
   states,
+  onSave,
   onPublish,
   onRevert,
   showPublishButton,
@@ -96,6 +98,25 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
           Revert to Published
         </button>
       )}
+
+      {/* Save draft button */}
+      <button
+        onClick={onSave}
+        disabled={!isDirty || saving}
+        style={{
+          padding: '6px 14px',
+          borderRadius: '4px',
+          border: '1px solid var(--border-glow)',
+          background: 'transparent',
+          color: 'var(--text-muted)',
+          fontWeight: 500,
+          fontSize: '13px',
+          cursor: (!isDirty || saving) ? 'not-allowed' : 'pointer',
+          opacity: (!isDirty || saving) ? 0.4 : 1,
+        }}
+      >
+        Save
+      </button>
 
       {/* Publish button */}
       {showPublishButton && (

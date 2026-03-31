@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { Puck, type Config, type Data } from '@measured/puck';
 import '@measured/puck/puck.css';
 import { PuckApiProvider } from '@commercetools-demo/puck-api';
@@ -41,28 +41,36 @@ const PuckEditorInner: React.FC<PuckEditorInnerProps> = ({
     saving,
     loading,
     error,
-    isDirty,
     saveDraft,
     publish,
     revertToPublished,
   } = usePuckPage(pageKey);
 
-  const handleChange = useCallback(
-    (data: Data) => {
-      saveDraft(data as PuckData).then(() => {
-        onSave?.(data as PuckData);
-      }).catch((err: Error) => {
-        onError?.(err);
-      });
-    },
-    [saveDraft, onSave, onError]
-  );
+  const latestDataRef = useRef<Data | null>(null);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+
+  const handleChange = useCallback((data: Data) => {
+    latestDataRef.current = data;
+    setHasUnsavedChanges(true);
+  }, []);
+
+  const handleSave = useCallback(async () => {
+    const data = latestDataRef.current;
+    if (!data) return;
+    try {
+      await saveDraft(data as PuckData);
+      setHasUnsavedChanges(false);
+      onSave?.(data as PuckData);
+    } catch (err) {
+      onError?.(err as Error);
+    }
+  }, [saveDraft, onSave, onError]);
 
   const handlePublish = useCallback(
     async (data: Data) => {
       try {
-        // Ensure latest data is saved first
         await saveDraft(data as PuckData);
+        setHasUnsavedChanges(false);
         await publish(false);
         onPublish?.(data as PuckData);
       } catch (err) {
@@ -75,6 +83,7 @@ const PuckEditorInner: React.FC<PuckEditorInnerProps> = ({
   const handleRevert = useCallback(async () => {
     try {
       await revertToPublished();
+      setHasUnsavedChanges(false);
     } catch (err) {
       onError?.(err as Error);
     }
@@ -134,8 +143,9 @@ const PuckEditorInner: React.FC<PuckEditorInnerProps> = ({
           headerActions: () => (
             <EditorToolbar
               saving={saving}
-              isDirty={isDirty}
+              isDirty={hasUnsavedChanges}
               states={states}
+              onSave={() => void handleSave()}
               onPublish={() => void handlePublish(activeData as Data)}
               onRevert={() => void handleRevert()}
               showPublishButton={showPublishButton}
