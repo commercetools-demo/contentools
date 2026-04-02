@@ -1,9 +1,9 @@
 import React, { useState, type ReactNode } from 'react';
 import {
   BrowserRouter,
-  Routes,
+  Switch,
   Route,
-  useNavigate,
+  useHistory,
   useParams,
   useLocation,
 } from 'react-router-dom';
@@ -98,7 +98,7 @@ interface PageListProps {
 }
 
 const PageList: React.FC<PageListProps> = ({ backButton }) => {
-  const navigate = useNavigate();
+  const history = useHistory();
   const { pages, loading, error, createPage, deletePage, refresh } = usePuckPages();
 
   const [creating, setCreating] = useState(false);
@@ -122,7 +122,7 @@ const PageList: React.FC<PageListProps> = ({ backButton }) => {
       setCreating(false);
       setNewName('');
       setNewSlug('');
-      navigate(`/${created.key}/edit`, { state: { pageName: created.value.name } });
+      history.push(`/${created.key}/edit`, { pageName: created.value.name });
     } catch (err) {
       setFormError((err as Error).message);
     } finally {
@@ -157,7 +157,7 @@ const PageList: React.FC<PageListProps> = ({ backButton }) => {
     );
   }
 
-  const rows: PageRow[] = pages.map((p) => ({ ...p, id: p.key }));
+  const rows: PageRow[] = pages.map((p: PuckPageListItem) => ({ ...p, id: p.key }));
 
   return (
     <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '32px 24px' }}>
@@ -275,14 +275,14 @@ const PageList: React.FC<PageListProps> = ({ backButton }) => {
                         label="Edit"
                         size="20"
                         onClick={() =>
-                          navigate(`/${row.key}/edit`, { state: { pageName: row.value.name } })
+                          history.push(`/${row.key}/edit`, { pageName: row.value.name })
                         }
                       />
                       <SecondaryButton
                         label="Preview"
                         size="20"
                         onClick={() =>
-                          navigate(`/${row.key}/preview`, { state: { pageName: row.value.name } })
+                          history.push(`/${row.key}/preview`, { pageName: row.value.name })
                         }
                       />
                       <FlatButton
@@ -315,7 +315,7 @@ interface RouteProps {
 
 const PageEditorRoute: React.FC<RouteProps> = ({ config, backButton }) => {
   const { pageKey } = useParams<{ pageKey: string }>();
-  const navigate = useNavigate();
+  const history = useHistory();
   const location = useLocation();
   const { baseURL, projectKey, businessUnitKey, jwtToken } = usePuckApiContext();
   const pageName =
@@ -330,7 +330,7 @@ const PageEditorRoute: React.FC<RouteProps> = ({ config, backButton }) => {
           label="Pages"
           icon={<AngleLeftIcon />}
           iconPosition="left"
-          onClick={() => navigate('/')}
+          onClick={() => history.push('/')}
         />
         <Text.Body tone="secondary">/</Text.Body>
         <Text.Body isBold>{pageName}</Text.Body>
@@ -356,7 +356,7 @@ const PageEditorRoute: React.FC<RouteProps> = ({ config, backButton }) => {
 
 const PagePreviewRoute: React.FC<RouteProps> = ({ config, backButton }) => {
   const { pageKey } = useParams<{ pageKey: string }>();
-  const navigate = useNavigate();
+  const history = useHistory();
   const location = useLocation();
   const pageName =
     (location.state as { pageName?: string } | null)?.pageName ?? pageKey ?? 'Page';
@@ -370,7 +370,7 @@ const PagePreviewRoute: React.FC<RouteProps> = ({ config, backButton }) => {
           label="Pages"
           icon={<AngleLeftIcon />}
           iconPosition="left"
-          onClick={() => navigate('/')}
+          onClick={() => history.push('/')}
         />
         <Text.Body tone="secondary">/</Text.Body>
         <Text.Body isBold>{pageName}</Text.Body>
@@ -405,17 +405,17 @@ interface PageManagerInnerProps {
 }
 
 const PageManagerInner: React.FC<PageManagerInnerProps> = ({ config, backButton }) => (
-  <Routes>
-    <Route path="/" element={<PageList backButton={backButton} />} />
+  <Switch>
+    <Route exact path="/" render={() => <PageList backButton={backButton} />} />
     <Route
       path="/:pageKey/edit"
-      element={<PageEditorRoute config={config} backButton={backButton} />}
+      render={() => <PageEditorRoute config={config} backButton={backButton} />}
     />
     <Route
       path="/:pageKey/preview"
-      element={<PagePreviewRoute config={config} backButton={backButton} />}
+      render={() => <PagePreviewRoute config={config} backButton={backButton} />}
     />
-  </Routes>
+  </Switch>
 );
 
 // ---------------------------------------------------------------------------

@@ -34,7 +34,7 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-intl": "^10.1.1",
-    "react-router-dom": "^7.13.2"
+    "react-router-dom": "^5"
   },
   "devDependencies": {
     "@types/react": "^18",
@@ -42,5 +42,10 @@
     "@vitejs/plugin-react": "^4.3.4",
     "typescript": "^5.7.2",
     "vite": "^6.0.5"
+  },
+  "resolutions": {
+    "@types/react-router": "<6",
+    "@types/react-router-dom": "<6",
+    "react-router-dom": "<6"
   }
 }

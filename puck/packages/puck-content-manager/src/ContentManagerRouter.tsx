@@ -1,9 +1,9 @@
 import React, { useState, useCallback, useMemo, useRef, type ReactNode } from 'react';
 import {
   BrowserRouter,
-  Routes,
+  Switch,
   Route,
-  useNavigate,
+  useHistory,
   useParams,
   useLocation,
 } from 'react-router-dom';
@@ -220,7 +220,7 @@ interface ContentListRouteProps {
 }
 
 const ContentListRoute: React.FC<ContentListRouteProps> = ({ defaultContentType, backButton }) => {
-  const navigate = useNavigate();
+  const history = useHistory();
   const { contents, loading, error, fetchContents, createContent, deleteContent, refresh } =
     usePuckContents(defaultContentType);
 
@@ -249,7 +249,7 @@ const ContentListRoute: React.FC<ContentListRouteProps> = ({ defaultContentType,
       setShowCreate(false);
       setCreateName('');
       setCreateType(defaultContentType ?? '');
-      navigate(`/${created.key}`, { state: { contentName: created.value.name } });
+      history.push(`/${created.key}`, { contentName: created.value.name });
     } catch (err) {
       setCreateError((err as Error).message);
     } finally {
@@ -401,7 +401,7 @@ const ContentListRoute: React.FC<ContentListRouteProps> = ({ defaultContentType,
                         label="Edit"
                         size="20"
                         onClick={() =>
-                          navigate(`/${row.key}`, { state: { contentName: row.value.name } })
+                          history.push(`/${row.key}`, { contentName: row.value.name })
                         }
                       />
                       <FlatButton
@@ -434,7 +434,7 @@ interface ContentEditorRouteProps {
 
 const ContentEditorRoute: React.FC<ContentEditorRouteProps> = ({ config, backButton }) => {
   const { contentKey } = useParams<{ contentKey: string }>();
-  const navigate = useNavigate();
+  const history = useHistory();
   const location = useLocation();
   const contentName =
     (location.state as { contentName?: string } | null)?.contentName ?? contentKey ?? 'Content';
@@ -565,7 +565,7 @@ const ContentEditorRoute: React.FC<ContentEditorRouteProps> = ({ config, backBut
           label="Content Items"
           icon={<AngleLeftIcon />}
           iconPosition="left"
-          onClick={() => navigate('/')}
+          onClick={() => history.push('/')}
         />
         <Text.Body tone="secondary">/</Text.Body>
         <Text.Body isBold>{contentName}</Text.Body>
@@ -615,18 +615,19 @@ const ContentManagerRouterInner: React.FC<ContentManagerRouterInnerProps> = ({
   defaultContentType,
   backButton,
 }) => (
-  <Routes>
+  <Switch>
     <Route
+      exact
       path="/"
-      element={
+      render={() => (
         <ContentListRoute defaultContentType={defaultContentType} backButton={backButton} />
-      }
+      )}
     />
     <Route
       path="/:contentKey"
-      element={<ContentEditorRoute config={config} backButton={backButton} />}
+      render={() => <ContentEditorRoute config={config} backButton={backButton} />}
     />
-  </Routes>
+  </Switch>
 );
 
 // ---------------------------------------------------------------------------
