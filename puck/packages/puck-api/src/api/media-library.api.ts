@@ -24,7 +24,7 @@ export const fetchMediaLibraryApi = async (
   if (jwtToken) headers['Authorization'] = `Bearer ${jwtToken}`;
 
   const res = await fetch(
-    `${baseURL}/service/${businessUnitKey}/media-library?${params}`,
+    `${baseURL}/${businessUnitKey}/media-library?${params}`,
     { headers }
   );
 
@@ -54,7 +54,7 @@ export const uploadMediaFileApi = async (
   if (description) formData.append('description', description);
 
   const res = await fetch(
-    `${baseURL}/service/${businessUnitKey}/upload-file`,
+    `${baseURL}/${businessUnitKey}/upload-file`,
     {
       method: 'POST',
       headers: {

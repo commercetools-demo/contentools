@@ -36,7 +36,7 @@ export const getPuckContentStatesApi = async (
   key: string
 ): Promise<PuckContentStateResponse> => {
   const res = await fetch(
-    `${baseURL}/service/${businessUnitKey}/puck-contents/${key}/states`,
+    `${baseURL}/${businessUnitKey}/puck-contents/${key}/states`,
     { headers: readHeaders(projectKey) }
   );
   return handleResponse<PuckContentStateResponse>(res);
@@ -55,7 +55,7 @@ export const publishPuckContentApi = async (
   clearDraft = false
 ): Promise<PuckContentStateResponse> => {
   const url = new URL(
-    `${baseURL}/service/${businessUnitKey}/puck-contents/${key}/states/published`
+    `${baseURL}/${businessUnitKey}/puck-contents/${key}/states/published`
   );
   if (clearDraft) url.searchParams.set('clearDraft', 'true');
 
@@ -78,7 +78,7 @@ export const revertPuckContentDraftApi = async (
   key: string
 ): Promise<PuckContentStateResponse> => {
   const res = await fetch(
-    `${baseURL}/service/${businessUnitKey}/puck-contents/${key}/states/draft`,
+    `${baseURL}/${businessUnitKey}/puck-contents/${key}/states/draft`,
     {
       method: 'DELETE',
       headers: writeHeaders(projectKey, jwtToken),
@@ -98,7 +98,7 @@ export const getPuckContentVersionsApi = async (
   key: string
 ): Promise<PuckContentVersionResponse> => {
   const res = await fetch(
-    `${baseURL}/service/${businessUnitKey}/puck-contents/${key}/versions`,
+    `${baseURL}/${businessUnitKey}/puck-contents/${key}/versions`,
     { headers: readHeaders(projectKey) }
   );
   return handleResponse<PuckContentVersionResponse>(res);

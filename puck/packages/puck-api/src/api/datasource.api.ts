@@ -11,7 +11,7 @@ export const resolveDatasourceApi = async (
   params: Record<string, string>
 ): Promise<unknown> => {
   const res = await fetch(
-    `${baseURL}/service/datasource/${datasourceKey}/test`,
+    `${baseURL}/datasource/${datasourceKey}/test`,
     {
       method: 'POST',
       headers: {

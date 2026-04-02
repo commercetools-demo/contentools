@@ -1,6 +1,6 @@
 {
   "name": "@commercetools-demo/puck-page-manager",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Router-aware page manager UI (list, editor, preview) for the Puck CMS integration",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

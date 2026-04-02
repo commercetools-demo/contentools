@@ -44,7 +44,7 @@ export const listPuckContentsApi = async (
   businessUnitKey: string,
   contentType?: string
 ): Promise<PuckContentListResponse> => {
-  const url = new URL(`${baseURL}/service/${businessUnitKey}/puck-contents`);
+  const url = new URL(`${baseURL}/${businessUnitKey}/puck-contents`);
   if (contentType) url.searchParams.set('contentType', contentType);
   const res = await fetch(url.toString(), { headers: readHeaders(projectKey) });
   return handleResponse<PuckContentListResponse>(res);
@@ -61,7 +61,7 @@ export const getPuckContentApi = async (
   key: string
 ): Promise<PuckContentWithStatesResponse> => {
   const res = await fetch(
-    `${baseURL}/service/${businessUnitKey}/puck-contents/${key}`,
+    `${baseURL}/${businessUnitKey}/puck-contents/${key}`,
     { headers: readHeaders(projectKey) }
   );
   return handleResponse<PuckContentWithStatesResponse>(res);
@@ -79,7 +79,7 @@ export const createPuckContentApi = async (
   input: CreatePuckContentInput
 ): Promise<PuckContentResponse> => {
   const res = await fetch(
-    `${baseURL}/service/${businessUnitKey}/puck-contents`,
+    `${baseURL}/${businessUnitKey}/puck-contents`,
     {
       method: 'POST',
       headers: writeHeaders(projectKey, jwtToken),
@@ -102,7 +102,7 @@ export const updatePuckContentApi = async (
   input: UpdatePuckContentInput
 ): Promise<PuckContentResponse> => {
   const res = await fetch(
-    `${baseURL}/service/${businessUnitKey}/puck-contents/${key}`,
+    `${baseURL}/${businessUnitKey}/puck-contents/${key}`,
     {
       method: 'PUT',
       headers: writeHeaders(projectKey, jwtToken),
@@ -124,7 +124,7 @@ export const deletePuckContentApi = async (
   key: string
 ): Promise<void> => {
   const res = await fetch(
-    `${baseURL}/service/${businessUnitKey}/puck-contents/${key}`,
+    `${baseURL}/${businessUnitKey}/puck-contents/${key}`,
     {
       method: 'DELETE',
       headers: writeHeaders(projectKey, jwtToken),
@@ -147,7 +147,7 @@ export const getPublishedPuckContentApi = async (
   key: string
 ): Promise<PuckContentResponse['value']> => {
   const res = await fetch(
-    `${baseURL}/service/${businessUnitKey}/published/puck-contents/${key}`,
+    `${baseURL}/${businessUnitKey}/published/puck-contents/${key}`,
     { headers: readHeaders(projectKey) }
   );
   return handleResponse<PuckContentResponse['value']>(res);
@@ -164,7 +164,7 @@ export const getPreviewPuckContentApi = async (
   key: string
 ): Promise<PuckContentResponse['value']> => {
   const res = await fetch(
-    `${baseURL}/service/${businessUnitKey}/preview/puck-contents/${key}`,
+    `${baseURL}/${businessUnitKey}/preview/puck-contents/${key}`,
     { headers: readHeaders(projectKey) }
   );
   return handleResponse<PuckContentResponse['value']>(res);
@@ -182,7 +182,7 @@ export const queryPuckContentApi = async (
   mode: 'published' | 'preview'
 ): Promise<PuckContentResponse['value'] | null> => {
   const res = await fetch(
-    `${baseURL}/service/${businessUnitKey}/${mode}/puck-contents/query`,
+    `${baseURL}/${businessUnitKey}/${mode}/puck-contents/query`,
     {
       method: 'POST',
       headers: readHeaders(projectKey),

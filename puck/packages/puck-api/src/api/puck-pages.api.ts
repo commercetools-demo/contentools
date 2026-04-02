@@ -44,7 +44,7 @@ export const listPuckPagesApi = async (
   businessUnitKey: string
 ): Promise<PuckPageListResponse> => {
   const res = await fetch(
-    `${baseURL}/service/${businessUnitKey}/puck-pages`,
+    `${baseURL}/${businessUnitKey}/puck-pages`,
     { headers: readHeaders(projectKey) }
   );
   return handleResponse<PuckPageListResponse>(res);
@@ -61,7 +61,7 @@ export const getPuckPageApi = async (
   key: string
 ): Promise<PuckPageWithStatesResponse> => {
   const res = await fetch(
-    `${baseURL}/service/${businessUnitKey}/puck-pages/${key}`,
+    `${baseURL}/${businessUnitKey}/puck-pages/${key}`,
     { headers: readHeaders(projectKey) }
   );
   return handleResponse<PuckPageWithStatesResponse>(res);
@@ -79,7 +79,7 @@ export const createPuckPageApi = async (
   input: CreatePuckPageInput
 ): Promise<PuckPageResponse> => {
   const res = await fetch(
-    `${baseURL}/service/${businessUnitKey}/puck-pages`,
+    `${baseURL}/${businessUnitKey}/puck-pages`,
     {
       method: 'POST',
       headers: writeHeaders(projectKey, jwtToken),
@@ -102,7 +102,7 @@ export const updatePuckPageApi = async (
   input: UpdatePuckPageInput
 ): Promise<PuckPageResponse> => {
   const res = await fetch(
-    `${baseURL}/service/${businessUnitKey}/puck-pages/${key}`,
+    `${baseURL}/${businessUnitKey}/puck-pages/${key}`,
     {
       method: 'PUT',
       headers: writeHeaders(projectKey, jwtToken),
@@ -124,7 +124,7 @@ export const deletePuckPageApi = async (
   key: string
 ): Promise<void> => {
   const res = await fetch(
-    `${baseURL}/service/${businessUnitKey}/puck-pages/${key}`,
+    `${baseURL}/${businessUnitKey}/puck-pages/${key}`,
     {
       method: 'DELETE',
       headers: writeHeaders(projectKey, jwtToken),
@@ -147,7 +147,7 @@ export const getPublishedPuckPageApi = async (
   key: string
 ): Promise<PuckPageResponse['value']> => {
   const res = await fetch(
-    `${baseURL}/service/${businessUnitKey}/published/puck-pages/${key}`,
+    `${baseURL}/${businessUnitKey}/published/puck-pages/${key}`,
     { headers: readHeaders(projectKey) }
   );
   return handleResponse<PuckPageResponse['value']>(res);
@@ -164,7 +164,7 @@ export const getPreviewPuckPageApi = async (
   key: string
 ): Promise<PuckPageResponse['value']> => {
   const res = await fetch(
-    `${baseURL}/service/${businessUnitKey}/preview/puck-pages/${key}`,
+    `${baseURL}/${businessUnitKey}/preview/puck-pages/${key}`,
     { headers: readHeaders(projectKey) }
   );
   return handleResponse<PuckPageResponse['value']>(res);
@@ -182,7 +182,7 @@ export const queryPuckPageApi = async (
   mode: 'published' | 'preview'
 ): Promise<PuckPageResponse['value'] | null> => {
   const res = await fetch(
-    `${baseURL}/service/${businessUnitKey}/${mode}/puck-pages/query`,
+    `${baseURL}/${businessUnitKey}/${mode}/puck-pages/query`,
     {
       method: 'POST',
       headers: readHeaders(projectKey),
