@@ -50,7 +50,8 @@ echo -e "${BLUE}===========================================${NC}"
 echo -e "${BLUE}   Puck Package Version Bump (${BUMP_TYPE})${NC}"
 echo -e "${BLUE}===========================================${NC}"
 
-declare -A NEW_VERSIONS
+NEW_VERSION_KEYS=()
+NEW_VERSION_VALS=()
 echo -e "${YELLOW}Planned version bumps:${NC}"
 for pkg in "${PACKAGES[@]}"; do
     pkg_json="$pkg/package.json"
@@ -60,7 +61,8 @@ for pkg in "${PACKAGES[@]}"; do
     fi
     current=$(node -p "require('./$pkg_json').version")
     new_ver=$(bump_version "$current" "$BUMP_TYPE")
-    NEW_VERSIONS["$pkg"]="$new_ver"
+    NEW_VERSION_KEYS+=("$pkg")
+    NEW_VERSION_VALS+=("$new_ver")
     name=$(node -p "require('./$pkg_json').name")
     echo -e "  ${name}: ${YELLOW}${current}${NC} → ${GREEN}${new_ver}${NC}"
 done
@@ -75,10 +77,10 @@ if [ "$AUTO_YES" = false ]; then
     fi
 fi
 
-for pkg in "${PACKAGES[@]}"; do
+for i in "${!NEW_VERSION_KEYS[@]}"; do
+    pkg="${NEW_VERSION_KEYS[$i]}"
+    new_ver="${NEW_VERSION_VALS[$i]}"
     pkg_json="$pkg/package.json"
-    [ -z "${NEW_VERSIONS[$pkg]}" ] && continue
-    new_ver="${NEW_VERSIONS[$pkg]}"
     node -e "
         const fs = require('fs');
         const path = './$pkg_json';
