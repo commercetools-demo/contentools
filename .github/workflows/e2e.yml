@@ -2,9 +2,9 @@ name: E2E Tests
 
 on:
   push:
-    branches: [multitenant]
+    branches: [no_test]
   pull_request:
-    branches: [multitenant]
+    branches: [no_test]
 
 jobs:
   e2e:

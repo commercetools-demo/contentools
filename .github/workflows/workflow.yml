@@ -2,7 +2,7 @@ name: Deploy Express Backend to Cloud Run
 
 on:
   push:
-    branches: [ dododo ]  # Adjust branch name if needed
+    branches: [ multitenant ]  # Adjust branch name if needed
 
 jobs:
   deploy:
