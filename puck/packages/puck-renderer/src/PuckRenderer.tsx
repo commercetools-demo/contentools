@@ -1,5 +1,6 @@
 import React, { useEffect, useState, type ReactElement } from 'react';
 import { PuckApiProvider, usePuckApiContext } from '@commercetools-demo/puck-api';
+import { defaultPuckConfig } from '@commercetools-demo/puck-editor';
 import {
   getPublishedPuckPageApi,
   getPreviewPuckPageApi,
@@ -10,6 +11,11 @@ import {
 } from '@commercetools-demo/puck-api';
 import type { PuckConfig, PuckData } from '@commercetools-demo/puck-types';
 import { PuckDataRenderer } from './PuckDataRenderer';
+
+const DEFAULT_CONFIG: PuckConfig = {
+  ...defaultPuckConfig,
+  components: { ...defaultPuckConfig.components },
+};
 
 // ---------------------------------------------------------------------------
 // Inner component (needs PuckApiContext)
@@ -184,9 +190,9 @@ export interface PuckRendererProps {
   mode?: 'published' | 'preview';
 
   /**
-   * Puck config — must match the config used in the editor.
+   * Puck config — must match the config used in the editor. Defaults to defaultPuckConfig.
    */
-  config: PuckConfig;
+  config?: PuckConfig;
 
   /** Custom loading indicator. */
   loadingComponent?: ReactElement;
@@ -207,7 +213,7 @@ export const PuckRenderer: React.FC<PuckRendererProps> = ({
   contentKey,
   query,
   mode = 'published',
-  config,
+  config = DEFAULT_CONFIG,
   loadingComponent,
   errorComponent,
   className,

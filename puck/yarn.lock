@@ -356,6 +356,7 @@ __metadata:
   resolution: "@commercetools-demo/puck-renderer@workspace:packages/puck-renderer"
   dependencies:
     "@commercetools-demo/puck-api": "workspace:^"
+    "@commercetools-demo/puck-editor": "workspace:^"
     "@commercetools-demo/puck-types": "workspace:^"
     "@measured/puck": "npm:^0.18.2"
     "@types/react": "npm:^18"

@@ -13,7 +13,13 @@ import {
   ComponentSearchProvider,
   ComponentsPanel,
   ComponentItemFilter,
+  defaultPuckConfig,
 } from '@commercetools-demo/puck-editor';
+
+const DEFAULT_CONFIG: Config = {
+  ...defaultPuckConfig,
+  components: { ...defaultPuckConfig.components },
+};
 import {
   PuckApiProvider,
   usePuckContents,
@@ -634,27 +640,27 @@ const ContentManagerRouterInner: React.FC<ContentManagerRouterInnerProps> = ({
 // Public component
 // ---------------------------------------------------------------------------
 
-export interface ContentManagerRouterProps {
+export interface ContentManagerProps {
   /** URL path where this manager is mounted, e.g. "/content" — used as router basename */
   parentUrl: string;
   baseURL: string;
   projectKey: string;
   businessUnitKey: string;
   jwtToken: string;
-  /** Puck component config — must match what's used in the renderer */
-  config: Config;
+  /** Puck component config — must match what's used in the renderer. Defaults to defaultPuckConfig. */
+  config?: Config;
   defaultContentType?: string;
   /** Optional element rendered before the breadcrumb in the editor header */
   backButton?: ReactNode;
 }
 
-export const ContentManagerRouter: React.FC<ContentManagerRouterProps> = ({
+export const ContentManager: React.FC<ContentManagerProps> = ({
   parentUrl,
   baseURL,
   projectKey,
   businessUnitKey,
   jwtToken,
-  config,
+  config = DEFAULT_CONFIG,
   defaultContentType,
   backButton,
 }) => (

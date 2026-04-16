@@ -270,7 +270,7 @@ const ContentList: React.FC<ContentListProps> = ({ defaultContentType, onEdit })
 // Public component — wraps its own PuckApiProvider
 // ---------------------------------------------------------------------------
 
-export interface ContentManagerProps {
+export interface ContentManagerListProps {
   baseURL: string;
   projectKey: string;
   businessUnitKey: string;
@@ -279,7 +279,7 @@ export interface ContentManagerProps {
   onEdit: (item: PuckContentListItem) => void;
 }
 
-export const ContentManager: React.FC<ContentManagerProps> = ({
+export const ContentManagerList: React.FC<ContentManagerListProps> = ({
   baseURL,
   projectKey,
   businessUnitKey,

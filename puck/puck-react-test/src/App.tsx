@@ -3,9 +3,8 @@ import Card from '@commercetools-uikit/card';
 import Spacings from '@commercetools-uikit/spacings';
 import Text from '@commercetools-uikit/text';
 import { PageManager } from '@commercetools-demo/puck-page-manager';
-import { ContentManagerRouter } from '@commercetools-demo/puck-content-manager';
+import { ContentManager } from '@commercetools-demo/puck-content-manager';
 import { PuckRenderer } from '@commercetools-demo/puck-renderer';
-import { puckConfig } from './config/puckConfig';
 
 // ---------------------------------------------------------------------------
 // Config from environment variables (.env file)
@@ -276,7 +275,6 @@ const RendererPanel: React.FC<RendererPanelProps> = ({ baseURL, projectKey, busi
               contentKey={type === 'content' ? (contentKey || undefined) : undefined}
               query={type === 'content' ? (query || undefined) : undefined}
               mode={mode}
-              config={puckConfig}
             />
           </div>
         )}
@@ -300,7 +298,6 @@ const App: React.FC = () => {
     projectKey: PROJECT_KEY,
     businessUnitKey: BUSINESS_UNIT_KEY,
     jwtToken: JWT_TOKEN,
-    config: puckConfig,
   };
 
   const handleTabChange = (tab: Tab) => {
@@ -314,7 +311,7 @@ const App: React.FC = () => {
       <TabNav activeTab={activeTab} onChange={handleTabChange} />
       <div style={{ flex: 1, overflow: 'hidden', minHeight: 0 }}>
         {activeTab === 'pages' && <PageManager {...sharedProps} parentUrl="/" />}
-        {activeTab === 'contents' && <ContentManagerRouter {...sharedProps} parentUrl="/" />}
+        {activeTab === 'contents' && <ContentManager {...sharedProps} parentUrl="/" />}
         {activeTab === 'renderer' && (
           <RendererPanel
             baseURL={BASE_URL}

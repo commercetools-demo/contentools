@@ -1,8 +1,8 @@
-export { ContentManager } from './ContentManager';
-export type { ContentManagerProps } from './ContentManager';
+export { ContentManagerList } from './ContentManager';
+export type { ContentManagerListProps } from './ContentManager';
 
 export { ContentEditor } from './ContentEditor';
 export type { ContentEditorProps } from './ContentEditor';
 
-export { ContentManagerRouter } from './ContentManagerRouter';
-export type { ContentManagerRouterProps } from './ContentManagerRouter';
+export { ContentManager } from './ContentManagerRouter';
+export type { ContentManagerProps } from './ContentManagerRouter';

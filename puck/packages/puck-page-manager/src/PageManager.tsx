@@ -12,8 +12,13 @@ import {
   usePuckPages,
   usePuckApiContext,
 } from '@commercetools-demo/puck-api';
-import { PuckEditor } from '@commercetools-demo/puck-editor';
+import { PuckEditor, defaultPuckConfig } from '@commercetools-demo/puck-editor';
 import { PuckRenderer } from '@commercetools-demo/puck-renderer';
+
+const DEFAULT_CONFIG: Config = {
+  ...defaultPuckConfig,
+  components: { ...defaultPuckConfig.components },
+};
 import type { Config } from '@measured/puck';
 import type { CreatePuckPageInput, PuckPageListItem } from '@commercetools-demo/puck-types';
 import DataTable from '@commercetools-uikit/data-table';
@@ -429,8 +434,8 @@ export interface PageManagerProps {
   projectKey: string;
   businessUnitKey: string;
   jwtToken: string;
-  /** Puck component config — passed to editor and preview */
-  config: Config;
+  /** Puck component config — passed to editor and preview. Defaults to defaultPuckConfig. */
+  config?: Config;
   /** Optional element rendered before the breadcrumb in editor/preview headers */
   backButton?: ReactNode;
 }
@@ -441,7 +446,7 @@ export const PageManager: React.FC<PageManagerProps> = ({
   projectKey,
   businessUnitKey,
   jwtToken,
-  config,
+  config = DEFAULT_CONFIG,
   backButton,
 }) => (
   <PuckApiProvider

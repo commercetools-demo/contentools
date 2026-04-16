@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "@commercetools-demo/puck-api": "workspace:^",
+    "@commercetools-demo/puck-editor": "workspace:^",
     "@commercetools-demo/puck-types": "workspace:^",
     "@measured/puck": "^0.18.2"
   },
