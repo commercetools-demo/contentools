@@ -11,7 +11,6 @@ export default defineConfig({
     'react',
     'react-dom',
     '@commercetools-demo/puck-types',
-    '@commercetools-demo/puck-api',
-    '@commercetools-demo/puck-version-history',
+    '@measured/puck',
   ],
 });

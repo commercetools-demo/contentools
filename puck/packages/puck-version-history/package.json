@@ -1,7 +1,7 @@
 {
-  "name": "@commercetools-demo/puck-editor",
+  "name": "@commercetools-demo/puck-version-history",
   "version": "0.2.1",
-  "description": "Puck editor wrapper with built-in components and CMS API integration",
+  "description": "Version history panel and hooks for Puck editor integrations",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
@@ -25,9 +25,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@commercetools-demo/puck-api": "workspace:^",
     "@commercetools-demo/puck-types": "workspace:^",
-    "@commercetools-demo/puck-version-history": "workspace:^",
     "@measured/puck": "^0.18.2"
   },
   "peerDependencies": {
@@ -35,8 +33,8 @@
     "react-dom": ">=19.0.0"
   },
   "devDependencies": {
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
     "tsup": "^8.3.0",
     "typescript": "^5.7.2"
   }

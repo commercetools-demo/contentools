@@ -257,6 +257,7 @@ __metadata:
     "@commercetools-demo/puck-api": "workspace:^"
     "@commercetools-demo/puck-editor": "workspace:^"
     "@commercetools-demo/puck-types": "workspace:^"
+    "@commercetools-demo/puck-version-history": "workspace:^"
     "@commercetools-uikit/card": "npm:^20.5.0"
     "@commercetools-uikit/data-table": "npm:^20.5.0"
     "@commercetools-uikit/design-system": "npm:^20.5.0"
@@ -295,6 +296,7 @@ __metadata:
   dependencies:
     "@commercetools-demo/puck-api": "workspace:^"
     "@commercetools-demo/puck-types": "workspace:^"
+    "@commercetools-demo/puck-version-history": "workspace:^"
     "@measured/puck": "npm:^0.18.2"
     "@types/react": "npm:^18"
     "@types/react-dom": "npm:^18"
@@ -382,6 +384,22 @@ __metadata:
     "@measured/puck": "npm:^0.18.2"
     tsup: "npm:^8.3.0"
     typescript: "npm:^5.7.2"
+  languageName: unknown
+  linkType: soft
+
+"@commercetools-demo/puck-version-history@workspace:^, @commercetools-demo/puck-version-history@workspace:packages/puck-version-history":
+  version: 0.0.0-use.local
+  resolution: "@commercetools-demo/puck-version-history@workspace:packages/puck-version-history"
+  dependencies:
+    "@commercetools-demo/puck-types": "workspace:^"
+    "@measured/puck": "npm:^0.18.2"
+    "@types/react": "npm:^19"
+    "@types/react-dom": "npm:^19"
+    tsup: "npm:^8.3.0"
+    typescript: "npm:^5.7.2"
+  peerDependencies:
+    react: ">=19.0.0"
+    react-dom: ">=19.0.0"
   languageName: unknown
   linkType: soft
 

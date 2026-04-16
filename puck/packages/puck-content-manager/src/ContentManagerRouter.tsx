@@ -15,6 +15,15 @@ import {
   ComponentItemFilter,
   defaultPuckConfig,
 } from '@commercetools-demo/puck-editor';
+import {
+  VersionHistoryProvider,
+  VersionHistoryPanel,
+  VersionHistoryButton,
+  VersionPreviewBanner,
+  VersionAwareFieldsPanel,
+  useVersionHistoryPanel,
+  useVersionDiff,
+} from '@commercetools-demo/puck-version-history';
 
 const DEFAULT_CONFIG: Config = {
   ...defaultPuckConfig,
@@ -29,6 +38,7 @@ import type {
   CreatePuckContentInput,
   PuckContentListItem,
   PuckContentStateInfo,
+  PuckContentVersionEntry,
   PuckData,
 } from '@commercetools-demo/puck-types';
 import DataTable from '@commercetools-uikit/data-table';
@@ -114,9 +124,13 @@ interface ContentToolbarProps {
   onSave: () => void;
   onPublish: () => void;
   onRevert: () => void;
+  onVersionHistory: () => void;
+  isVersionHistoryActive: boolean;
 }
 
-const ContentToolbar: React.FC<ContentToolbarProps> = ({ saving, isDirty, states, onSave, onPublish, onRevert }) => {
+const ContentToolbar: React.FC<ContentToolbarProps> = ({
+  saving, isDirty, states, onSave, onPublish, onRevert, onVersionHistory, isVersionHistoryActive,
+}) => {
   const hasDraft = Boolean(states.draft);
   const hasPublished = Boolean(states.published);
   return (
@@ -181,6 +195,11 @@ const ContentToolbar: React.FC<ContentToolbarProps> = ({ saving, isDirty, states
       >
         {hasPublished ? 'Re-publish' : 'Publish'}
       </button>
+      <VersionHistoryButton
+        onClick={onVersionHistory}
+        isActive={isVersionHistoryActive}
+        disabled={saving}
+      />
     </div>
   );
 };
@@ -448,18 +467,37 @@ const ContentEditorRoute: React.FC<ContentEditorRouteProps> = ({ config, backBut
   const {
     content,
     states,
+    versions,
     saving,
     loading,
     error,
     saveDraft,
     publish,
     revertToPublished,
+    loadVersions,
   } = usePuckContent(contentKey!);
 
   const latestDataRef = useRef<Data | null>(null);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const [isApplyingVersion, setIsApplyingVersion] = useState(false);
+
+  const currentData: PuckData =
+    states.draft?.data ??
+    content?.data ?? { content: [], root: { props: {} } };
+
+  const versionHistory = useVersionHistoryPanel({
+    versions: versions as PuckContentVersionEntry[],
+    loadVersions,
+    currentData,
+  });
+
+  const diff = useVersionDiff(versionHistory.previewData, currentData);
+
+  const isPreviewingRef = useRef(false);
+  isPreviewingRef.current = versionHistory.isPreviewingHistory;
 
   const handleChange = useCallback((data: Data) => {
+    if (isPreviewingRef.current) return;
     latestDataRef.current = data;
     setHasUnsavedChanges(true);
   }, []);
@@ -497,8 +535,21 @@ const ContentEditorRoute: React.FC<ContentEditorRouteProps> = ({ config, backBut
     }
   }, [revertToPublished]);
 
-  // Override root fields with content-specific labels and add slot field.
-  // Stored in content.data.root.props (title, slot, backgroundColor, etc.).
+  const handleApplyVersion = useCallback(async () => {
+    const versionData = versionHistory.previewData;
+    if (!versionData) return;
+    setIsApplyingVersion(true);
+    try {
+      await saveDraft(versionData);
+      setHasUnsavedChanges(false);
+      versionHistory.closePanel();
+    } catch (err) {
+      console.error('[ContentManagerRouter] apply version error:', err);
+    } finally {
+      setIsApplyingVersion(false);
+    }
+  }, [versionHistory, saveDraft]);
+
   const contentConfig = useMemo((): Config => {
     const otherRootFields = Object.fromEntries(
       Object.entries(config.root?.fields ?? {}).filter(([k]) => k !== 'title')
@@ -555,54 +606,103 @@ const ContentEditorRoute: React.FC<ContentEditorRouteProps> = ({ config, backBut
     );
   }
 
-  const activeData: PuckData =
-    states.draft?.data ??
-    content?.data ?? {
-      content: [],
-      root: { props: {} },
-    };
+  const activeData: PuckData = versionHistory.previewData ?? currentData;
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-      <div style={NAV_BAR_STYLE}>
-        {backButton}
-        {backButton && <Text.Body tone="secondary">/</Text.Body>}
-        <FlatButton
-          label="Content Items"
-          icon={<AngleLeftIcon />}
-          iconPosition="left"
-          onClick={() => history.push('/')}
-        />
-        <Text.Body tone="secondary">/</Text.Body>
-        <Text.Body isBold>{contentName}</Text.Body>
-      </div>
-      <div style={{ flex: 1, overflow: 'hidden' }}>
-        <ComponentSearchProvider>
-          <Puck
-            config={contentConfig}
-            data={activeData as Data}
-            onChange={handleChange}
-            onPublish={handlePublish}
-            overrides={{
-              headerActions: () => (
-                <ContentToolbar
-                  saving={saving}
-                  isDirty={hasUnsavedChanges}
-                  states={states}
-                  onSave={() => void handleSave()}
-                  onPublish={() => void handlePublish(activeData as Data)}
-                  onRevert={() => void handleRevert()}
-                />
-              ),
-              components: ({ children }) => <ComponentsPanel>{children}</ComponentsPanel>,
-              componentItem: ({ children, name }) => (
-                <ComponentItemFilter name={name}>{children}</ComponentItemFilter>
-              ),
-            }}
+    <VersionHistoryProvider diff={diff} isPreviewingHistory={versionHistory.isPreviewingHistory}>
+      <VersionHistoryPanel
+        isOpen={versionHistory.isPanelOpen}
+        versions={versions as PuckContentVersionEntry[]}
+        isLoading={versionHistory.isLoadingVersions}
+        selectedVersionId={versionHistory.selectedVersionId}
+        diff={diff}
+        isPreviewingHistory={versionHistory.isPreviewingHistory}
+        onVersionSelect={versionHistory.selectVersion}
+        onApply={() => void handleApplyVersion()}
+        onDiscard={versionHistory.clearSelection}
+        onClose={versionHistory.closePanel}
+        isApplying={isApplyingVersion}
+      />
+      <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+        <div style={NAV_BAR_STYLE}>
+          {backButton}
+          {backButton && <Text.Body tone="secondary">/</Text.Body>}
+          <FlatButton
+            label="Content Items"
+            icon={<AngleLeftIcon />}
+            iconPosition="left"
+            onClick={() => history.push('/')}
           />
-        </ComponentSearchProvider>
+          <Text.Body tone="secondary">/</Text.Body>
+          <Text.Body isBold>{contentName}</Text.Body>
+        </div>
+        <div style={{ flex: 1, overflow: 'hidden' }}>
+          <ComponentSearchProvider>
+            <Puck
+              key={versionHistory.selectedVersionId ?? 'current'}
+              config={contentConfig}
+              data={activeData as Data}
+              onChange={handleChange}
+              onPublish={handlePublish}
+              overrides={{
+                headerActions: () =>
+                  versionHistory.isPreviewingHistory ? (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                      <VersionPreviewBanner
+                        timestamp={versionHistory.selectedVersion!.timestamp}
+                        onApply={() => void handleApplyVersion()}
+                        onDiscard={versionHistory.clearSelection}
+                        isApplying={isApplyingVersion}
+                      />
+                      <button
+                        onClick={versionHistory.closePanel}
+                        style={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '5px',
+                          padding: '6px 12px',
+                          borderRadius: '4px',
+                          border: '1px solid rgba(129, 140, 248, 0.6)',
+                          background: 'rgba(129, 140, 248, 0.15)',
+                          color: 'var(--status-draft, #818cf8)',
+                          fontWeight: 500,
+                          fontSize: '13px',
+                          cursor: 'pointer',
+                        }}
+                      >
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" />
+                        </svg>
+                        History
+                      </button>
+                    </div>
+                  ) : (
+                    <ContentToolbar
+                      saving={saving}
+                      isDirty={hasUnsavedChanges}
+                      states={states}
+                      onSave={() => void handleSave()}
+                      onPublish={() => void handlePublish(activeData as Data)}
+                      onRevert={() => void handleRevert()}
+                      onVersionHistory={() => void versionHistory.openPanel()}
+                      isVersionHistoryActive={versionHistory.isPanelOpen}
+                    />
+                  ),
+                components: ({ children }) => <ComponentsPanel>{children}</ComponentsPanel>,
+                componentItem: ({ children, name }) => (
+                  <ComponentItemFilter name={name}>{children}</ComponentItemFilter>
+                ),
+                fields: ({ children, isLoading }) => (
+                  <VersionAwareFieldsPanel isLoading={isLoading}>
+                    {children}
+                  </VersionAwareFieldsPanel>
+                ),
+              }}
+            />
+          </ComponentSearchProvider>
+        </div>
       </div>
-    </div>
+    </VersionHistoryProvider>
   );
 };
 

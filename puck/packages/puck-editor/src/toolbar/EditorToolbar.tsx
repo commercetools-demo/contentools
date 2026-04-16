@@ -1,5 +1,6 @@
 import React from 'react';
 import type { PuckStateInfo } from '@commercetools-demo/puck-types';
+import { VersionHistoryButton } from '@commercetools-demo/puck-version-history';
 
 type BadgeVariant = 'saving' | 'unsaved' | 'draft' | 'published';
 
@@ -45,6 +46,8 @@ export interface EditorToolbarProps {
   onPublish: () => void;
   onRevert: () => void;
   showPublishButton: boolean;
+  onVersionHistory: () => void;
+  isVersionHistoryActive: boolean;
 }
 
 export const EditorToolbar: React.FC<EditorToolbarProps> = ({
@@ -55,6 +58,8 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
   onPublish,
   onRevert,
   showPublishButton,
+  onVersionHistory,
+  isVersionHistoryActive,
 }) => {
   const hasDraft = Boolean(states.draft);
   const hasPublished = Boolean(states.published);
@@ -139,6 +144,13 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
           {hasPublished ? 'Re-publish' : 'Publish'}
         </button>
       )}
+
+      {/* Version history toggle — always visible */}
+      <VersionHistoryButton
+        onClick={onVersionHistory}
+        isActive={isVersionHistoryActive}
+        disabled={saving}
+      />
     </div>
   );
 };
