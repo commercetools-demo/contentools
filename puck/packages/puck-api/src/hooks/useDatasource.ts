@@ -45,7 +45,7 @@ export const useDatasource = (
       businessUnitKey,
       jwtToken,
       type,
-      params
+      { params }
     )
       .then((result) => {
         setData(result);

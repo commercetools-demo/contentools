@@ -98,7 +98,7 @@ export const usePuckPage = (pageKey: string): UsePuckPageReturn => {
               jwtToken,
               businessUnitKey,
               pageKey,
-              { puckData }
+              { value: { puckData } }
             );
             setPage(updated.value);
             setIsDirty(false);
@@ -126,7 +126,7 @@ export const usePuckPage = (pageKey: string): UsePuckPageReturn => {
           jwtToken,
           businessUnitKey,
           pageKey,
-          input
+          { value: input }
         );
         setPage(updated.value);
       } catch (err) {

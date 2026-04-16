@@ -8,7 +8,7 @@ export const resolveDatasourceApi = async (
   businessUnitKey: string,
   jwtToken: string,
   datasourceKey: string,
-  params: Record<string, string>
+  body: { params: Record<string, string> }
 ): Promise<unknown> => {
   const res = await fetch(
     `${baseURL}/datasource/${datasourceKey}/test`,
@@ -19,7 +19,7 @@ export const resolveDatasourceApi = async (
         'x-project-key': projectKey,
         Authorization: `Bearer ${jwtToken}`,
       },
-      body: JSON.stringify(params),
+      body: JSON.stringify(body),
     }
   );
   if (!res.ok) {

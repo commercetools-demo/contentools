@@ -72,7 +72,7 @@ const PuckRendererInner: React.FC<PuckRendererInnerProps> = ({
                 : await getPreviewPuckContentApi(baseURL, projectKey, businessUnitKey, contentKey);
             puckData = value.data;
           } else if (query) {
-            const value = await queryPuckContentApi(baseURL, projectKey, businessUnitKey, query, mode);
+            const value = await queryPuckContentApi(baseURL, projectKey, businessUnitKey, { query: `contentType = "${query}"` }, mode);
             puckData = value?.data ?? null;
           }
 
@@ -93,7 +93,7 @@ const PuckRendererInner: React.FC<PuckRendererInnerProps> = ({
                 ? await getPublishedPuckPageApi(baseURL, projectKey, businessUnitKey, pageKey)
                 : await getPreviewPuckPageApi(baseURL, projectKey, businessUnitKey, pageKey);
           } else if (slug) {
-            pageValue = await queryPuckPageApi(baseURL, projectKey, businessUnitKey, slug, mode);
+            pageValue = await queryPuckPageApi(baseURL, projectKey, businessUnitKey, { query: `slug = "${slug}"` }, mode);
           }
 
           if (!cancelled) {

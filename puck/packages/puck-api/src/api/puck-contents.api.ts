@@ -76,14 +76,14 @@ export const createPuckContentApi = async (
   projectKey: string,
   jwtToken: string,
   businessUnitKey: string,
-  input: CreatePuckContentInput
+  body: { value: CreatePuckContentInput }
 ): Promise<PuckContentResponse> => {
   const res = await fetch(
     `${baseURL}/${businessUnitKey}/puck-contents`,
     {
       method: 'POST',
       headers: writeHeaders(projectKey, jwtToken),
-      body: JSON.stringify({ value: input }),
+      body: JSON.stringify(body),
     }
   );
   return handleResponse<PuckContentResponse>(res);
@@ -99,14 +99,14 @@ export const updatePuckContentApi = async (
   jwtToken: string,
   businessUnitKey: string,
   key: string,
-  input: UpdatePuckContentInput
+  body: { value: UpdatePuckContentInput }
 ): Promise<PuckContentResponse> => {
   const res = await fetch(
     `${baseURL}/${businessUnitKey}/puck-contents/${key}`,
     {
       method: 'PUT',
       headers: writeHeaders(projectKey, jwtToken),
-      body: JSON.stringify({ value: input }),
+      body: JSON.stringify(body),
     }
   );
   return handleResponse<PuckContentResponse>(res);
@@ -178,7 +178,7 @@ export const queryPuckContentApi = async (
   baseURL: string,
   projectKey: string,
   businessUnitKey: string,
-  contentType: string,
+  body: { query: string },
   mode: 'published' | 'preview'
 ): Promise<PuckContentResponse['value'] | null> => {
   const res = await fetch(
@@ -186,7 +186,7 @@ export const queryPuckContentApi = async (
     {
       method: 'POST',
       headers: readHeaders(projectKey),
-      body: JSON.stringify({ query: `contentType = "${contentType}"` }),
+      body: JSON.stringify(body),
     }
   );
   if (res.status === 404) return null;

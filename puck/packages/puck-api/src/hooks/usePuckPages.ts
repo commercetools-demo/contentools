@@ -53,7 +53,7 @@ export const usePuckPages = (): UsePuckPagesReturn => {
         projectKey,
         jwtToken,
         businessUnitKey,
-        input
+        { value: input }
       );
       await refresh();
       return created;

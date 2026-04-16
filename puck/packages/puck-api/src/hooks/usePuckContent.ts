@@ -100,7 +100,7 @@ export const usePuckContent = (contentKey: string): UsePuckContentReturn => {
               jwtToken,
               businessUnitKey,
               contentKey,
-              { data, ...(meta !== undefined ? { meta } : {}) }
+              { value: { data, ...(meta !== undefined ? { meta } : {}) } }
             );
             setContent(updated.value);
             setIsDirty(false);

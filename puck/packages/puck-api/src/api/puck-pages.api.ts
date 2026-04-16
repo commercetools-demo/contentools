@@ -76,14 +76,14 @@ export const createPuckPageApi = async (
   projectKey: string,
   jwtToken: string,
   businessUnitKey: string,
-  input: CreatePuckPageInput
+  body: { value: CreatePuckPageInput }
 ): Promise<PuckPageResponse> => {
   const res = await fetch(
     `${baseURL}/${businessUnitKey}/puck-pages`,
     {
       method: 'POST',
       headers: writeHeaders(projectKey, jwtToken),
-      body: JSON.stringify({ value: input }),
+      body: JSON.stringify(body),
     }
   );
   return handleResponse<PuckPageResponse>(res);
@@ -99,14 +99,14 @@ export const updatePuckPageApi = async (
   jwtToken: string,
   businessUnitKey: string,
   key: string,
-  input: UpdatePuckPageInput
+  body: { value: UpdatePuckPageInput }
 ): Promise<PuckPageResponse> => {
   const res = await fetch(
     `${baseURL}/${businessUnitKey}/puck-pages/${key}`,
     {
       method: 'PUT',
       headers: writeHeaders(projectKey, jwtToken),
-      body: JSON.stringify({ value: input }),
+      body: JSON.stringify(body),
     }
   );
   return handleResponse<PuckPageResponse>(res);
@@ -178,7 +178,7 @@ export const queryPuckPageApi = async (
   baseURL: string,
   projectKey: string,
   businessUnitKey: string,
-  slug: string,
+  body: { query: string },
   mode: 'published' | 'preview'
 ): Promise<PuckPageResponse['value'] | null> => {
   const res = await fetch(
@@ -186,7 +186,7 @@ export const queryPuckPageApi = async (
     {
       method: 'POST',
       headers: readHeaders(projectKey),
-      body: JSON.stringify({ query: `slug = "${slug}"` }),
+      body: JSON.stringify(body),
     }
   );
   if (res.status === 404) return null;

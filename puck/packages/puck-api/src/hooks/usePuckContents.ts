@@ -72,7 +72,7 @@ export const usePuckContents = (
         projectKey,
         jwtToken,
         businessUnitKey,
-        input
+        { value: input }
       );
       await refresh();
       return created;
