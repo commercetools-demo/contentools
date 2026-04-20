@@ -1,4 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
+import Label from '@commercetools-uikit/label';
+import TextInput from '@commercetools-uikit/text-input';
+import SelectInput from '@commercetools-uikit/select-input';
+import FlatButton from '@commercetools-uikit/flat-button';
+import SecondaryButton from '@commercetools-uikit/secondary-button';
+import Spacings from '@commercetools-uikit/spacings';
+import { PlusThinIcon, CloseBoldIcon } from '@commercetools-uikit/icons';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -19,86 +26,25 @@ export interface DatasourceFieldProps {
 }
 
 // ---------------------------------------------------------------------------
-// Inline styles
+// Options
 // ---------------------------------------------------------------------------
 
-const s = {
-  root: {
-    display: 'flex',
-    flexDirection: 'column' as const,
-    gap: '10px',
-    fontFamily: 'inherit',
-    fontSize: '13px',
-  },
-  label: { fontSize: '12px', fontWeight: 600, color: '#374151' } as React.CSSProperties,
-  select: {
-    width: '100%',
-    padding: '7px 10px',
-    border: '1px solid #d1d5db',
-    borderRadius: '4px',
-    fontSize: '13px',
-    background: '#fff',
-    boxSizing: 'border-box' as const,
-  },
-  skuRow: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '6px',
-  },
-  input: {
-    flex: 1,
-    padding: '7px 10px',
-    border: '1px solid #d1d5db',
-    borderRadius: '4px',
-    fontSize: '13px',
-    boxSizing: 'border-box' as const,
-  } as React.CSSProperties,
-  removeBtn: {
-    padding: '5px 8px',
-    border: '1px solid #fca5a5',
-    borderRadius: '4px',
-    background: '#fff',
-    color: '#dc2626',
-    fontWeight: 600,
-    fontSize: '13px',
-    cursor: 'pointer',
-    lineHeight: 1,
-    flexShrink: 0,
-  } as React.CSSProperties,
-  addBtn: {
-    padding: '5px 12px',
-    border: '1px solid #d1d5db',
-    borderRadius: '4px',
-    background: '#fff',
-    color: '#374151',
-    fontWeight: 500,
-    fontSize: '12px',
-    cursor: 'pointer',
-    alignSelf: 'flex-start' as const,
-  } as React.CSSProperties,
-  skuList: {
-    display: 'flex',
-    flexDirection: 'column' as const,
-    gap: '6px',
-  },
-};
+const TYPE_OPTIONS = [
+  { value: 'product-by-sku', label: 'Product by SKU' },
+  { value: 'products-by-sku', label: 'Products by SKU' },
+];
+
+const EMPTY_VALUE: DatasourceValue = { type: 'product-by-sku', skus: [''] };
 
 // ---------------------------------------------------------------------------
 // DatasourceField — custom Puck field component
 // ---------------------------------------------------------------------------
-
-const EMPTY_VALUE: DatasourceValue = { type: 'product-by-sku', skus: [''] };
 
 export const DatasourceField: React.FC<DatasourceFieldProps> = ({
   value,
   onChange,
 }) => {
   const current: DatasourceValue = value ?? EMPTY_VALUE;
-
-  const handleTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const newType = e.target.value as DatasourceType;
-    onChange({ type: newType, skus: newType === 'product-by-sku' ? [current.skus[0] ?? ''] : current.skus });
-  };
 
   const handleSingleSkuChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onChange({ ...current, skus: [e.target.value] });
@@ -120,54 +66,61 @@ export const DatasourceField: React.FC<DatasourceFieldProps> = ({
   };
 
   return (
-    <div style={s.root}>
-      <div>
-        <div style={s.label}>Datasource type</div>
-        <select style={s.select} value={current.type} onChange={handleTypeChange}>
-          <option value="product-by-sku">Product by SKU</option>
-          <option value="products-by-sku">Products by SKU</option>
-        </select>
-      </div>
+    <Spacings.Stack scale="s">
+      <Spacings.Stack scale="xs">
+        <Label htmlFor="datasource-type">Datasource type</Label>
+        <SelectInput
+          id="datasource-type"
+          name="datasource-type"
+          value={current.type}
+          options={TYPE_OPTIONS}
+          onChange={(e) => {
+            const newType = e.target.value as DatasourceType;
+            onChange({ type: newType, skus: newType === 'product-by-sku' ? [current.skus[0] ?? ''] : current.skus });
+          }}
+        />
+      </Spacings.Stack>
 
       {current.type === 'product-by-sku' ? (
-        <div>
-          <div style={s.label}>SKU</div>
-          <input
-            style={s.input}
-            type="text"
+        <Spacings.Stack scale="xs">
+          <Label htmlFor="datasource-sku">SKU</Label>
+          <TextInput
+            id="datasource-sku"
             placeholder="Enter product SKU"
             value={current.skus[0] ?? ''}
             onChange={handleSingleSkuChange}
           />
-        </div>
+        </Spacings.Stack>
       ) : (
-        <div>
-          <div style={s.label}>SKUs</div>
-          <div style={s.skuList}>
+        <Spacings.Stack scale="xs">
+          <Label>SKUs</Label>
+          <Spacings.Stack scale="xs">
             {current.skus.map((sku, i) => (
-              <div key={i} style={s.skuRow}>
-                <input
-                  style={s.input}
-                  type="text"
-                  placeholder={`SKU ${i + 1}`}
-                  value={sku}
-                  onChange={(e) => handleMultiSkuChange(i, e.target.value)}
-                />
-                <button
-                  style={s.removeBtn}
+              <Spacings.Inline key={i} scale="xs" alignItems="center">
+                <div style={{ flex: 1 }}>
+                  <TextInput
+                    placeholder={`SKU ${i + 1}`}
+                    value={sku}
+                    onChange={(e) => handleMultiSkuChange(i, e.target.value)}
+                  />
+                </div>
+                <FlatButton
+                  tone="critical"
+                  label="Remove"
+                  icon={<CloseBoldIcon />}
                   onClick={() => removeSku(i)}
-                  title="Remove SKU"
-                >
-                  ×
-                </button>
-              </div>
+                />
+              </Spacings.Inline>
             ))}
-            <button style={s.addBtn} onClick={addSku}>
-              + Add SKU
-            </button>
-          </div>
-        </div>
+            <SecondaryButton
+              label="Add SKU"
+              iconLeft={<PlusThinIcon />}
+              onClick={addSku}
+              size="small"
+            />
+          </Spacings.Stack>
+        </Spacings.Stack>
       )}
-    </div>
+    </Spacings.Stack>
   );
 };

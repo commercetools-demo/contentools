@@ -6,9 +6,9 @@ import type { PuckData } from '@commercetools-demo/puck-types';
 import type { PuckPageVersionEntry } from '@commercetools-demo/puck-types';
 import {
   VersionHistoryProvider,
-  VersionHistoryPanel,
   VersionPreviewBanner,
   VersionAwareFieldsPanel,
+  VersionHistoryButton,
   useVersionHistoryPanel,
   useVersionDiff,
 } from '@commercetools-demo/puck-version-history';
@@ -19,6 +19,7 @@ import {
   ComponentsPanel,
   ComponentItemFilter,
 } from './overrides/ComponentListSearch';
+import Spacings from '@commercetools-uikit/spacings';
 
 // ---------------------------------------------------------------------------
 // Inner component (uses context from PuckApiProvider)
@@ -90,7 +91,6 @@ const PuckEditorInner: React.FC<PuckEditorInnerProps> = ({
   // -------------------------------------------------------------------------
 
   const handleChange = useCallback((data: Data) => {
-    // Puck fires onChange on remount; ignore it while previewing a version
     if (isPreviewingRef.current) return;
     latestDataRef.current = data;
     setHasUnsavedChanges(true);
@@ -136,9 +136,6 @@ const PuckEditorInner: React.FC<PuckEditorInnerProps> = ({
   // -------------------------------------------------------------------------
 
   const handleApplyVersion = useCallback(async () => {
-    // Read data before closing the panel so selectedVersionId stays set
-    // until the save resolves. Puck will then remount with the freshly-saved
-    // currentData when closePanel() finally nulls out selectedVersionId.
     const versionData = versionHistory.previewData;
     if (!versionData) return;
     setIsApplyingVersion(true);
@@ -146,8 +143,7 @@ const PuckEditorInner: React.FC<PuckEditorInnerProps> = ({
       await saveDraft(versionData);
       setHasUnsavedChanges(false);
       onSave?.(versionData);
-      // Close panel AFTER save so currentData is up-to-date when Puck remounts
-      versionHistory.closePanel();
+      versionHistory.clearSelection();
     } catch (err) {
       onError?.(err as Error);
     } finally {
@@ -168,8 +164,7 @@ const PuckEditorInner: React.FC<PuckEditorInnerProps> = ({
           justifyContent: 'center',
           height: '100vh',
           fontSize: '16px',
-          color: 'var(--text-muted)',
-          background: 'var(--bg-void)',
+          color: 'var(--puck-color-grey-07)',
         }}
       >
         Loading editor…
@@ -182,9 +177,8 @@ const PuckEditorInner: React.FC<PuckEditorInnerProps> = ({
       <div
         style={{
           padding: '32px',
-          color: 'var(--status-error)',
-          background: 'rgba(248, 113, 113, 0.08)',
-          border: '1px solid rgba(248, 113, 113, 0.25)',
+          color: 'var(--puck-color-red-07)',
+          border: '1px solid var(--puck-color-red-04)',
           borderRadius: '8px',
           margin: '16px',
         }}
@@ -201,22 +195,15 @@ const PuckEditorInner: React.FC<PuckEditorInnerProps> = ({
     <VersionHistoryProvider
       diff={diff}
       isPreviewingHistory={versionHistory.isPreviewingHistory}
+      versions={versions as PuckPageVersionEntry[]}
+      isLoadingVersions={versionHistory.isLoadingVersions}
+      selectedVersionId={versionHistory.selectedVersionId}
+      isApplying={isApplyingVersion}
+      onVersionSelect={versionHistory.selectVersion}
+      onApply={() => void handleApplyVersion()}
+      onDiscard={versionHistory.clearSelection}
+      onLoadVersions={versionHistory.openPanel}
     >
-      {/* Version history side panel (portal-like fixed overlay) */}
-      <VersionHistoryPanel
-        isOpen={versionHistory.isPanelOpen}
-        versions={versions as PuckPageVersionEntry[]}
-        isLoading={versionHistory.isLoadingVersions}
-        selectedVersionId={versionHistory.selectedVersionId}
-        diff={diff}
-        isPreviewingHistory={versionHistory.isPreviewingHistory}
-        onVersionSelect={versionHistory.selectVersion}
-        onApply={() => void handleApplyVersion()}
-        onDiscard={versionHistory.clearSelection}
-        onClose={versionHistory.closePanel}
-        isApplying={isApplyingVersion}
-      />
-
       <ComponentSearchProvider>
         <Puck
           key={versionHistory.selectedVersionId ?? 'current'}
@@ -227,38 +214,15 @@ const PuckEditorInner: React.FC<PuckEditorInnerProps> = ({
           overrides={{
             headerActions: () =>
               versionHistory.isPreviewingHistory ? (
-                // When previewing a version, hide normal actions and show the
-                // preview banner instead — together with the history button.
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <Spacings.Inline scale="s" alignItems="center">
                   <VersionPreviewBanner
                     timestamp={versionHistory.selectedVersion!.timestamp}
                     onApply={() => void handleApplyVersion()}
                     onDiscard={versionHistory.clearSelection}
                     isApplying={isApplyingVersion}
                   />
-                  {/* Keep the history button visible so the panel stays accessible */}
-                  <button
-                    onClick={versionHistory.closePanel}
-                    style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '5px',
-                      padding: '6px 12px',
-                      borderRadius: '4px',
-                      border: '1px solid rgba(129, 140, 248, 0.6)',
-                      background: 'rgba(129, 140, 248, 0.15)',
-                      color: 'var(--status-draft, #818cf8)',
-                      fontWeight: 500,
-                      fontSize: '13px',
-                      cursor: 'pointer',
-                    }}
-                  >
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" />
-                    </svg>
-                    History
-                  </button>
-                </div>
+                  <VersionHistoryButton disabled={isApplyingVersion} />
+                </Spacings.Inline>
               ) : (
                 <EditorToolbar
                   saving={saving}
@@ -268,8 +232,6 @@ const PuckEditorInner: React.FC<PuckEditorInnerProps> = ({
                   onPublish={() => void handlePublish(activeData as Data)}
                   onRevert={() => void handleRevert()}
                   showPublishButton={showPublishButton}
-                  onVersionHistory={() => void versionHistory.openPanel()}
-                  isVersionHistoryActive={versionHistory.isPanelOpen}
                 />
               ),
             components: ({ children }) => <ComponentsPanel>{children}</ComponentsPanel>,

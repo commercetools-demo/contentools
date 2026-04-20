@@ -1,42 +1,11 @@
 import React from 'react';
 import type { PuckStateInfo } from '@commercetools-demo/puck-types';
 import { VersionHistoryButton } from '@commercetools-demo/puck-version-history';
-
-type BadgeVariant = 'saving' | 'unsaved' | 'draft' | 'published';
-
-interface StatusBadgeProps {
-  label: string;
-  variant: BadgeVariant;
-}
-
-const BADGE_STYLES: Record<BadgeVariant, { bg: string; color: string; border: string }> = {
-  saving:    { bg: 'rgba(251, 191, 36, 0.12)',  color: 'var(--status-saving)',    border: 'rgba(251, 191, 36, 0.3)' },
-  unsaved:   { bg: 'rgba(100, 116, 139, 0.12)', color: 'var(--text-muted)',       border: 'rgba(100, 116, 139, 0.3)' },
-  draft:     { bg: 'rgba(129, 140, 248, 0.12)', color: 'var(--status-draft)',     border: 'rgba(129, 140, 248, 0.3)' },
-  published: { bg: 'rgba(6, 214, 160, 0.12)',   color: 'var(--status-published)', border: 'rgba(6, 214, 160, 0.3)' },
-};
-
-const StatusBadge: React.FC<StatusBadgeProps> = ({ label, variant }) => {
-  const s = BADGE_STYLES[variant];
-  return (
-    <span
-      style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: '4px',
-        padding: '2px 10px',
-        borderRadius: '12px',
-        fontSize: '12px',
-        fontWeight: 600,
-        background: s.bg,
-        color: s.color,
-        border: `1px solid ${s.border}`,
-      }}
-    >
-      {label}
-    </span>
-  );
-};
+import Stamp from '@commercetools-uikit/stamp';
+import PrimaryButton from '@commercetools-uikit/primary-button';
+import SecondaryButton from '@commercetools-uikit/secondary-button';
+import FlatButton from '@commercetools-uikit/flat-button';
+import Spacings from '@commercetools-uikit/spacings';
 
 export interface EditorToolbarProps {
   saving: boolean;
@@ -46,8 +15,6 @@ export interface EditorToolbarProps {
   onPublish: () => void;
   onRevert: () => void;
   showPublishButton: boolean;
-  onVersionHistory: () => void;
-  isVersionHistoryActive: boolean;
 }
 
 export const EditorToolbar: React.FC<EditorToolbarProps> = ({
@@ -58,99 +25,47 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
   onPublish,
   onRevert,
   showPublishButton,
-  onVersionHistory,
-  isVersionHistoryActive,
 }) => {
   const hasDraft = Boolean(states.draft);
   const hasPublished = Boolean(states.published);
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: '12px',
-        flexWrap: 'wrap',
-      }}
-    >
-      {/* Status indicators */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-        {saving && <StatusBadge label="Saving…" variant="saving" />}
-        {!saving && isDirty && <StatusBadge label="Unsaved" variant="unsaved" />}
-        {!saving && !isDirty && hasDraft && (
-          <StatusBadge label="Draft" variant="draft" />
-        )}
-        {hasPublished && <StatusBadge label="Published" variant="published" />}
-      </div>
+    <Spacings.Inline scale="s" alignItems="center">
+      {/* Status stamps */}
+      <Spacings.Inline scale="xs" alignItems="center">
+        {saving && <Stamp tone="warning" label="Saving…" isCondensed />}
+        {!saving && isDirty && <Stamp tone="secondary" label="Unsaved" isCondensed />}
+        {!saving && !isDirty && hasDraft && <Stamp tone="information" label="Draft" isCondensed />}
+        {hasPublished && <Stamp tone="positive" label="Published" isCondensed />}
+      </Spacings.Inline>
 
       {/* Revert button — only when there's a draft and an existing published version */}
       {hasDraft && hasPublished && (
-        <button
+        <FlatButton
+          label="Revert to Published"
           onClick={onRevert}
-          disabled={saving}
-          style={{
-            padding: '6px 14px',
-            borderRadius: '4px',
-            border: '1px solid var(--border-glow)',
-            background: 'transparent',
-            color: 'var(--text-muted)',
-            fontWeight: 500,
-            fontSize: '13px',
-            cursor: saving ? 'not-allowed' : 'pointer',
-            opacity: saving ? 0.5 : 1,
-          }}
-        >
-          Revert to Published
-        </button>
+          isDisabled={saving}
+        />
       )}
 
       {/* Save draft button */}
-      <button
+      <SecondaryButton
+        label="Save"
         onClick={onSave}
-        disabled={!isDirty || saving}
-        style={{
-          padding: '6px 14px',
-          borderRadius: '4px',
-          border: '1px solid var(--border-glow)',
-          background: 'transparent',
-          color: 'var(--text-muted)',
-          fontWeight: 500,
-          fontSize: '13px',
-          cursor: (!isDirty || saving) ? 'not-allowed' : 'pointer',
-          opacity: (!isDirty || saving) ? 0.4 : 1,
-        }}
-      >
-        Save
-      </button>
+        isDisabled={!isDirty || saving}
+      />
 
       {/* Publish button */}
       {showPublishButton && (
-        <button
+        <PrimaryButton
+          label={hasPublished ? 'Re-publish' : 'Publish'}
           onClick={onPublish}
-          disabled={saving}
-          style={{
-            padding: '6px 16px',
-            borderRadius: '4px',
-            border: '1px solid var(--accent-cyan)',
-            background: 'rgba(0, 212, 255, 0.1)',
-            color: 'var(--accent-cyan)',
-            fontWeight: 600,
-            fontSize: '13px',
-            cursor: saving ? 'not-allowed' : 'pointer',
-            opacity: saving ? 0.5 : 1,
-            boxShadow: '0 0 12px rgba(0, 212, 255, 0.15)',
-          }}
-        >
-          {hasPublished ? 'Re-publish' : 'Publish'}
-        </button>
+          isDisabled={saving}
+        />
       )}
 
-      {/* Version history toggle — always visible */}
-      <VersionHistoryButton
-        onClick={onVersionHistory}
-        isActive={isVersionHistoryActive}
-        disabled={saving}
-      />
-    </div>
+      {/* Version history toggle — self-contained, reads context */}
+      <VersionHistoryButton disabled={saving} />
+    </Spacings.Inline>
   );
 };

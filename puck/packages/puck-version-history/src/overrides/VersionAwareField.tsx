@@ -1,6 +1,9 @@
 import React from 'react';
 import { usePuck } from '@measured/puck';
 import { useVersionHistoryContext } from '../context/VersionHistoryContext';
+import { Tag } from '@commercetools-uikit/tag';
+import Text from '@commercetools-uikit/text';
+import Spacings from '@commercetools-uikit/spacings';
 
 interface VersionAwareFieldsPanelProps {
   children: React.ReactNode;
@@ -47,39 +50,17 @@ export const VersionAwareFieldsPanel: React.FC<VersionAwareFieldsPanelProps> = (
             background: 'rgba(245, 158, 11, 0.07)',
           }}
         >
-          <p
-            style={{
-              margin: '0 0 5px',
-              fontSize: '11px',
-              fontWeight: 600,
-              textTransform: 'uppercase',
-              letterSpacing: '0.05em',
-              color: '#f59e0b',
-            }}
-          >
-            Fields changed from this version:
-          </p>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
-            {componentDiff.changedProps
-              // hide internal puck `id` prop
-              .filter((p) => p !== 'id')
-              .map((prop) => (
-                <span
-                  key={prop}
-                  style={{
-                    fontSize: '11px',
-                    padding: '2px 7px',
-                    borderRadius: '4px',
-                    background: 'rgba(245, 158, 11, 0.14)',
-                    color: '#f59e0b',
-                    border: '1px solid rgba(245, 158, 11, 0.3)',
-                    fontWeight: 500,
-                  }}
-                >
-                  {prop}
-                </span>
-              ))}
-          </div>
+          <Spacings.Stack scale="xs">
+            <Text.Detail isBold>Fields changed from this version:</Text.Detail>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
+              {componentDiff.changedProps
+                // hide internal puck `id` prop
+                .filter((p) => p !== 'id')
+                .map((prop) => (
+                  <Tag key={prop} type="normal">{prop}</Tag>
+                ))}
+            </div>
+          </Spacings.Stack>
         </div>
       )}
 
@@ -92,36 +73,14 @@ export const VersionAwareFieldsPanel: React.FC<VersionAwareFieldsPanelProps> = (
             background: 'rgba(245, 158, 11, 0.07)',
           }}
         >
-          <p
-            style={{
-              margin: '0 0 5px',
-              fontSize: '11px',
-              fontWeight: 600,
-              textTransform: 'uppercase',
-              letterSpacing: '0.05em',
-              color: '#f59e0b',
-            }}
-          >
-            Root fields changed:
-          </p>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
-            {diff.rootChanges.map((prop) => (
-              <span
-                key={prop}
-                style={{
-                  fontSize: '11px',
-                  padding: '2px 7px',
-                  borderRadius: '4px',
-                  background: 'rgba(245, 158, 11, 0.14)',
-                  color: '#f59e0b',
-                  border: '1px solid rgba(245, 158, 11, 0.3)',
-                  fontWeight: 500,
-                }}
-              >
-                {prop}
-              </span>
-            ))}
-          </div>
+          <Spacings.Stack scale="xs">
+            <Text.Detail isBold>Root fields changed:</Text.Detail>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
+              {diff.rootChanges.map((prop) => (
+                <Tag key={prop} type="normal">{prop}</Tag>
+              ))}
+            </div>
+          </Spacings.Stack>
         </div>
       )}
 

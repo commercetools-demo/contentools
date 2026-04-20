@@ -1,14 +1,20 @@
 import React from 'react';
 import type { PuckDataDiff } from '../types';
-
+import Stamp from '@commercetools-uikit/stamp';
+import { Tag } from '@commercetools-uikit/tag';
+import Text from '@commercetools-uikit/text';
+import Spacings from '@commercetools-uikit/spacings';
+import Card from '@commercetools-uikit/card';
 interface DiffSummaryProps {
   diff: PuckDataDiff;
 }
 
-const STATUS_ICONS: Record<string, { icon: string; color: string; label: string }> = {
-  added:   { icon: '+', color: 'var(--status-published, #06d6a0)', label: 'Added' },
-  removed: { icon: '−', color: 'var(--status-error, #f87171)',     label: 'Removed' },
-  changed: { icon: '~', color: 'var(--status-saving, #fbbf24)',    label: 'Changed' },
+type StatusTone = 'positive' | 'critical' | 'warning';
+
+const STATUS_META: Record<string, { tone: StatusTone; label: string }> = {
+  added:   { tone: 'positive',  label: 'Added' },
+  removed: { tone: 'critical',  label: 'Removed' },
+  changed: { tone: 'warning',   label: 'Changed' },
 };
 
 /**
@@ -19,149 +25,56 @@ const STATUS_ICONS: Record<string, { icon: string; color: string; label: string 
 export const DiffSummary: React.FC<DiffSummaryProps> = ({ diff }) => {
   if (!diff.hasChanges) {
     return (
-      <p
-        style={{
-          fontSize: '12px',
-          color: 'var(--text-muted, #94a3b8)',
-          margin: 0,
-          padding: '8px 0',
-          textAlign: 'center',
-        }}
-      >
-        No differences from current version
-      </p>
+      <Text.Body tone="secondary">No differences from current version</Text.Body>
     );
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-      <p
-        style={{
-          fontSize: '11px',
-          fontWeight: 600,
-          textTransform: 'uppercase',
-          letterSpacing: '0.06em',
-          color: 'var(--text-muted, #94a3b8)',
-          margin: '0 0 4px',
-        }}
-      >
-        Changes vs current
-      </p>
+    <Spacings.Stack scale="s">
+      <Text.Detail isBold>Changes vs current</Text.Detail>
 
       {diff.components.map((c) => {
-        const s = STATUS_ICONS[c.status];
+        const meta = STATUS_META[c.status];
         return (
-          <div
+          <Card
             key={c.id}
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '2px',
-              padding: '6px 8px',
-              borderRadius: '4px',
-              background: 'rgba(255,255,255,0.03)',
-              border: '1px solid rgba(255,255,255,0.06)',
-            }}
+           
           >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <span
-                style={{
-                  fontWeight: 700,
-                  fontSize: '13px',
-                  color: s.color,
-                  minWidth: '14px',
-                  textAlign: 'center',
-                }}
-              >
-                {s.icon}
-              </span>
-              <span
-                style={{
-                  fontSize: '12px',
-                  color: 'var(--text-body, #e2e8f0)',
-                  fontWeight: 500,
-                }}
-              >
-                {c.type}
-              </span>
-              <span
-                style={{
-                  fontSize: '10px',
-                  color: s.color,
-                  marginLeft: 'auto',
-                  fontWeight: 600,
-                }}
-              >
-                {s.label}
-              </span>
-            </div>
+            <Spacings.Stack scale="xs">
+              <Spacings.Inline scale="s" alignItems="center">
+                <Text.Detail isBold>{c.type}</Text.Detail>
+                <Stamp tone={meta.tone} label={meta.label} isCondensed />
+              </Spacings.Inline>
 
-            {c.status === 'changed' && c.changedProps.length > 0 && (
-              <div
-                style={{
-                  paddingLeft: '20px',
-                  display: 'flex',
-                  flexWrap: 'wrap',
-                  gap: '3px',
-                }}
-              >
-                {c.changedProps.map((prop) => (
-                  <span
-                    key={prop}
-                    style={{
-                      fontSize: '10px',
-                      padding: '1px 5px',
-                      borderRadius: '3px',
-                      background: 'rgba(251, 191, 36, 0.1)',
-                      color: 'var(--status-saving, #fbbf24)',
-                      border: '1px solid rgba(251, 191, 36, 0.2)',
-                    }}
-                  >
-                    {prop}
-                  </span>
-                ))}
-              </div>
-            )}
-          </div>
+              {c.status === 'changed' && c.changedProps.length > 0 && (
+                <div style={{ paddingLeft: '4px', display: 'flex', flexWrap: 'wrap', gap: '3px' }}>
+                  {c.changedProps.map((prop) => (
+                    <Tag key={prop} type="normal">{prop}</Tag>
+                  ))}
+                </div>
+              )}
+            </Spacings.Stack>
+          </Card>
         );
       })}
 
       {diff.rootChanges.length > 0 && (
-        <div
-          style={{
-            padding: '6px 8px',
-            borderRadius: '4px',
-            background: 'rgba(255,255,255,0.03)',
-            border: '1px solid rgba(255,255,255,0.06)',
-          }}
+        <Card
+       
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <span style={{ fontWeight: 700, fontSize: '13px', color: 'var(--status-saving, #fbbf24)' }}>
-              ~
-            </span>
-            <span style={{ fontSize: '12px', color: 'var(--text-body, #e2e8f0)', fontWeight: 500 }}>
-              Root
-            </span>
-          </div>
-          <div style={{ paddingLeft: '20px', display: 'flex', flexWrap: 'wrap', gap: '3px', marginTop: '3px' }}>
-            {diff.rootChanges.map((prop) => (
-              <span
-                key={prop}
-                style={{
-                  fontSize: '10px',
-                  padding: '1px 5px',
-                  borderRadius: '3px',
-                  background: 'rgba(251, 191, 36, 0.1)',
-                  color: 'var(--status-saving, #fbbf24)',
-                  border: '1px solid rgba(251, 191, 36, 0.2)',
-                }}
-              >
-                {prop}
-              </span>
-            ))}
-          </div>
-        </div>
+          <Spacings.Stack scale="xs">
+            <Spacings.Inline scale="s" alignItems="center">
+              <Text.Detail isBold>Root</Text.Detail>
+              <Stamp tone="warning" label="Changed" isCondensed />
+            </Spacings.Inline>
+            <div style={{ paddingLeft: '4px', display: 'flex', flexWrap: 'wrap', gap: '3px' }}>
+              {diff.rootChanges.map((prop) => (
+                <Tag key={prop} type="normal">{prop}</Tag>
+              ))}
+            </div>
+          </Spacings.Stack>
+        </Card>
       )}
-    </div>
+    </Spacings.Stack>
   );
 };

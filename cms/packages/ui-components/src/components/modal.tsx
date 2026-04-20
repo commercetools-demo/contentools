@@ -11,6 +11,8 @@ interface ModalProps {
   topBarPreviousPathLabel?: string;
   size?: number; // in percent
   children?: React.ReactNode;
+  /** Set to true for side panels that should not dim the underlying page */
+  hideOverlay?: boolean;
 }
 
 const ModalOverlay = styled.div<{ isVisible: boolean }>`
@@ -46,8 +48,8 @@ const ModalHeader = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 16px 24px;
-  border-bottom: var(--modal-header-border-bottom, 1px solid #e0e0e0);
-  background-color: var(--modal-header-background-color, #f5f5f5);
+  border-bottom: 1px solid #e0e0e0;
+  background-color: white;
 `;
 
 const ModalHeaderContent = styled.div`
@@ -78,6 +80,7 @@ export const Modal: React.FC<ModalProps> = ({
   topBarPreviousPathLabel,
   size = 50,
   children,
+  hideOverlay = false,
 }) => {
   // Handle ESC key to close modal
   useEffect(() => {
@@ -107,8 +110,8 @@ export const Modal: React.FC<ModalProps> = ({
   };
 
   return (
-    <ModalOverlay isVisible={isOpen} onClick={handleOverlayClick}>
-      <ModalContainer isVisible={isOpen} size={size}>
+    <ModalOverlay isVisible={isOpen && !hideOverlay} onClick={handleOverlayClick} style={hideOverlay ? { background: 'none', pointerEvents: 'none' } : undefined}>
+      <ModalContainer isVisible={isOpen} size={size} style={hideOverlay ? { pointerEvents: 'auto' } : undefined}>
         <ModalHeader>
           <ModalHeaderContent>
             {topBarPreviousPathLabel && (

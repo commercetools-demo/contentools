@@ -268,6 +268,8 @@ __metadata:
     "@commercetools-uikit/primary-button": "npm:^20.5.0"
     "@commercetools-uikit/secondary-button": "npm:^20.5.0"
     "@commercetools-uikit/spacings": "npm:^20.5.0"
+    "@commercetools-uikit/stamp": "npm:^20.5.0"
+    "@commercetools-uikit/tag": "npm:^20.5.0"
     "@commercetools-uikit/text": "npm:^20.5.0"
     "@commercetools-uikit/text-input": "npm:^20.5.0"
     "@measured/puck": "npm:0.18.2"
@@ -297,6 +299,20 @@ __metadata:
     "@commercetools-demo/puck-api": "workspace:^"
     "@commercetools-demo/puck-types": "workspace:^"
     "@commercetools-demo/puck-version-history": "workspace:^"
+    "@commercetools-uikit/design-system": "npm:^20.5.0"
+    "@commercetools-uikit/flat-button": "npm:^20.5.0"
+    "@commercetools-uikit/icon-button": "npm:^20.5.0"
+    "@commercetools-uikit/icons": "npm:^20.5.0"
+    "@commercetools-uikit/label": "npm:^20.5.0"
+    "@commercetools-uikit/primary-button": "npm:^20.5.0"
+    "@commercetools-uikit/secondary-button": "npm:^20.5.0"
+    "@commercetools-uikit/secondary-icon-button": "npm:^20.5.0"
+    "@commercetools-uikit/select-input": "npm:^20.5.0"
+    "@commercetools-uikit/spacings": "npm:^20.5.0"
+    "@commercetools-uikit/stamp": "npm:^20.5.0"
+    "@commercetools-uikit/tag": "npm:^20.5.0"
+    "@commercetools-uikit/text": "npm:^20.5.0"
+    "@commercetools-uikit/text-input": "npm:^20.5.0"
     "@measured/puck": "npm:^0.18.2"
     "@types/react": "npm:^18"
     "@types/react-dom": "npm:^18"
@@ -305,6 +321,7 @@ __metadata:
   peerDependencies:
     react: ">=19.0.0"
     react-dom: ">=19.0.0"
+    react-intl: ">=6.0.0"
   languageName: unknown
   linkType: soft
 
@@ -392,6 +409,17 @@ __metadata:
   resolution: "@commercetools-demo/puck-version-history@workspace:packages/puck-version-history"
   dependencies:
     "@commercetools-demo/puck-types": "workspace:^"
+    "@commercetools-uikit/design-system": "npm:^20.5.0"
+    "@commercetools-uikit/flat-button": "npm:^20.5.0"
+    "@commercetools-uikit/icons": "npm:^20.5.0"
+    "@commercetools-uikit/loading-spinner": "npm:^20.5.0"
+    "@commercetools-uikit/primary-button": "npm:^20.5.0"
+    "@commercetools-uikit/secondary-button": "npm:^20.5.0"
+    "@commercetools-uikit/secondary-icon-button": "npm:^20.5.0"
+    "@commercetools-uikit/spacings": "npm:^20.5.0"
+    "@commercetools-uikit/stamp": "npm:^20.5.0"
+    "@commercetools-uikit/tag": "npm:^20.5.0"
+    "@commercetools-uikit/text": "npm:^20.5.0"
     "@measured/puck": "npm:^0.18.2"
     "@types/react": "npm:^19"
     "@types/react-dom": "npm:^19"
@@ -400,6 +428,7 @@ __metadata:
   peerDependencies:
     react: ">=19.0.0"
     react-dom: ">=19.0.0"
+    react-intl: ">=6.0.0"
   languageName: unknown
   linkType: soft
 
@@ -886,7 +915,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@commercetools-uikit/secondary-icon-button@npm:20.5.0":
+"@commercetools-uikit/secondary-icon-button@npm:20.5.0, @commercetools-uikit/secondary-icon-button@npm:^20.5.0":
   version: 20.5.0
   resolution: "@commercetools-uikit/secondary-icon-button@npm:20.5.0"
   dependencies:
@@ -907,7 +936,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@commercetools-uikit/select-input@npm:20.5.0":
+"@commercetools-uikit/select-input@npm:20.5.0, @commercetools-uikit/select-input@npm:^20.5.0":
   version: 20.5.0
   resolution: "@commercetools-uikit/select-input@npm:20.5.0"
   dependencies:
@@ -1029,6 +1058,23 @@ __metadata:
   peerDependencies:
     react: 19.x
   checksum: 10/958b0850d4b2441ab1ba77e38ac1a73ddb03fa03105ea2d01f8fd6b802227f660e29d49ff4f11fcdf72cf8cc6d7d2a1354cffa88ac30281fa09c85e9ce0e25d9
+  languageName: node
+  linkType: hard
+
+"@commercetools-uikit/stamp@npm:^20.5.0":
+  version: 20.5.0
+  resolution: "@commercetools-uikit/stamp@npm:20.5.0"
+  dependencies:
+    "@babel/runtime": "npm:^7.20.13"
+    "@babel/runtime-corejs3": "npm:^7.20.13"
+    "@commercetools-uikit/design-system": "npm:20.5.0"
+    "@commercetools-uikit/spacings-inline": "npm:20.5.0"
+    "@commercetools-uikit/text": "npm:20.5.0"
+    "@commercetools-uikit/utils": "npm:20.5.0"
+    "@emotion/react": "npm:^11.10.5"
+  peerDependencies:
+    react: 19.x
+  checksum: 10/be63df297995dfd7da856423f750870a11ca636b54e8e25408a6154901ea93f2137eeec45ab1e90ff5cffd8758e9add20cca0c7ece8e746cb25c165c5586f88a
   languageName: node
   linkType: hard
 

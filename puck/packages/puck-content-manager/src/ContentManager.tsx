@@ -15,36 +15,7 @@ import LoadingSpinner from '@commercetools-uikit/loading-spinner';
 import TextInput from '@commercetools-uikit/text-input';
 import Label from '@commercetools-uikit/label';
 import { PlusThinIcon, SearchIcon } from '@commercetools-uikit/icons';
-
-// ---------------------------------------------------------------------------
-// Status badge
-// ---------------------------------------------------------------------------
-
-const StatusBadge: React.FC<{ variant: 'draft' | 'published' | 'none' }> = ({ variant }) => {
-  const styles: React.CSSProperties =
-    variant === 'published'
-      ? { background: 'var(--color-success-95)', color: 'var(--color-success-40)', border: '1px solid var(--color-success-85)' }
-      : variant === 'draft'
-        ? { background: 'var(--color-warning-95)', color: 'var(--color-warning-40)', border: '1px solid var(--color-warning-85)' }
-        : { background: 'var(--color-neutral-95)', color: 'var(--color-neutral-50)', border: '1px solid var(--color-neutral-85)' };
-  return (
-    <span
-      style={{
-        ...styles,
-        display: 'inline-flex',
-        alignItems: 'center',
-        padding: '2px 8px',
-        borderRadius: 'var(--border-radius-20)',
-        fontSize: 'var(--font-size-10)',
-        fontWeight: 'var(--font-weight-600)',
-        marginRight: '4px',
-        whiteSpace: 'nowrap',
-      }}
-    >
-      {variant === 'published' ? 'Published' : variant === 'draft' ? 'Draft' : 'No state'}
-    </span>
-  );
-};
+import Stamp from '@commercetools-uikit/stamp';
 
 // ---------------------------------------------------------------------------
 // Row type for DataTable
@@ -211,7 +182,7 @@ const ContentList: React.FC<ContentListProps> = ({ defaultContentType, onEdit })
             itemRenderer={(row: ContentRow, column) => {
               switch (column.key) {
                 case 'name':
-                  return <Text.Body isBold>{row.value.name}</Text.Body>;
+                  return <Text.Body fontWeight="bold">{row.value.name}</Text.Body>;
                 case 'contentType':
                   return (
                     <code
@@ -230,10 +201,10 @@ const ContentList: React.FC<ContentListProps> = ({ defaultContentType, onEdit })
                   const hasDraft = !!row.states.draft;
                   const hasPublished = !!row.states.published;
                   return (
-                    <span>
-                      {hasDraft && <StatusBadge variant="draft" />}
-                      {hasPublished && <StatusBadge variant="published" />}
-                      {!hasDraft && !hasPublished && <StatusBadge variant="none" />}
+                    <span style={{ display: 'inline-flex', gap: '4px', flexWrap: 'wrap' }}>
+                      {hasDraft && <Stamp tone="warning" label="Draft" isCondensed />}
+                      {hasPublished && <Stamp tone="positive" label="Published" isCondensed />}
+                      {!hasDraft && !hasPublished && <Stamp tone="secondary" label="No state" isCondensed />}
                     </span>
                   );
                 }

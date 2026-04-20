@@ -33,6 +33,7 @@ const VersionHistorySidebar: React.FC<VersionHistorySidebarProps> = ({
       size={15}
       onClose={onClose}
       title="Version History"
+      hideOverlay
     >
       <Spacings.Stack scale="m">
         {versions.length === 0 ? (

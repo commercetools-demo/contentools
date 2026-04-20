@@ -14,7 +14,7 @@ export type { UseVersionHistoryPanelReturn } from './hooks/useVersionHistoryPane
 
 // Components
 export { VersionHistoryButton } from './components/VersionHistoryButton';
-export { VersionHistoryPanel } from './components/VersionHistoryPanel';
+export { VersionHistorySidebarContent } from './components/VersionHistorySidebarContent';
 export { VersionCard } from './components/VersionCard';
 export { DiffSummary } from './components/DiffSummary';
 export { VersionPreviewBanner } from './components/VersionPreviewBanner';
