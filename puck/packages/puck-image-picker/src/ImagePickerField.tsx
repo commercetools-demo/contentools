@@ -24,6 +24,7 @@ import { CloseIcon } from '@commercetools-uikit/icons';
 interface UploadModalProps {
   uploading: boolean;
   error: string | null;
+  imagesOnly: boolean;
   onUpload: (file: File, title: string, description: string) => void;
   onClose: () => void;
 }
@@ -31,6 +32,7 @@ interface UploadModalProps {
 const UploadModal: React.FC<UploadModalProps> = ({
   uploading,
   error,
+  imagesOnly,
   onUpload,
   onClose,
 }) => {
@@ -146,7 +148,7 @@ const UploadModal: React.FC<UploadModalProps> = ({
               <input
                 ref={inputRef}
                 type="file"
-                accept="image/*"
+                accept={imagesOnly ? 'image/*' : '*/*'}
                 style={{ display: 'none' }}
                 onChange={(e) => {
                   const f = e.target.files?.[0];
@@ -490,6 +492,7 @@ export const ImagePickerField: React.FC<ImagePickerFieldProps> = ({
         <UploadModal
           uploading={uploading}
           error={error}
+          imagesOnly={imagesOnly}
           onUpload={(file, title, desc) => void handleUpload(file, title, desc)}
           onClose={() => setShowUpload(false)}
         />
