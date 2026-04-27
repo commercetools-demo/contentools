@@ -244,6 +244,43 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@commercetools-demo/puck-configuration@link:../packages/puck-configuration::locator=puck-react-test%40workspace%3Apuck-react-test":
+  version: 0.0.0-use.local
+  resolution: "@commercetools-demo/puck-configuration@link:../packages/puck-configuration::locator=puck-react-test%40workspace%3Apuck-react-test"
+  languageName: node
+  linkType: soft
+
+"@commercetools-demo/puck-configuration@workspace:packages/puck-configuration":
+  version: 0.0.0-use.local
+  resolution: "@commercetools-demo/puck-configuration@workspace:packages/puck-configuration"
+  dependencies:
+    "@commercetools-demo/puck-api": "workspace:^"
+    "@commercetools-demo/puck-types": "workspace:^"
+    "@commercetools-uikit/card": "npm:^20.5.0"
+    "@commercetools-uikit/field-label": "npm:^20.5.0"
+    "@commercetools-uikit/flat-button": "npm:^20.5.0"
+    "@commercetools-uikit/grid": "npm:^20.5.0"
+    "@commercetools-uikit/loading-spinner": "npm:^20.5.0"
+    "@commercetools-uikit/number-input": "npm:^20.5.0"
+    "@commercetools-uikit/primary-button": "npm:^20.5.0"
+    "@commercetools-uikit/secondary-button": "npm:^20.5.0"
+    "@commercetools-uikit/select-input": "npm:^20.5.0"
+    "@commercetools-uikit/spacings": "npm:^20.5.0"
+    "@commercetools-uikit/text": "npm:^20.5.0"
+    "@commercetools-uikit/text-input": "npm:^20.5.0"
+    "@types/react": "npm:^19"
+    "@types/react-dom": "npm:^19"
+    "@types/react-router-dom": "npm:^5"
+    tsup: "npm:^8.3.0"
+    typescript: "npm:^5.7.2"
+  peerDependencies:
+    react: ">=19.0.0"
+    react-dom: ">=19.0.0"
+    react-intl: ">=6.0.0"
+    react-router-dom: ">=5.0.0 <6"
+  languageName: unknown
+  linkType: soft
+
 "@commercetools-demo/puck-content-manager@link:../packages/puck-content-manager::locator=puck-react-test%40workspace%3Apuck-react-test":
   version: 0.0.0-use.local
   resolution: "@commercetools-demo/puck-content-manager@link:../packages/puck-content-manager::locator=puck-react-test%40workspace%3Apuck-react-test"
@@ -272,7 +309,7 @@ __metadata:
     "@commercetools-uikit/tag": "npm:^20.5.0"
     "@commercetools-uikit/text": "npm:^20.5.0"
     "@commercetools-uikit/text-input": "npm:^20.5.0"
-    "@measured/puck": "npm:0.18.2"
+    "@measured/puck": "npm:^0.18.2"
     "@types/react": "npm:^19"
     "@types/react-dom": "npm:^19"
     "@types/react-router-dom": "npm:^5"
@@ -711,7 +748,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@commercetools-uikit/field-label@npm:20.5.0":
+"@commercetools-uikit/field-label@npm:20.5.0, @commercetools-uikit/field-label@npm:^20.5.0":
   version: 20.5.0
   resolution: "@commercetools-uikit/field-label@npm:20.5.0"
   dependencies:
@@ -757,7 +794,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@commercetools-uikit/grid@npm:20.5.0":
+"@commercetools-uikit/grid@npm:20.5.0, @commercetools-uikit/grid@npm:^20.5.0":
   version: 20.5.0
   resolution: "@commercetools-uikit/grid@npm:20.5.0"
   dependencies:
@@ -880,6 +917,24 @@ __metadata:
   peerDependencies:
     react: 19.x
   checksum: 10/9b6d073f8ab95c71094cf92bb3de8c2d9914ece13e9f2825b28d77ccb28a5aac2ac2a28aabf5e837a1b7c74e50ab3b357a3ab573af49a92a7e69ef4ab5930ecc
+  languageName: node
+  linkType: hard
+
+"@commercetools-uikit/number-input@npm:^20.5.0":
+  version: 20.5.0
+  resolution: "@commercetools-uikit/number-input@npm:20.5.0"
+  dependencies:
+    "@babel/runtime": "npm:^7.20.13"
+    "@babel/runtime-corejs3": "npm:^7.20.13"
+    "@commercetools-uikit/constraints": "npm:20.5.0"
+    "@commercetools-uikit/design-system": "npm:20.5.0"
+    "@commercetools-uikit/input-utils": "npm:20.5.0"
+    "@commercetools-uikit/utils": "npm:20.5.0"
+    "@emotion/react": "npm:^11.10.5"
+    "@emotion/styled": "npm:^11.10.5"
+  peerDependencies:
+    react: 19.x
+  checksum: 10/08a55144f6f407589f4111dae112484210e9aabff3aa92c57d04a8d3496e263fa4a60b0cb7522903fcc596dad24e34d5cb55802473c68f74824bb4192c7464b9
   languageName: node
   linkType: hard
 
@@ -2095,24 +2150,6 @@ __metadata:
     "@jridgewell/resolve-uri": "npm:^3.1.0"
     "@jridgewell/sourcemap-codec": "npm:^1.4.14"
   checksum: 10/da0283270e691bdb5543806077548532791608e52386cfbbf3b9e8fb00457859d1bd01d512851161c886eb3a2f3ce6fd9bcf25db8edf3bddedd275bd4a88d606
-  languageName: node
-  linkType: hard
-
-"@measured/puck@npm:0.18.2":
-  version: 0.18.2
-  resolution: "@measured/puck@npm:0.18.2"
-  dependencies:
-    "@dnd-kit/helpers": "npm:0.0.7-beta-20250130032138"
-    "@dnd-kit/react": "npm:0.0.7-beta-20250130032138"
-    deep-diff: "npm:^1.0.2"
-    object-hash: "npm:^3.0.0"
-    react-hotkeys-hook: "npm:^4.6.1"
-    use-debounce: "npm:^9.0.4"
-    uuid: "npm:^9.0.1"
-    zustand: "npm:^5.0.2"
-  peerDependencies:
-    react: ^17.0.0 || ^18.0.0 || ^19.0.0
-  checksum: 10/e7f3c04f5f8c9d6cb16a17150d6543651870cb87fe9e32de0080307564e9ed31fda92de6f19a3d082897978099c309b0c6822c50b434df04ee7ac1f3c07693aa
   languageName: node
   linkType: hard
 
@@ -4496,6 +4533,7 @@ __metadata:
   resolution: "puck-react-test@workspace:puck-react-test"
   dependencies:
     "@commercetools-demo/puck-api": "link:../packages/puck-api"
+    "@commercetools-demo/puck-configuration": "link:../packages/puck-configuration"
     "@commercetools-demo/puck-content-manager": "link:../packages/puck-content-manager"
     "@commercetools-demo/puck-editor": "link:../packages/puck-editor"
     "@commercetools-demo/puck-page-manager": "link:../packages/puck-page-manager"

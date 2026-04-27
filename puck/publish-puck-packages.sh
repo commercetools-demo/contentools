@@ -15,6 +15,7 @@ NC='\033[0m'
 PACKAGES=(
     "packages/puck-types"
     "packages/puck-api"
+    "packages/puck-configuration"
     "packages/puck-content-manager"
     "packages/puck-image-picker"
     "packages/puck-editor"

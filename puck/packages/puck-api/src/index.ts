@@ -72,3 +72,17 @@ export type { UsePuckContentReturn } from './hooks/usePuckContent';
 export { resolveDatasourceApi } from './api/datasource.api';
 export { useDatasource } from './hooks/useDatasource';
 export type { UseDatasourceReturn } from './hooks/useDatasource';
+
+// Configuration API & hooks
+export {
+  getThemeApi,
+  createThemeApi,
+  updateThemeApi,
+  importDefaultContentTypesApi,
+} from './api/configuration.api';
+
+export { usePuckConfiguration } from './hooks/usePuckConfiguration';
+export type { UsePuckConfigurationReturn } from './hooks/usePuckConfiguration';
+
+export { usePuckContentType } from './hooks/usePuckContentType';
+export type { UsePuckContentTypeReturn } from './hooks/usePuckContentType';

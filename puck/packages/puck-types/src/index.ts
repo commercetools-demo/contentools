@@ -32,6 +32,8 @@ export type {
   PuckContentVersion,
 } from './puck-content.types';
 
+export type { ThemeTokens, ImportResult } from './theme-types';
+
 export type {
   MediaFile,
   MediaLibraryPagination,
