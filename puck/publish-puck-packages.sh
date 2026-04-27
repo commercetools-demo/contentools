@@ -20,6 +20,7 @@ PACKAGES=(
     "packages/puck-editor"
     "packages/puck-page-manager"
     "packages/puck-renderer"
+    "packages/puck-version-history"
 )
 
 AUTO_YES=false
