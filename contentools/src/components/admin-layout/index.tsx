@@ -1,0 +1,103 @@
+import { useMemo, type ReactNode } from 'react';
+import { NavLink, useRouteMatch } from 'react-router-dom';
+import {
+  IconFileText,
+  IconList,
+  IconCode,
+  IconImageGeneration,
+  IconWorld,
+} from '@tabler/icons-react';
+import styles from './admin-layout.module.css';
+import Spacings from '@commercetools-uikit/spacings';
+import SelectField from '@commercetools-uikit/select-field';
+import { useBusinessUnit } from '../../contexts/business-unit';
+type NavItem = {
+  label: string;
+  path: string;
+  icon: ReactNode;
+};
+
+type AdminLayoutProps = {
+  children: ReactNode;
+};
+
+const iconProps = { size: 16 };
+
+const AdminLayout = ({ children }: AdminLayoutProps) => {
+  const match = useRouteMatch();
+  const {
+    businessUnits,
+    showDropdown,
+    isLoading,
+    selectedBusinessUnitKey,
+    setSelectedBusinessUnitKey,
+  } = useBusinessUnit();
+
+  const selectOptions = useMemo(
+    () => businessUnits.map((bu) => ({ value: bu.key, label: bu.label })),
+    [businessUnits]
+  );
+  const navItems: NavItem[] = [
+    {
+      label: 'Pages',
+      path: `${match.url}/pages`,
+      icon: <IconFileText {...iconProps} />,
+    },
+    {
+      label: 'Items',
+      path: `${match.url}/items`,
+      icon: <IconList {...iconProps} />,
+    },
+    {
+      label: 'Theme',
+      path: `${match.url}/theme`,
+      icon: <IconImageGeneration {...iconProps} />,
+    },
+  ];
+
+  return (
+    <div className={styles.wrapper}>
+      <div className={styles.container}>
+        <aside className={styles.sidebar}>
+          <div className={styles.sidebarHeaderWrapper}>
+          <div className={styles.sidebarHeader}>
+            <div className={styles.appBadge}>CMS</div>
+            <span className={styles.appTitle}>Contentools</span>
+          </div>
+          {showDropdown && !isLoading && (
+            <Spacings.Stack scale="m">
+              <SelectField
+                title="Business unit"
+                value={selectedBusinessUnitKey}
+                options={selectOptions}
+                onChange={(event) => {
+                  const key = event.target.value as string;
+                  if (key) setSelectedBusinessUnitKey(key);
+                }}
+              />
+            </Spacings.Stack>
+          )}
+          </div>
+          <nav className={styles.nav}>
+            {navItems.map((item) => (
+              <NavLink
+                key={item.path}
+                to={item.path}
+                className={styles.navItem}
+                activeClassName={styles.navItemActive}
+              >
+                <span className={styles.navIcon}>{item.icon}</span>
+                <span className={styles.navLabel}>{item.label}</span>
+              </NavLink>
+            ))}
+          </nav>
+        </aside>
+        <main className={styles.content}>{children}</main>
+      </div>
+    </div>
+  );
+};
+
+AdminLayout.displayName = 'AdminLayout';
+
+export default AdminLayout;
