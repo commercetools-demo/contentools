@@ -4,6 +4,8 @@ coverage
 *.tfstate*
 *.tfvars
 
+.idea
+
 .DS_Store
 .vscode
 build/

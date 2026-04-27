@@ -1,12 +1,12 @@
 import PropertyEditor from '@commercetools-demo/contentools-property-editor';
 import {
   useStatePages,
-  useStateStateManagement
+  useStateStateManagement,
 } from '@commercetools-demo/contentools-state';
 import {
   ContentItem,
   EContentType,
-  EStateType
+  EStateType,
 } from '@commercetools-demo/contentools-types';
 import {
   ConfirmationModal,
@@ -99,18 +99,18 @@ const ComponentEditorModal: React.FC<Props> = ({
     onRefresh();
   };
 
+  const handleClose = () => {
+    onClose();
+    confirmationModalState.closeModal();
+    setChangedContentItem(undefined);
+  };
+
   const handleCloseCheck = () => {
     if (changedContentItem && !isEqual(changedContentItem, selectedComponent)) {
       confirmationModalState.openModal();
       return;
     }
     handleClose();
-  };
-
-  const handleClose = () => {
-    onClose();
-    confirmationModalState.closeModal();
-    setChangedContentItem(undefined);
   };
 
   useEffect(() => {

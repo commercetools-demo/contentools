@@ -1,0 +1,93 @@
+name: E2E Tests
+
+on:
+  push:
+    branches: [no_test]
+  pull_request:
+    branches: [no_test]
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    env:
+      E2E_BASE_URL: http://localhost:8080
+      E2E_BUSINESS_UNIT_KEY: ${{ vars.E2E_BUSINESS_UNIT_KEY }}
+      E2E_CTP_PROJECT_KEY: ${{ vars.E2E_CTP_PROJECT_KEY }}
+      E2E_CTP_CLIENT_ID: ${{ vars.E2E_CTP_CLIENT_ID }}
+      E2E_CTP_CLIENT_SECRET: ${{ secrets.E2E_CTP_CLIENT_SECRET }}
+      E2E_CTP_REGION: ${{ vars.E2E_CTP_REGION }}
+      E2E_CTP_SCOPE: ${{ vars.E2E_CTP_SCOPE }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t cms-service:e2e ./service
+
+      - name: Start service container
+        env:
+          GCP_FIRESTORE_DATABASE_ID: ${{ vars.GCP_FIRESTORE_DATABASE_ID }}
+          GCP_FIRESTORE_SERVICE_ACCOUNT_CLIENT_EMAIL: ${{ vars.GCP_FIRESTORE_SERVICE_ACCOUNT_CLIENT_EMAIL }}
+          GCP_FIRESTORE_SERVICE_ACCOUNT_PRIVATE_KEY: ${{ secrets.GCP_FIRESTORE_SERVICE_ACCOUNT_PRIVATE_KEY }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          JWT_EXPIRATION: ${{ vars.JWT_EXPIRATION }}
+          CTP_PROJECT_KEY: ${{ vars.CTP_PROJECT_KEY }}
+          CTP_CLIENT_ID: ${{ secrets.CTP_CLIENT_ID }}
+          CTP_CLIENT_SECRET: ${{ secrets.CTP_CLIENT_SECRET }}
+          CTP_AUTH_URL: ${{ vars.CTP_AUTH_URL }}
+          CTP_API_URL: ${{ vars.CTP_API_URL }}
+          CTP_SCOPE: ${{ vars.CTP_SCOPE }}
+          STORAGE_TYPE: ${{ vars.STORAGE_TYPE }}
+          CORS_ALLOWED_ORIGINS: '*'
+          GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+          GCP_BUCKET_NAME: ${{ vars.GCP_BUCKET_NAME }}
+          GCP_STORAGE_SERVICE_ACCOUNT_CLIENT_EMAIL: ${{ vars.GCP_STORAGE_SERVICE_ACCOUNT_CLIENT_EMAIL }}
+          GCP_STORAGE_SERVICE_ACCOUNT_PRIVATE_KEY: ${{ secrets.GCP_STORAGE_SERVICE_ACCOUNT_PRIVATE_KEY }}
+        run: |
+          docker run -d --name cms-service -p 8080:8080 \
+            -e GCP_FIRESTORE_DATABASE_ID \
+            -e GCP_FIRESTORE_SERVICE_ACCOUNT_CLIENT_EMAIL \
+            -e "GCP_FIRESTORE_SERVICE_ACCOUNT_PRIVATE_KEY=$GCP_FIRESTORE_SERVICE_ACCOUNT_PRIVATE_KEY" \
+            -e JWT_SECRET \
+            -e JWT_EXPIRATION \
+            -e CTP_PROJECT_KEY \
+            -e CTP_CLIENT_ID \
+            -e "CTP_CLIENT_SECRET=$CTP_CLIENT_SECRET" \
+            -e CTP_AUTH_URL \
+            -e CTP_API_URL \
+            -e CTP_SCOPE \
+            -e STORAGE_TYPE \
+            -e CORS_ALLOWED_ORIGINS \
+            -e GCP_PROJECT_ID \
+            -e GCP_BUCKET_NAME \
+            -e GCP_STORAGE_SERVICE_ACCOUNT_CLIENT_EMAIL \
+            -e "GCP_STORAGE_SERVICE_ACCOUNT_PRIVATE_KEY=$GCP_STORAGE_SERVICE_ACCOUNT_PRIVATE_KEY" \
+            cms-service:e2e
+
+      - name: Wait for service to be ready
+        run: |
+          for i in $(seq 1 30); do
+            code=$(curl -sS -o /dev/null -w "%{http_code}" -H "x-project-key: ${{ vars.CTP_PROJECT_KEY }}" ${{ env.E2E_BASE_URL }}/service/health || echo "000")
+            if [ "$code" = "200" ]; then
+              echo "Service is healthy (project already registered)"
+              exit 0
+            fi
+            if [ "$code" = "403" ] || [ "$code" = "400" ]; then
+              echo "Service is up (project not yet registered; E2E will register it)"
+              exit 0
+            fi
+            echo "Waiting for service... ($i/30) code=$code"
+            sleep 2
+          done
+          echo "Service did not become ready"
+          exit 1
+
+      - name: Install dependencies and run E2E tests
+        working-directory: service
+        run: |
+          yarn install --frozen-lockfile
+          yarn test:e2e
+
+      - name: Stop service container
+        if: always()
+        run: docker stop cms-service 2>/dev/null || true; docker rm cms-service 2>/dev/null || true

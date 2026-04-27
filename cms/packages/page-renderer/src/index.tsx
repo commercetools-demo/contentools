@@ -1,8 +1,8 @@
 import { Page } from '@commercetools-demo/contentools-types';
-import React, { PropsWithChildren } from 'react';
-import { 
-  ContextErrorBoundary, 
-  createRenderers 
+import React, { PropsWithChildren, useMemo } from 'react';
+import {
+  ContextErrorBoundary,
+  createRenderers,
 } from '@commercetools-demo/contentools-content-item-renderer';
 import PageResolver from './components/page-resolver';
 
@@ -21,6 +21,10 @@ export interface PageRendererProps {
   businessUnitKey?: string;
   /** Locale for rendering (optional) */
   locale?: string;
+  /** The JWT token to use for API calls */
+  jwtToken?: string;
+  /** The project key to use for API calls */
+  projectKey: string;
   /** Additional CSS class name */
   className?: string;
   /** Show loading state */
@@ -30,9 +34,6 @@ export interface PageRendererProps {
   /** Callback when page fails to render */
   onError?: (error: Error) => void;
 }
-
-// Create the contextual and standalone renderers using the factory
-const { ContextualRenderer, StandaloneRenderer } = createRenderers(PageResolver);
 
 /**
  * Main entry point for the page renderer package.
@@ -47,8 +48,13 @@ const { ContextualRenderer, StandaloneRenderer } = createRenderers(PageResolver)
 export const PageRenderer: React.FC<PropsWithChildren<PageRendererProps>> = (
   props
 ) => {
+  // Create the contextual and standalone renderers using the factory
+  const { ContextualRenderer, StandaloneRenderer } = useMemo(() => {
+    return createRenderers(PageResolver, props.projectKey);
+  }, [props.projectKey]);
+
   return (
-    <ContextErrorBoundary 
+    <ContextErrorBoundary
       componentName="PageRenderer"
       fallback={<StandaloneRenderer {...props} />}
     >

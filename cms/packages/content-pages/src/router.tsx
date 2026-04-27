@@ -9,6 +9,8 @@ interface Props {
   baseURL: string;
   businessUnitKey: string;
   locale: string;
+  projectKey: string;
+  jwtToken?: string;
   backButton?: {
     label: string;
     onClick: () => void;
@@ -22,6 +24,8 @@ const PagesRouter = ({
   businessUnitKey,
   locale,
   backButton,
+  projectKey,
+  jwtToken,
 }: Props) => {
   const match = useRouteMatch();
 
@@ -43,6 +47,8 @@ const PagesRouter = ({
             baseURL={baseURL}
             businessUnitKey={businessUnitKey}
             locale={locale}
+            projectKey={projectKey}
+            jwtToken={jwtToken}
           />
         </Route>
       </Switch>

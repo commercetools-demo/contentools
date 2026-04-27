@@ -13,12 +13,14 @@ import {
 // Get states
 export async function getStatesEndpoint<T>(
   baseURL: string,
+  projectKey: string,
   contentType: EContentType,
   key: string
 ): Promise<T> {
   return fetch(`${baseURL}/${contentType}/${key}/states`, {
     headers: {
       'Content-Type': 'application/json',
+      'x-project-key': projectKey,
     },
   }).then((response) => response.json());
 }
@@ -28,6 +30,8 @@ export async function publishEndpoint<
   T extends (Page | ContentItem) & { states?: StateInfo<Page | ContentItem> }
 >(
   baseURL: string,
+  projectKey: string,
+  jwtToken: string | undefined,
   contentType: EContentType,
   key: string,
   data: T,
@@ -47,6 +51,8 @@ export async function publishEndpoint<
     body: JSON.stringify({ value: data }),
     headers: {
       'Content-Type': 'application/json',
+      'x-project-key': projectKey,
+      Authorization: `Bearer ${jwtToken}`,
     },
   }).then((response) => response.json());
 }
@@ -54,6 +60,8 @@ export async function publishEndpoint<
 // Revert draft state (delete draft)
 export async function revertDraftEndpoint(
   baseURL: string,
+  projectKey: string,
+  jwtToken: string | undefined,
   contentType: EContentType,
   key: string
 ): Promise<void> {
@@ -63,6 +71,8 @@ export async function revertDraftEndpoint(
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
+        'x-project-key': projectKey,
+        Authorization: `Bearer ${jwtToken}`,
       },
     }
   );

@@ -10,7 +10,6 @@ import {
 } from '@commercetools-demo/contentools-types';
 import {
   getStatesEndpoint,
-  getStateEndpoint,
   publishEndpoint,
   revertDraftEndpoint,
 } from '../api/state';
@@ -22,7 +21,7 @@ const initialState: StateManagementState = {
   error: null,
 };
 
-export const useStateManagement = () => {
+export const useStateManagement = (projectKey: string, jwtToken?: string) => {
   const [state, setState] = useState<StateManagementState>(initialState);
 
   // Actions
@@ -32,6 +31,7 @@ export const useStateManagement = () => {
         setState((prev) => ({ ...prev, loading: true, error: null }));
         const result = await getStatesEndpoint<ContentItemStates | PageStates>(
           hydratedUrl,
+          projectKey,
           contentType,
           key
         );
@@ -71,6 +71,8 @@ export const useStateManagement = () => {
         setState((prev) => ({ ...prev, loading: true, error: null }));
         const result = await publishEndpoint<ContentItem | Page>(
           hydratedUrl,
+          projectKey,
+          jwtToken,
           contentType,
           key,
           item,
@@ -103,11 +105,18 @@ export const useStateManagement = () => {
     async (hydratedUrl: string, key: string, contentType: EContentType) => {
       try {
         setState((prev) => ({ ...prev, loading: true, error: null }));
-        await revertDraftEndpoint(hydratedUrl, contentType, key);
+        await revertDraftEndpoint(
+          hydratedUrl,
+          projectKey,
+          jwtToken,
+          contentType,
+          key
+        );
 
         // After reverting, fetch the updated states
         const result = await getStatesEndpoint<ContentItemStates | PageStates>(
           hydratedUrl,
+          projectKey,
           contentType,
           key
         );

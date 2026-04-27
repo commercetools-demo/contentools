@@ -1,17 +1,20 @@
+import { AuthenticatedRequest } from '../types/service.types';
+import { regionToCloudIdentifier } from './region';
+
 /**
  * Read the configuration env vars
  * (Add yours accordingly)
  *
  * @returns The configuration with the correct env vars
  */
-export const readConfiguration = () => {
+export const readConfiguration = (req: AuthenticatedRequest) => {
   const envVars = {
-    clientId: process.env.CTP_CLIENT_ID as string,
-    clientSecret: process.env.CTP_CLIENT_SECRET as string,
-    projectKey: process.env.CTP_PROJECT_KEY as string,
-    scope: process.env.CTP_SCOPE,
-    authUrl: process.env.CTP_AUTH_URL as string,
-    apiUrl: process.env.CTP_API_URL as string,
+    clientId: req.project?.clientId ?? '',
+    clientSecret: req.project?.clientSecret ?? '',
+    projectKey: req.project?.projectKey ?? '',
+    scope: req.project?.scope ?? '',
+    authUrl: `https://auth.${regionToCloudIdentifier(req.project?.region)}.commercetools.com`,
+    apiUrl: `https://api.${regionToCloudIdentifier(req.project?.region)}.commercetools.com`,
   };
 
   return envVars;

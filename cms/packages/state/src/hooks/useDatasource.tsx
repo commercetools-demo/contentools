@@ -18,7 +18,11 @@ const initialState: DatasourceState = {
   error: null,
 };
 
-export const useDatasource = (baseURL: string) => {
+export const useDatasource = (
+  baseURL: string,
+  projectKey: string,
+  jwtToken?: string
+) => {
   const [state, setState] = useState<DatasourceState>(initialState);
 
   // Actions
@@ -26,7 +30,8 @@ export const useDatasource = (baseURL: string) => {
     try {
       setState((prev) => ({ ...prev, loading: true, error: null }));
       const response = await getAvailableDatasourcesEndpoint<DatasourceInfo>(
-        baseURL
+        baseURL,
+        projectKey
       );
       const datasources = response.map((item) => item.value as DatasourceInfo);
 
@@ -56,6 +61,7 @@ export const useDatasource = (baseURL: string) => {
         setState((prev) => ({ ...prev, loading: true, error: null }));
         const response = await getDatasourceByKeyEndpoint<DatasourceInfo>(
           baseURL,
+          projectKey,
           key
         );
         const datasource = response.value as DatasourceInfo;
@@ -110,6 +116,7 @@ export const useDatasource = (baseURL: string) => {
     async (datasourceKey: string, params: Record<string, any>) => {
       const response = await testDatasourceEndpoint<DatasourceInfo>(
         baseURL,
+        projectKey,
         datasourceKey,
         params
       );

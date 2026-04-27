@@ -5,21 +5,40 @@ import ContentType from '@commercetools-demo/contentools-content-types';
 import ContentItemRenderer from '@commercetools-demo/contentools-content-item-renderer';
 import ContentPages from '@commercetools-demo/contentools-content-pages';
 import PageRenderer from '@commercetools-demo/contentools-page-renderer';
+import Configuration from '@commercetools-demo/contentools-configuration';
+import { BackIcon } from '@commercetools-uikit/icons';
 
 function App() {
   return (
     <div className="App">
-      <ContentItem
+      {/* <ContentItem
         baseURL="http://localhost:8080/service"
-        businessUnitKey="central-texas-animal-hospital"
+        businessUnitKey="default"
+        projectKey="us-store"
+        jwtToken="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1cy1zdG9yZSIsImlzcyI6Im11bHRpdGVuYW50LWNvbnRlbnRvb2xzIiwiYXVkIjoibXVsdGl0ZW5hbnQtY29udGVudG9vbHMiLCJpYXQiOjE3NzIyMjA1MzAsImV4cCI6MTc3MjgyNTMzMH0.p3DU_uCAhZn2XlCPPcnRvmFuHZSRo31N9_lQocOEgcA"
         locale="en-us"
         parentUrl=""
-      />
-      <ContentType
+      /> */}
+      {/* <ContentType
         baseURL="http://localhost:8080/service"
-        businessUnitKey="central-texas-animal-hospital"
+        businessUnitKey="default"
+        projectKey="us-store"
+        jwtToken="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1cy1zdG9yZSIsImlzcyI6Im11bHRpdGVuYW50LWNvbnRlbnRvb2xzIiwiYXVkIjoibXVsdGl0ZW5hbnQtY29udGVudG9vbHMiLCJpYXQiOjE3NzIyMjA1MzAsImV4cCI6MTc3MjgyNTMzMH0.p3DU_uCAhZn2XlCPPcnRvmFuHZSRo31N9_lQocOEgcA"
         locale="en-us"
         parentUrl=""
+      />  */}
+      <Configuration
+        baseURL="http://localhost:8080/service"
+        businessUnitKey="default"
+        projectKey="us-store"
+        jwtToken="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1cy1zdG9yZSIsImlzcyI6Im11bHRpdGVuYW50LWNvbnRlbnRvb2xzIiwiYXVkIjoibXVsdGl0ZW5hbnQtY29udGVudG9vbHMiLCJpYXQiOjE3NzIyMjA1MzAsImV4cCI6MTc3MjgyNTMzMH0.p3DU_uCAhZn2XlCPPcnRvmFuHZSRo31N9_lQocOEgcA"
+        locale="en-us"
+        parentUrl=""
+        backButton={{
+          label: 'Back',
+          onClick: () => console.log('Back'),
+          icon: <BackIcon />,
+        }}
       />
       {/* <ContentPages
         baseURL="http://localhost:8080/service"
@@ -42,11 +61,11 @@ function App() {
       /> */}
       {/* <ContentItemRenderer
         baseURL="http://localhost:8080/service"
-        businessUnitKey="business_unit_behnam"
+        businessUnitKey="default"
+        projectKey="us-store"
+
         locale="en-US"
-        parentUrl="content-items"
-        itemKey="item-8c3bbf44-25ab-4297-8b64-543e0671f0a2"
-        query='properties(slot="header")'
+        query='properties(slot="logo")'
       /> */}
     </div>
   );

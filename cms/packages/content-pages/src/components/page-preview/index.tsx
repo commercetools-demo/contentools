@@ -8,6 +8,7 @@ interface Props {
   currentPage: Page | null;
   baseURL: string;
   businessUnitKey: string;
+  projectKey: string;
 }
 
 const PagePreview = ({
@@ -16,6 +17,7 @@ const PagePreview = ({
   currentPage,
   baseURL,
   businessUnitKey,
+  projectKey,
 }: Props) => {
   if (!currentPage) {
     return null;
@@ -23,6 +25,7 @@ const PagePreview = ({
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Page Preview" size={90}>
       <PageRenderer
+        projectKey={projectKey}
         page={currentPage}
         baseURL={baseURL}
         businessUnitKey={businessUnitKey}

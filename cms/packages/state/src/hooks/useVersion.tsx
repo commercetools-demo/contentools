@@ -9,9 +9,10 @@ import {
 import { useCallback, useState } from 'react';
 import { fetchVersionsEndpoint } from '../api/version';
 
-export function useVersion<
-  T extends ContentItemVersionInfo | PageVersionInfo
->() {
+export function useVersion<T extends ContentItemVersionInfo | PageVersionInfo>(
+  projectKey: string,
+  jwtToken?: string
+) {
   const initialState: VersionState<T> = {
     versions: [],
     loading: false,
@@ -26,7 +27,7 @@ export function useVersion<
         setState((prev) => ({ ...prev, loading: true, error: null }));
         const result = await fetchVersionsEndpoint<
           ContentItemVersions | PageVersions
-        >(hydratedUrl, contentType, key);
+        >(hydratedUrl, projectKey, contentType, key);
 
         const versions = result.versions as T[];
 

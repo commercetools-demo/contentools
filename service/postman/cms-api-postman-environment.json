@@ -10,6 +10,34 @@
       "enabled": true
     },
     {
+      "key": "project_key",
+      "value": "",
+      "description": "Project key for x-project-key header (required for fetch endpoints). Set to ct_project_key after authenticating.",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "ct_client_id",
+      "value": "",
+      "description": "CommerceTools client ID for Authenticate Project",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "ct_client_secret",
+      "value": "",
+      "description": "CommerceTools client secret for Authenticate Project",
+      "type": "secret",
+      "enabled": true
+    },
+    {
+      "key": "ct_project_key",
+      "value": "",
+      "description": "CommerceTools project key; copy to project_key and bearer_token after auth",
+      "type": "default",
+      "enabled": true
+    },
+    {
       "key": "business_unit_key",
       "value": "default",
       "description": "Default business unit key",
@@ -52,12 +80,33 @@
       "enabled": true
     },
     {
+      "key": "row_id",
+      "value": "row-1",
+      "description": "Row ID for page layout operations",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "cell_id",
+      "value": "cell-1",
+      "description": "Cell ID for page layout operations",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "content_item_key_for_page",
+      "value": "page-content-item",
+      "description": "Content item key when used as page component",
+      "type": "default",
+      "enabled": true
+    },
+    {
       "key": "bearer_token",
       "value": "",
-      "description": "Bearer token for authentication (update with actual token)",
+      "description": "JWT from POST /authenticate-project (required for create/update/delete)",
       "type": "secret",
       "enabled": true
     }
   ],
   "_postman_variable_scope": "environment"
-} 
+}

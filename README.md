@@ -385,8 +385,6 @@ The application is configured in `connect.yaml` with two deployable components:
      endpoint: /service
      configuration:
        standardConfiguration:
-         - key: CORS_ALLOWED_ORIGINS
-           description: Comma separated list of allowed origins
          - key: MAIN_CONTAINER
            description: The container to use for the service
            default: cms_container

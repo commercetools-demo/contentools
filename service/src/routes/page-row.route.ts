@@ -1,15 +1,20 @@
 import { Router } from 'express';
 import { logger } from '../utils/logger.utils';
 import * as PageController from '../controllers/page.controller';
+import { validateJwt } from '../middleware/jwt.middleware';
+import { validateProject } from '../middleware/project.middleware';
 
 const pageRowRouter = Router();
 
 pageRowRouter.delete(
   '/:businessUnitKey/pages/:key/rows/:rowId',
+  validateJwt,
+  validateProject,
   async (req, res, next) => {
     try {
       const { businessUnitKey, key, rowId } = req.params;
       const object = await PageController.removeRowFromPage(
+        req,
         businessUnitKey,
         key,
         rowId
@@ -27,10 +32,16 @@ pageRowRouter.delete(
 
 pageRowRouter.post(
   '/:businessUnitKey/pages/:key/rows',
+  validateJwt,
+  validateProject,
   async (req, res, next) => {
     try {
       const { businessUnitKey, key } = req.params;
-      const object = await PageController.addRowToPage(businessUnitKey, key);
+      const object = await PageController.addRowToPage(
+        req,
+        businessUnitKey,
+        key
+      );
       res.status(201).json(object);
     } catch (error) {
       logger.error(
@@ -44,12 +55,15 @@ pageRowRouter.post(
 
 pageRowRouter.put(
   '/:businessUnitKey/pages/:key/rows/:rowId/cells/:cellId',
+  validateJwt,
+  validateProject,
   async (req, res, next) => {
     try {
       const { businessUnitKey, key, rowId, cellId } = req.params;
       const { updates } = req.body;
 
       const object = await PageController.updateCellSpanInPage(
+        req,
         businessUnitKey,
         key,
         rowId,

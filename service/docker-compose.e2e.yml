@@ -1,0 +1,13 @@
+# E2E: run service for local E2E or CI. Pass env via .env or environment.
+# Required: BASE_URL (for tests), CTP_*, GCP_FIRESTORE_*, JWT_SECRET, STORAGE_*, etc.
+services:
+  service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=production

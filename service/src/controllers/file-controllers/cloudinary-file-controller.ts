@@ -154,7 +154,8 @@ export class CloudinaryFileController implements FileController {
   async getMediaLibrary(
     extensions: string[],
     page: number,
-    limit: number
+    limit: number,
+    path?: string
   ): Promise<MediaLibraryResult> {
     try {
       const searchParams: any = {

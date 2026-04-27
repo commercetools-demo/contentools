@@ -36,6 +36,8 @@ interface Props {
   baseURL: string;
   businessUnitKey: string;
   locale: string;
+  projectKey: string;
+  jwtToken?: string;
 }
 
 interface RouteParams {
@@ -82,6 +84,8 @@ const PagesEdit: React.FC<Props> = ({
   parentUrl,
   baseURL,
   businessUnitKey,
+  projectKey,
+  jwtToken,
   locale,
 }) => {
   const history = useHistory();
@@ -152,6 +156,21 @@ const PagesEdit: React.FC<Props> = ({
     setSelectedContentItemKey(null);
   };
 
+  const handleFetchStatesAndVersions = useCallback(() => {
+    if (pageKey) {
+      fetchStates(hydratedUrl, pageKey, EContentType.PAGES);
+      fetchVersions(hydratedUrl, pageKey, EContentType.PAGES);
+    }
+  }, [pageKey, fetchStates, hydratedUrl]);
+
+  const loadPage = useCallback(() => {
+    if (pageKey) {
+      fetchPage(hydratedUrl, pageKey).then(() => {
+        handleFetchStatesAndVersions();
+      });
+    }
+  }, [pageKey, fetchPage, parentUrl]);
+
   const handleComponentToCurrentPage = async (
     rowId: string,
     cellId: string
@@ -164,14 +183,6 @@ const PagesEdit: React.FC<Props> = ({
     );
     loadPage();
   };
-
-  const handleFetchStatesAndVersions = useCallback(() => {
-    if (pageKey) {
-      fetchStates(hydratedUrl, pageKey, EContentType.PAGES);
-      fetchVersions(hydratedUrl, pageKey, EContentType.PAGES);
-    }
-  }, [pageKey, fetchStates, hydratedUrl]);
-
   const handleCloseVersionHistory = () => {
     versionHistoryState.closeModal();
   };
@@ -247,14 +258,6 @@ const PagesEdit: React.FC<Props> = ({
   const handleOpenPagePreview = () => {
     pagePreviewState.openModal();
   };
-
-  const loadPage = useCallback(() => {
-    if (pageKey) {
-      fetchPage(hydratedUrl, pageKey).then(() => {
-        handleFetchStatesAndVersions();
-      });
-    }
-  }, [pageKey, fetchPage, parentUrl]);
 
   useEffect(() => {
     loadPage();
@@ -355,7 +358,12 @@ const PagesEdit: React.FC<Props> = ({
         parentUrl={parentUrl}
       />
 
-      <StateProvider baseURL={baseURL} scope={CONETNT_ITEMS_IN_PAGE_SCOPE}>
+      <StateProvider
+        baseURL={baseURL}
+        scope={CONETNT_ITEMS_IN_PAGE_SCOPE}
+        projectKey={projectKey}
+        jwtToken={jwtToken}
+      >
         <ComponentEditorModal
           isOpen={componentEditorModal.isModalOpen}
           onClose={handleCloseComponentEditor}
@@ -374,6 +382,7 @@ const PagesEdit: React.FC<Props> = ({
         onClose={handleCloseVersionHistory}
       />
       <PagePreview
+        projectKey={projectKey}
         isOpen={pagePreviewState.isModalOpen}
         onClose={pagePreviewState.closeModal}
         currentPage={currentPage}

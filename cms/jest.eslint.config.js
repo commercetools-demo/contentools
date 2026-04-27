@@ -12,6 +12,8 @@ module.exports = {
     'dist/',
     'public/',
     'generated',
+    'plain-react-test',
+    'mc-application-test',
   ],
   testMatch: [
     '<rootDir>/packages/**/*.js',

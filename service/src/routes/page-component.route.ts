@@ -1,16 +1,21 @@
 import { logger } from '../utils/logger.utils';
 import { Router } from 'express';
 import * as PageController from '../controllers/page.controller';
+import { validateJwt } from '../middleware/jwt.middleware';
+import { validateProject } from '../middleware/project.middleware';
 
 const pageComponentRouter = Router();
 
 pageComponentRouter.post(
   '/:businessUnitKey/pages/:key/components',
+  validateJwt,
+  validateProject,
   async (req, res, next) => {
     try {
       const { businessUnitKey, key } = req.params;
       const { componentType, rowId, cellId } = req.body;
       const object = await PageController.addContentItemToPage(
+        req,
         businessUnitKey,
         key,
         componentType,
@@ -30,11 +35,14 @@ pageComponentRouter.post(
 
 pageComponentRouter.post(
   '/:businessUnitKey/pages/:key/components/:contentItemKey/move',
+  validateJwt,
+  validateProject,
   async (req, res, next) => {
     try {
       const { businessUnitKey, key, contentItemKey } = req.params;
       const { sourceRowId, sourceCellId, targetRowId, targetCellId } = req.body;
       const object = await PageController.moveContentItemInPage(
+        req,
         businessUnitKey,
         key,
         contentItemKey,
@@ -56,11 +64,14 @@ pageComponentRouter.post(
 
 pageComponentRouter.put(
   '/:businessUnitKey/pages/:key/components/:contentItemKey',
+  validateJwt,
+  validateProject,
   async (req, res, next) => {
     try {
       const { businessUnitKey, key, contentItemKey } = req.params;
       const { updates } = req.body;
       const object = await PageController.updateComponentInPage(
+        req,
         businessUnitKey,
         key,
         contentItemKey,
@@ -79,10 +90,13 @@ pageComponentRouter.put(
 
 pageComponentRouter.delete(
   '/:businessUnitKey/pages/:key/components/:contentItemKey',
+  validateJwt,
+  validateProject,
   async (req, res, next) => {
     try {
       const { businessUnitKey, key, contentItemKey } = req.params;
       const object = await PageController.removeComponentFromPage(
+        req,
         businessUnitKey,
         key,
         contentItemKey

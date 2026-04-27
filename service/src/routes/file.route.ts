@@ -5,6 +5,10 @@ import { Router, RequestHandler } from 'express';
 import { CustomObjectController } from '../controllers/custom-object.controller';
 import { bundleCode } from '../utils/bundler.utils';
 import { CONTENT_TYPE_CONTAINER } from '../constants';
+import { validateJwt } from '../middleware/jwt.middleware';
+import { validateProject } from '../middleware/project.middleware';
+import { requireProjectKey } from '../middleware/project-key.middleware';
+import { AuthenticatedRequest } from '../types/service.types';
 
 const fileRouter = Router();
 
@@ -13,6 +17,8 @@ const fileController = FileControllerFactory.createFileController();
 
 fileRouter.post(
   '/:businessUnitKey/upload-file',
+  validateJwt,
+  validateProject,
   upload.single('file') as any,
   (async (req, res, next) => {
     try {
@@ -20,13 +26,17 @@ fileRouter.post(
         return res.status(400).json({ error: 'No file uploaded' });
       }
       const { businessUnitKey } = req.params;
+      const projectKey = (req as AuthenticatedRequest).user?.projectKey;
+      const storagePath = projectKey
+        ? `${projectKey}/${businessUnitKey}`
+        : businessUnitKey;
 
       const title = req.body.title || '';
       const description = req.body.description || '';
 
       const fileUrl = await fileController.uploadFile(
         req.file,
-        businessUnitKey,
+        storagePath,
         {
           title,
           description,
@@ -41,9 +51,17 @@ fileRouter.post(
   }) as RequestHandler
 );
 
-fileRouter.get('/:businessUnitKey/media-library', (async (req, res, next) => {
+fileRouter.get('/:businessUnitKey/media-library', requireProjectKey, (async (
+  req,
+  res,
+  next
+) => {
   try {
     const { businessUnitKey } = req.params;
+    const projectKey = (req as AuthenticatedRequest).project?.projectKey;
+    const storagePath = projectKey
+      ? `${projectKey}/${businessUnitKey}`
+      : businessUnitKey;
 
     const extensions = req.query.extensions
       ? String(req.query.extensions).split(',')
@@ -55,7 +73,7 @@ fileRouter.get('/:businessUnitKey/media-library', (async (req, res, next) => {
       extensions,
       page,
       limit,
-      businessUnitKey
+      storagePath
     );
     res.json(result);
   } catch (error) {
@@ -64,7 +82,11 @@ fileRouter.get('/:businessUnitKey/media-library', (async (req, res, next) => {
   }
 }) as RequestHandler);
 
-fileRouter.post('/compile-upload', (async (req, res, next) => {
+fileRouter.post('/compile-upload', validateJwt, validateProject, (async (
+  req,
+  res,
+  next
+) => {
   try {
     const { files, key } = req.body;
 
@@ -113,6 +135,7 @@ fileRouter.post('/compile-upload', (async (req, res, next) => {
     );
 
     const contentTypeController = new CustomObjectController(
+      req,
       CONTENT_TYPE_CONTAINER
     );
 

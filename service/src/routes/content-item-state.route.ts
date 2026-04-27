@@ -16,6 +16,10 @@ import {
   CONTENT_ITEM_STATE_CONTAINER,
 } from '../constants';
 import { ContentItemState } from '../controllers/content-item.controller';
+import { validateJwt } from '../middleware/jwt.middleware';
+import { validateProject } from '../middleware/project.middleware';
+import { requireProjectKey } from '../middleware/project-key.middleware';
+import { AuthenticatedRequest } from '../types/service.types';
 
 const contentItemStateRouter = Router();
 const dependencies: StateControllerDependencies = {
@@ -27,13 +31,14 @@ const ContentStateController = withDependencies<ContentItemState>(dependencies);
 // Get states for a content item
 contentItemStateRouter.get(
   '/:businessUnitKey/content-items/:key/states',
-  async (req: Request, res: Response, next: NextFunction) => {
+  requireProjectKey,
+  async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     try {
       const { businessUnitKey, key } = req.params;
       const stateKey = `${businessUnitKey}_${key}`;
 
       try {
-        const object = await ContentStateController.getState(stateKey);
+        const object = await ContentStateController.getState(req, stateKey);
         res.json(object);
       } catch (error) {
         // If not found, return empty states object
@@ -57,6 +62,8 @@ contentItemStateRouter.get(
 // Publish state (move draft to published)
 contentItemStateRouter.put(
   '/:businessUnitKey/content-items/:key/states/published',
+  validateJwt,
+  validateProject,
   (async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { clearDraft } = req.query;
@@ -64,6 +71,7 @@ contentItemStateRouter.put(
       const { value } = req.body;
 
       const state = await ContentStateController.createPublishedState(
+        req,
         businessUnitKey,
         key,
         value,
@@ -80,11 +88,14 @@ contentItemStateRouter.put(
 // Delete draft state (revert to published)
 contentItemStateRouter.delete(
   '/:businessUnitKey/content-items/:key/states/draft',
+  validateJwt,
+  validateProject,
   (async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { businessUnitKey, key } = req.params;
 
       const state = await ContentStateController.deleteDraftState(
+        req,
         businessUnitKey,
         key
       );

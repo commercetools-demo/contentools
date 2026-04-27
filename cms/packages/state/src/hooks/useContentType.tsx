@@ -11,6 +11,8 @@ import {
   deleteContentTypeEndpoint,
   getAvailableDatasourcesEndpoint,
   fetchContentTypeEndpoint,
+  importDefaultContentTypesEndpoint,
+  type ImportResult,
 } from '../api';
 import { decodeFromBase64, encodeToBase64 } from '../utils/text-encoder';
 
@@ -22,14 +24,18 @@ const initialState: ContentTypeState = {
   availableDatasources: [],
 };
 
-export const useContentType = (baseURL: string) => {
+export const useContentType = (
+  baseURL: string,
+  projectKey: string,
+  jwtToken?: string
+) => {
   const [state, setState] = useState<ContentTypeState>(initialState);
 
   // Actions
   const fetchContentTypes = useCallback(async () => {
     try {
       setState((prev) => ({ ...prev, loading: true, error: null }));
-      const response = await fetchContentTypesEndpoint(baseURL);
+      const response = await fetchContentTypesEndpoint(baseURL, projectKey);
       const contentTypes = response.map((item) => {
         try {
           const base64Code = atob(item.code?.transpiledCode || '');
@@ -75,6 +81,7 @@ export const useContentType = (baseURL: string) => {
         setState((prev) => ({ ...prev, loading: true, error: null }));
         const response = await fetchContentTypeEndpoint<ContentTypeData>(
           baseURL,
+          projectKey,
           key
         );
         try {
@@ -116,7 +123,8 @@ export const useContentType = (baseURL: string) => {
     try {
       setState((prev) => ({ ...prev, loading: true, error: null }));
       const response = await getAvailableDatasourcesEndpoint<DatasourceInfo>(
-        baseURL
+        baseURL,
+        projectKey
       );
       const datasources = response.map((item) => item.value as DatasourceInfo);
 
@@ -146,6 +154,8 @@ export const useContentType = (baseURL: string) => {
         setState((prev) => ({ ...prev, loading: true, error: null }));
         const response = await createContentTypeEndpoint<ContentTypeData>(
           baseURL,
+          projectKey,
+          jwtToken,
           contentType
         );
         const newContentType = response.value;
@@ -178,6 +188,8 @@ export const useContentType = (baseURL: string) => {
         setState((prev) => ({ ...prev, loading: true, error: null }));
         const response = await createContentTypeEndpoint<ContentTypeData>(
           baseURL,
+          projectKey,
+          jwtToken,
           data
         );
         const newContentType = response.value;
@@ -219,6 +231,8 @@ export const useContentType = (baseURL: string) => {
         };
         const response = await updateContentTypeEndpoint<ContentTypeData>(
           baseURL,
+          projectKey,
+          jwtToken,
           key,
           contentType
         );
@@ -252,7 +266,7 @@ export const useContentType = (baseURL: string) => {
     async (key: string) => {
       try {
         setState((prev) => ({ ...prev, loading: true, error: null }));
-        await deleteContentTypeEndpoint(baseURL, key);
+        await deleteContentTypeEndpoint(baseURL, projectKey, jwtToken, key);
 
         setState((prev) => ({
           ...prev,
@@ -275,6 +289,31 @@ export const useContentType = (baseURL: string) => {
     },
     [baseURL]
   );
+
+  const importDefaultContentTypes =
+    useCallback(async (): Promise<ImportResult> => {
+      try {
+        setState((prev) => ({ ...prev, loading: true, error: null }));
+        const result = await importDefaultContentTypesEndpoint(
+          baseURL,
+          projectKey,
+          jwtToken
+        );
+        await fetchContentTypes();
+        setState((prev) => ({ ...prev, loading: false }));
+        return result;
+      } catch (error) {
+        setState((prev) => ({
+          ...prev,
+          loading: false,
+          error:
+            error instanceof Error
+              ? error.message
+              : 'Failed to import default content types',
+        }));
+        throw error;
+      }
+    }, [baseURL, projectKey, jwtToken, fetchContentTypes]);
 
   const clearError = useCallback(() => {
     setState((prev) => ({ ...prev, error: null }));
@@ -318,6 +357,7 @@ export const useContentType = (baseURL: string) => {
     addContentType,
     updateContentType,
     removeContentType,
+    importDefaultContentTypes,
     clearError,
 
     // Selectors

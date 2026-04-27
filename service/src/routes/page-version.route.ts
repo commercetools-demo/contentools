@@ -3,6 +3,7 @@ import { withDependencies as withContentVersionDependencies } from '../controlle
 import { logger } from '../utils/logger.utils';
 import { PageVersion } from '../controllers/page.controller';
 import { MAX_VERSIONS, PAGE_VERSION_CONTAINER } from '../constants';
+import { requireProjectKey } from '../middleware/project-key.middleware';
 
 const pageVersionRouter = Router();
 const PageVersionController = withContentVersionDependencies<PageVersion>({
@@ -13,10 +14,12 @@ const PageVersionController = withContentVersionDependencies<PageVersion>({
 // Get all versions for a page
 pageVersionRouter.get(
   '/:businessUnitKey/pages/:key/versions',
+  requireProjectKey,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { businessUnitKey, key } = req.params;
       const versions = await PageVersionController.getContentVersions(
+        req,
         businessUnitKey,
         key
       );

@@ -36,14 +36,14 @@ const initialState: PagesState = {
 
 // Helper functions
 
-export const usePages = () => {
+export const usePages = (projectKey: string, jwtToken?: string) => {
   const [state, setState] = useState<PagesState>(initialState);
 
   // Actions
   const fetchPages = useCallback(async (hydratedUrl: string) => {
     try {
       setState((prev) => ({ ...prev, loading: true, error: null }));
-      const pagesFromApi = await fetchPagesApi(hydratedUrl);
+      const pagesFromApi = await fetchPagesApi(hydratedUrl, projectKey);
       const pages = pagesFromApi.map((item) => item.value);
       const states = pagesFromApi.reduce(
         (acc: Record<string, StateInfo<Page>>, item) => {
@@ -72,7 +72,7 @@ export const usePages = () => {
   const fetchPage = useCallback(async (hydratedUrl: string, key: string) => {
     try {
       setState((prev) => ({ ...prev, loading: true, error: null }));
-      const page = await fetchPageApi(hydratedUrl, key);
+      const page = await fetchPageApi(hydratedUrl, projectKey, key);
 
       setState((prev) => ({
         ...prev,
@@ -95,7 +95,7 @@ export const usePages = () => {
     async (hydratedUrl: string, key: string) => {
       try {
         setState((prev) => ({ ...prev, loading: true, error: null }));
-        const page = await fetchPublishedPageApi(hydratedUrl, key);
+        const page = await fetchPublishedPageApi(hydratedUrl, projectKey, key);
 
         setState((prev) => ({
           ...prev,
@@ -119,12 +119,12 @@ export const usePages = () => {
   );
 
   const queryPage = useCallback(async (hydratedUrl: string, query: string) => {
-    return await queryPageEndpoint(hydratedUrl, query);
+    return await queryPageEndpoint(hydratedUrl, projectKey, query);
   }, []);
 
   const queryPublishedPage = useCallback(
     async (hydratedUrl: string, query: string) => {
-      return await queryPublishedPageEndpoint(hydratedUrl, query);
+      return await queryPublishedPageEndpoint(hydratedUrl, projectKey, query);
     },
     []
   );
@@ -132,7 +132,12 @@ export const usePages = () => {
   const updatePage = useCallback(async (hydratedUrl: string, page: Page) => {
     try {
       setState((prev) => ({ ...prev, loading: true, error: null }));
-      const updatedPage = await updatePageApi(hydratedUrl, page);
+      const updatedPage = await updatePageApi(
+        hydratedUrl,
+        projectKey,
+        jwtToken,
+        page
+      );
 
       setState((prev) => ({
         ...prev,
@@ -156,7 +161,7 @@ export const usePages = () => {
   const deletePage = useCallback(async (hydratedUrl: string, key: string) => {
     try {
       setState((prev) => ({ ...prev, loading: true, error: null }));
-      await deletePageApi(hydratedUrl, key);
+      await deletePageApi(hydratedUrl, projectKey, jwtToken, key);
 
       setState((prev) => ({
         ...prev,
@@ -180,7 +185,7 @@ export const usePages = () => {
         businessUnitKey: string;
         key: string;
         states: StateInfo<ContentItem>;
-      }>(hydratedUrl, EContentType.PAGE_ITEMS, contentItemKey);
+      }>(hydratedUrl, projectKey, EContentType.PAGE_ITEMS, contentItemKey);
       return result;
     },
     []
@@ -204,7 +209,12 @@ export const usePages = () => {
         name: page.name,
         route: page.route,
       };
-      const createdPage = await createPageApi(hydratedUrl, newPage);
+      const createdPage = await createPageApi(
+        hydratedUrl,
+        projectKey,
+        jwtToken,
+        newPage
+      );
 
       setState((prev) => ({
         ...prev,
@@ -223,6 +233,8 @@ export const usePages = () => {
       if (!state.currentPage) return;
       const updatedPage = await addRowToPageApi(
         hydratedUrl,
+        projectKey,
+        jwtToken,
         state.currentPage.key
       );
       setState((prev) => ({
@@ -240,6 +252,8 @@ export const usePages = () => {
       if (!state.currentPage) return;
       const updatedPage = await removeRowFromPageApi(
         hydratedUrl,
+        projectKey,
+        jwtToken,
         state.currentPage.key,
         rowId
       );
@@ -264,6 +278,8 @@ export const usePages = () => {
       if (!componentType) return;
       const updatedPage = await addComponentToPageApi(
         hydratedUrl,
+        projectKey,
+        jwtToken,
         state.currentPage.key,
         componentType,
         rowId,
@@ -291,6 +307,8 @@ export const usePages = () => {
       if (!state.currentPage) return;
       const updatedPage = await moveComponentInPageApi(
         hydratedUrl,
+        projectKey,
+        jwtToken,
         state.currentPage.key,
         contentItemKey,
         sourceRowId,
@@ -322,6 +340,8 @@ export const usePages = () => {
       if (!state.currentPage) return;
       const updatedPage = await updateCellSpanInPageApi(
         hydratedUrl,
+        projectKey,
+        jwtToken,
         state.currentPage.key,
         rowId,
         cellId,
@@ -346,6 +366,8 @@ export const usePages = () => {
       if (!state.currentPage) return;
       const updatedPage = await updateComponentInPageApi(
         hydratedUrl,
+        projectKey,
+        jwtToken,
         state.currentPage.key,
         contentItemKey,
         updates
@@ -365,6 +387,8 @@ export const usePages = () => {
       if (!state.currentPage) return;
       const updatedPage = await removeComponentFromPageApi(
         hydratedUrl,
+        projectKey,
+        jwtToken,
         state.currentPage.key,
         contentItemKey
       );

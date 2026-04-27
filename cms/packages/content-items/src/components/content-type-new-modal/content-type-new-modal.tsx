@@ -1,7 +1,5 @@
 import { useStateContentType } from '@commercetools-demo/contentools-state';
-import {
-  ContentTypeData,
-} from '@commercetools-demo/contentools-types';
+import { ContentTypeData } from '@commercetools-demo/contentools-types';
 import {
   ContentTypeCard,
   Modal,

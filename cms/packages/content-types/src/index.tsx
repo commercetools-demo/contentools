@@ -10,12 +10,16 @@ export { default as ContentTypes } from './components/content-types';
 const WrappedContentTypeApp = ({
   parentUrl,
   baseURL,
+  projectKey,
+  jwtToken,
   businessUnitKey,
   locale = 'en-US',
   backButton,
 }: {
   parentUrl: string;
   baseURL: string;
+  projectKey: string;
+  jwtToken?: string;
   businessUnitKey: string;
   locale?: string;
 
@@ -27,7 +31,11 @@ const WrappedContentTypeApp = ({
 }) => {
   return (
     <Router basename={`/${parentUrl}`}>
-      <StateProvider baseURL={baseURL}>
+      <StateProvider
+        baseURL={baseURL}
+        projectKey={projectKey}
+        jwtToken={jwtToken}
+      >
         <ContentTypeRouter
           backButton={backButton}
           parentUrl={parentUrl}

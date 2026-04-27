@@ -7,6 +7,7 @@ import { useVersion } from './hooks/useVersion';
 import { useStateManagement } from './hooks/useStateManagement';
 import { useMediaLibrary } from './hooks/useMediaLibrary';
 import { useDatasource } from './hooks/useDatasource';
+import { useConfiguration } from './hooks/useConfiguration';
 import { VersionInfo } from '@commercetools-demo/contentools-types';
 
 interface ScopedStateContext<T extends VersionInfo> {
@@ -39,6 +40,9 @@ export interface StateContextValue<T extends VersionInfo> {
   // Datasource
   datasource?: ReturnType<typeof useDatasource>;
 
+  // Configuration
+  configuration: ReturnType<typeof useConfiguration>;
+
   // Base URL
   baseURL: string;
 
@@ -53,6 +57,8 @@ const StateStackContext = createContext<ScopedStateContext<VersionInfo> | null>(
 export interface StateProviderProps {
   children: ReactNode;
   baseURL: string;
+  projectKey: string;
+  jwtToken?: string;
   scope?: string;
 
   // Minimal
@@ -62,21 +68,35 @@ export interface StateProviderProps {
 export const StateProvider = <T extends VersionInfo>({
   children,
   baseURL,
+  projectKey,
+  jwtToken,
   scope = 'default',
   minimal = false,
 }: StateProviderProps) => {
   const parentStack = useContext(StateStackContext);
 
   // Initialize all hooks
-  const contentType = useContentType(baseURL);
-  const contentItem = useContentItem();
-  const pages = usePages();
+  const contentType = useContentType(baseURL, projectKey, jwtToken);
+  const contentItem = useContentItem(projectKey, jwtToken);
+  const pages = usePages(projectKey, jwtToken);
+  const configuration = useConfiguration(projectKey, jwtToken);
   // Initialize Full
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const editor = !minimal ? useEditor() : undefined;
-  const version = !minimal ? useVersion<T>() : undefined;
-  const stateManagement = !minimal ? useStateManagement() : undefined;
-  const mediaLibrary = !minimal ? useMediaLibrary() : undefined;
-  const datasource = !minimal ? useDatasource(baseURL) : undefined;
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const version = !minimal ? useVersion<T>(projectKey, jwtToken) : undefined;
+  const stateManagement = !minimal
+    ? // eslint-disable-next-line react-hooks/rules-of-hooks
+      useStateManagement(projectKey, jwtToken)
+    : undefined;
+  const mediaLibrary = !minimal
+    ? // eslint-disable-next-line react-hooks/rules-of-hooks
+      useMediaLibrary(projectKey, jwtToken)
+    : undefined;
+  const datasource = !minimal
+    ? // eslint-disable-next-line react-hooks/rules-of-hooks
+      useDatasource(baseURL, projectKey, jwtToken)
+    : undefined;
 
   const contextValue: StateContextValue<T> = {
     pages,
@@ -87,6 +107,7 @@ export const StateProvider = <T extends VersionInfo>({
     stateManagement,
     mediaLibrary,
     datasource,
+    configuration,
     baseURL,
     scope,
   };
@@ -152,3 +173,5 @@ export const useStateMediaLibrary = (scope?: string) =>
   useStateContext(scope).mediaLibrary;
 export const useStateDatasource = (scope?: string) =>
   useStateContext(scope).datasource;
+export const useConfigurationState = (scope?: string) =>
+  useStateContext(scope).configuration;

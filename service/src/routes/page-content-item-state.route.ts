@@ -11,7 +11,13 @@ import { withDependencies as withContentStateDependencies } from '../controllers
 import CustomError from '../errors/custom.error';
 
 import { ContentItemState } from '../controllers/content-item.controller';
-import { PAGE_CONTENT_ITEM_STATE_CONTAINER, PAGE_CONTENT_ITEMS_CONTAINER } from '../constants';
+import {
+  PAGE_CONTENT_ITEM_STATE_CONTAINER,
+  PAGE_CONTENT_ITEMS_CONTAINER,
+} from '../constants';
+import { validateJwt } from '../middleware/jwt.middleware';
+import { validateProject } from '../middleware/project.middleware';
+import { requireProjectKey } from '../middleware/project-key.middleware';
 
 const pageContentItemStateRouter = Router();
 const PageContentItemStateController =
@@ -23,13 +29,17 @@ const PageContentItemStateController =
 // Get states for a content item
 pageContentItemStateRouter.get(
   '/:businessUnitKey/page-items/:key/states',
+  requireProjectKey,
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { businessUnitKey, key } = req.params;
       const stateKey = `${businessUnitKey}_${key}`;
 
       try {
-        const object = await PageContentItemStateController.getState(stateKey);
+        const object = await PageContentItemStateController.getState(
+          req,
+          stateKey
+        );
         res.json(object);
       } catch (error) {
         // If not found, return empty states object
@@ -53,6 +63,8 @@ pageContentItemStateRouter.get(
 // Publish state (move draft to published)
 pageContentItemStateRouter.put(
   '/:businessUnitKey/page-items/:key/states/published',
+  validateJwt,
+  validateProject,
   (async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { clearDraft } = req.query;
@@ -60,6 +72,7 @@ pageContentItemStateRouter.put(
       const { value } = req.body;
 
       const state = await PageContentItemStateController.createPublishedState(
+        req,
         businessUnitKey,
         key,
         value,
@@ -76,11 +89,14 @@ pageContentItemStateRouter.put(
 // Delete draft state (revert to published)
 pageContentItemStateRouter.delete(
   '/:businessUnitKey/page-items/:key/states/draft',
+  validateJwt,
+  validateProject,
   (async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { businessUnitKey, key } = req.params;
 
       const state = await PageContentItemStateController.deleteDraftState(
+        req,
         businessUnitKey,
         key
       );

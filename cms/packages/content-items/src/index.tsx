@@ -5,12 +5,16 @@ import { BrowserRouter as Router } from 'react-router-dom';
 const WrappedContentItemApp = ({
   parentUrl,
   baseURL,
+  projectKey,
+  jwtToken,
   businessUnitKey,
   locale = 'en-US',
   backButton,
 }: {
   parentUrl: string;
   baseURL: string;
+  projectKey: string;
+  jwtToken?: string;
   businessUnitKey: string;
   locale?: string;
   backButton?: {
@@ -20,17 +24,21 @@ const WrappedContentItemApp = ({
   };
 }) => {
   return (
-      <Router basename={`/${parentUrl}`}>
-        <StateProvider baseURL={baseURL}>
-          <ContentItemRouter
-            backButton={backButton}
-            parentUrl={parentUrl}
-            baseURL={baseURL}
-            businessUnitKey={businessUnitKey}
-            locale={locale}
-          />
-        </StateProvider>
-      </Router>
+    <Router basename={`/${parentUrl}`}>
+      <StateProvider
+        baseURL={baseURL}
+        projectKey={projectKey}
+        jwtToken={jwtToken}
+      >
+        <ContentItemRouter
+          backButton={backButton}
+          parentUrl={parentUrl}
+          baseURL={baseURL}
+          businessUnitKey={businessUnitKey}
+          locale={locale}
+        />
+      </StateProvider>
+    </Router>
   );
 };
 

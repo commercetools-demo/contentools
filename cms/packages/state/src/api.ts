@@ -33,9 +33,14 @@ export async function fetchApi<T>(
  * Fetch registry components
  */
 export async function fetchContentTypesEndpoint(
-  baseURL: string
+  baseURL: string,
+  projectKey: string
 ): Promise<ContentTypeData[]> {
-  const response = await fetch(`${baseURL}/content-type`);
+  const response = await fetch(`${baseURL}/content-type`, {
+    headers: {
+      'x-project-key': projectKey,
+    },
+  });
 
   if (!response.ok) {
     throw new Error(
@@ -51,9 +56,14 @@ export async function fetchContentTypesEndpoint(
  */
 export async function fetchContentTypeEndpoint<T>(
   baseURL: string,
+  projectKey: string,
   key: string
 ): Promise<T> {
-  const response = await fetch(`${baseURL}/content-type/${key}`);
+  const response = await fetch(`${baseURL}/content-type/${key}`, {
+    headers: {
+      'x-project-key': projectKey,
+    },
+  });
   return response.json();
 }
 
@@ -62,11 +72,18 @@ export async function fetchContentTypeEndpoint<T>(
  */
 export async function createContentTypeEndpoint<T>(
   baseURL: string,
+  projectKey: string,
+  jwtToken: string | undefined,
   data: T
 ): Promise<ApiResponse<T>> {
   return fetchApi<T>(`${baseURL}/content-type`, {
     method: 'POST',
     body: JSON.stringify({ value: data }),
+    headers: {
+      'Content-Type': 'application/json',
+      'x-project-key': projectKey,
+      Authorization: `Bearer ${jwtToken}`,
+    },
   });
 }
 
@@ -75,12 +92,19 @@ export async function createContentTypeEndpoint<T>(
  */
 export async function updateContentTypeEndpoint<T>(
   baseURL: string,
+  projectKey: string,
+  jwtToken: string | undefined,
   key: string,
   data: T
 ): Promise<ApiResponse<T>> {
   return fetchApi<T>(`${baseURL}/content-type/${key}`, {
     method: 'PUT',
     body: JSON.stringify({ value: data }),
+    headers: {
+      'Content-Type': 'application/json',
+      'x-project-key': projectKey,
+      Authorization: `Bearer ${jwtToken}`,
+    },
   });
 }
 
@@ -89,10 +113,16 @@ export async function updateContentTypeEndpoint<T>(
  */
 export async function deleteContentTypeEndpoint(
   baseURL: string,
+  projectKey: string,
+  jwtToken: string | undefined,
   key: string
 ): Promise<void> {
   const response = await fetch(`${baseURL}/content-type/${key}`, {
     method: 'DELETE',
+    headers: {
+      'x-project-key': projectKey,
+      Authorization: `Bearer ${jwtToken}`,
+    },
   });
 
   if (!response.ok) {
@@ -102,13 +132,49 @@ export async function deleteContentTypeEndpoint(
   }
 }
 
+export interface ImportResult {
+  imported: string[];
+  failed: Array<{ key: string; error: string }>;
+}
+
+/**
+ * Import default content types from samples
+ */
+export async function importDefaultContentTypesEndpoint(
+  baseURL: string,
+  projectKey: string,
+  jwtToken: string | undefined
+): Promise<ImportResult> {
+  const response = await fetch(`${baseURL}/content-type/import`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-project-key': projectKey,
+      Authorization: `Bearer ${jwtToken}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(
+      `API request failed: ${response.status} ${response.statusText}`
+    );
+  }
+
+  return response.json();
+}
+
 /**
  * Fetch available datasources
  */
 export async function getAvailableDatasourcesEndpoint<T>(
-  baseURL: string
+  baseURL: string,
+  projectKey: string
 ): Promise<ApiResponse<T>[]> {
-  const response = await fetch(`${baseURL}/datasource`);
+  const response = await fetch(`${baseURL}/datasource`, {
+    headers: {
+      'x-project-key': projectKey,
+    },
+  });
 
   if (!response.ok) {
     throw new Error(
@@ -124,9 +190,14 @@ export async function getAvailableDatasourcesEndpoint<T>(
  */
 export async function getDatasourceByKeyEndpoint<T>(
   baseURL: string,
+  projectKey: string,
   key: string
 ): Promise<ApiResponse<T>> {
-  return fetchApi<T>(`${baseURL}/datasource/${key}`);
+  return fetchApi<T>(`${baseURL}/datasource/${key}`, {
+    headers: {
+      'x-project-key': projectKey,
+    },
+  });
 }
 
 /**
@@ -134,12 +205,17 @@ export async function getDatasourceByKeyEndpoint<T>(
  */
 export async function testDatasourceEndpoint<T>(
   baseURL: string,
+  projectKey: string,
   key: string,
   params: Record<string, any>
 ): Promise<ApiResponse<T>> {
   return fetchApi<T>(`${baseURL}/datasource/${key}/test`, {
     method: 'POST',
     body: JSON.stringify({ params }),
+    headers: {
+      'Content-Type': 'application/json',
+      'x-project-key': projectKey,
+    },
   });
 }
 
@@ -153,12 +229,19 @@ export async function testDatasourceEndpoint<T>(
  */
 export async function compileAndUploadEndpoint<T>(
   baseURL: string,
+  projectKey: string,
+  jwtToken: string | undefined,
   key?: string,
   files?: Record<string, { content: string }>
 ): Promise<ApiResponse<T>> {
   return fetchApi<T>(`${baseURL}/compile-upload`, {
     method: 'POST',
     body: JSON.stringify({ key, files }),
+    headers: {
+      'x-project-key': projectKey,
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${jwtToken}`,
+    },
   });
 }
 
@@ -167,6 +250,8 @@ export async function compileAndUploadEndpoint<T>(
  */
 export async function fetchMediaLibrary(
   baseURL: string,
+  projectKey: string,
+  jwtToken: string | undefined,
   extensions: string[] = [],
   page: number = 1,
   limit: number = 20
@@ -182,7 +267,12 @@ export async function fetchMediaLibrary(
 
   const url = `${baseURL}/media-library${queryParams ? `?${queryParams}` : ''}`;
 
-  const response = await fetch(url);
+  const response = await fetch(url, {
+    headers: {
+      'x-project-key': projectKey,
+      Authorization: `Bearer ${jwtToken}`,
+    },
+  });
 
   if (!response.ok) {
     throw new Error(
@@ -198,6 +288,8 @@ export async function fetchMediaLibrary(
  */
 export async function uploadFile(
   baseURL: string,
+  projectKey: string,
+  jwtToken: string | undefined,
   file: File,
   title?: string,
   description?: string
@@ -216,6 +308,10 @@ export async function uploadFile(
   const response = await fetch(`${baseURL}/upload-file`, {
     method: 'POST',
     body: formData,
+    headers: {
+      'x-project-key': projectKey,
+      Authorization: `Bearer ${jwtToken}`,
+    },
   });
 
   if (!response.ok) {

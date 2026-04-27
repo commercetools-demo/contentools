@@ -6,7 +6,7 @@ import { PERMISSIONS } from './src/constants';
 const config = {
   name: 'Contentools wrapper (us-store)',
   entryPointUriPath: '${env:ENTRY_POINT_URI_PATH}',
-  cloudIdentifier: 'gcp-us',
+  cloudIdentifier: '${env:CLOUD_IDENTIFIER}',
   env: {
     production: {
       applicationId: '${env:CUSTOM_APPLICATION_ID}',

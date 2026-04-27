@@ -1,8 +1,12 @@
 import React, { PropsWithChildren } from 'react';
-import { StateProvider, useStateContext } from '@commercetools-demo/contentools-state';
+import {
+  StateProvider,
+  useStateContext,
+} from '@commercetools-demo/contentools-state';
 
 interface BaseRendererProps {
   baseURL?: string;
+  projectKey: string;
 }
 
 /**
@@ -10,7 +14,8 @@ interface BaseRendererProps {
  * This eliminates code duplication between different renderer packages
  */
 export function createRenderers<TProps extends BaseRendererProps>(
-  ResolverComponent: React.ComponentType<PropsWithChildren<TProps>>
+  ResolverComponent: React.ComponentType<PropsWithChildren<TProps>>,
+  projectKey: string
 ) {
   const ContextualRenderer: React.FC<PropsWithChildren<TProps>> = (props) => {
     // Always call the hook - this follows React's Rules of Hooks
@@ -31,7 +36,11 @@ export function createRenderers<TProps extends BaseRendererProps>(
     }
 
     return (
-      <StateProvider baseURL={props.baseURL} minimal={true}>
+      <StateProvider
+        baseURL={props.baseURL}
+        projectKey={projectKey}
+        minimal={true}
+      >
         <ResolverComponent {...props} />
       </StateProvider>
     );
@@ -49,10 +58,14 @@ export function createRenderers<TProps extends BaseRendererProps>(
  */
 export function createRenderer<TProps extends BaseRendererProps>(
   ResolverComponent: React.ComponentType<PropsWithChildren<TProps>>,
-  rendererName: string
+  rendererName: string,
+  projectKey: string
 ) {
-  const { ContextualRenderer, StandaloneRenderer } = createRenderers(ResolverComponent);
-  
+  const { ContextualRenderer, StandaloneRenderer } = createRenderers(
+    ResolverComponent,
+    projectKey
+  );
+
   return {
     ContextualRenderer,
     StandaloneRenderer,

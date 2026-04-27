@@ -25,8 +25,14 @@ export interface ContentItemRendererProps {
   loading?: boolean;
   /** Custom error message */
   error?: string | null;
+  /** The JWT token to use for API calls */
+  jwtToken?: string;
+  /** The project key to use for API calls */
+  projectKey: string;
   /** Callback when component fails to render */
   onError?: (error: Error) => void;
+  /** The key of the page when rendered inside PageRenderer (sets data-page-key on root) */
+  pageKey?: string;
 }
 
 /**
