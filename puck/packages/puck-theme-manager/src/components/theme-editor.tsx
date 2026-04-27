@@ -8,7 +8,6 @@ import PrimaryButton from '@commercetools-uikit/primary-button';
 import SecondaryButton from '@commercetools-uikit/secondary-button';
 import FieldLabel from '@commercetools-uikit/field-label';
 import NumberInput from '@commercetools-uikit/number-input';
-import SelectInput from '@commercetools-uikit/select-input';
 import Spacings from '@commercetools-uikit/spacings';
 import Text from '@commercetools-uikit/text';
 import TextInput from '@commercetools-uikit/text-input';
@@ -102,6 +101,16 @@ const BACKGROUND_STYLE_OPTIONS = [
   { value: 'gradient', label: 'Gradient' },
   { value: 'noise', label: 'Noise' },
 ];
+
+const SELECT_STYLE: React.CSSProperties = {
+  display: 'block',
+  padding: '6px 8px',
+  border: '1px solid #ccc',
+  borderRadius: '4px',
+  fontSize: '14px',
+  background: '#fff',
+  cursor: 'pointer',
+};
 
 interface InnerProps {
   backButton?: {
@@ -893,9 +902,8 @@ const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
                     <Grid.Item>
                       <div style={{ marginBottom: '1.5rem' }}>
                         <FieldLabel title="Border Radius" htmlFor="borderRadius" />
-                        <SelectInput
+                        <select
                           id="borderRadius"
-                          horizontalConstraint={3}
                           value={formValues.borderRadius}
                           onChange={(e) =>
                             handleChange(
@@ -903,16 +911,19 @@ const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
                               e.target.value as ThemeTokens['borderRadius']
                             )
                           }
-                          options={BORDER_RADIUS_OPTIONS}
-                        />
+                          style={SELECT_STYLE}
+                        >
+                          {BORDER_RADIUS_OPTIONS.map((o) => (
+                            <option key={o.value} value={o.value}>{o.label}</option>
+                          ))}
+                        </select>
                       </div>
                     </Grid.Item>
                     <Grid.Item>
                       <div style={{ marginBottom: '1.5rem' }}>
                         <FieldLabel title="Border Width" htmlFor="borderWidth" />
-                        <SelectInput
+                        <select
                           id="borderWidth"
-                          horizontalConstraint={3}
                           value={formValues.borderWidth}
                           onChange={(e) =>
                             handleChange(
@@ -920,16 +931,19 @@ const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
                               e.target.value as ThemeTokens['borderWidth']
                             )
                           }
-                          options={BORDER_WIDTH_OPTIONS}
-                        />
+                          style={SELECT_STYLE}
+                        >
+                          {BORDER_WIDTH_OPTIONS.map((o) => (
+                            <option key={o.value} value={o.value}>{o.label}</option>
+                          ))}
+                        </select>
                       </div>
                     </Grid.Item>
                     <Grid.Item>
                       <div style={{ marginBottom: '1.5rem' }}>
                         <FieldLabel title="Button Style" htmlFor="buttonStyle" />
-                        <SelectInput
+                        <select
                           id="buttonStyle"
-                          horizontalConstraint={3}
                           value={formValues.buttonStyle}
                           onChange={(e) =>
                             handleChange(
@@ -937,16 +951,19 @@ const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
                               e.target.value as ThemeTokens['buttonStyle']
                             )
                           }
-                          options={BUTTON_STYLE_OPTIONS}
-                        />
+                          style={SELECT_STYLE}
+                        >
+                          {BUTTON_STYLE_OPTIONS.map((o) => (
+                            <option key={o.value} value={o.value}>{o.label}</option>
+                          ))}
+                        </select>
                       </div>
                     </Grid.Item>
                     <Grid.Item>
                       <div style={{ marginBottom: '1.5rem' }}>
                         <FieldLabel title="Card Shadow" htmlFor="cardShadow" />
-                        <SelectInput
+                        <select
                           id="cardShadow"
-                          horizontalConstraint={3}
                           value={formValues.cardShadow}
                           onChange={(e) =>
                             handleChange(
@@ -954,16 +971,19 @@ const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
                               e.target.value as ThemeTokens['cardShadow']
                             )
                           }
-                          options={CARD_SHADOW_OPTIONS}
-                        />
+                          style={SELECT_STYLE}
+                        >
+                          {CARD_SHADOW_OPTIONS.map((o) => (
+                            <option key={o.value} value={o.value}>{o.label}</option>
+                          ))}
+                        </select>
                       </div>
                     </Grid.Item>
                     <Grid.Item>
                       <div style={{ marginBottom: '1.5rem' }}>
                         <FieldLabel title="Header Style" htmlFor="headerStyle" />
-                        <SelectInput
+                        <select
                           id="headerStyle"
-                          horizontalConstraint={3}
                           value={formValues.headerStyle}
                           onChange={(e) =>
                             handleChange(
@@ -971,8 +991,12 @@ const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
                               e.target.value as ThemeTokens['headerStyle']
                             )
                           }
-                          options={HEADER_STYLE_OPTIONS}
-                        />
+                          style={SELECT_STYLE}
+                        >
+                          {HEADER_STYLE_OPTIONS.map((o) => (
+                            <option key={o.value} value={o.value}>{o.label}</option>
+                          ))}
+                        </select>
                       </div>
                     </Grid.Item>
                   </Grid>
@@ -1054,9 +1078,8 @@ const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
                     <Grid.Item>
                       <div style={{ marginBottom: '1.5rem' }}>
                         <FieldLabel title="Shadow Style" htmlFor="shadowStyle" />
-                        <SelectInput
+                        <select
                           id="shadowStyle"
-                          horizontalConstraint={3}
                           value={formValues.shadowStyle ?? DEFAULT_THEME.shadowStyle}
                           onChange={(e) =>
                             handleChange(
@@ -1064,16 +1087,19 @@ const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
                               e.target.value as ThemeTokens['shadowStyle']
                             )
                           }
-                          options={SHADOW_STYLE_OPTIONS}
-                        />
+                          style={SELECT_STYLE}
+                        >
+                          {SHADOW_STYLE_OPTIONS.map((o) => (
+                            <option key={o.value} value={o.value}>{o.label}</option>
+                          ))}
+                        </select>
                       </div>
                     </Grid.Item>
                     <Grid.Item>
                       <div style={{ marginBottom: '1.5rem' }}>
                         <FieldLabel title="Surface Blur" htmlFor="surfaceBlur" />
-                        <SelectInput
+                        <select
                           id="surfaceBlur"
-                          horizontalConstraint={3}
                           value={formValues.surfaceBlur ?? DEFAULT_THEME.surfaceBlur}
                           onChange={(e) =>
                             handleChange(
@@ -1081,8 +1107,12 @@ const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
                               e.target.value as ThemeTokens['surfaceBlur']
                             )
                           }
-                          options={SURFACE_BLUR_OPTIONS}
-                        />
+                          style={SELECT_STYLE}
+                        >
+                          {SURFACE_BLUR_OPTIONS.map((o) => (
+                            <option key={o.value} value={o.value}>{o.label}</option>
+                          ))}
+                        </select>
                       </div>
                     </Grid.Item>
                     <Grid.Item>
@@ -1106,9 +1136,8 @@ const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
                     <Grid.Item>
                       <div style={{ marginBottom: '1.5rem' }}>
                         <FieldLabel title="Border Style" htmlFor="borderStyle" />
-                        <SelectInput
+                        <select
                           id="borderStyle"
-                          horizontalConstraint={3}
                           value={formValues.borderStyle ?? DEFAULT_THEME.borderStyle}
                           onChange={(e) =>
                             handleChange(
@@ -1116,16 +1145,19 @@ const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
                               e.target.value as ThemeTokens['borderStyle']
                             )
                           }
-                          options={BORDER_STYLE_OPTIONS}
-                        />
+                          style={SELECT_STYLE}
+                        >
+                          {BORDER_STYLE_OPTIONS.map((o) => (
+                            <option key={o.value} value={o.value}>{o.label}</option>
+                          ))}
+                        </select>
                       </div>
                     </Grid.Item>
                     <Grid.Item>
                       <div style={{ marginBottom: '1.5rem' }}>
                         <FieldLabel title="Background Style" htmlFor="backgroundStyle" />
-                        <SelectInput
+                        <select
                           id="backgroundStyle"
-                          horizontalConstraint={3}
                           value={formValues.backgroundStyle ?? DEFAULT_THEME.backgroundStyle}
                           onChange={(e) =>
                             handleChange(
@@ -1133,8 +1165,12 @@ const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
                               e.target.value as ThemeTokens['backgroundStyle']
                             )
                           }
-                          options={BACKGROUND_STYLE_OPTIONS}
-                        />
+                          style={SELECT_STYLE}
+                        >
+                          {BACKGROUND_STYLE_OPTIONS.map((o) => (
+                            <option key={o.value} value={o.value}>{o.label}</option>
+                          ))}
+                        </select>
                       </div>
                     </Grid.Item>
                   </Grid>
@@ -1150,9 +1186,8 @@ const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
                     <Grid.Item>
                       <div style={{ marginBottom: '1.5rem' }}>
                         <FieldLabel title="Font Weight Base" htmlFor="fontWeightBase" />
-                        <SelectInput
+                        <select
                           id="fontWeightBase"
-                          horizontalConstraint={3}
                           value={formValues.fontWeightBase ?? DEFAULT_THEME.fontWeightBase}
                           onChange={(e) =>
                             handleChange(
@@ -1160,16 +1195,19 @@ const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
                               e.target.value as ThemeTokens['fontWeightBase']
                             )
                           }
-                          options={FONT_WEIGHT_BASE_OPTIONS}
-                        />
+                          style={SELECT_STYLE}
+                        >
+                          {FONT_WEIGHT_BASE_OPTIONS.map((o) => (
+                            <option key={o.value} value={o.value}>{o.label}</option>
+                          ))}
+                        </select>
                       </div>
                     </Grid.Item>
                     <Grid.Item>
                       <div style={{ marginBottom: '1.5rem' }}>
                         <FieldLabel title="Font Weight Heading" htmlFor="fontWeightHeading" />
-                        <SelectInput
+                        <select
                           id="fontWeightHeading"
-                          horizontalConstraint={3}
                           value={formValues.fontWeightHeading ?? DEFAULT_THEME.fontWeightHeading}
                           onChange={(e) =>
                             handleChange(
@@ -1177,16 +1215,19 @@ const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
                               e.target.value as ThemeTokens['fontWeightHeading']
                             )
                           }
-                          options={FONT_WEIGHT_HEADING_OPTIONS}
-                        />
+                          style={SELECT_STYLE}
+                        >
+                          {FONT_WEIGHT_HEADING_OPTIONS.map((o) => (
+                            <option key={o.value} value={o.value}>{o.label}</option>
+                          ))}
+                        </select>
                       </div>
                     </Grid.Item>
                     <Grid.Item>
                       <div style={{ marginBottom: '1.5rem' }}>
                         <FieldLabel title="Letter Spacing" htmlFor="letterSpacing" />
-                        <SelectInput
+                        <select
                           id="letterSpacing"
-                          horizontalConstraint={3}
                           value={formValues.letterSpacing ?? DEFAULT_THEME.letterSpacing}
                           onChange={(e) =>
                             handleChange(
@@ -1194,16 +1235,19 @@ const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
                               e.target.value as ThemeTokens['letterSpacing']
                             )
                           }
-                          options={LETTER_SPACING_OPTIONS}
-                        />
+                          style={SELECT_STYLE}
+                        >
+                          {LETTER_SPACING_OPTIONS.map((o) => (
+                            <option key={o.value} value={o.value}>{o.label}</option>
+                          ))}
+                        </select>
                       </div>
                     </Grid.Item>
                     <Grid.Item>
                       <div style={{ marginBottom: '1.5rem' }}>
                         <FieldLabel title="Text Transform" htmlFor="textTransform" />
-                        <SelectInput
+                        <select
                           id="textTransform"
-                          horizontalConstraint={3}
                           value={formValues.textTransform ?? DEFAULT_THEME.textTransform}
                           onChange={(e) =>
                             handleChange(
@@ -1211,8 +1255,12 @@ const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
                               e.target.value as ThemeTokens['textTransform']
                             )
                           }
-                          options={TEXT_TRANSFORM_OPTIONS}
-                        />
+                          style={SELECT_STYLE}
+                        >
+                          {TEXT_TRANSFORM_OPTIONS.map((o) => (
+                            <option key={o.value} value={o.value}>{o.label}</option>
+                          ))}
+                        </select>
                       </div>
                     </Grid.Item>
                   </Grid>
