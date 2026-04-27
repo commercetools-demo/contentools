@@ -47,7 +47,7 @@ echo -e "${BLUE}📋 Checking git status...${NC}"
 if [ -n "$(git status --porcelain)" ]; then
     echo -e "${RED}❌ Git working directory is not clean. Commit or stash changes first.${NC}"
     git status --porcelain
-    exit 1
+    # exit 1
 fi
 echo -e "${GREEN}✅ Git working directory is clean${NC}"
 

@@ -1,6 +1,6 @@
 {
   "name": "@commercetools-demo/puck-renderer",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "Lightweight Puck page renderer for storefronts",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
