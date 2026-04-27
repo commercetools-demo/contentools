@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
-import { usePuckContentType } from '@commercetools-demo/puck-api';
+import { PuckApiProvider, usePuckContentType } from '@commercetools-demo/puck-api';
 import type { ImportResult } from '@commercetools-demo/puck-types';
 import Card from '@commercetools-uikit/card';
 import FlatButton from '@commercetools-uikit/flat-button';
@@ -8,8 +8,7 @@ import PrimaryButton from '@commercetools-uikit/primary-button';
 import Spacings from '@commercetools-uikit/spacings';
 import Text from '@commercetools-uikit/text';
 
-interface Props {
-  parentUrl?: string;
+interface InnerProps {
   backButton?: {
     label: string;
     onClick: () => void;
@@ -17,7 +16,14 @@ interface Props {
   };
 }
 
-const ImportContentTypes: React.FC<Props> = ({ backButton }) => {
+export interface ImportContentTypesProps extends InnerProps {
+  baseURL: string;
+  projectKey: string;
+  businessUnitKey: string;
+  jwtToken: string;
+}
+
+const ImportContentTypesInner: React.FC<InnerProps> = ({ backButton }) => {
   const history = useHistory();
   const { importDefaultContentTypes, loading, error, clearError } =
     usePuckContentType();
@@ -109,5 +115,22 @@ const ImportContentTypes: React.FC<Props> = ({ backButton }) => {
     </Spacings.Stack>
   );
 };
+
+const ImportContentTypes: React.FC<ImportContentTypesProps> = ({
+  baseURL,
+  projectKey,
+  businessUnitKey,
+  jwtToken,
+  ...innerProps
+}) => (
+  <PuckApiProvider
+    baseURL={baseURL}
+    projectKey={projectKey}
+    businessUnitKey={businessUnitKey}
+    jwtToken={jwtToken}
+  >
+    <ImportContentTypesInner {...innerProps} />
+  </PuckApiProvider>
+);
 
 export default ImportContentTypes;

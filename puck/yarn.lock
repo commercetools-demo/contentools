@@ -244,43 +244,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@commercetools-demo/puck-configuration@link:../packages/puck-configuration::locator=puck-react-test%40workspace%3Apuck-react-test":
-  version: 0.0.0-use.local
-  resolution: "@commercetools-demo/puck-configuration@link:../packages/puck-configuration::locator=puck-react-test%40workspace%3Apuck-react-test"
-  languageName: node
-  linkType: soft
-
-"@commercetools-demo/puck-configuration@workspace:packages/puck-configuration":
-  version: 0.0.0-use.local
-  resolution: "@commercetools-demo/puck-configuration@workspace:packages/puck-configuration"
-  dependencies:
-    "@commercetools-demo/puck-api": "workspace:^"
-    "@commercetools-demo/puck-types": "workspace:^"
-    "@commercetools-uikit/card": "npm:^20.5.0"
-    "@commercetools-uikit/field-label": "npm:^20.5.0"
-    "@commercetools-uikit/flat-button": "npm:^20.5.0"
-    "@commercetools-uikit/grid": "npm:^20.5.0"
-    "@commercetools-uikit/loading-spinner": "npm:^20.5.0"
-    "@commercetools-uikit/number-input": "npm:^20.5.0"
-    "@commercetools-uikit/primary-button": "npm:^20.5.0"
-    "@commercetools-uikit/secondary-button": "npm:^20.5.0"
-    "@commercetools-uikit/select-input": "npm:^20.5.0"
-    "@commercetools-uikit/spacings": "npm:^20.5.0"
-    "@commercetools-uikit/text": "npm:^20.5.0"
-    "@commercetools-uikit/text-input": "npm:^20.5.0"
-    "@types/react": "npm:^19"
-    "@types/react-dom": "npm:^19"
-    "@types/react-router-dom": "npm:^5"
-    tsup: "npm:^8.3.0"
-    typescript: "npm:^5.7.2"
-  peerDependencies:
-    react: ">=19.0.0"
-    react-dom: ">=19.0.0"
-    react-intl: ">=6.0.0"
-    react-router-dom: ">=5.0.0 <6"
-  languageName: unknown
-  linkType: soft
-
 "@commercetools-demo/puck-content-manager@link:../packages/puck-content-manager::locator=puck-react-test%40workspace%3Apuck-react-test":
   version: 0.0.0-use.local
   resolution: "@commercetools-demo/puck-content-manager@link:../packages/puck-content-manager::locator=puck-react-test%40workspace%3Apuck-react-test"
@@ -456,6 +419,43 @@ __metadata:
   peerDependencies:
     react: ">=19.0.0"
     react-dom: ">=19.0.0"
+  languageName: unknown
+  linkType: soft
+
+"@commercetools-demo/puck-theme-manager@link:../packages/puck-theme-manager::locator=puck-react-test%40workspace%3Apuck-react-test":
+  version: 0.0.0-use.local
+  resolution: "@commercetools-demo/puck-theme-manager@link:../packages/puck-theme-manager::locator=puck-react-test%40workspace%3Apuck-react-test"
+  languageName: node
+  linkType: soft
+
+"@commercetools-demo/puck-theme-manager@workspace:packages/puck-theme-manager":
+  version: 0.0.0-use.local
+  resolution: "@commercetools-demo/puck-theme-manager@workspace:packages/puck-theme-manager"
+  dependencies:
+    "@commercetools-demo/puck-api": "workspace:^"
+    "@commercetools-demo/puck-types": "workspace:^"
+    "@commercetools-uikit/card": "npm:^20.5.0"
+    "@commercetools-uikit/field-label": "npm:^20.5.0"
+    "@commercetools-uikit/flat-button": "npm:^20.5.0"
+    "@commercetools-uikit/grid": "npm:^20.5.0"
+    "@commercetools-uikit/loading-spinner": "npm:^20.5.0"
+    "@commercetools-uikit/number-input": "npm:^20.5.0"
+    "@commercetools-uikit/primary-button": "npm:^20.5.0"
+    "@commercetools-uikit/secondary-button": "npm:^20.5.0"
+    "@commercetools-uikit/select-input": "npm:^20.5.0"
+    "@commercetools-uikit/spacings": "npm:^20.5.0"
+    "@commercetools-uikit/text": "npm:^20.5.0"
+    "@commercetools-uikit/text-input": "npm:^20.5.0"
+    "@types/react": "npm:^19"
+    "@types/react-dom": "npm:^19"
+    "@types/react-router-dom": "npm:^5"
+    tsup: "npm:^8.3.0"
+    typescript: "npm:^5.7.2"
+  peerDependencies:
+    react: ">=19.0.0"
+    react-dom: ">=19.0.0"
+    react-intl: ">=6.0.0"
+    react-router-dom: ">=5.0.0 <6"
   languageName: unknown
   linkType: soft
 
@@ -4533,11 +4533,11 @@ __metadata:
   resolution: "puck-react-test@workspace:puck-react-test"
   dependencies:
     "@commercetools-demo/puck-api": "link:../packages/puck-api"
-    "@commercetools-demo/puck-configuration": "link:../packages/puck-configuration"
     "@commercetools-demo/puck-content-manager": "link:../packages/puck-content-manager"
     "@commercetools-demo/puck-editor": "link:../packages/puck-editor"
     "@commercetools-demo/puck-page-manager": "link:../packages/puck-page-manager"
     "@commercetools-demo/puck-renderer": "link:../packages/puck-renderer"
+    "@commercetools-demo/puck-theme-manager": "link:../packages/puck-theme-manager"
     "@commercetools-demo/puck-types": "link:../packages/puck-types"
     "@commercetools-uikit/card": "npm:^20.5.0"
     "@commercetools-uikit/constraints": "npm:^20.5.0"

@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
-import { usePuckConfiguration } from '@commercetools-demo/puck-api';
+import { PuckApiProvider, usePuckConfiguration } from '@commercetools-demo/puck-api';
 import type { ThemeTokens } from '@commercetools-demo/puck-types';
 import Card from '@commercetools-uikit/card';
 import FlatButton from '@commercetools-uikit/flat-button';
@@ -103,8 +103,7 @@ const BACKGROUND_STYLE_OPTIONS = [
   { value: 'noise', label: 'Noise' },
 ];
 
-interface Props {
-  parentUrl?: string;
+interface InnerProps {
   backButton?: {
     label: string;
     onClick: () => void;
@@ -112,7 +111,14 @@ interface Props {
   };
 }
 
-const ThemeEditor: React.FC<Props> = ({ backButton }) => {
+export interface ThemeManagerProps extends InnerProps {
+  baseURL: string;
+  projectKey: string;
+  businessUnitKey: string;
+  jwtToken: string;
+}
+
+const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
   const history = useHistory();
   const {
     theme,
@@ -1233,4 +1239,21 @@ const ThemeEditor: React.FC<Props> = ({ backButton }) => {
   );
 };
 
-export default ThemeEditor;
+const ThemeManager: React.FC<ThemeManagerProps> = ({
+  baseURL,
+  projectKey,
+  businessUnitKey,
+  jwtToken,
+  ...innerProps
+}) => (
+  <PuckApiProvider
+    baseURL={baseURL}
+    projectKey={projectKey}
+    businessUnitKey={businessUnitKey}
+    jwtToken={jwtToken}
+  >
+    <ThemeEditorInner {...innerProps} />
+  </PuckApiProvider>
+);
+
+export default ThemeManager;

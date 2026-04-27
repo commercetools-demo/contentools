@@ -1,5 +1,8 @@
-export { default as ThemeEditor } from './components/theme-editor';
+export { default as ThemeManager } from './components/theme-editor';
+export type { ThemeManagerProps } from './components/theme-editor';
+
 export { default as ImportContentTypes } from './components/import-content-types';
+export type { ImportContentTypesProps } from './components/import-content-types';
 
 export { DEFAULT_THEME } from './constants';
 export {

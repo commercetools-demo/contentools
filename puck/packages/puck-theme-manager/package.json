@@ -1,7 +1,7 @@
 {
-  "name": "@commercetools-demo/puck-configuration",
-  "version": "0.2.0",
-  "description": "Theme editor and content type import components for Puck CMS configuration",
+  "name": "@commercetools-demo/puck-theme-manager",
+  "version": "0.1.0",
+  "description": "Theme manager and content type import components for Puck CMS",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
