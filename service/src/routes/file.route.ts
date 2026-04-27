@@ -8,6 +8,7 @@ import { CONTENT_TYPE_CONTAINER } from '../constants';
 import { validateJwt } from '../middleware/jwt.middleware';
 import { validateProject } from '../middleware/project.middleware';
 import { requireProjectKey } from '../middleware/project-key.middleware';
+import { AuthenticatedRequest } from '../types/service.types';
 
 const fileRouter = Router();
 
@@ -25,13 +26,17 @@ fileRouter.post(
         return res.status(400).json({ error: 'No file uploaded' });
       }
       const { businessUnitKey } = req.params;
+      const projectKey = (req as AuthenticatedRequest).user?.projectKey;
+      const storagePath = projectKey
+        ? `${projectKey}/${businessUnitKey}`
+        : businessUnitKey;
 
       const title = req.body.title || '';
       const description = req.body.description || '';
 
       const fileUrl = await fileController.uploadFile(
         req.file,
-        businessUnitKey,
+        storagePath,
         {
           title,
           description,
@@ -53,6 +58,10 @@ fileRouter.get('/:businessUnitKey/media-library', requireProjectKey, (async (
 ) => {
   try {
     const { businessUnitKey } = req.params;
+    const projectKey = (req as AuthenticatedRequest).project?.projectKey;
+    const storagePath = projectKey
+      ? `${projectKey}/${businessUnitKey}`
+      : businessUnitKey;
 
     const extensions = req.query.extensions
       ? String(req.query.extensions).split(',')
@@ -64,7 +73,7 @@ fileRouter.get('/:businessUnitKey/media-library', requireProjectKey, (async (
       extensions,
       page,
       limit,
-      businessUnitKey
+      storagePath
     );
     res.json(result);
   } catch (error) {
