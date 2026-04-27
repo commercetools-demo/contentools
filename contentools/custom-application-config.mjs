@@ -42,8 +42,8 @@ const config = {
       'view_key_value_documents',
       'view_business_units',
       'view_project_settings',
-      'view_associate_roles',
-      'view_stores'
+      'view_stores',
+      'view_api_clients'
     ],
     manage: ['manage_products', 'manage_key_value_documents', 'manage_api_clients'],
   },
@@ -52,33 +52,7 @@ const config = {
     defaultLabel: 'Contentools',
     labelAllLocales: [],
     permissions: [PERMISSIONS.View],
-  },
-  submenuLinks: [
-    {
-      uriPath: 'pages',
-      defaultLabel: 'Content Pages',
-      labelAllLocales: [],
-      permissions: [PERMISSIONS.View],
-    },
-    {
-      uriPath: 'items',
-      defaultLabel: 'Content Items',
-      labelAllLocales: [],
-      permissions: [PERMISSIONS.View],
-    },
-    {
-      uriPath: 'types',
-      defaultLabel: 'Content Types',
-      labelAllLocales: [],
-      permissions: [PERMISSIONS.View],
-    },
-    {
-      uriPath: 'configuration',
-      defaultLabel: 'Configuration',
-      labelAllLocales: [],
-      permissions: [PERMISSIONS.View],
-    },
-  ],
+  }
 };
 
 export default config;

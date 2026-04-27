@@ -70,7 +70,7 @@ const ApplicationRoutes = (_props: ApplicationRoutesProps) => {
         </Route>
 
         <Route exact path={match.path}>
-          <Redirect to={`${match.url}pages`} />
+          <Redirect to={`${match.url}/pages`} />
         </Route>
       </Switch>
     </AdminLayout>

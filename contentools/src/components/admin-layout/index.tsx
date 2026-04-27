@@ -1,16 +1,17 @@
-import { useMemo, type ReactNode } from 'react';
+import { useMemo, useState, type ReactNode } from 'react';
 import { NavLink, useRouteMatch } from 'react-router-dom';
 import {
   IconFileText,
   IconList,
-  IconCode,
   IconImageGeneration,
-  IconWorld,
+  IconLayoutSidebarRightExpand,
+  IconLayoutSidebarRightCollapse,
 } from '@tabler/icons-react';
 import styles from './admin-layout.module.css';
 import Spacings from '@commercetools-uikit/spacings';
 import SelectField from '@commercetools-uikit/select-field';
 import { useBusinessUnit } from '../../contexts/business-unit';
+
 type NavItem = {
   label: string;
   path: string;
@@ -25,6 +26,7 @@ const iconProps = { size: 16 };
 
 const AdminLayout = ({ children }: AdminLayoutProps) => {
   const match = useRouteMatch();
+  const [collapsed, setCollapsed] = useState(false);
   const {
     businessUnits,
     showDropdown,
@@ -37,6 +39,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
     () => businessUnits.map((bu) => ({ value: bu.key, label: bu.label })),
     [businessUnits]
   );
+
   const navItems: NavItem[] = [
     {
       label: 'Pages',
@@ -58,39 +61,62 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
   return (
     <div className={styles.wrapper}>
       <div className={styles.container}>
-        <aside className={styles.sidebar}>
+        <aside
+          className={`${styles.sidebar} ${collapsed ? styles.sidebarCollapsed : ''}`}
+        >
           <div className={styles.sidebarHeaderWrapper}>
-          <div className={styles.sidebarHeader}>
-            <div className={styles.appBadge}>CMS</div>
-            <span className={styles.appTitle}>Contentools</span>
+            <div className={styles.sidebarHeader}>
+              <div className={styles.appBadge}>CMS</div>
+              {!collapsed && (
+                <span className={styles.appTitle}>Contentools</span>
+              )}
+            </div>
+            {!collapsed && showDropdown && !isLoading && (
+              <Spacings.Stack scale="m">
+                <SelectField
+                  title="Business unit"
+                  value={selectedBusinessUnitKey}
+                  options={selectOptions}
+                  onChange={(event) => {
+                    const key = event.target.value as string;
+                    if (key) setSelectedBusinessUnitKey(key);
+                  }}
+                />
+              </Spacings.Stack>
+            )}
           </div>
-          {showDropdown && !isLoading && (
-            <Spacings.Stack scale="m">
-              <SelectField
-                title="Business unit"
-                value={selectedBusinessUnitKey}
-                options={selectOptions}
-                onChange={(event) => {
-                  const key = event.target.value as string;
-                  if (key) setSelectedBusinessUnitKey(key);
-                }}
-              />
-            </Spacings.Stack>
-          )}
-          </div>
+
           <nav className={styles.nav}>
             {navItems.map((item) => (
               <NavLink
                 key={item.path}
                 to={item.path}
-                className={styles.navItem}
+                className={`${styles.navItem} ${collapsed ? styles.navItemCollapsed : ''}`}
                 activeClassName={styles.navItemActive}
+                title={collapsed ? item.label : undefined}
               >
                 <span className={styles.navIcon}>{item.icon}</span>
-                <span className={styles.navLabel}>{item.label}</span>
+                {!collapsed && (
+                  <span className={styles.navLabel}>{item.label}</span>
+                )}
               </NavLink>
             ))}
           </nav>
+
+          <button
+            className={`${styles.toggleButton} ${collapsed ? styles.toggleButtonCollapsed : ''}`}
+            onClick={() => setCollapsed((c) => !c)}
+            title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          >
+            {collapsed ? (
+              <IconLayoutSidebarRightExpand size={18} />
+            ) : (
+              <>
+                <IconLayoutSidebarRightCollapse size={18} />
+                <span>Collapse</span>
+              </>
+            )}
+          </button>
         </aside>
         <main className={styles.content}>{children}</main>
       </div>

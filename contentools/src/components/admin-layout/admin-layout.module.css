@@ -21,21 +21,37 @@
   width: 220px;
   min-width: 220px;
   flex-shrink: 0;
-  background: #1a1f2e;
+  background: rgb(124, 118, 216);
   display: flex;
   flex-direction: column;
-  border-right: 1px solid rgba(255, 255, 255, 0.06);
+  border-right: 1px solid rgba(255, 255, 255, 0.2);
+  overflow: hidden;
+  transition: width 0.2s ease, min-width 0.2s ease;
+}
+
+.sidebarCollapsed {
+  width: 52px;
+  min-width: 52px;
 }
 
 .sidebarHeaderWrapper {
   padding: 20px 16px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  flex-shrink: 0;
+}
+
+.sidebarCollapsed .sidebarHeaderWrapper {
+  padding: 16px 8px;
 }
 
 .sidebarHeader {
   display: flex;
   align-items: center;
   gap: 10px;
+}
+
+.sidebarCollapsed .sidebarHeader {
+  justify-content: center;
 }
 
 .appBadge {
@@ -56,8 +72,9 @@
 .appTitle {
   font-size: 14px;
   font-weight: 600;
-  color: #e2e8f0;
+  color: #ffffff;
   letter-spacing: 0.01em;
+  white-space: nowrap;
 }
 
 /* ── Nav ────────────────────────────────────────────────────── */
@@ -67,6 +84,8 @@
   display: flex;
   flex-direction: column;
   gap: 2px;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .navItem {
@@ -75,35 +94,41 @@
   gap: 10px;
   padding: 9px 10px;
   border-radius: 7px;
-  color: #94a3b8;
+  color: #ffffff;
   text-decoration: none;
   font-size: 13.5px;
   font-weight: 500;
   transition: background 0.15s, color 0.15s;
   white-space: nowrap;
   overflow: hidden;
+  flex-shrink: 0;
+}
+
+.navItemCollapsed {
+  justify-content: center;
+  padding: 9px;
 }
 
 .navItem:hover {
-  background: rgba(255, 255, 255, 0.07);
-  color: #e2e8f0;
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
 }
 
 .navItemActive {
-  background: rgba(37, 99, 235, 0.18);
-  color: #60a5fa;
+  background: rgba(255, 255, 255, 0.28);
+  color: #ffffff;
 }
 
 .navItemActive:hover {
-  background: rgba(37, 99, 235, 0.24);
-  color: #60a5fa;
+  background: rgba(255, 255, 255, 0.35);
+  color: #ffffff;
 }
 
 .navIcon {
   display: flex;
   align-items: center;
   flex-shrink: 0;
-  opacity: 0.85;
+  opacity: 0.9;
 }
 
 .navItemActive .navIcon {
@@ -112,6 +137,35 @@
 
 .navLabel {
   line-height: 1;
+}
+
+/* ── Toggle button ──────────────────────────────────────────── */
+.toggleButton {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 18px 14px 18px;
+  color: #ffffff;
+  background: none;
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  font-size: 13.5px;
+  font-weight: 500;
+  width: 100%;
+  flex-shrink: 0;
+  transition: background 0.15s;
+  white-space: nowrap;
+  margin-bottom: 56px;
+}
+
+.toggleButton:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.toggleButtonCollapsed {
+  justify-content: center;
+  padding: 10px 8px 14px 8px;
 }
 
 /* ── Content area ───────────────────────────────────────────── */
