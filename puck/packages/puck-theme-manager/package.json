@@ -1,6 +1,6 @@
 {
   "name": "@commercetools-demo/puck-theme-manager",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Theme manager and content type import components for Puck CMS",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

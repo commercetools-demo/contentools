@@ -1,6 +1,6 @@
 {
   "name": "@commercetools-demo/puck-types",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "TypeScript types for the Puck CMS integration",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
