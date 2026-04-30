@@ -22,7 +22,7 @@
     "@apollo/client": "3.12.4",
     "@babel/core": "^7.22.17",
     "@babel/runtime-corejs3": "^7.22.15",
-    "@commercetools-demo/puck-api": "^0.4.0",
+    "@commercetools-demo/puck-api": "^0.5.0",
     "@commercetools-demo/puck-content-manager": "^0.4.0",
     "@commercetools-demo/puck-editor": "^0.4.0",
     "@commercetools-demo/puck-page-manager": "^0.4.0",
