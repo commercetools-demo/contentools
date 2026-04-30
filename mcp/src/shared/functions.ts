@@ -28,6 +28,7 @@ function headers(ctx: ResolvedContext, useAuth: boolean): Record<string, string>
   const h: Record<string, string> = {
     'x-project-key': ctx.projectKey,
     'Content-Type': 'application/json',
+    'x-source': 'mcp',  // lets the service log which client sent the request
   };
   if (useAuth && ctx.jwtToken) {
     h['Authorization'] = `Bearer ${ctx.jwtToken}`;
