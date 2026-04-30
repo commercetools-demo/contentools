@@ -5,38 +5,7 @@ import type {
   PuckContentWithStatesResponse,
   UpdatePuckContentInput,
 } from '@commercetools-demo/puck-types';
-
-// ---------------------------------------------------------------------------
-// Shared helpers
-// ---------------------------------------------------------------------------
-
-const readHeaders = (projectKey: string): Record<string, string> => ({
-  'Content-Type': 'application/json',
-  'x-project-key': projectKey,
-});
-
-const writeHeaders = (
-  projectKey: string,
-  jwtToken: string
-): Record<string, string> => ({
-  'Content-Type': 'application/json',
-  'x-project-key': projectKey,
-  Authorization: `Bearer ${jwtToken}`,
-});
-
-const handleResponse = async <T>(res: Response): Promise<T> => {
-  if (!res.ok) {
-    const body = await res.text();
-    throw new Error(
-      `[puck-api] HTTP ${res.status}: ${body || res.statusText}`
-    );
-  }
-  return res.json() as Promise<T>;
-};
-
-// ---------------------------------------------------------------------------
-// List contents (optional contentType filter)
-// ---------------------------------------------------------------------------
+import { httpClient, readHeaders, writeHeaders } from './http-client';
 
 export const listPuckContentsApi = async (
   baseURL: string,
@@ -46,13 +15,10 @@ export const listPuckContentsApi = async (
 ): Promise<PuckContentListResponse> => {
   const url = new URL(`${baseURL}/${businessUnitKey}/puck-contents`);
   if (contentType) url.searchParams.set('contentType', contentType);
-  const res = await fetch(url.toString(), { headers: readHeaders(projectKey) });
-  return handleResponse<PuckContentListResponse>(res);
+  return httpClient<PuckContentListResponse>(url.toString(), {
+    headers: readHeaders(projectKey),
+  });
 };
-
-// ---------------------------------------------------------------------------
-// Get single content item (with states)
-// ---------------------------------------------------------------------------
 
 export const getPuckContentApi = async (
   baseURL: string,
@@ -60,16 +26,11 @@ export const getPuckContentApi = async (
   businessUnitKey: string,
   key: string
 ): Promise<PuckContentWithStatesResponse> => {
-  const res = await fetch(
+  return httpClient<PuckContentWithStatesResponse>(
     `${baseURL}/${businessUnitKey}/puck-contents/${key}`,
     { headers: readHeaders(projectKey) }
   );
-  return handleResponse<PuckContentWithStatesResponse>(res);
 };
-
-// ---------------------------------------------------------------------------
-// Create content item
-// ---------------------------------------------------------------------------
 
 export const createPuckContentApi = async (
   baseURL: string,
@@ -78,7 +39,7 @@ export const createPuckContentApi = async (
   businessUnitKey: string,
   body: { value: CreatePuckContentInput }
 ): Promise<PuckContentResponse> => {
-  const res = await fetch(
+  return httpClient<PuckContentResponse>(
     `${baseURL}/${businessUnitKey}/puck-contents`,
     {
       method: 'POST',
@@ -86,12 +47,7 @@ export const createPuckContentApi = async (
       body: JSON.stringify(body),
     }
   );
-  return handleResponse<PuckContentResponse>(res);
 };
-
-// ---------------------------------------------------------------------------
-// Update content item (auto-saves draft + version)
-// ---------------------------------------------------------------------------
 
 export const updatePuckContentApi = async (
   baseURL: string,
@@ -101,7 +57,7 @@ export const updatePuckContentApi = async (
   key: string,
   body: { value: UpdatePuckContentInput }
 ): Promise<PuckContentResponse> => {
-  const res = await fetch(
+  return httpClient<PuckContentResponse>(
     `${baseURL}/${businessUnitKey}/puck-contents/${key}`,
     {
       method: 'PUT',
@@ -109,12 +65,7 @@ export const updatePuckContentApi = async (
       body: JSON.stringify(body),
     }
   );
-  return handleResponse<PuckContentResponse>(res);
 };
-
-// ---------------------------------------------------------------------------
-// Delete content item
-// ---------------------------------------------------------------------------
 
 export const deletePuckContentApi = async (
   baseURL: string,
@@ -123,22 +74,11 @@ export const deletePuckContentApi = async (
   businessUnitKey: string,
   key: string
 ): Promise<void> => {
-  const res = await fetch(
+  await httpClient<void>(
     `${baseURL}/${businessUnitKey}/puck-contents/${key}`,
-    {
-      method: 'DELETE',
-      headers: writeHeaders(projectKey, jwtToken),
-    }
+    { method: 'DELETE', headers: writeHeaders(projectKey, jwtToken) }
   );
-  if (!res.ok) {
-    const body = await res.text();
-    throw new Error(`[puck-api] HTTP ${res.status}: ${body || res.statusText}`);
-  }
 };
-
-// ---------------------------------------------------------------------------
-// Get published content item
-// ---------------------------------------------------------------------------
 
 export const getPublishedPuckContentApi = async (
   baseURL: string,
@@ -146,16 +86,11 @@ export const getPublishedPuckContentApi = async (
   businessUnitKey: string,
   key: string
 ): Promise<PuckContentResponse['value']> => {
-  const res = await fetch(
+  return httpClient<PuckContentResponse['value']>(
     `${baseURL}/${businessUnitKey}/published/puck-contents/${key}`,
     { headers: readHeaders(projectKey) }
   );
-  return handleResponse<PuckContentResponse['value']>(res);
 };
-
-// ---------------------------------------------------------------------------
-// Get preview (draft || published) content item
-// ---------------------------------------------------------------------------
 
 export const getPreviewPuckContentApi = async (
   baseURL: string,
@@ -163,16 +98,11 @@ export const getPreviewPuckContentApi = async (
   businessUnitKey: string,
   key: string
 ): Promise<PuckContentResponse['value']> => {
-  const res = await fetch(
+  return httpClient<PuckContentResponse['value']>(
     `${baseURL}/${businessUnitKey}/preview/puck-contents/${key}`,
     { headers: readHeaders(projectKey) }
   );
-  return handleResponse<PuckContentResponse['value']>(res);
 };
-
-// ---------------------------------------------------------------------------
-// Query content item by contentType
-// ---------------------------------------------------------------------------
 
 export const queryPuckContentApi = async (
   baseURL: string,
@@ -181,14 +111,13 @@ export const queryPuckContentApi = async (
   body: { query: string },
   mode: 'published' | 'preview'
 ): Promise<PuckContentResponse['value'] | null> => {
-  const res = await fetch(
+  return httpClient<PuckContentResponse['value'] | null>(
     `${baseURL}/${businessUnitKey}/${mode}/puck-contents/query`,
     {
       method: 'POST',
       headers: readHeaders(projectKey),
       body: JSON.stringify(body),
+      nullOn404: true,
     }
   );
-  if (res.status === 404) return null;
-  return handleResponse<PuckContentResponse['value']>(res);
 };

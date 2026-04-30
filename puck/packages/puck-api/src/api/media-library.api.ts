@@ -1,9 +1,6 @@
 import type { MediaLibraryResult } from '@commercetools-demo/puck-types';
+import { httpClient } from './http-client';
 
-/**
- * Fetch media library files for a business unit.
- * Maps to GET /service/:businessUnitKey/media-library
- */
 export const fetchMediaLibraryApi = async (
   baseURL: string,
   projectKey: string,
@@ -18,27 +15,15 @@ export const fetchMediaLibraryApi = async (
   params.set('page', String(page));
   params.set('limit', String(limit));
 
-  const headers: Record<string, string> = {
-    'x-project-key': projectKey,
-  };
+  const headers: Record<string, string> = { 'x-project-key': projectKey };
   if (jwtToken) headers['Authorization'] = `Bearer ${jwtToken}`;
 
-  const res = await fetch(
+  return httpClient<MediaLibraryResult>(
     `${baseURL}/${businessUnitKey}/media-library?${params}`,
     { headers }
   );
-
-  if (!res.ok) {
-    const body = await res.text();
-    throw new Error(`[puck-api] HTTP ${res.status}: ${body || res.statusText}`);
-  }
-  return res.json() as Promise<MediaLibraryResult>;
 };
 
-/**
- * Upload a file for a business unit.
- * Maps to POST /service/:businessUnitKey/upload-file
- */
 export const uploadMediaFileApi = async (
   baseURL: string,
   projectKey: string,
@@ -53,21 +38,13 @@ export const uploadMediaFileApi = async (
   if (title) formData.append('title', title);
   if (description) formData.append('description', description);
 
-  const res = await fetch(
+  // No Content-Type header — browser sets multipart/form-data boundary automatically
+  return httpClient<{ url: string }>(
     `${baseURL}/${businessUnitKey}/upload-file`,
     {
       method: 'POST',
-      headers: {
-        'x-project-key': projectKey,
-        Authorization: `Bearer ${jwtToken}`,
-      },
+      headers: { 'x-project-key': projectKey, Authorization: `Bearer ${jwtToken}` },
       body: formData,
     }
   );
-
-  if (!res.ok) {
-    const body = await res.text();
-    throw new Error(`[puck-api] HTTP ${res.status}: ${body || res.statusText}`);
-  }
-  return res.json() as Promise<{ url: string }>;
 };

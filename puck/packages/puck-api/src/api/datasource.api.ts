@@ -1,30 +1,19 @@
-// ---------------------------------------------------------------------------
-// Datasource resolution API
-// ---------------------------------------------------------------------------
+import { httpClient, writeHeaders } from './http-client';
 
 export const resolveDatasourceApi = async (
   baseURL: string,
   projectKey: string,
-  businessUnitKey: string,
+  _businessUnitKey: string,
   jwtToken: string,
   datasourceKey: string,
   body: { params: Record<string, string> }
 ): Promise<unknown> => {
-  const res = await fetch(
+  return httpClient<unknown>(
     `${baseURL}/datasource/${datasourceKey}/test`,
     {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-project-key': projectKey,
-        Authorization: `Bearer ${jwtToken}`,
-      },
+      headers: writeHeaders(projectKey, jwtToken),
       body: JSON.stringify(body),
     }
   );
-  if (!res.ok) {
-    const body = await res.text();
-    throw new Error(`[puck-api] HTTP ${res.status}: ${body || res.statusText}`);
-  }
-  return res.json();
 };
