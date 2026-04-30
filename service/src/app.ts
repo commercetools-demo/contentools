@@ -30,7 +30,7 @@ app.use(
       return callback(new Error('Not allowed by CORS'));
     },
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'x-project-key'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'x-project-key', 'x-source'],
   })
 );
 
@@ -38,9 +38,25 @@ app.use(
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// log all requests
+// Structured request/response logger — output goes to GCP Cloud Logging automatically
 app.use((req, res, next) => {
-  logger.info(`${req.method} ${req.url}`);
+  const start = Date.now();
+  const source = (req.headers['x-source'] as string) ?? 'unknown';
+
+  const originalJson = res.json.bind(res);
+  res.json = (body: unknown) => {
+    console.log(JSON.stringify({
+      source,
+      method: req.method,
+      url: req.url,
+      payload: req.body && Object.keys(req.body).length > 0 ? req.body : undefined,
+      status: res.statusCode,
+      result:  body || undefined,
+      durationMs: Date.now() - start,
+    }));
+    return originalJson(body);
+  };
+
   next();
 });
 
