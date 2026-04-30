@@ -1292,22 +1292,22 @@
     "@babel/runtime" "^7.17.9"
     "@babel/runtime-corejs3" "^7.17.9"
 
-"@commercetools-demo/puck-api@^0.4.0":
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/@commercetools-demo/puck-api/-/puck-api-0.4.0.tgz#cc5189c7333475ffbbfbc35e91f6155ca5c58261"
-  integrity sha512-zI/UlxrL1MBOmES8m6Orz9ie6BNzFhEdgF6ruk8mbfWju+xc91lGQFBGJWkzhwDPd0wB344ZYqIvoijoC8SJQw==
+"@commercetools-demo/puck-api@^0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@commercetools-demo/puck-api/-/puck-api-0.5.0.tgz#303d31102e3a4de6e7143c8cc3c5274d01404b55"
+  integrity sha512-Fc3DDyQ42mG6S7B1dCVrf+Ztm0Hl8PgKpTzgib12j6jmBN9PsdJv88IPNYeWzNGR3TPqZXtBb3F1gzLsZjgcKw==
   dependencies:
     "@commercetools-demo/puck-types" "^0.4.0"
 
-"@commercetools-demo/puck-content-manager@^0.4.0":
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/@commercetools-demo/puck-content-manager/-/puck-content-manager-0.4.0.tgz#5cd86d6decd3b33e54e3712773fff43dd0d91b3d"
-  integrity sha512-pqiQ4ZNXLB1gRImCsGECemrxjLAcIamrNeVmPNj8+UO9mLmNonjjNxNKTPceiKMcOhAsNy0yzcXggHllHxag9A==
+"@commercetools-demo/puck-content-manager@^0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@commercetools-demo/puck-content-manager/-/puck-content-manager-0.5.0.tgz#e408d6623534f8ba64eb7d790407d26019c4e7fd"
+  integrity sha512-EbfOxCKFb1n6mTq3XweG/u9lgdyeOzwM7hpIiM9Ed/8Cq8uyP8CjnQj8FztWIL+WBrekIgo/XrbGt9jefb0kWw==
   dependencies:
-    "@commercetools-demo/puck-api" "^0.4.0"
-    "@commercetools-demo/puck-editor" "^0.4.0"
-    "@commercetools-demo/puck-types" "^0.4.0"
-    "@commercetools-demo/puck-version-history" "^0.3.0"
+    "@commercetools-demo/puck-api" "^0.5.0"
+    "@commercetools-demo/puck-editor" "^0.5.0"
+    "@commercetools-demo/puck-types" "^0.5.0"
+    "@commercetools-demo/puck-version-history" "^0.4.0"
     "@commercetools-uikit/card" "^20.5.0"
     "@commercetools-uikit/data-table" "^20.5.0"
     "@commercetools-uikit/design-system" "^20.5.0"
@@ -1324,14 +1324,14 @@
     "@commercetools-uikit/text-input" "^20.5.0"
     "@measured/puck" "^0.18.2"
 
-"@commercetools-demo/puck-editor@^0.4.0":
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/@commercetools-demo/puck-editor/-/puck-editor-0.4.0.tgz#291577c80e31e617e978614d5e8e736c4124c144"
-  integrity sha512-Lz31Hm/h0dDgBeJ1GgM5DBGQvThq5EqpktA6+CvfG3CJ6kLhwjEjMrdcqo5JC1FXV7B0HlN9LBTvVNHYPSNS2w==
+"@commercetools-demo/puck-editor@^0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@commercetools-demo/puck-editor/-/puck-editor-0.5.0.tgz#fba5fa25de87a9b18c0bab3eaf0eda68ed78f01f"
+  integrity sha512-/IzrUxxY3Qg0T5a3sZZWoiFpn2vOupHpgogDNXT3sFCn283H7w+v5B373N/1JRWoYwHFF2IZ+XRRnsrX5iHUMA==
   dependencies:
-    "@commercetools-demo/puck-api" "^0.4.0"
-    "@commercetools-demo/puck-types" "^0.4.0"
-    "@commercetools-demo/puck-version-history" "^0.3.0"
+    "@commercetools-demo/puck-api" "^0.5.0"
+    "@commercetools-demo/puck-types" "^0.5.0"
+    "@commercetools-demo/puck-version-history" "^0.4.0"
     "@commercetools-uikit/design-system" "^20.5.0"
     "@commercetools-uikit/flat-button" "^20.5.0"
     "@commercetools-uikit/icon-button" "^20.5.0"
@@ -1348,15 +1348,15 @@
     "@commercetools-uikit/text-input" "^20.5.0"
     "@measured/puck" "^0.18.2"
 
-"@commercetools-demo/puck-page-manager@^0.4.0":
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/@commercetools-demo/puck-page-manager/-/puck-page-manager-0.4.0.tgz#20c6848d5bf7377b946841e1fdb0b651dc2f2782"
-  integrity sha512-DjKRdJQULJNc3hAqTH/Xw5VaDT34TqPS3ty8HQUXzJLBtR8vc9qFAiAYNqeK6f5aiksVxpM04TiKzj8oAJQEJw==
+"@commercetools-demo/puck-page-manager@^0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@commercetools-demo/puck-page-manager/-/puck-page-manager-0.5.0.tgz#89c436f74cd1320ba65c1ffb84dc70b2fe667740"
+  integrity sha512-8WbwZ0g2oRvy7uetpJBfJ/9CX/a4K8iSqzN2dcJoNt9OKPtFQNTaMho05et/EAMQlkdAdETS+0PU7/6AH3WGpg==
   dependencies:
-    "@commercetools-demo/puck-api" "^0.4.0"
-    "@commercetools-demo/puck-editor" "^0.4.0"
-    "@commercetools-demo/puck-renderer" "^0.4.0"
-    "@commercetools-demo/puck-types" "^0.4.0"
+    "@commercetools-demo/puck-api" "^0.5.0"
+    "@commercetools-demo/puck-editor" "^0.5.0"
+    "@commercetools-demo/puck-renderer" "^0.5.0"
+    "@commercetools-demo/puck-types" "^0.5.0"
     "@commercetools-uikit/card" "^20.5.0"
     "@commercetools-uikit/data-table" "^20.5.0"
     "@commercetools-uikit/flat-button" "^20.5.0"
@@ -1370,23 +1370,23 @@
     "@commercetools-uikit/text-input" "^20.5.0"
     "@measured/puck" "^0.18.2"
 
-"@commercetools-demo/puck-renderer@^0.4.0":
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/@commercetools-demo/puck-renderer/-/puck-renderer-0.4.0.tgz#e27afb29b2b305b8aecf9f4d310f832799e7a5be"
-  integrity sha512-U5l4WMw6dIFnODUAkeESmbC7aqzg+37mwmYa5U3m0flTpfivkbWKRadPFh7+UfAXnYP2NisDTUC/azdasFVzNg==
+"@commercetools-demo/puck-renderer@^0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@commercetools-demo/puck-renderer/-/puck-renderer-0.5.0.tgz#43d1c3e909fc00501ef78017f3e5eb0b99285822"
+  integrity sha512-QPoeSxh9bkz7OnrAAaogReQe8MCzU785tV4+KTDI6tv6TbnO0f9hTwMfksVz4FMCW/StlLbREkVkbdVRXO1UzA==
   dependencies:
-    "@commercetools-demo/puck-api" "^0.4.0"
-    "@commercetools-demo/puck-editor" "^0.4.0"
-    "@commercetools-demo/puck-types" "^0.4.0"
+    "@commercetools-demo/puck-api" "^0.5.0"
+    "@commercetools-demo/puck-editor" "^0.5.0"
+    "@commercetools-demo/puck-types" "^0.5.0"
     "@measured/puck" "^0.18.2"
 
-"@commercetools-demo/puck-theme-manager@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@commercetools-demo/puck-theme-manager/-/puck-theme-manager-0.1.0.tgz#3fb3c80623db52c2c330ffe3aad39d6910ad6b11"
-  integrity sha512-3RxFxqvSyO5ppjXSQ+/yP4Pnk/Lu2JW/djwIys8IfHC7FvWAnvBZnRcQKLAQWPQMP8iLSPTdxbJY1xadDzXTHQ==
+"@commercetools-demo/puck-theme-manager@^0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@commercetools-demo/puck-theme-manager/-/puck-theme-manager-0.2.0.tgz#ee308584353ed1809242f1a724d48a2903e81b03"
+  integrity sha512-SnT7Mn7NF0ZBj6VO26JK+pvLkZ0bf1rBP8tM+0AWlvJ0lP460/t0lJFf/09hjQ5Sr0Z6yOqkyCVMEBJOnEDGag==
   dependencies:
-    "@commercetools-demo/puck-api" "^0.4.0"
-    "@commercetools-demo/puck-types" "^0.4.0"
+    "@commercetools-demo/puck-api" "^0.5.0"
+    "@commercetools-demo/puck-types" "^0.5.0"
     "@commercetools-uikit/card" "^20.5.0"
     "@commercetools-uikit/field-label" "^20.5.0"
     "@commercetools-uikit/flat-button" "^20.5.0"
@@ -1395,7 +1395,6 @@
     "@commercetools-uikit/number-input" "^20.5.0"
     "@commercetools-uikit/primary-button" "^20.5.0"
     "@commercetools-uikit/secondary-button" "^20.5.0"
-    "@commercetools-uikit/select-input" "^20.5.0"
     "@commercetools-uikit/spacings" "^20.5.0"
     "@commercetools-uikit/text" "^20.5.0"
     "@commercetools-uikit/text-input" "^20.5.0"
@@ -1407,12 +1406,19 @@
   dependencies:
     "@measured/puck" "^0.18.2"
 
-"@commercetools-demo/puck-version-history@^0.3.0":
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/@commercetools-demo/puck-version-history/-/puck-version-history-0.3.0.tgz#fee2362dd48aa890380592430c1c036d3bf353d3"
-  integrity sha512-ZiniYC3z02ApfAs0yk5M1Bmwx/TaGwdOAkNN1mPVDMU5WQvrzDBZgQixqS2MzWcS4LQdB4ypzdPpNjOgwnJDSA==
+"@commercetools-demo/puck-types@^0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@commercetools-demo/puck-types/-/puck-types-0.5.0.tgz#b75841bc0fa51a634abc290406f6d3c968cfd0e5"
+  integrity sha512-Z7K4/7Huk+SgTgnZGjj5abEzPq+L13K671c/UxG0/MdhtTCtCFvcLBYPQjHd45KEk37dViQAnTWv5teZ2U3riQ==
   dependencies:
-    "@commercetools-demo/puck-types" "^0.4.0"
+    "@measured/puck" "^0.18.2"
+
+"@commercetools-demo/puck-version-history@^0.4.0":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@commercetools-demo/puck-version-history/-/puck-version-history-0.4.0.tgz#83faec3e30f91aad45f6b2193f7e4e34fbbb6125"
+  integrity sha512-9YCtYqxvZNWMSFyob+nf4p5LxPIngD3hTd3Gm9/FfkAsxqBXO2Z3qbfJllh7PaSH39saAe23ZjCwP+JdYkcWJA==
+  dependencies:
+    "@commercetools-demo/puck-types" "^0.5.0"
     "@commercetools-uikit/design-system" "^20.5.0"
     "@commercetools-uikit/flat-button" "^20.5.0"
     "@commercetools-uikit/icons" "^20.5.0"
