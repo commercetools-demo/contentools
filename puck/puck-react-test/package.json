@@ -41,7 +41,7 @@
     "@types/react-dom": "^18",
     "@vitejs/plugin-react": "^4.3.4",
     "typescript": "^5.7.2",
-    "vite": "^6.0.5"
+    "vite": "^6.4.2"
   },
   "resolutions": {
     "@types/react-router": "<6",
