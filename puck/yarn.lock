@@ -422,12 +422,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@commercetools-demo/puck-theme-manager@link:../packages/puck-theme-manager::locator=puck-react-test%40workspace%3Apuck-react-test":
-  version: 0.0.0-use.local
-  resolution: "@commercetools-demo/puck-theme-manager@link:../packages/puck-theme-manager::locator=puck-react-test%40workspace%3Apuck-react-test"
-  languageName: node
-  linkType: soft
-
 "@commercetools-demo/puck-theme-manager@workspace:packages/puck-theme-manager":
   version: 0.0.0-use.local
   resolution: "@commercetools-demo/puck-theme-manager@workspace:packages/puck-theme-manager"
@@ -442,7 +436,6 @@ __metadata:
     "@commercetools-uikit/number-input": "npm:^20.5.0"
     "@commercetools-uikit/primary-button": "npm:^20.5.0"
     "@commercetools-uikit/secondary-button": "npm:^20.5.0"
-    "@commercetools-uikit/select-input": "npm:^20.5.0"
     "@commercetools-uikit/spacings": "npm:^20.5.0"
     "@commercetools-uikit/text": "npm:^20.5.0"
     "@commercetools-uikit/text-input": "npm:^20.5.0"
@@ -454,7 +447,6 @@ __metadata:
   peerDependencies:
     react: ">=19.0.0"
     react-dom: ">=19.0.0"
-    react-intl: ">=6.0.0"
     react-router-dom: ">=5.0.0 <6"
   languageName: unknown
   linkType: soft
@@ -2860,11 +2852,11 @@ __metadata:
   linkType: hard
 
 "brace-expansion@npm:^5.0.5":
-  version: 5.0.5
-  resolution: "brace-expansion@npm:5.0.5"
+  version: 5.0.6
+  resolution: "brace-expansion@npm:5.0.6"
   dependencies:
     balanced-match: "npm:^4.0.2"
-  checksum: 10/f259b2ddf04489da9512ad637ba6b4ef2d77abd4445d20f7f1714585f153435200a53fa6a2e4a5ee974df14ddad4cd16421f6f803e96e8b452bd48598878d0ee
+  checksum: 10/a7acf120fefa79e9d7c9c92898114f57c07596a3920197f3c5917e6a628b04220a5f7f9618c30bdd973a6576a32113b99f9c3f1c8245ccc399dd2a9a718d81d8
   languageName: node
   linkType: hard
 
@@ -3829,9 +3821,9 @@ __metadata:
   linkType: hard
 
 "ip-address@npm:^10.0.1":
-  version: 10.1.0
-  resolution: "ip-address@npm:10.1.0"
-  checksum: 10/a6979629d1ad9c1fb424bc25182203fad739b40225aebc55ec6243bbff5035faf7b9ed6efab3a097de6e713acbbfde944baacfa73e11852bb43989c45a68d79e
+  version: 10.2.0
+  resolution: "ip-address@npm:10.2.0"
+  checksum: 10/12fec399e1af5753ac322e47a6d81a50d3a528b3abb17c09525b2a2edcaedcca628c40520706f7037bc4d8e951b0296c47e7b86d0a8e6e2335c8f0ba4afcfac1
   languageName: node
   linkType: hard
 
@@ -4216,12 +4208,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nanoid@npm:^3.3.11":
-  version: 3.3.11
-  resolution: "nanoid@npm:3.3.11"
+"nanoid@npm:^3.3.12":
+  version: 3.3.12
+  resolution: "nanoid@npm:3.3.12"
   bin:
     nanoid: bin/nanoid.cjs
-  checksum: 10/73b5afe5975a307aaa3c95dfe3334c52cdf9ae71518176895229b8d65ab0d1c0417dd081426134eb7571c055720428ea5d57c645138161e7d10df80815527c48
+  checksum: 10/6eec280694e2088d18fb802b1e3bfc4578e27b665b7ecfbe36c7356612fea2f814277056e671e2a1529dff551588a652efdc0bfa39f8a3185bc2247be311872e
   languageName: node
   linkType: hard
 
@@ -4484,13 +4476,13 @@ __metadata:
   linkType: hard
 
 "postcss@npm:^8.5.3":
-  version: 8.5.8
-  resolution: "postcss@npm:8.5.8"
+  version: 8.5.15
+  resolution: "postcss@npm:8.5.15"
   dependencies:
-    nanoid: "npm:^3.3.11"
+    nanoid: "npm:^3.3.12"
     picocolors: "npm:^1.1.1"
     source-map-js: "npm:^1.2.1"
-  checksum: 10/cbacbfd7f767e2c820d4bf09a3a744834dd7d14f69ff08d1f57b1a7defce9ae5efcf31981890d9697a972a64e9965de677932ef28e4c8ba23a87aad45b82c459
+  checksum: 10/d02ad19eb1e0fa53a1229ee6d53807eb88f903f2b9a8cac66993367f3ac7dd3b97238c783a54ccbf4145f82f6ca9a5cbd58f089846285d759c8a3259fbea8318
   languageName: node
   linkType: hard
 
@@ -4537,7 +4529,6 @@ __metadata:
     "@commercetools-demo/puck-editor": "link:../packages/puck-editor"
     "@commercetools-demo/puck-page-manager": "link:../packages/puck-page-manager"
     "@commercetools-demo/puck-renderer": "link:../packages/puck-renderer"
-    "@commercetools-demo/puck-theme-manager": "link:../packages/puck-theme-manager"
     "@commercetools-demo/puck-types": "link:../packages/puck-types"
     "@commercetools-uikit/card": "npm:^20.5.0"
     "@commercetools-uikit/constraints": "npm:^20.5.0"
@@ -4563,7 +4554,7 @@ __metadata:
     react-intl: "npm:^10.1.1"
     react-router-dom: "npm:^5"
     typescript: "npm:^5.7.2"
-    vite: "npm:^6.0.5"
+    vite: "npm:^6.4.2"
   languageName: unknown
   linkType: soft
 
@@ -5436,9 +5427,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite@npm:^6.0.5":
-  version: 6.4.1
-  resolution: "vite@npm:6.4.1"
+"vite@npm:^6.4.2":
+  version: 6.4.2
+  resolution: "vite@npm:6.4.2"
   dependencies:
     esbuild: "npm:^0.25.0"
     fdir: "npm:^6.4.4"
@@ -5487,7 +5478,7 @@ __metadata:
       optional: true
   bin:
     vite: bin/vite.js
-  checksum: 10/ea2083b6b1d1c9e85a13d6797ae989aa1dbc27a5c054319c71141934bf3f8dba8d54b510618040f95751148da63787f28f043df7458a194c81f8b6d8a2d32844
+  checksum: 10/d6622843fb367065c2459c8d972d1f0d302844bdb329602c4bfb3c149607744f74fbfcbb3d170a4f58fa494012ad74a88e3a63df236845840d50475b89786796
   languageName: node
   linkType: hard
 
