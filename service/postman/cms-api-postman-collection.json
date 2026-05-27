@@ -63,6 +63,16 @@
       "key": "content_item_key_for_page",
       "value": "page-content-item",
       "type": "string"
+    },
+    {
+      "key": "puck_page_key",
+      "value": "homepage",
+      "type": "string"
+    },
+    {
+      "key": "puck_content_key",
+      "value": "sample-puck-content",
+      "type": "string"
     }
   ],
   "item": [
@@ -163,6 +173,23 @@
               "path": ["{{business_unit_key}}", "configuration"]
             },
             "description": "Get all configuration slices for the business unit."
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Configurations (alias)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {"key": "x-project-key", "value": "{{project_key}}", "type": "text"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/configurations",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "configurations"]
+            },
+            "description": "Alias for GET /configuration — returns all configuration slices for the business unit."
           },
           "response": []
         },
@@ -1983,6 +2010,492 @@
               "raw": "{{base_url}}/{{business_unit_key}}/pages/{{page_key}}/rows/{{row_id}}",
               "host": ["{{base_url}}"],
               "path": ["{{business_unit_key}}", "pages", "{{page_key}}", "rows", "{{row_id}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Puck Pages",
+      "description": "Puck-editor page management (CRUD, states, versions, published/preview).",
+      "item": [
+        {
+          "name": "Get All Puck Pages",
+          "request": {
+            "method": "GET",
+            "header": [
+              {"key": "x-project-key", "value": "{{project_key}}", "type": "text"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/puck-pages",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "puck-pages"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Puck Page by Key",
+          "request": {
+            "method": "GET",
+            "header": [
+              {"key": "x-project-key", "value": "{{project_key}}", "type": "text"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/puck-pages/{{puck_page_key}}",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "puck-pages", "{{puck_page_key}}"]
+            },
+            "description": "Returns the page object together with its draft and published states."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Puck Page",
+          "request": {
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [{"key": "token", "value": "{{bearer_token}}", "type": "string"}]
+            },
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"value\": {\n    \"name\": \"Homepage\",\n    \"slug\": \"/home\",\n    \"content\": {}\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/puck-pages",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "puck-pages"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Puck Page",
+          "request": {
+            "method": "PUT",
+            "auth": {
+              "type": "bearer",
+              "bearer": [{"key": "token", "value": "{{bearer_token}}", "type": "string"}]
+            },
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"value\": {\n    \"name\": \"Updated Homepage\",\n    \"slug\": \"/home\",\n    \"content\": {}\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/puck-pages/{{puck_page_key}}",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "puck-pages", "{{puck_page_key}}"]
+            },
+            "description": "Auto-saves a draft state and a version entry."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Puck Page",
+          "request": {
+            "method": "DELETE",
+            "auth": {
+              "type": "bearer",
+              "bearer": [{"key": "token", "value": "{{bearer_token}}", "type": "string"}]
+            },
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/puck-pages/{{puck_page_key}}",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "puck-pages", "{{puck_page_key}}"]
+            },
+            "description": "Removes the page together with all its states and versions."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Published Puck Page",
+          "request": {
+            "method": "GET",
+            "header": [
+              {"key": "x-project-key", "value": "{{project_key}}", "type": "text"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/published/puck-pages/{{puck_page_key}}",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "published", "puck-pages", "{{puck_page_key}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Preview Puck Page",
+          "request": {
+            "method": "GET",
+            "header": [
+              {"key": "x-project-key", "value": "{{project_key}}", "type": "text"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/preview/puck-pages/{{puck_page_key}}",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "preview", "puck-pages", "{{puck_page_key}}"]
+            },
+            "description": "Returns draft state if available, falls back to published."
+          },
+          "response": []
+        },
+        {
+          "name": "Query Published Puck Pages",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "x-project-key", "value": "{{project_key}}", "type": "text"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"slug = \\\"/home\\\"\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/published/puck-pages/query",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "published", "puck-pages", "query"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Query Preview Puck Pages",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "x-project-key", "value": "{{project_key}}", "type": "text"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"slug = \\\"/home\\\"\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/preview/puck-pages/query",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "preview", "puck-pages", "query"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Puck Page States",
+          "request": {
+            "method": "GET",
+            "header": [
+              {"key": "x-project-key", "value": "{{project_key}}", "type": "text"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/puck-pages/{{puck_page_key}}/states",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "puck-pages", "{{puck_page_key}}", "states"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Publish Puck Page",
+          "request": {
+            "method": "PUT",
+            "auth": {
+              "type": "bearer",
+              "bearer": [{"key": "token", "value": "{{bearer_token}}", "type": "string"}]
+            },
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/puck-pages/{{puck_page_key}}/states/published?clearDraft=true",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "puck-pages", "{{puck_page_key}}", "states", "published"],
+              "query": [{"key": "clearDraft", "value": "true"}]
+            },
+            "description": "Promotes the draft state to published. ?clearDraft=true removes the draft afterwards."
+          },
+          "response": []
+        },
+        {
+          "name": "Revert Puck Page Draft",
+          "request": {
+            "method": "DELETE",
+            "auth": {
+              "type": "bearer",
+              "bearer": [{"key": "token", "value": "{{bearer_token}}", "type": "string"}]
+            },
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/puck-pages/{{puck_page_key}}/states/draft",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "puck-pages", "{{puck_page_key}}", "states", "draft"]
+            },
+            "description": "Deletes the draft state, reverting the page to the last published version."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Puck Page Versions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {"key": "x-project-key", "value": "{{project_key}}", "type": "text"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/puck-pages/{{puck_page_key}}/versions",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "puck-pages", "{{puck_page_key}}", "versions"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Puck Contents",
+      "description": "Puck-editor content item management (CRUD, states, versions, published/preview).",
+      "item": [
+        {
+          "name": "Get All Puck Contents",
+          "request": {
+            "method": "GET",
+            "header": [
+              {"key": "x-project-key", "value": "{{project_key}}", "type": "text"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/puck-contents",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "puck-contents"],
+              "query": [{"key": "contentType", "value": "", "disabled": true}]
+            },
+            "description": "Optional query param: ?contentType=hero to filter by content type."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Puck Content by Key",
+          "request": {
+            "method": "GET",
+            "header": [
+              {"key": "x-project-key", "value": "{{project_key}}", "type": "text"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/puck-contents/{{puck_content_key}}",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "puck-contents", "{{puck_content_key}}"]
+            },
+            "description": "Returns the content item together with its draft and published states."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Puck Content",
+          "request": {
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [{"key": "token", "value": "{{bearer_token}}", "type": "string"}]
+            },
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"value\": {\n    \"contentType\": \"hero-banner\",\n    \"name\": \"Sample Puck Content\",\n    \"data\": {}\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/puck-contents",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "puck-contents"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Puck Content",
+          "request": {
+            "method": "PUT",
+            "auth": {
+              "type": "bearer",
+              "bearer": [{"key": "token", "value": "{{bearer_token}}", "type": "string"}]
+            },
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"value\": {\n    \"contentType\": \"hero-banner\",\n    \"name\": \"Updated Puck Content\",\n    \"data\": {}\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/puck-contents/{{puck_content_key}}",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "puck-contents", "{{puck_content_key}}"]
+            },
+            "description": "Auto-saves a draft state and a version entry."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Puck Content",
+          "request": {
+            "method": "DELETE",
+            "auth": {
+              "type": "bearer",
+              "bearer": [{"key": "token", "value": "{{bearer_token}}", "type": "string"}]
+            },
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/puck-contents/{{puck_content_key}}",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "puck-contents", "{{puck_content_key}}"]
+            },
+            "description": "Removes the content item together with all its states and versions."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Published Puck Content",
+          "request": {
+            "method": "GET",
+            "header": [
+              {"key": "x-project-key", "value": "{{project_key}}", "type": "text"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/published/puck-contents/{{puck_content_key}}",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "published", "puck-contents", "{{puck_content_key}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Preview Puck Content",
+          "request": {
+            "method": "GET",
+            "header": [
+              {"key": "x-project-key", "value": "{{project_key}}", "type": "text"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/preview/puck-contents/{{puck_content_key}}",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "preview", "puck-contents", "{{puck_content_key}}"]
+            },
+            "description": "Returns draft state if available, falls back to published."
+          },
+          "response": []
+        },
+        {
+          "name": "Query Published Puck Contents",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "x-project-key", "value": "{{project_key}}", "type": "text"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"contentType = \\\"hero-banner\\\"\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/published/puck-contents/query",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "published", "puck-contents", "query"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Query Preview Puck Contents",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "x-project-key", "value": "{{project_key}}", "type": "text"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"contentType = \\\"hero-banner\\\"\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/preview/puck-contents/query",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "preview", "puck-contents", "query"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Puck Content States",
+          "request": {
+            "method": "GET",
+            "header": [
+              {"key": "x-project-key", "value": "{{project_key}}", "type": "text"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/puck-contents/{{puck_content_key}}/states",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "puck-contents", "{{puck_content_key}}", "states"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Publish Puck Content",
+          "request": {
+            "method": "PUT",
+            "auth": {
+              "type": "bearer",
+              "bearer": [{"key": "token", "value": "{{bearer_token}}", "type": "string"}]
+            },
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/puck-contents/{{puck_content_key}}/states/published?clearDraft=true",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "puck-contents", "{{puck_content_key}}", "states", "published"],
+              "query": [{"key": "clearDraft", "value": "true"}]
+            },
+            "description": "Promotes the draft state to published. ?clearDraft=true removes the draft afterwards."
+          },
+          "response": []
+        },
+        {
+          "name": "Revert Puck Content Draft",
+          "request": {
+            "method": "DELETE",
+            "auth": {
+              "type": "bearer",
+              "bearer": [{"key": "token", "value": "{{bearer_token}}", "type": "string"}]
+            },
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/puck-contents/{{puck_content_key}}/states/draft",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "puck-contents", "{{puck_content_key}}", "states", "draft"]
+            },
+            "description": "Deletes the draft state, reverting the content to the last published version."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Puck Content Versions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {"key": "x-project-key", "value": "{{project_key}}", "type": "text"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "url": {
+              "raw": "{{base_url}}/{{business_unit_key}}/puck-contents/{{puck_content_key}}/versions",
+              "host": ["{{base_url}}"],
+              "path": ["{{business_unit_key}}", "puck-contents", "{{puck_content_key}}", "versions"]
             }
           },
           "response": []
