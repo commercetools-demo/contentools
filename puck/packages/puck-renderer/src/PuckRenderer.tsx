@@ -31,6 +31,7 @@ interface PuckRendererInnerProps {
   config: PuckConfig;
   loadingComponent?: ReactElement;
   errorComponent?: ReactElement;
+  children?: React.ReactNode;
   className?: string;
   style?: React.CSSProperties;
 }
@@ -45,6 +46,7 @@ const PuckRendererInner: React.FC<PuckRendererInnerProps> = ({
   config,
   loadingComponent,
   errorComponent,
+  children,
   className,
   style,
 }) => {
@@ -137,18 +139,20 @@ const PuckRendererInner: React.FC<PuckRendererInnerProps> = ({
 
   if (error || !data) {
     return (
-      errorComponent ?? (
-        <div
-          style={{
-            padding: '32px',
-            color: '#dc2626',
-            background: '#fef2f2',
-            borderRadius: '8px',
-          }}
-        >
-          {error ?? 'Failed to load'}
-        </div>
-      )
+      <>
+        {errorComponent ?? children ?? (
+          <div
+            style={{
+              padding: '32px',
+              color: '#dc2626',
+              background: '#fef2f2',
+              borderRadius: '8px',
+            }}
+          >
+            {error ?? 'Failed to load'}
+          </div>
+        )}
+      </>
     );
   }
 
@@ -199,6 +203,14 @@ export interface PuckRendererProps {
   /** Custom error display. */
   errorComponent?: ReactElement;
 
+  /**
+   * Fallback content rendered when there is nothing to show — fetch error,
+   * not-found, or no identifying param (pageKey/slug/contentKey/query) given.
+   * Not used while loading. If `errorComponent` is provided it takes precedence
+   * over `children`.
+   */
+  children?: React.ReactNode;
+
   className?: string;
   style?: React.CSSProperties;
 }
@@ -216,6 +228,7 @@ export const PuckRenderer: React.FC<PuckRendererProps> = ({
   config = DEFAULT_CONFIG,
   loadingComponent,
   errorComponent,
+  children,
   className,
   style,
 }) => {
@@ -232,7 +245,9 @@ export const PuckRenderer: React.FC<PuckRendererProps> = ({
       errorComponent={errorComponent}
       className={className}
       style={style}
-    />
+    >
+      {children}
+    </PuckRendererInner>
   );
 
   if (baseURL && projectKey && businessUnitKey) {
