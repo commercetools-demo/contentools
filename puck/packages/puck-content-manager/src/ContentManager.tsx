@@ -16,6 +16,7 @@ import TextInput from '@commercetools-uikit/text-input';
 import Label from '@commercetools-uikit/label';
 import { PlusThinIcon, SearchIcon } from '@commercetools-uikit/icons';
 import Stamp from '@commercetools-uikit/stamp';
+import { EnsureIntlProvider } from './EnsureIntlProvider';
 
 // ---------------------------------------------------------------------------
 // Row type for DataTable
@@ -258,12 +259,14 @@ export const ContentManagerList: React.FC<ContentManagerListProps> = ({
   defaultContentType,
   onEdit,
 }) => (
-  <PuckApiProvider
-    baseURL={baseURL}
-    projectKey={projectKey}
-    businessUnitKey={businessUnitKey}
-    jwtToken={jwtToken}
-  >
-    <ContentList defaultContentType={defaultContentType} onEdit={onEdit} />
-  </PuckApiProvider>
+  <EnsureIntlProvider>
+    <PuckApiProvider
+      baseURL={baseURL}
+      projectKey={projectKey}
+      businessUnitKey={businessUnitKey}
+      jwtToken={jwtToken}
+    >
+      <ContentList defaultContentType={defaultContentType} onEdit={onEdit} />
+    </PuckApiProvider>
+  </EnsureIntlProvider>
 );

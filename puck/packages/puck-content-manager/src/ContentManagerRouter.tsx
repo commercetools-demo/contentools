@@ -24,6 +24,7 @@ import {
   useVersionHistoryPanel,
   useVersionDiff,
 } from '@commercetools-demo/puck-version-history';
+import { EnsureIntlProvider } from './EnsureIntlProvider';
 
 const DEFAULT_CONFIG: Config = {
   ...defaultPuckConfig,
@@ -576,18 +577,20 @@ export const ContentManager: React.FC<ContentManagerProps> = ({
   defaultContentType,
   backButton,
 }) => (
-  <PuckApiProvider
-    baseURL={baseURL}
-    projectKey={projectKey}
-    businessUnitKey={businessUnitKey}
-    jwtToken={jwtToken}
-  >
-    <BrowserRouter basename={parentUrl}>
-      <ContentManagerRouterInner
-        config={config}
-        defaultContentType={defaultContentType}
-        backButton={backButton}
-      />
-    </BrowserRouter>
-  </PuckApiProvider>
+  <EnsureIntlProvider>
+    <PuckApiProvider
+      baseURL={baseURL}
+      projectKey={projectKey}
+      businessUnitKey={businessUnitKey}
+      jwtToken={jwtToken}
+    >
+      <BrowserRouter basename={parentUrl}>
+        <ContentManagerRouterInner
+          config={config}
+          defaultContentType={defaultContentType}
+          backButton={backButton}
+        />
+      </BrowserRouter>
+    </PuckApiProvider>
+  </EnsureIntlProvider>
 );

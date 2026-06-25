@@ -14,6 +14,7 @@ import {
 } from '@commercetools-demo/puck-api';
 import { PuckEditor, defaultPuckConfig } from '@commercetools-demo/puck-editor';
 import { PuckRenderer } from '@commercetools-demo/puck-renderer';
+import { EnsureIntlProvider } from './EnsureIntlProvider';
 
 const DEFAULT_CONFIG: Config = {
   ...defaultPuckConfig,
@@ -449,14 +450,16 @@ export const PageManager: React.FC<PageManagerProps> = ({
   config = DEFAULT_CONFIG,
   backButton,
 }) => (
-  <PuckApiProvider
-    baseURL={baseURL}
-    projectKey={projectKey}
-    businessUnitKey={businessUnitKey}
-    jwtToken={jwtToken}
-  >
-    <BrowserRouter basename={parentUrl}>
-      <PageManagerInner config={config} backButton={backButton} />
-    </BrowserRouter>
-  </PuckApiProvider>
+  <EnsureIntlProvider>
+    <PuckApiProvider
+      baseURL={baseURL}
+      projectKey={projectKey}
+      businessUnitKey={businessUnitKey}
+      jwtToken={jwtToken}
+    >
+      <BrowserRouter basename={parentUrl}>
+        <PageManagerInner config={config} backButton={backButton} />
+      </BrowserRouter>
+    </PuckApiProvider>
+  </EnsureIntlProvider>
 );

@@ -3,6 +3,7 @@ import { Puck, type Config, type Data } from '@measured/puck';
 import '@measured/puck/puck.css';
 import { PuckApiProvider, usePuckContent } from '@commercetools-demo/puck-api';
 import type { PuckContentVersionEntry, PuckData } from '@commercetools-demo/puck-types';
+import { EnsureIntlProvider } from './EnsureIntlProvider';
 import {
   ComponentSearchProvider,
   ComponentsPanel,
@@ -285,18 +286,20 @@ export const ContentEditor: React.FC<ContentEditorProps> = ({
   onSave,
   onError,
 }) => (
-  <PuckApiProvider
-    baseURL={baseURL}
-    projectKey={projectKey}
-    businessUnitKey={businessUnitKey}
-    jwtToken={jwtToken}
-  >
-    <ContentEditorInner
-      contentKey={contentKey}
-      config={config}
-      onPublish={onPublish}
-      onSave={onSave}
-      onError={onError}
-    />
-  </PuckApiProvider>
+  <EnsureIntlProvider>
+    <PuckApiProvider
+      baseURL={baseURL}
+      projectKey={projectKey}
+      businessUnitKey={businessUnitKey}
+      jwtToken={jwtToken}
+    >
+      <ContentEditorInner
+        contentKey={contentKey}
+        config={config}
+        onPublish={onPublish}
+        onSave={onSave}
+        onError={onError}
+      />
+    </PuckApiProvider>
+  </EnsureIntlProvider>
 );
