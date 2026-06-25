@@ -101,6 +101,9 @@ export const usePuckPage = (pageKey: string): UsePuckPageReturn => {
               { value: { puckData } }
             );
             setPage(updated.value);
+            // Keep the draft state in sync with the freshly-saved value so
+            // derived `currentData` (states.draft ?? page) never goes stale.
+            setStates((prev) => ({ ...prev, draft: updated.value }));
             setIsDirty(false);
             resolve();
           } catch (err) {
@@ -129,6 +132,7 @@ export const usePuckPage = (pageKey: string): UsePuckPageReturn => {
           { value: input }
         );
         setPage(updated.value);
+        setStates((prev) => ({ ...prev, draft: updated.value }));
       } catch (err) {
         setError((err as Error).message);
         throw err;

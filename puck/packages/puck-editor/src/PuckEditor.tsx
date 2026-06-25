@@ -108,19 +108,18 @@ const PuckEditorInner: React.FC<PuckEditorInnerProps> = ({
     }
   }, [saveDraft, onSave, onError]);
 
-  const handlePublish = useCallback(
-    async (data: Data) => {
-      try {
-        await saveDraft(data as PuckData);
-        setHasUnsavedChanges(false);
-        await publish(false);
-        onPublish?.(data as PuckData);
-      } catch (err) {
-        onError?.(err as Error);
-      }
-    },
-    [saveDraft, publish, onPublish, onError]
-  );
+  const handlePublish = useCallback(async () => {
+    try {
+      // Publish whatever is currently *saved* as the draft — never the
+      // (possibly unsaved) live canvas. The service publishes the persisted
+      // page value, so we must not write the canvas here; doing so was what
+      // overwrote saved content with stale data on publish.
+      await publish(false);
+      onPublish?.(currentData);
+    } catch (err) {
+      onError?.(err as Error);
+    }
+  }, [publish, onPublish, currentData, onError]);
 
   const handleRevert = useCallback(async () => {
     try {
@@ -210,7 +209,7 @@ const PuckEditorInner: React.FC<PuckEditorInnerProps> = ({
           config={config}
           data={activeData as Data}
           onChange={handleChange}
-          onPublish={handlePublish}
+          onPublish={() => void handlePublish()}
           overrides={{
             headerActions: () =>
               versionHistory.isPreviewingHistory ? (
@@ -229,7 +228,7 @@ const PuckEditorInner: React.FC<PuckEditorInnerProps> = ({
                   isDirty={hasUnsavedChanges}
                   states={states}
                   onSave={() => void handleSave()}
-                  onPublish={() => void handlePublish(activeData as Data)}
+                  onPublish={() => void handlePublish()}
                   onRevert={() => void handleRevert()}
                   showPublishButton={showPublishButton}
                 />
