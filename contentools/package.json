@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "@apollo/client": "3.12.4",
-    "@babel/core": "^7.22.17",
+    "@babel/core": "^7.29.6",
     "@babel/runtime-corejs3": "^7.22.15",
     "@commercetools-demo/puck-api": "^0.5.2",
     "@commercetools-demo/puck-content-manager": "^0.5.1",
