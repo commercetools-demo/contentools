@@ -10,6 +10,15 @@ All API endpoints are prefixed with `/service`.
 
 The service uses commercetools authentication. Make sure you have the proper credentials and environment variables set up.
 
+## Postman collection
+
+A ready-to-use Postman collection and environment are included in [`postman/`](./postman):
+
+- [`cms-api-postman-collection.json`](./postman/cms-api-postman-collection.json) — all current endpoints, grouped by area (Auth, Configuration, Content Types, File Management, Datasources, Puck Pages, Puck Contents, …)
+- [`cms-api-postman-environment.json`](./postman/cms-api-postman-environment.json) — environment variables (`base_url`, `project_key`, `business_unit_key`, bearer token, …)
+
+Import both into Postman, select the environment, then run **Auth → Authenticate Project** first to populate the bearer token. The deprecated content-items and grid-based pages requests are not included in the collection.
+
 ## API Endpoints
 
 ### Content Types

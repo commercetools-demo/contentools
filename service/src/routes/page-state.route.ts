@@ -18,6 +18,13 @@ import { validateJwt } from '../middleware/jwt.middleware';
 import { validateProject } from '../middleware/project.middleware';
 import { requireProjectKey } from '../middleware/project-key.middleware';
 
+/**
+ * @deprecated Legacy grid-based pages API (state management). Superseded by the
+ * Puck pages API (`/:businessUnitKey/puck-pages/:key/states`, see
+ * `puck-page.route.ts`). Retained for backwards compatibility only — calls are
+ * flagged at runtime by `deprecationMiddleware`. Do not build new functionality
+ * on these routes.
+ */
 const pageStateRouter = Router();
 const dependencies: StateControllerDependencies = {
   CONTENT_CONTAINER: CONTENT_PAGE_CONTAINER,

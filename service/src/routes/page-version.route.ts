@@ -5,6 +5,13 @@ import { PageVersion } from '../controllers/page.controller';
 import { MAX_VERSIONS, PAGE_VERSION_CONTAINER } from '../constants';
 import { requireProjectKey } from '../middleware/project-key.middleware';
 
+/**
+ * @deprecated Legacy grid-based pages API (version history). Superseded by the
+ * Puck pages API (`/:businessUnitKey/puck-pages/:key/versions`, see
+ * `puck-page.route.ts`). Retained for backwards compatibility only — calls are
+ * flagged at runtime by `deprecationMiddleware`. Do not build new functionality
+ * on these routes.
+ */
 const pageVersionRouter = Router();
 const PageVersionController = withContentVersionDependencies<PageVersion>({
   CONTENT_VERSION_CONTAINER: PAGE_VERSION_CONTAINER,

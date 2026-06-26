@@ -16,8 +16,13 @@ import pageContentItemStateRouter from './page-content-item-state.route';
 import authRouter from './auth.route';
 import puckPageRouter from './puck-page.route';
 import puckContentRouter from './puck-content.route';
+import { deprecationMiddleware } from '../middleware/deprecation.middleware';
 
 const serviceRouter = Router();
+
+// Flags the legacy content-items / grid-based pages APIs (superseded by the
+// Puck APIs) with deprecation headers + log warnings on every request.
+serviceRouter.use(deprecationMiddleware);
 
 serviceRouter.use('/', configurationRouter);
 serviceRouter.use('/', contentTypeRouter);

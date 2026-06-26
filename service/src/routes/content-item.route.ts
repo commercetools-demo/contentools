@@ -13,6 +13,12 @@ import { validateProject } from '../middleware/project.middleware';
 import { requireProjectKey } from '../middleware/project-key.middleware';
 import { AuthenticatedRequest } from '../types/service.types';
 
+/**
+ * @deprecated Legacy content-items API. Superseded by the Puck content API
+ * (`/:businessUnitKey/puck-contents`, see `puck-content.route.ts`). Retained for
+ * backwards compatibility only — calls are flagged at runtime by
+ * `deprecationMiddleware`. Do not build new functionality on these routes.
+ */
 const contentItemRouter = Router();
 
 contentItemRouter.get(

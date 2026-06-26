@@ -428,6 +428,12 @@ call `authenticate-project` themselves and pass the result as the `jwtToken` pro
 
 Base path: **`/service`**. Errors use `{ "statusCode": number, "message": string }`.
 
+A ready-to-use Postman collection and environment live in
+[`service/postman/`](service/postman) — import
+[`cms-api-postman-collection.json`](service/postman/cms-api-postman-collection.json)
+and [`cms-api-postman-environment.json`](service/postman/cms-api-postman-environment.json),
+then run **Auth → Authenticate Project** first to populate the bearer token.
+
 ### Endpoint groups
 
 | Group | Routes |

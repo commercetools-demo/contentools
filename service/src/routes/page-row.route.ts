@@ -4,6 +4,13 @@ import * as PageController from '../controllers/page.controller';
 import { validateJwt } from '../middleware/jwt.middleware';
 import { validateProject } from '../middleware/project.middleware';
 
+/**
+ * @deprecated Legacy grid-based pages API (page rows / grid cells). Superseded by
+ * the Puck pages API (`/:businessUnitKey/puck-pages`, see `puck-page.route.ts`),
+ * where layout is stored as Puck data. Retained for backwards compatibility only —
+ * calls are flagged at runtime by `deprecationMiddleware`. Do not build new
+ * functionality on these routes.
+ */
 const pageRowRouter = Router();
 
 pageRowRouter.delete(
