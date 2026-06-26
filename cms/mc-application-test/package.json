@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "@apollo/client": "3.12.4",
-    "@babel/core": "^7.22.17",
+    "@babel/core": "^7.29.6",
     "@babel/runtime-corejs3": "^7.22.15",
     "@commercetools-demo/contentools-configuration": "link:../packages/configuration",
     "@commercetools-demo/contentools-content-item-renderer": "link:../packages/content-item-renderer",
