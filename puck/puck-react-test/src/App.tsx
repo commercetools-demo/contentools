@@ -3,6 +3,7 @@ import Card from '@commercetools-uikit/card';
 import Spacings from '@commercetools-uikit/spacings';
 import Text from '@commercetools-uikit/text';
 import { PageManager } from '@commercetools-demo/puck-page-manager';
+import { ThemeManager } from '@commercetools-demo/puck-theme-manager';
 import { ContentManager } from '@commercetools-demo/puck-content-manager';
 import { PuckRenderer } from '@commercetools-demo/puck-renderer';
 
@@ -46,12 +47,13 @@ const ConfigWarning: React.FC = () => (
 // ---------------------------------------------------------------------------
 // Tab nav
 // ---------------------------------------------------------------------------
-type Tab = 'pages' | 'contents' | 'renderer';
+type Tab = 'pages' | 'contents' | 'renderer' | 'theme';
 
 const getInitialTab = (): Tab => {
   const path = window.location.pathname;
   if (path.startsWith('/content')) return 'contents';
   if (path.startsWith('/renderer')) return 'renderer';
+  if (path.startsWith('/theme')) return 'theme';
   return 'pages';
 };
 
@@ -69,7 +71,7 @@ const TabNav: React.FC<TabNavProps> = ({ activeTab, onChange }) => (
       padding: '0 24px',
     }}
   >
-    {(['pages', 'contents', 'renderer'] as Tab[]).map((tab) => (
+    {(['pages', 'contents', 'renderer', 'theme'] as Tab[]).map((tab) => (
       <button
         key={tab}
         onClick={() => onChange(tab)}
@@ -312,6 +314,7 @@ const App: React.FC = () => {
       <div style={{ flex: 1, overflow: 'hidden', minHeight: 0 }}>
         {activeTab === 'pages' && <PageManager {...sharedProps} parentUrl="/" />}
         {activeTab === 'contents' && <ContentManager {...sharedProps} parentUrl="/" />}
+        {activeTab === 'theme' && <ThemeManager {...sharedProps}  />}
         {activeTab === 'renderer' && (
           <RendererPanel
             baseURL={BASE_URL}
