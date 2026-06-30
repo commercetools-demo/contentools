@@ -16,6 +16,7 @@ import {
   defaultPuckConfig,
   EditorToolbar,
   nimbusFieldTypes,
+  PropertiesResizer,
   UnsavedChangesDialog,
   useDirtyState,
 } from '@commercetools-demo/puck-editor';
@@ -640,6 +641,7 @@ const ContentEditorRoute: React.FC<ContentEditorRouteProps> = ({ config, backBut
               }}
             />
           </ComponentSearchProvider>
+          <PropertiesResizer />
         </div>
       </div>
       <UnsavedChangesDialog

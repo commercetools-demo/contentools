@@ -65,3 +65,7 @@ export {
 
 // Nimbus-styled field-type overrides (text/textarea/select/radio inputs)
 export { nimbusFieldTypes } from './overrides/NimbusFieldTypes';
+
+// Draggable resize handle for the properties (right) panel
+export { PropertiesResizer } from './overrides/PropertiesResizer';
+export type { PropertiesResizerProps } from './overrides/PropertiesResizer';

@@ -162,6 +162,33 @@ export const ComponentsPanel: React.FC<{ children: ReactNode }> = ({ children })
           inset: 0 !important;
           height: auto !important;
         }
+        /* Resizable properties (right) panel: override only the last grid track
+           with a user-controlled width var (set by PropertiesResizer), falling
+           back to Puck's default sidebar width. Two states: both panels open,
+           and right-only (left collapsed). */
+        .puck-editor-fill [class*="PuckLayout--leftSideBarVisible"][class*="PuckLayout--rightSideBarVisible"] [class*="PuckLayout-inner"] {
+          grid-template-columns: var(--puck-side-bar-width) var(--puck-frame-width) var(--puck-properties-width, var(--puck-side-bar-width)) !important;
+        }
+        .puck-editor-fill [class*="PuckLayout--rightSideBarVisible"]:not([class*="PuckLayout--leftSideBarVisible"]) [class*="PuckLayout-inner"] {
+          grid-template-columns: 0 var(--puck-frame-width) var(--puck-properties-width, var(--puck-side-bar-width)) !important;
+        }
+        /* Drag handle on the panel's left edge. */
+        .puck-props-resizer::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          left: 3px;
+          width: 1px;
+          background: var(--puck-color-grey-09, #e2e2e2);
+          transition: background-color 0.12s, width 0.12s, left 0.12s;
+        }
+        .puck-props-resizer:hover::before,
+        .puck-props-resizer:active::before {
+          left: 2px;
+          width: 3px;
+          background: var(--puck-color-azure-07, #1a73e8);
+        }
       `}</style>
 
       {/* Tab bar */}
