@@ -10,6 +10,7 @@ import {
   ComponentsPanel,
   ComponentItemFilter,
   EditorToolbar,
+  useDirtyState,
 } from '@commercetools-demo/puck-editor';
 import {
   VersionHistoryProvider,
@@ -54,8 +55,9 @@ const ContentEditorInner: React.FC<ContentEditorInnerProps> = ({
   } = usePuckContent(contentKey);
 
   const latestDataRef = useRef<Data | null>(null);
-  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [isApplyingVersion, setIsApplyingVersion] = useState(false);
+  // Bumped on revert so the Puck canvas remounts and re-reads the restored data.
+  const [reloadNonce, setReloadNonce] = useState(0);
 
   // Current live data (draft preferred, fallback to content value)
   const currentData: PuckData =
@@ -82,46 +84,55 @@ const ContentEditorInner: React.FC<ContentEditorInnerProps> = ({
   const isPreviewingRef = useRef(false);
   isPreviewingRef.current = versionHistory.isPreviewingHistory;
 
+  // Unsaved-changes tracking — keyed so a new content item / version / revert
+  // gets a fresh baseline (and ignores Puck's normalising onChange on mount).
+  const canvasKey = `${contentKey}:${versionHistory.selectedVersionId ?? 'current'}:${reloadNonce}`;
+  const { isDirty: hasUnsavedChanges, markChange, markSaved } =
+    useDirtyState(canvasKey);
+
   // -------------------------------------------------------------------------
   // Normal editor handlers
   // -------------------------------------------------------------------------
 
-  const handleChange = useCallback((data: Data) => {
-    if (isPreviewingRef.current) return;
-    latestDataRef.current = data;
-    setHasUnsavedChanges(true);
-  }, []);
+  const handleChange = useCallback(
+    (data: Data) => {
+      if (isPreviewingRef.current) return;
+      latestDataRef.current = data;
+      markChange(data);
+    },
+    [markChange]
+  );
 
   const handleSave = useCallback(async () => {
     const data = latestDataRef.current;
     if (!data) return;
     try {
       await saveDraft(data as PuckData);
-      setHasUnsavedChanges(false);
+      markSaved(data);
       onSave?.(data as PuckData);
     } catch (err) {
       onError?.(err as Error);
     }
-  }, [saveDraft, onSave, onError]);
+  }, [saveDraft, onSave, onError, markSaved]);
 
   const handlePublish = useCallback(
     async (data: Data) => {
       try {
         await saveDraft(data as PuckData);
-        setHasUnsavedChanges(false);
+        markSaved(data);
         await publish(false);
         onPublish?.(data as PuckData);
       } catch (err) {
         onError?.(err as Error);
       }
     },
-    [saveDraft, publish, onPublish, onError]
+    [saveDraft, publish, onPublish, onError, markSaved]
   );
 
   const handleRevert = useCallback(async () => {
     try {
       await revertToPublished();
-      setHasUnsavedChanges(false);
+      setReloadNonce((n) => n + 1);
     } catch (err) {
       onError?.(err as Error);
     }
@@ -137,7 +148,7 @@ const ContentEditorInner: React.FC<ContentEditorInnerProps> = ({
     setIsApplyingVersion(true);
     try {
       await saveDraft(versionData);
-      setHasUnsavedChanges(false);
+      markSaved(versionData);
       onSave?.(versionData);
       versionHistory.clearSelection();
     } catch (err) {
@@ -145,7 +156,7 @@ const ContentEditorInner: React.FC<ContentEditorInnerProps> = ({
     } finally {
       setIsApplyingVersion(false);
     }
-  }, [versionHistory, saveDraft, onSave, onError]);
+  }, [versionHistory, saveDraft, onSave, onError, markSaved]);
 
   // -------------------------------------------------------------------------
   // Content-specific Puck config: inject title + slot root fields
@@ -213,15 +224,22 @@ const ContentEditorInner: React.FC<ContentEditorInnerProps> = ({
     >
       <ComponentSearchProvider>
         <Puck
-          key={versionHistory.selectedVersionId ?? 'current'}
+          key={`${versionHistory.selectedVersionId ?? 'current'}:${reloadNonce}`}
           config={contentConfig}
           data={activeData as Data}
           onChange={handleChange}
           onPublish={handlePublish}
           overrides={{
-            headerActions: () =>
+            header: () =>
               versionHistory.isPreviewingHistory ? (
-                <Stack direction="row" gap="200" alignItems="center">
+                <Stack
+                  gridArea="header"
+                  direction="row"
+                  gap="200"
+                  alignItems="center"
+                  justifyContent="flex-end"
+                  padding="200"
+                >
                   <VersionPreviewBanner
                     timestamp={versionHistory.selectedVersion!.timestamp}
                     onApply={() => void handleApplyVersion()}
@@ -232,6 +250,7 @@ const ContentEditorInner: React.FC<ContentEditorInnerProps> = ({
                 </Stack>
               ) : (
                 <EditorToolbar
+                  title={content?.name ?? 'Content'}
                   saving={saving}
                   isDirty={hasUnsavedChanges}
                   states={toolbarStates}

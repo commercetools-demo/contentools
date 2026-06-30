@@ -1,4 +1,4 @@
-import React, { useState, type ReactNode } from 'react';
+import React, { useCallback, useState, type ReactNode } from 'react';
 import {
   BrowserRouter,
   Switch,
@@ -12,7 +12,11 @@ import {
   usePuckPages,
   usePuckApiContext,
 } from '@commercetools-demo/puck-api';
-import { PuckEditor, defaultPuckConfig } from '@commercetools-demo/puck-editor';
+import {
+  PuckEditor,
+  UnsavedChangesDialog,
+  defaultPuckConfig,
+} from '@commercetools-demo/puck-editor';
 import { PuckRenderer } from '@commercetools-demo/puck-renderer';
 import { EnsureIntlProvider } from './EnsureIntlProvider';
 import { EnsureNimbusProvider } from './EnsureNimbusProvider';
@@ -36,7 +40,7 @@ import {
   TextInput,
   type DataTableColumnItem,
 } from '@commercetools/nimbus';
-import { Add, ChevronLeft } from '@commercetools/nimbus-icons';
+import { Add, ChevronLeft, Close } from '@commercetools/nimbus-icons';
 
 // ---------------------------------------------------------------------------
 // Status badge
@@ -330,12 +334,31 @@ const PageEditorRoute: React.FC<RouteProps> = ({ config, backButton }) => {
   const pageName =
     (location.state as { pageName?: string } | null)?.pageName ?? pageKey ?? 'Page';
 
+  // Unsaved-changes navigation guard. `pendingNav` holds the deferred
+  // navigation until the user confirms in the Nimbus dialog.
+  const [isDirty, setIsDirty] = useState(false);
+  const [pendingNav, setPendingNav] = useState<(() => void) | null>(null);
+
+  const guardedNavigate = useCallback(
+    (navFn: () => void) => {
+      if (isDirty) {
+        setPendingNav(() => navFn);
+      } else {
+        navFn();
+      }
+    },
+    [isDirty]
+  );
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       <div style={NAV_BAR_STYLE}>
         {backButton}
         {backButton && <Text color="neutral.11">/</Text>}
-        <Button variant="ghost" onPress={() => history.push('/')}>
+        <Button
+          variant="ghost"
+          onPress={() => guardedNavigate(() => history.push('/'))}
+        >
           <Icon as={ChevronLeft} /> Pages
         </Button>
         <Text color="neutral.11">/</Text>
@@ -350,9 +373,22 @@ const PageEditorRoute: React.FC<RouteProps> = ({ config, backButton }) => {
           locale={locale}
           pageKey={pageKey!}
           config={config}
+          onDirtyChange={setIsDirty}
+          onPreview={() =>
+            guardedNavigate(() =>
+              history.push(`/${pageKey}/preview`, { pageName })
+            )
+          }
           onError={(err: Error) => { console.error('[PageManager] editor error:', err); }}
         />
       </div>
+      <UnsavedChangesDialog
+        isOpen={pendingNav !== null}
+        onOpenChange={(open) => {
+          if (!open) setPendingNav(null);
+        }}
+        onConfirm={() => pendingNav?.()}
+      />
     </div>
   );
 };
@@ -379,6 +415,11 @@ const PagePreviewRoute: React.FC<RouteProps> = ({ config, backButton }) => {
         <Text color="neutral.11">/</Text>
         <Text fontWeight="bold">{pageName}</Text>
         <Badge colorPalette="primary" size="xs">Preview</Badge>
+        <div style={{ marginLeft: 'auto' }}>
+          <Button variant="outline" size="xs" onPress={() => history.goBack()}>
+            <Icon as={Close} /> Close preview
+          </Button>
+        </div>
       </div>
       <PuckRenderer pageKey={pageKey} mode="preview" config={config} />
     </div>

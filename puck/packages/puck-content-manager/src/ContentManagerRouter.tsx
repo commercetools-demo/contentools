@@ -15,7 +15,10 @@ import {
   ComponentItemFilter,
   defaultPuckConfig,
   EditorToolbar,
+  UnsavedChangesDialog,
+  useDirtyState,
 } from '@commercetools-demo/puck-editor';
+import { PuckRenderer } from '@commercetools-demo/puck-renderer';
 import {
   VersionHistoryProvider,
   VersionHistoryButton,
@@ -55,7 +58,7 @@ import {
   TextInput,
   type DataTableColumnItem,
 } from '@commercetools/nimbus';
-import { Add, ChevronLeft, Search } from '@commercetools/nimbus-icons';
+import { Add, ChevronLeft, Close, Search } from '@commercetools/nimbus-icons';
 
 // ---------------------------------------------------------------------------
 // Nav bar style
@@ -343,8 +346,11 @@ const ContentEditorRoute: React.FC<ContentEditorRouteProps> = ({ config, backBut
   } = usePuckContent(contentKey!);
 
   const latestDataRef = useRef<Data | null>(null);
-  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [isApplyingVersion, setIsApplyingVersion] = useState(false);
+  // Bumped on revert so the Puck canvas remounts and re-reads the restored data.
+  const [reloadNonce, setReloadNonce] = useState(0);
+  // Deferred navigation while the unsaved-changes dialog is open.
+  const [pendingNav, setPendingNav] = useState<(() => void) | null>(null);
 
   const currentData: PuckData =
     states.draft?.data ??
@@ -361,40 +367,60 @@ const ContentEditorRoute: React.FC<ContentEditorRouteProps> = ({ config, backBut
   const isPreviewingRef = useRef(false);
   isPreviewingRef.current = versionHistory.isPreviewingHistory;
 
-  const handleChange = useCallback((data: Data) => {
-    if (isPreviewingRef.current) return;
-    latestDataRef.current = data;
-    setHasUnsavedChanges(true);
-  }, []);
+  // Unsaved-changes tracking — keyed so a new content item / version / revert
+  // gets a fresh baseline (and ignores Puck's normalising onChange on mount).
+  const canvasKey = `${contentKey}:${versionHistory.selectedVersionId ?? 'current'}:${reloadNonce}`;
+  const { isDirty: hasUnsavedChanges, markChange, markSaved } =
+    useDirtyState(canvasKey);
+
+  const guardedNavigate = useCallback(
+    (navFn: () => void) => {
+      if (hasUnsavedChanges) {
+        setPendingNav(() => navFn);
+      } else {
+        navFn();
+      }
+    },
+    [hasUnsavedChanges]
+  );
+
+  const handleChange = useCallback(
+    (data: Data) => {
+      if (isPreviewingRef.current) return;
+      latestDataRef.current = data;
+      markChange(data);
+    },
+    [markChange]
+  );
 
   const handleSave = useCallback(async () => {
     const data = latestDataRef.current;
     if (!data) return;
     try {
       await saveDraft(data as PuckData);
-      setHasUnsavedChanges(false);
+      markSaved(data);
     } catch (err) {
       console.error('[ContentManagerRouter] save error:', err);
     }
-  }, [saveDraft]);
+  }, [saveDraft, markSaved]);
 
   const handlePublish = useCallback(
     async (data: Data) => {
       try {
         await saveDraft(data as PuckData);
-        setHasUnsavedChanges(false);
+        markSaved(data);
         await publish(false);
       } catch (err) {
         console.error('[ContentManagerRouter] publish error:', err);
       }
     },
-    [saveDraft, publish]
+    [saveDraft, publish, markSaved]
   );
 
   const handleRevert = useCallback(async () => {
     try {
       await revertToPublished();
-      setHasUnsavedChanges(false);
+      setReloadNonce((n) => n + 1);
     } catch (err) {
       console.error('[ContentManagerRouter] revert error:', err);
     }
@@ -406,14 +432,14 @@ const ContentEditorRoute: React.FC<ContentEditorRouteProps> = ({ config, backBut
     setIsApplyingVersion(true);
     try {
       await saveDraft(versionData);
-      setHasUnsavedChanges(false);
+      markSaved(versionData);
       versionHistory.clearSelection();
     } catch (err) {
       console.error('[ContentManagerRouter] apply version error:', err);
     } finally {
       setIsApplyingVersion(false);
     }
-  }, [versionHistory, saveDraft]);
+  }, [versionHistory, saveDraft, markSaved]);
 
   const contentConfig = useMemo((): Config => {
     const otherRootFields = Object.fromEntries(
@@ -476,7 +502,10 @@ const ContentEditorRoute: React.FC<ContentEditorRouteProps> = ({ config, backBut
         <div style={NAV_BAR_STYLE}>
           {backButton}
           {backButton && <Text color="neutral.11">/</Text>}
-          <Button variant="ghost" onPress={() => history.push('/')}>
+          <Button
+            variant="ghost"
+            onPress={() => guardedNavigate(() => history.push('/'))}
+          >
             <Icon as={ChevronLeft} /> Content Items
           </Button>
           <Text color="neutral.11">/</Text>
@@ -485,15 +514,22 @@ const ContentEditorRoute: React.FC<ContentEditorRouteProps> = ({ config, backBut
         <div style={{ flex: 1, overflow: 'hidden' }}>
           <ComponentSearchProvider>
             <Puck
-              key={versionHistory.selectedVersionId ?? 'current'}
+              key={`${versionHistory.selectedVersionId ?? 'current'}:${reloadNonce}`}
               config={contentConfig}
               data={activeData as Data}
               onChange={handleChange}
               onPublish={handlePublish}
               overrides={{
-                headerActions: () =>
+                header: () =>
                   versionHistory.isPreviewingHistory ? (
-                    <Stack direction="row" gap="200" alignItems="center">
+                    <Stack
+                      gridArea="header"
+                      direction="row"
+                      gap="200"
+                      alignItems="center"
+                      justifyContent="flex-end"
+                      padding="200"
+                    >
                       <VersionPreviewBanner
                         timestamp={versionHistory.selectedVersion!.timestamp}
                         onApply={() => void handleApplyVersion()}
@@ -504,12 +540,18 @@ const ContentEditorRoute: React.FC<ContentEditorRouteProps> = ({ config, backBut
                     </Stack>
                   ) : (
                     <EditorToolbar
+                      title={content?.name ?? contentName}
                       saving={saving}
                       isDirty={hasUnsavedChanges}
                       states={toolbarStates}
                       onSave={() => void handleSave()}
                       onPublish={() => void handlePublish(activeData as Data)}
                       onRevert={() => void handleRevert()}
+                      onPreview={() =>
+                        guardedNavigate(() =>
+                          history.push(`/${contentKey}/preview`, { contentName })
+                        )
+                      }
                       showPublishButton
                     />
                   ),
@@ -527,7 +569,52 @@ const ContentEditorRoute: React.FC<ContentEditorRouteProps> = ({ config, backBut
           </ComponentSearchProvider>
         </div>
       </div>
+      <UnsavedChangesDialog
+        isOpen={pendingNav !== null}
+        onOpenChange={(open) => {
+          if (!open) setPendingNav(null);
+        }}
+        onConfirm={() => pendingNav?.()}
+      />
     </VersionHistoryProvider>
+  );
+};
+
+// ---------------------------------------------------------------------------
+// ContentPreviewRoute
+// ---------------------------------------------------------------------------
+
+const ContentPreviewRoute: React.FC<ContentEditorRouteProps> = ({ config, backButton }) => {
+  const { contentKey } = useParams<{ contentKey: string }>();
+  const history = useHistory();
+  const location = useLocation();
+  const contentName =
+    (location.state as { contentName?: string } | null)?.contentName ?? contentKey ?? 'Content';
+
+  return (
+    <div>
+      <div style={NAV_BAR_STYLE}>
+        {backButton}
+        {backButton && <Text color="neutral.11">/</Text>}
+        <Button variant="ghost" onPress={() => history.push('/')}>
+          <Icon as={ChevronLeft} /> Content Items
+        </Button>
+        <Text color="neutral.11">/</Text>
+        <Button
+          variant="ghost"
+          onPress={() => history.push(`/${contentKey}`, { contentName })}
+        >
+          {contentName}
+        </Button>
+        <Badge colorPalette="primary" size="xs">Preview</Badge>
+        <div style={{ marginLeft: 'auto' }}>
+          <Button variant="outline" size="xs" onPress={() => history.goBack()}>
+            <Icon as={Close} /> Close preview
+          </Button>
+        </div>
+      </div>
+      <PuckRenderer type="content" contentKey={contentKey} mode="preview" config={config} />
+    </div>
   );
 };
 
@@ -553,6 +640,12 @@ const ContentManagerRouterInner: React.FC<ContentManagerRouterInnerProps> = ({
       render={() => (
         <ContentListRoute defaultContentType={defaultContentType} backButton={backButton} />
       )}
+    />
+    {/* Preview must precede the catch-all editor route ("/:contentKey" also
+        matches "/:contentKey/preview" because it is not exact). */}
+    <Route
+      path="/:contentKey/preview"
+      render={() => <ContentPreviewRoute config={config} backButton={backButton} />}
     />
     <Route
       path="/:contentKey"

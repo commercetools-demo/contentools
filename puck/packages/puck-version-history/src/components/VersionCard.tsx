@@ -36,7 +36,7 @@ export const VersionCard: React.FC<VersionCardProps> = ({
         {formatted}
       </Text>
       {isCurrent && (
-        <Badge colorPalette="positive" size="xs">current</Badge>
+        <Badge colorPalette="positive" size="2xs">current</Badge>
       )}
     </Button>
   );

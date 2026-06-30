@@ -7,7 +7,8 @@ import React, {
   type ReactNode,
 } from 'react';
 import { usePuck } from '@measured/puck';
-import { TextInput } from '@commercetools/nimbus';
+import { IconButton, TextInput } from '@commercetools/nimbus';
+import { Close } from '@commercetools/nimbus-icons';
 import {
   useVersionHistoryContext,
   VersionHistorySidebarContent,
@@ -140,8 +141,12 @@ export const ComponentsPanel: React.FC<{ children: ReactNode }> = ({ children })
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-      {/* Remove hidden DrawerItem wrappers from the flex layout */}
-      <style>{`[data-puck-dnd] > div:has([data-hidden-component]) { display: none !important; }`}</style>
+      {/* Remove hidden DrawerItem wrappers from the flex layout, and tighten the
+          vertical padding on each draggable component for a denser list. */}
+      <style>{`
+        [data-puck-dnd] > div:has([data-hidden-component]) { display: none !important; }
+        [class*="DrawerItem-draggable"] { padding-top: 6px !important; padding-bottom: 6px !important; }
+      `}</style>
 
       {/* Tab bar */}
       <div
@@ -199,43 +204,26 @@ export const ComponentsPanel: React.FC<{ children: ReactNode }> = ({ children })
             >
               Search components
             </label>
-            <div style={{ position: 'relative' }}>
-              <TextInput
-                id="puck-component-search"
-                placeholder="Search components…"
-                value={search}
-                onChange={(value) => setSearch(value)}
-              />
-              {search !== '' && (
-                <button
-                  type="button"
-                  aria-label="Clear search"
-                  title="Clear search"
-                  onClick={() => setSearch('')}
-                  style={{
-                    position: 'absolute',
-                    top: '50%',
-                    right: 8,
-                    transform: 'translateY(-50%)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    width: 18,
-                    height: 18,
-                    padding: 0,
-                    border: 'none',
-                    borderRadius: '50%',
-                    background: 'var(--puck-color-grey-05, #d1d5db)',
-                    color: 'var(--puck-color-grey-11, #4b5563)',
-                    cursor: 'pointer',
-                    fontSize: 13,
-                    lineHeight: 1,
-                  }}
-                >
-                  ×
-                </button>
-              )}
-            </div>
+            <TextInput
+              id="puck-component-search"
+              placeholder="Search components…"
+              value={search}
+              onChange={(value) => setSearch(value)}
+              width="100%"
+              trailingElement={
+                search !== '' ? (
+                  <IconButton
+                    aria-label="Clear search"
+                    variant="ghost"
+                    colorPalette="neutral"
+                    size="2xs"
+                    onPress={() => setSearch('')}
+                  >
+                    <Close />
+                  </IconButton>
+                ) : undefined
+              }
+            />
           </div>
 
           {/* Scrollable component list */}

@@ -48,6 +48,14 @@ export * from './components/cms';
 export { EditorToolbar } from './toolbar/EditorToolbar';
 export type { EditorToolbarProps } from './toolbar/EditorToolbar';
 
+// Unsaved-changes navigation guard dialog (Nimbus)
+export { UnsavedChangesDialog } from './toolbar/UnsavedChangesDialog';
+export type { UnsavedChangesDialogProps } from './toolbar/UnsavedChangesDialog';
+
+// Dirty-state tracking hook (skips Puck's normalising mount onChange)
+export { useDirtyState } from './hooks/useDirtyState';
+export type { DirtyState } from './hooks/useDirtyState';
+
 // Puck overrides — component search panel and filter (reusable in any Puck editor)
 export {
   ComponentSearchProvider,

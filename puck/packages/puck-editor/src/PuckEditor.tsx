@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Puck, type Config, type Data } from '@measured/puck';
 import '@measured/puck/puck.css';
 import { PuckApiProvider, usePuckPage } from '@commercetools-demo/puck-api';
@@ -14,6 +14,7 @@ import {
 } from '@commercetools-demo/puck-version-history';
 import { defaultPuckConfig } from './config/defaultPuckConfig';
 import { EditorToolbar } from './toolbar/EditorToolbar';
+import { useDirtyState } from './hooks/useDirtyState';
 import {
   ComponentSearchProvider,
   ComponentsPanel,
@@ -32,6 +33,10 @@ interface PuckEditorInnerProps {
   onPublish?: (puckData: PuckData) => void;
   onSave?: (puckData: PuckData) => void;
   onError?: (error: Error) => void;
+  /** Opens the preview view; when omitted the Preview button is hidden. */
+  onPreview?: () => void;
+  /** Notifies the host when the unsaved-changes state flips (for nav guards). */
+  onDirtyChange?: (isDirty: boolean) => void;
   showPublishButton: boolean;
   autoSaveDebounceMs: number;
 }
@@ -42,6 +47,8 @@ const PuckEditorInner: React.FC<PuckEditorInnerProps> = ({
   onPublish,
   onSave,
   onError,
+  onPreview,
+  onDirtyChange,
   showPublishButton,
   autoSaveDebounceMs: _autoSaveDebounceMs,
 }) => {
@@ -59,8 +66,9 @@ const PuckEditorInner: React.FC<PuckEditorInnerProps> = ({
   } = usePuckPage(pageKey);
 
   const latestDataRef = useRef<Data | null>(null);
-  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [isApplyingVersion, setIsApplyingVersion] = useState(false);
+  // Bumped on revert so the Puck canvas remounts and re-reads the restored data.
+  const [reloadNonce, setReloadNonce] = useState(0);
 
   // Current live data (draft preferred, fallback to page value)
   const currentData: PuckData =
@@ -77,6 +85,17 @@ const PuckEditorInner: React.FC<PuckEditorInnerProps> = ({
     currentData,
   });
 
+  // Unsaved-changes tracking — keyed so a new page / version / revert gets a
+  // fresh baseline (and ignores Puck's normalising onChange on mount).
+  const canvasKey = `${pageKey}:${versionHistory.selectedVersionId ?? 'current'}:${reloadNonce}`;
+  const { isDirty: hasUnsavedChanges, markChange, markSaved } =
+    useDirtyState(canvasKey);
+
+  // Surface the dirty flag to the host (page-manager) for its nav guard.
+  useEffect(() => {
+    onDirtyChange?.(hasUnsavedChanges);
+  }, [hasUnsavedChanges, onDirtyChange]);
+
   // Diff between selected historical version and current draft
   const diff = useVersionDiff(
     versionHistory.previewData,
@@ -91,23 +110,26 @@ const PuckEditorInner: React.FC<PuckEditorInnerProps> = ({
   // Normal editor handlers
   // -------------------------------------------------------------------------
 
-  const handleChange = useCallback((data: Data) => {
-    if (isPreviewingRef.current) return;
-    latestDataRef.current = data;
-    setHasUnsavedChanges(true);
-  }, []);
+  const handleChange = useCallback(
+    (data: Data) => {
+      if (isPreviewingRef.current) return;
+      latestDataRef.current = data;
+      markChange(data);
+    },
+    [markChange]
+  );
 
   const handleSave = useCallback(async () => {
     const data = latestDataRef.current;
     if (!data) return;
     try {
       await saveDraft(data as PuckData);
-      setHasUnsavedChanges(false);
+      markSaved(data);
       onSave?.(data as PuckData);
     } catch (err) {
       onError?.(err as Error);
     }
-  }, [saveDraft, onSave, onError]);
+  }, [saveDraft, onSave, onError, markSaved]);
 
   const handlePublish = useCallback(async () => {
     try {
@@ -125,7 +147,9 @@ const PuckEditorInner: React.FC<PuckEditorInnerProps> = ({
   const handleRevert = useCallback(async () => {
     try {
       await revertToPublished();
-      setHasUnsavedChanges(false);
+      // Force the canvas to remount so it shows the restored published data,
+      // and reset the dirty baseline via the changed canvasKey.
+      setReloadNonce((n) => n + 1);
     } catch (err) {
       onError?.(err as Error);
     }
@@ -141,7 +165,7 @@ const PuckEditorInner: React.FC<PuckEditorInnerProps> = ({
     setIsApplyingVersion(true);
     try {
       await saveDraft(versionData);
-      setHasUnsavedChanges(false);
+      markSaved(versionData);
       onSave?.(versionData);
       versionHistory.clearSelection();
     } catch (err) {
@@ -149,7 +173,7 @@ const PuckEditorInner: React.FC<PuckEditorInnerProps> = ({
     } finally {
       setIsApplyingVersion(false);
     }
-  }, [versionHistory, saveDraft, onSave, onError]);
+  }, [versionHistory, saveDraft, onSave, onError, markSaved]);
 
   // -------------------------------------------------------------------------
   // Loading / error states
@@ -206,15 +230,22 @@ const PuckEditorInner: React.FC<PuckEditorInnerProps> = ({
     >
       <ComponentSearchProvider>
         <Puck
-          key={versionHistory.selectedVersionId ?? 'current'}
+          key={`${versionHistory.selectedVersionId ?? 'current'}:${reloadNonce}`}
           config={config}
           data={activeData as Data}
           onChange={handleChange}
           onPublish={() => void handlePublish()}
           overrides={{
-            headerActions: () =>
+            header: () =>
               versionHistory.isPreviewingHistory ? (
-                <Stack direction="row" gap="200" alignItems="center">
+                <Stack
+                  gridArea="header"
+                  direction="row"
+                  gap="200"
+                  alignItems="center"
+                  justifyContent="flex-end"
+                  padding="200"
+                >
                   <VersionPreviewBanner
                     timestamp={versionHistory.selectedVersion!.timestamp}
                     onApply={() => void handleApplyVersion()}
@@ -225,12 +256,14 @@ const PuckEditorInner: React.FC<PuckEditorInnerProps> = ({
                 </Stack>
               ) : (
                 <EditorToolbar
+                  title={page?.name ?? pageKey}
                   saving={saving}
                   isDirty={hasUnsavedChanges}
                   states={states}
                   onSave={() => void handleSave()}
                   onPublish={() => void handlePublish()}
                   onRevert={() => void handleRevert()}
+                  onPreview={onPreview}
                   showPublishButton={showPublishButton}
                 />
               ),
@@ -279,6 +312,10 @@ export interface PuckEditorProps {
   onSave?: (puckData: PuckData) => void;
   /** Called when an error occurs */
   onError?: (error: Error) => void;
+  /** Opens the preview view; when omitted the toolbar Preview button is hidden. */
+  onPreview?: () => void;
+  /** Notifies the host when the unsaved-changes state flips (for nav guards). */
+  onDirtyChange?: (isDirty: boolean) => void;
   /** Show the Publish button in the toolbar. Default: true */
   showPublishButton?: boolean;
   /** Debounce delay for auto-save in ms. Default: 1500 */
@@ -296,6 +333,8 @@ export const PuckEditor: React.FC<PuckEditorProps> = ({
   onPublish,
   onSave,
   onError,
+  onPreview,
+  onDirtyChange,
   showPublishButton = true,
   autoSaveDebounceMs = 1500,
 }) => {
@@ -314,6 +353,8 @@ export const PuckEditor: React.FC<PuckEditorProps> = ({
           onPublish={onPublish}
           onSave={onSave}
           onError={onError}
+          onPreview={onPreview}
+          onDirtyChange={onDirtyChange}
           showPublishButton={showPublishButton}
           autoSaveDebounceMs={autoSaveDebounceMs}
         />
