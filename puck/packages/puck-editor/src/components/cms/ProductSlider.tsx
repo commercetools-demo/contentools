@@ -2,15 +2,24 @@ import React from 'react';
 import { type ComponentConfig } from '@measured/puck';
 import { useDatasource } from '@commercetools-demo/puck-api';
 import { DatasourceField, type DatasourceValue } from '../../fields/DatasourceField';
-import { formatPrice, getFirstPrice, getLocalizedText, getProductImage, getProductSlug } from './shared';
+import {
+  formatPrice,
+  getFirstPrice,
+  getLocalizedText,
+  getProductImage,
+  productLinkDefaults,
+  productLinkFields,
+  resolveProductLink,
+  type ProductLinkProps,
+} from './shared';
 
-export interface ProductSliderProps {
+export interface ProductSliderProps extends ProductLinkProps {
   title: string;
   subtitle: string;
   products: DatasourceValue;
 }
 
-const ProductSliderRender: React.FC<ProductSliderProps> = ({ title, subtitle, products }) => {
+const ProductSliderRender: React.FC<ProductSliderProps> = ({ title, subtitle, products, linkWith, baseUrl }) => {
   const hasPreResolved = products?.resolvedData != null;
   const { data: fetchedData, loading } = useDatasource(
     hasPreResolved ? undefined : products?.type,
@@ -47,11 +56,10 @@ const ProductSliderRender: React.FC<ProductSliderProps> = ({ title, subtitle, pr
             const desc = getLocalizedText((product as any)?.description);
             const imageUrl = getProductImage(product);
             const priceVal = getFirstPrice(product);
-            const slug = getProductSlug(product);
             return (
               <a
                 key={(product as any)?.id ?? i}
-                href={slug}
+                href={resolveProductLink(product, linkWith, baseUrl)}
                 style={{
                   flex: '0 0 280px',
                   background: 'white',
@@ -100,11 +108,13 @@ export const ProductSlider: ComponentConfig<ProductSliderProps> = {
       type: 'custom', label: 'Products',
       render: ({ value, onChange }) => <DatasourceField value={value} onChange={onChange} />,
     },
+    ...productLinkFields,
   },
   defaultProps: {
     title: '',
     subtitle: '',
     products: { type: 'products-by-sku', skus: [''] },
+    ...productLinkDefaults,
   },
   render: (props) => <ProductSliderRender {...props} />,
 };

@@ -2,12 +2,18 @@ import React from 'react';
 import { type ComponentConfig } from '@measured/puck';
 import { useDatasource } from '@commercetools-demo/puck-api';
 import { DatasourceField, type DatasourceValue } from '../fields/DatasourceField';
+import {
+  productLinkDefaults,
+  productLinkFields,
+  resolveProductLink,
+  type ProductLinkProps,
+} from './cms/shared';
 
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
 
-export interface ProductTeaserProps {
+export interface ProductTeaserProps extends ProductLinkProps {
   datasource: DatasourceValue;
   richText: string;
 }
@@ -47,6 +53,8 @@ const formatPrice = (
 const ProductTeaserRender: React.FC<ProductTeaserProps> = ({
   datasource,
   richText,
+  linkWith,
+  baseUrl,
 }) => {
   // Skip the hook fetch when the server has already pre-resolved the data.
   const hasPreResolved = datasource?.resolvedData != null;
@@ -67,6 +75,7 @@ const ProductTeaserRender: React.FC<ProductTeaserProps> = ({
   const imageUrl = product?.masterVariant?.images?.[0]?.url;
   const priceValue = product?.masterVariant?.prices?.[0]?.value;
   const productName = getLocalizedName(product?.name);
+  const href = product ? resolveProductLink(product, linkWith, baseUrl) : undefined;
 
   return (
     <div
@@ -97,17 +106,19 @@ const ProductTeaserRender: React.FC<ProductTeaserProps> = ({
             Loading…
           </div>
         ) : imageUrl ? (
-          <img
-            src={imageUrl}
-            alt={productName}
-            style={{
-              width: '200px',
-              height: '200px',
-              objectFit: 'cover',
-              borderRadius: '8px',
-              display: 'block',
-            }}
-          />
+          <a href={href} style={{ display: 'block' }}>
+            <img
+              src={imageUrl}
+              alt={productName}
+              style={{
+                width: '200px',
+                height: '200px',
+                objectFit: 'cover',
+                borderRadius: '8px',
+                display: 'block',
+              }}
+            />
+          </a>
         ) : (
           <div
             style={{
@@ -183,10 +194,12 @@ export const ProductTeaser: ComponentConfig<ProductTeaserProps> = {
       type: 'textarea',
       label: 'Rich Text (HTML)',
     },
+    ...productLinkFields,
   },
   defaultProps: {
     datasource: { type: 'product-by-sku', skus: [''] },
     richText: '',
+    ...productLinkDefaults,
   },
   render: (props) => <ProductTeaserRender {...props} />,
 };

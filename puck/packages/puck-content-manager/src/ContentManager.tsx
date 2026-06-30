@@ -9,15 +9,17 @@ import {
   Button,
   Card,
   DataTable,
+  Dialog,
   FormField,
   Icon,
+  IconButton,
   LoadingSpinner,
   Stack,
   Text,
   TextInput,
   type DataTableColumnItem,
 } from '@commercetools/nimbus';
-import { Add, Search } from '@commercetools/nimbus-icons';
+import { Add, Close, Delete, Edit } from '@commercetools/nimbus-icons';
 import { EnsureIntlProvider } from './EnsureIntlProvider';
 import { EnsureNimbusProvider } from './EnsureNimbusProvider';
 
@@ -37,18 +39,18 @@ interface ContentListProps {
 }
 
 const ContentList: React.FC<ContentListProps> = ({ defaultContentType, onEdit }) => {
-  const { contents, loading, error, fetchContents, createContent, deleteContent, refresh } =
+  const { contents, loading, error, createContent, deleteContent } =
     usePuckContents(defaultContentType);
 
-  const [filterType, setFilterType] = useState(defaultContentType ?? '');
+  const [search, setSearch] = useState('');
   const [showCreate, setShowCreate] = useState(false);
   const [createName, setCreateName] = useState('');
   const [createType, setCreateType] = useState(defaultContentType ?? '');
   const [createError, setCreateError] = useState<string | null>(null);
   const [creating, setCreating] = useState(false);
   const [deleting, setDeleting] = useState<string | null>(null);
-
-  const handleFilter = () => void fetchContents(filterType || undefined);
+  // Content item targeted by the (Nimbus) delete-confirmation dialog.
+  const [pendingDelete, setPendingDelete] = useState<PuckContentListItem | null>(null);
 
   const handleCreate = async () => {
     setCreateError(null);
@@ -72,17 +74,26 @@ const ContentList: React.FC<ContentListProps> = ({ defaultContentType, onEdit })
     }
   };
 
-  const handleDelete = async (key: string) => {
-    if (!confirm('Delete this content item and all its versions?')) return;
-    setDeleting(key);
+  const handleDelete = async (item: PuckContentListItem) => {
+    setDeleting(item.key);
     try {
-      await deleteContent(key);
+      await deleteContent(item.key);
+      setPendingDelete(null);
     } finally {
       setDeleting(null);
     }
   };
 
-  const rows: ContentRow[] = contents.map((c) => ({ ...c, id: c.key }));
+  const term = search.trim().toLowerCase();
+  const filteredContents = term
+    ? contents.filter(
+        (c) =>
+          c.value.name.toLowerCase().includes(term) ||
+          c.value.contentType.toLowerCase().includes(term)
+      )
+    : contents;
+
+  const rows: ContentRow[] = filteredContents.map((c) => ({ ...c, id: c.key }));
 
   const columns: DataTableColumnItem<ContentRow>[] = [
     {
@@ -142,17 +153,25 @@ const ContentList: React.FC<ContentListProps> = ({ defaultContentType, onEdit })
       accessor: () => '',
       isSortable: false,
       render: ({ row }) => (
-        <Stack direction="row" gap="200" alignItems="center">
-          <Button variant="solid" size="xs" onPress={() => onEdit(row)}>Edit</Button>
-          <Button
+        <Stack direction="row" gap="100" alignItems="center">
+          <IconButton
+            aria-label={`Edit ${row.value.name}`}
+            variant="ghost"
+            size="xs"
+            onPress={() => onEdit(row)}
+          >
+            <Edit />
+          </IconButton>
+          <IconButton
+            aria-label={`Delete ${row.value.name}`}
             variant="ghost"
             colorPalette="critical"
             size="xs"
             isDisabled={deleting === row.key}
-            onPress={() => void handleDelete(row.key)}
+            onPress={() => setPendingDelete(row)}
           >
-            {deleting === row.key ? '…' : 'Delete'}
-          </Button>
+            <Delete />
+          </IconButton>
         </Stack>
       ),
     },
@@ -213,26 +232,29 @@ const ContentList: React.FC<ContentListProps> = ({ defaultContentType, onEdit })
           </Card.Root>
         )}
 
-        {/* Filter row */}
-        <Stack direction="row" gap="200" alignItems="center">
-          <div style={{ flex: 1, maxWidth: '280px' }}>
-            <TextInput
-              value={filterType}
-              onChange={(v) => setFilterType(v)}
-              placeholder="Filter by content type…"
-            />
-          </div>
-          <Button variant="outline" onPress={handleFilter}>
-            <Icon as={Search} /> Filter
-          </Button>
-          <Button
-            variant="ghost"
-            onPress={() => { setFilterType(''); void fetchContents(undefined); }}
-          >
-            Clear
-          </Button>
-          <Button variant="ghost" onPress={() => void refresh()}>Refresh</Button>
-        </Stack>
+        {/* Search by name or content type */}
+        <div style={{ maxWidth: 360 }}>
+          <TextInput
+            aria-label="Search content"
+            placeholder="Search by name or content type…"
+            value={search}
+            onChange={(v) => setSearch(v)}
+            width="100%"
+            trailingElement={
+              search !== '' ? (
+                <IconButton
+                  aria-label="Clear search"
+                  variant="ghost"
+                  colorPalette="neutral"
+                  size="2xs"
+                  onPress={() => setSearch('')}
+                >
+                  <Close />
+                </IconButton>
+              ) : undefined
+            }
+          />
+        </div>
 
         {error && <Text color="critical.11">{error}</Text>}
 
@@ -249,6 +271,44 @@ const ContentList: React.FC<ContentListProps> = ({ defaultContentType, onEdit })
           <DataTable columns={columns} rows={rows} aria-label="Content items" />
         )}
       </Stack>
+
+      {/* Delete confirmation (Nimbus) */}
+      <Dialog.Root
+        isOpen={pendingDelete !== null}
+        onOpenChange={(open) => {
+          if (!open) setPendingDelete(null);
+        }}
+      >
+        <Dialog.Content>
+          <Dialog.Header>
+            <Dialog.Title>Delete content item?</Dialog.Title>
+            <Dialog.CloseTrigger />
+          </Dialog.Header>
+          <Dialog.Body>
+            <Text>
+              Are you sure you want to delete{' '}
+              <Text as="span" fontWeight="700">
+                {pendingDelete?.value.name}
+              </Text>{' '}
+              and all its versions? This cannot be undone.
+            </Text>
+          </Dialog.Body>
+          <Dialog.Footer>
+            <Button slot="close" variant="outline" isDisabled={deleting !== null}>
+              Cancel
+            </Button>
+            <Button
+              colorPalette="critical"
+              isDisabled={deleting !== null}
+              onPress={() => {
+                if (pendingDelete) void handleDelete(pendingDelete);
+              }}
+            >
+              {deleting !== null ? 'Deleting…' : 'Delete'}
+            </Button>
+          </Dialog.Footer>
+        </Dialog.Content>
+      </Dialog.Root>
     </div>
   );
 };

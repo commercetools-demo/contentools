@@ -2,15 +2,24 @@ import React from 'react';
 import { type ComponentConfig } from '@measured/puck';
 import { useDatasource } from '@commercetools-demo/puck-api';
 import { DatasourceField, type DatasourceValue } from '../../fields/DatasourceField';
-import { formatPrice, getFirstPrice, getLocalizedText, getProductImage, getProductSlug } from './shared';
+import {
+  formatPrice,
+  getFirstPrice,
+  getLocalizedText,
+  getProductImage,
+  productLinkDefaults,
+  productLinkFields,
+  resolveProductLink,
+  type ProductLinkProps,
+} from './shared';
 
-export interface RelatedProductsSliderProps {
+export interface RelatedProductsSliderProps extends ProductLinkProps {
   title: string;
   subtitle: string;
   products: DatasourceValue;
 }
 
-const RelatedProductsRender: React.FC<RelatedProductsSliderProps> = ({ title, subtitle, products }) => {
+const RelatedProductsRender: React.FC<RelatedProductsSliderProps> = ({ title, subtitle, products, linkWith, baseUrl }) => {
   const hasPreResolved = products?.resolvedData != null;
   const { data: fetchedData, loading } = useDatasource(
     hasPreResolved ? undefined : products?.type,
@@ -45,11 +54,10 @@ const RelatedProductsRender: React.FC<RelatedProductsSliderProps> = ({ title, su
             const name = getLocalizedText((product as any)?.name);
             const imageUrl = getProductImage(product);
             const priceVal = getFirstPrice(product);
-            const slug = getProductSlug(product);
             return (
               <a
                 key={(product as any)?.id ?? i}
-                href={slug}
+                href={resolveProductLink(product, linkWith, baseUrl)}
                 style={{
                   flex: '0 0 280px',
                   background: 'white',
@@ -93,11 +101,13 @@ export const RelatedProductsSlider: ComponentConfig<RelatedProductsSliderProps> 
       type: 'custom', label: 'Products',
       render: ({ value, onChange }) => <DatasourceField value={value} onChange={onChange} />,
     },
+    ...productLinkFields,
   },
   defaultProps: {
     title: 'Related Products',
     subtitle: '',
     products: { type: 'products-by-sku', skus: [''] },
+    ...productLinkDefaults,
   },
   render: (props) => <RelatedProductsRender {...props} />,
 };

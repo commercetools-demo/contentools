@@ -1,4 +1,5 @@
 // Shared helpers used across CMS Puck components
+import type { Fields } from '@measured/puck';
 
 export const getLocalizedText = (obj?: Record<string, string> | null): string => {
   if (!obj) return '';
@@ -37,6 +38,76 @@ export const getProductName = (product: unknown): string => {
 export const getProductSlug = (product: unknown): string => {
   const p = product as any;
   return getLocalizedText(p?.slug) || p?.id || '#';
+};
+
+export const getProductSku = (product: unknown): string => {
+  const p = product as any;
+  return p?.masterVariant?.sku ?? '';
+};
+
+/** How a product link is built — from the product slug or its SKU. */
+export type ProductLinkWith = 'slug' | 'sku';
+
+/**
+ * Build a storefront link to a product.
+ *
+ * Joins a sanitised base URL with the product's slug or SKU. The base is
+ * trimmed, stripped of leading/trailing slashes and collapsed of any double
+ * slashes, then re-prefixed with a single "/", e.g.
+ *   resolveProductLink(p, 'sku',  '/product/') → '/product/123'   (sku 123)
+ *   resolveProductLink(p, 'slug', '/slug/p/')  → '/slug/p/test'   (slug "test")
+ */
+export const resolveProductLink = (
+  product: unknown,
+  linkWith: ProductLinkWith = 'slug',
+  baseUrl = '/p'
+): string => {
+  const p = product as any;
+  const slug = getLocalizedText(p?.slug);
+  const sku = getProductSku(product);
+  const id = (p?.id as string) ?? '';
+  // Chosen identifier, falling back to the product id / the other identifier.
+  const identifier = (linkWith === 'sku' ? sku : slug) || id || slug || sku;
+
+  const base =
+    '/' +
+    String(baseUrl ?? '')
+      .trim()
+      .replace(/^\/+|\/+$/g, '')
+      .replace(/\/{2,}/g, '/');
+  const cleanId = String(identifier ?? '')
+    .trim()
+    .replace(/^\/+|\/+$/g, '');
+
+  return (cleanId ? `${base}/${cleanId}` : base).replace(/\/{2,}/g, '/');
+};
+
+/** Props every product-linking component shares. */
+export interface ProductLinkProps {
+  linkWith: ProductLinkWith;
+  baseUrl: string;
+}
+
+/** Puck field definitions for the shared link props — spread into a component's `fields`. */
+export const productLinkFields: Fields<ProductLinkProps> = {
+  linkWith: {
+    type: 'radio',
+    label: 'Link products by',
+    options: [
+      { value: 'slug', label: 'Slug' },
+      { value: 'sku', label: 'SKU' },
+    ],
+  },
+  baseUrl: {
+    type: 'text',
+    label: 'Link base URL',
+  },
+};
+
+/** Default values for the shared link props — spread into a component's defaultProps. */
+export const productLinkDefaults: ProductLinkProps = {
+  linkWith: 'slug',
+  baseUrl: '/p',
 };
 
 // Colour palette shared across components

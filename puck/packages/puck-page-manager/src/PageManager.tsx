@@ -180,12 +180,7 @@ const PageList: React.FC<PageListProps> = ({ backButton }) => {
       id: 'name',
       header: 'Name',
       accessor: (row) => row.value.name,
-      render: ({ row }) => (
-        <Stack direction="column" gap="100">
-          <Text fontWeight="bold">{row.value.name}</Text>
-          <Text fontSize="sm" color="neutral.11">{row.key}</Text>
-        </Stack>
-      ),
+      render: ({ row }) => <Text fontWeight="bold">{row.value.name}</Text>,
     },
     {
       id: 'slug',
@@ -223,7 +218,7 @@ const PageList: React.FC<PageListProps> = ({ backButton }) => {
       header: 'Updated',
       accessor: (row) => row.value.updatedAt,
       render: ({ row }) => (
-        <Text color="neutral.11">
+        <Text fontSize="xs" color="neutral.11">
           {new Date(row.value.updatedAt).toLocaleString()}
         </Text>
       ),

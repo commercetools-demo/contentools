@@ -2,15 +2,24 @@ import React from 'react';
 import { type ComponentConfig } from '@measured/puck';
 import { useDatasource } from '@commercetools-demo/puck-api';
 import { DatasourceField, type DatasourceValue } from '../../fields/DatasourceField';
-import { formatPrice, getFirstPrice, getLocalizedText, getProductImage, getProductSlug } from './shared';
+import {
+  formatPrice,
+  getFirstPrice,
+  getLocalizedText,
+  getProductImage,
+  productLinkDefaults,
+  productLinkFields,
+  resolveProductLink,
+  type ProductLinkProps,
+} from './shared';
 
-export interface CrossSellBlockProps {
+export interface CrossSellBlockProps extends ProductLinkProps {
   title: string;
   products: DatasourceValue;
   ctaText: string;
 }
 
-const CrossSellRender: React.FC<CrossSellBlockProps> = ({ title, products, ctaText }) => {
+const CrossSellRender: React.FC<CrossSellBlockProps> = ({ title, products, ctaText, linkWith, baseUrl }) => {
   const hasPreResolved = products?.resolvedData != null;
   const { data: fetchedData, loading } = useDatasource(
     hasPreResolved ? undefined : products?.type,
@@ -38,11 +47,10 @@ const CrossSellRender: React.FC<CrossSellBlockProps> = ({ title, products, ctaTe
             const name = getLocalizedText((product as any)?.name);
             const imageUrl = getProductImage(product);
             const priceVal = getFirstPrice(product);
-            const slug = getProductSlug(product);
             return (
               <a
                 key={(product as any)?.id ?? i}
-                href={slug}
+                href={resolveProductLink(product, linkWith, baseUrl)}
                 style={{
                   textAlign: 'center',
                   textDecoration: 'none',
@@ -87,11 +95,13 @@ export const CrossSellBlock: ComponentConfig<CrossSellBlockProps> = {
       render: ({ value, onChange }) => <DatasourceField value={value} onChange={onChange} />,
     },
     ctaText: { type: 'text', label: 'CTA Text' },
+    ...productLinkFields,
   },
   defaultProps: {
     title: 'Frequently bought together',
     products: { type: 'products-by-sku', skus: [''] },
     ctaText: '',
+    ...productLinkDefaults,
   },
   render: (props) => <CrossSellRender {...props} />,
 };

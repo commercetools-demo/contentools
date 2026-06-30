@@ -2,9 +2,17 @@ import React from 'react';
 import { type ComponentConfig } from '@measured/puck';
 import { useDatasource } from '@commercetools-demo/puck-api';
 import { DatasourceField, type DatasourceValue } from '../../fields/DatasourceField';
-import { formatPrice, getFirstPrice, getLocalizedText } from './shared';
+import {
+  formatPrice,
+  getFirstPrice,
+  getLocalizedText,
+  productLinkDefaults,
+  productLinkFields,
+  resolveProductLink,
+  type ProductLinkProps,
+} from './shared';
 
-export interface ProductBannerProps {
+export interface ProductBannerProps extends ProductLinkProps {
   title: string;
   description: string;
   ctaText: string;
@@ -15,7 +23,7 @@ export interface ProductBannerProps {
 }
 
 const ProductBannerRender: React.FC<ProductBannerProps> = ({
-  title, description, ctaText, ctaLink, product, productOnLeft, background,
+  title, description, ctaText, ctaLink, product, productOnLeft, background, linkWith, baseUrl,
 }) => {
   const hasPreResolved = product?.resolvedData != null;
   const { data: fetchedData, loading } = useDatasource(
@@ -30,6 +38,7 @@ const ProductBannerRender: React.FC<ProductBannerProps> = ({
   const imageUrl = p?.masterVariant?.images?.[0]?.url;
   const sku = p?.masterVariant?.sku;
   const priceVal = getFirstPrice(p);
+  const productHref = p ? resolveProductLink(p, linkWith, baseUrl) : undefined;
 
   return (
     <div
@@ -76,14 +85,20 @@ const ProductBannerRender: React.FC<ProductBannerProps> = ({
       {/* Product side */}
       <div style={{ flex: 1, minWidth: '200px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         {loading && <div style={{ color: '#999', padding: '2rem' }}>Loading product…</div>}
-        {name && <h3 style={{ fontSize: '1.5rem', fontWeight: 600, marginBottom: '0.5rem', textAlign: 'center' }}>{name}</h3>}
+        {name && (
+          <a href={productHref} style={{ textDecoration: 'none', color: 'inherit' }}>
+            <h3 style={{ fontSize: '1.5rem', fontWeight: 600, marginBottom: '0.5rem', textAlign: 'center' }}>{name}</h3>
+          </a>
+        )}
         {description2 && <p style={{ fontSize: '0.9rem', color: '#666', textAlign: 'center', marginBottom: '1rem', fontStyle: 'italic' }}>{description2}</p>}
         {imageUrl && (
-          <img
-            src={imageUrl}
-            alt={name || 'Product'}
-            style={{ maxWidth: '100%', maxHeight: '300px', objectFit: 'cover', borderRadius: '2px', marginBottom: '1rem', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
-          />
+          <a href={productHref} style={{ display: 'block', marginBottom: '1rem' }}>
+            <img
+              src={imageUrl}
+              alt={name || 'Product'}
+              style={{ maxWidth: '100%', maxHeight: '300px', objectFit: 'cover', borderRadius: '2px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', display: 'block' }}
+            />
+          </a>
         )}
         {priceVal && (
           <span
@@ -132,6 +147,7 @@ export const ProductBanner: ComponentConfig<ProductBannerProps> = {
       ],
     },
     background: { type: 'text', label: 'Background Color' },
+    ...productLinkFields,
   },
   defaultProps: {
     title: '',
@@ -141,6 +157,7 @@ export const ProductBanner: ComponentConfig<ProductBannerProps> = {
     product: { type: 'product-by-sku', skus: [''] },
     productOnLeft: false,
     background: '#f5f5f5',
+    ...productLinkDefaults,
   },
   render: (props) => <ProductBannerRender {...props} />,
 };

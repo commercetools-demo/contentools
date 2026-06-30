@@ -19,6 +19,22 @@ import {
 } from '../components/cms';
 
 /**
+ * Page content-width scale. `X` is the base column unit; each step doubles up
+ * to a wide layout, and `full` removes the constraint (edge-to-edge).
+ */
+type ContentWidth = 'x' | '2x' | '3x' | '4x' | '5x' | '6x' | 'full';
+
+const CONTENT_WIDTHS: Record<ContentWidth, string> = {
+  x: '256px',
+  '2x': '512px',
+  '3x': '768px',
+  '4x': '1024px',
+  '5x': '1280px',
+  '6x': '1536px',
+  full: '100%',
+};
+
+/**
  * Default Puck configuration with built-in components.
  *
  * Consumers can extend this:
@@ -108,13 +124,30 @@ export const defaultPuckConfig: Config = {
     fields: {
       title: { type: 'text', label: 'Page Title' },
       backgroundColor: { type: 'text', label: 'Background Color (CSS)' },
+      contentWidth: {
+        type: 'select',
+        label: 'Content Width',
+        options: [
+          { label: 'X', value: 'x' },
+          { label: '2X', value: '2x' },
+          { label: '3X', value: '3x' },
+          { label: '4X', value: '4x' },
+          { label: '5X', value: '5x' },
+          { label: '6X', value: '6x' },
+          { label: 'Full width', value: 'full' },
+        ],
+      },
     },
     defaultProps: {
       title: 'New Page',
       backgroundColor: '#ffffff',
+      // Default to full-bleed so existing pages render unchanged.
+      contentWidth: 'full',
     },
-    render: ({ children, backgroundColor }) =>
-      React.createElement(
+    render: ({ children, backgroundColor, contentWidth }) => {
+      const maxWidth = CONTENT_WIDTHS[contentWidth as ContentWidth] ?? '100%';
+      const isConstrained = maxWidth !== '100%';
+      return React.createElement(
         'div',
         {
           style: {
@@ -124,7 +157,22 @@ export const defaultPuckConfig: Config = {
               '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
           },
         },
-        children
-      ),
+        React.createElement(
+          'div',
+          {
+            style: {
+              maxWidth,
+              // Centre the content column and give it breathing room on the
+              // sides when its width is constrained.
+              margin: '0 auto',
+              paddingLeft: isConstrained ? '24px' : undefined,
+              paddingRight: isConstrained ? '24px' : undefined,
+              boxSizing: 'border-box',
+            },
+          },
+          children
+        )
+      );
+    },
   },
 };

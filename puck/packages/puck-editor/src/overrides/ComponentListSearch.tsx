@@ -141,11 +141,15 @@ export const ComponentsPanel: React.FC<{ children: ReactNode }> = ({ children })
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-      {/* Remove hidden DrawerItem wrappers from the flex layout, and tighten the
-          vertical padding on each draggable component for a denser list. */}
+      {/* Remove hidden DrawerItem wrappers from the flex layout, tighten the
+          vertical padding on each draggable component, and trim the wide
+          horizontal padding around the canvas so it gets more width.
+          `PuckCanvas_` (underscore) matches only the outer canvas element, not
+          its `PuckCanvas-*` children. */}
       <style>{`
         [data-puck-dnd] > div:has([data-hidden-component]) { display: none !important; }
         [class*="DrawerItem-draggable"] { padding-top: 6px !important; padding-bottom: 6px !important; }
+        [class*="PuckCanvas_"] { padding-left: 4px !important; padding-right: 4px !important; }
       `}</style>
 
       {/* Tab bar */}
