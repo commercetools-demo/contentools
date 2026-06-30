@@ -469,7 +469,7 @@ export const ImagePickerField: React.FC<ImagePickerFieldProps> = ({
         >
           <img
             src={value}
-            alt=""
+            alt="Selected image preview"
             style={{ width: '48px', height: '48px', objectFit: 'cover', borderRadius: '4px', flexShrink: 0 }}
           />
           <div style={{ flex: 1, minWidth: 0 }}>

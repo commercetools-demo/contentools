@@ -1,9 +1,12 @@
 import React from 'react';
 import type { ComponentConfig } from '@measured/puck';
+import { FONT_SIZE_FIELD } from '../fields/fontSizeField';
 
 export interface HeroProps {
   heading: string;
+  headingFontSize?: string;
   subheading?: string;
+  subheadingFontSize?: string;
   backgroundImage?: string;
   ctaText?: string;
   ctaUrl?: string;
@@ -15,7 +18,9 @@ export const Hero: ComponentConfig<HeroProps> = {
   label: 'Hero',
   fields: {
     heading: { type: 'text', label: 'Heading' },
+    headingFontSize: FONT_SIZE_FIELD('Heading Font Size'),
     subheading: { type: 'textarea', label: 'Subheading' },
+    subheadingFontSize: FONT_SIZE_FIELD('Subheading Font Size'),
     backgroundImage: { type: 'text', label: 'Background Image URL' },
     ctaText: { type: 'text', label: 'CTA Button Text' },
     ctaUrl: { type: 'text', label: 'CTA Button URL' },
@@ -36,7 +41,9 @@ export const Hero: ComponentConfig<HeroProps> = {
   },
   render: ({
     heading,
+    headingFontSize,
     subheading,
+    subheadingFontSize,
     backgroundImage,
     ctaText,
     ctaUrl,
@@ -79,11 +86,11 @@ export const Hero: ComponentConfig<HeroProps> = {
             textAlign: isCenter ? 'center' : 'left',
           }}
         >
-          <h1 style={{ margin: '0 0 16px', fontSize: '2.5rem', fontWeight: 700 }}>
+          <h1 style={{ margin: '0 0 16px', fontSize: headingFontSize || '2.5rem', fontWeight: 700 }}>
             {heading}
           </h1>
           {subheading && (
-            <p style={{ margin: '0 0 24px', fontSize: '1.2rem', opacity: 0.85 }}>
+            <p style={{ margin: '0 0 24px', fontSize: subheadingFontSize || '1.2rem', opacity: 0.85 }}>
               {subheading}
             </p>
           )}

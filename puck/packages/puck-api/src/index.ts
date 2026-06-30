@@ -73,6 +73,12 @@ export { resolveDatasourceApi } from './api/datasource.api';
 export { useDatasource } from './hooks/useDatasource';
 export type { UseDatasourceReturn } from './hooks/useDatasource';
 
+// Product search API & hook (task #4)
+export { searchProductsApi } from './api/products.api';
+export type { ProductSearchResult } from './api/products.api';
+export { useProductSearch } from './hooks/useProductSearch';
+export type { UseProductSearchReturn } from './hooks/useProductSearch';
+
 // Configuration API & hooks
 export {
   getThemeApi,

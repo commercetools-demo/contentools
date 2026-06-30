@@ -1,8 +1,12 @@
 import React from 'react';
 import type { ComponentConfig } from '@measured/puck';
+import { RichTextField } from '../fields/RichTextField';
+import { sanitizeHtml } from '../utils/sanitizeHtml';
+import { FONT_SIZE_FIELD } from '../fields/fontSizeField';
 
 export interface CardProps {
   title: string;
+  titleFontSize?: string;
   body?: string;
   imageUrl?: string;
   ctaText?: string;
@@ -15,7 +19,14 @@ export const Card: ComponentConfig<CardProps> = {
   label: 'Card',
   fields: {
     title: { type: 'text', label: 'Title' },
-    body: { type: 'textarea', label: 'Body Text' },
+    titleFontSize: FONT_SIZE_FIELD('Title Font Size'),
+    body: {
+      type: 'custom',
+      label: 'Body Text',
+      render: ({ value, onChange }) => (
+        <RichTextField value={value as string} onChange={onChange} />
+      ),
+    },
     imageUrl: { type: 'text', label: 'Image URL' },
     ctaText: { type: 'text', label: 'CTA Text' },
     ctaUrl: { type: 'text', label: 'CTA URL' },
@@ -35,7 +46,7 @@ export const Card: ComponentConfig<CardProps> = {
     shadow: true,
     borderRadius: '8px',
   },
-  render: ({ title, body, imageUrl, ctaText, ctaUrl, shadow, borderRadius }) => (
+  render: ({ title, titleFontSize, body, imageUrl, ctaText, ctaUrl, shadow, borderRadius }) => (
     <div
       style={{
         border: '1px solid #e0e0e0',
@@ -55,8 +66,13 @@ export const Card: ComponentConfig<CardProps> = {
         />
       )}
       <div style={{ padding: '16px' }}>
-        <h3 style={{ margin: '0 0 8px', fontSize: '1.1rem' }}>{title}</h3>
-        {body && <p style={{ margin: '0 0 16px', color: '#555', fontSize: '14px' }}>{body}</p>}
+        <h3 style={{ margin: '0 0 8px', fontSize: titleFontSize || '1.1rem' }}>{title}</h3>
+        {body && (
+          <div
+            style={{ margin: '0 0 16px', color: '#555', fontSize: '14px' }}
+            dangerouslySetInnerHTML={{ __html: sanitizeHtml(body) }}
+          />
+        )}
         {ctaText && ctaUrl && (
           <a
             href={ctaUrl}

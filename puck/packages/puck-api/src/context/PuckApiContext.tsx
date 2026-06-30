@@ -5,6 +5,11 @@ export interface PuckApiContextValue {
   projectKey: string;
   businessUnitKey: string;
   jwtToken?: string;
+  /**
+   * Content locale (e.g. "en-US", "de-DE") used for locale-aware API calls
+   * such as product search. Defaults to "en-US" downstream when unset.
+   */
+  locale?: string;
 }
 
 export const PuckApiContext = createContext<PuckApiContextValue | null>(null);

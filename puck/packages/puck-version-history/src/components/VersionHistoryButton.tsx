@@ -28,7 +28,7 @@ export const VersionHistoryButton: React.FC<VersionHistoryButtonProps> = ({
   if (isHistoryTabActive) {
     return (
       <IconBiutton
-        label="History"
+        label="Hide version history"
         icon={<ClockWithArrowIcon />}
         onClick={handleClick}
         isDisabled={disabled}
@@ -41,7 +41,7 @@ export const VersionHistoryButton: React.FC<VersionHistoryButtonProps> = ({
 
   return (
     <IconBiutton
-      label="History"
+      label="Show version history"
       icon={<ClockWithArrowIcon />}
       onClick={handleClick}
       isDisabled={disabled}

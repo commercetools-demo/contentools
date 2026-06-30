@@ -323,7 +323,7 @@ const PageEditorRoute: React.FC<RouteProps> = ({ config, backButton }) => {
   const { pageKey } = useParams<{ pageKey: string }>();
   const history = useHistory();
   const location = useLocation();
-  const { baseURL, projectKey, businessUnitKey, jwtToken } = usePuckApiContext();
+  const { baseURL, projectKey, businessUnitKey, jwtToken, locale } = usePuckApiContext();
   const pageName =
     (location.state as { pageName?: string } | null)?.pageName ?? pageKey ?? 'Page';
 
@@ -347,6 +347,7 @@ const PageEditorRoute: React.FC<RouteProps> = ({ config, backButton }) => {
           projectKey={projectKey}
           businessUnitKey={businessUnitKey}
           jwtToken={jwtToken ?? ''}
+          locale={locale}
           pageKey={pageKey!}
           config={config}
           onError={(err: Error) => { console.error('[PageManager] editor error:', err); }}
@@ -435,6 +436,8 @@ export interface PageManagerProps {
   projectKey: string;
   businessUnitKey: string;
   jwtToken: string;
+  /** Content locale (e.g. "en-US") used for locale-aware calls like product search */
+  locale?: string;
   /** Puck component config — passed to editor and preview. Defaults to defaultPuckConfig. */
   config?: Config;
   /** Optional element rendered before the breadcrumb in editor/preview headers */
@@ -447,6 +450,7 @@ export const PageManager: React.FC<PageManagerProps> = ({
   projectKey,
   businessUnitKey,
   jwtToken,
+  locale,
   config = DEFAULT_CONFIG,
   backButton,
 }) => (
@@ -456,6 +460,7 @@ export const PageManager: React.FC<PageManagerProps> = ({
       projectKey={projectKey}
       businessUnitKey={businessUnitKey}
       jwtToken={jwtToken}
+      locale={locale}
     >
       <BrowserRouter basename={parentUrl}>
         <PageManagerInner config={config} backButton={backButton} />

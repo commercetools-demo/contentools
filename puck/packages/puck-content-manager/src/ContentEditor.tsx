@@ -267,6 +267,8 @@ export interface ContentEditorProps {
   projectKey: string;
   businessUnitKey: string;
   jwtToken: string;
+  /** Content locale (e.g. "en-US") used for locale-aware calls like product search */
+  locale?: string;
   contentKey: string;
   /** Puck component config — must match what's used in the renderer */
   config: Config;
@@ -280,6 +282,7 @@ export const ContentEditor: React.FC<ContentEditorProps> = ({
   projectKey,
   businessUnitKey,
   jwtToken,
+  locale,
   contentKey,
   config,
   onPublish,
@@ -292,6 +295,7 @@ export const ContentEditor: React.FC<ContentEditorProps> = ({
       projectKey={projectKey}
       businessUnitKey={businessUnitKey}
       jwtToken={jwtToken}
+      locale={locale}
     >
       <ContentEditorInner
         contentKey={contentKey}

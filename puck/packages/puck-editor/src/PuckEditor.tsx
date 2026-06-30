@@ -262,6 +262,8 @@ export interface PuckEditorProps {
   businessUnitKey: string;
   /** JWT bearer token — required for save/publish mutations */
   jwtToken: string;
+  /** Content locale (e.g. "en-US") used for locale-aware calls like product search */
+  locale?: string;
   /** The key of the puck page to edit */
   pageKey: string;
   /**
@@ -287,6 +289,7 @@ export const PuckEditor: React.FC<PuckEditorProps> = ({
   projectKey,
   businessUnitKey,
   jwtToken,
+  locale,
   pageKey,
   config = defaultPuckConfig,
   onPublish,
@@ -301,6 +304,7 @@ export const PuckEditor: React.FC<PuckEditorProps> = ({
       projectKey={projectKey}
       businessUnitKey={businessUnitKey}
       jwtToken={jwtToken}
+      locale={locale}
     >
       <PuckEditorInner
         pageKey={pageKey}

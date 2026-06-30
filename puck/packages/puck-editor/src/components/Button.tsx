@@ -1,11 +1,13 @@
 import React from 'react';
 import type { ComponentConfig } from '@measured/puck';
+import { FONT_SIZE_FIELD } from '../fields/fontSizeField';
 
 export interface ButtonProps {
   label: string;
   href?: string;
   variant?: 'primary' | 'secondary' | 'outline';
   size?: 'sm' | 'md' | 'lg';
+  fontSize?: string;
   align?: 'left' | 'center' | 'right';
   openInNewTab?: boolean;
 }
@@ -45,6 +47,7 @@ export const Button: ComponentConfig<ButtonProps> = {
         { value: 'lg', label: 'Large' },
       ],
     },
+    fontSize: FONT_SIZE_FIELD('Font Size Override'),
     align: {
       type: 'select',
       label: 'Alignment',
@@ -66,7 +69,7 @@ export const Button: ComponentConfig<ButtonProps> = {
     align: 'left',
     openInNewTab: false,
   },
-  render: ({ label, href, variant = 'primary', size = 'md', align = 'left', openInNewTab }) => (
+  render: ({ label, href, variant = 'primary', size = 'md', fontSize, align = 'left', openInNewTab }) => (
     <div style={{ padding: '12px 16px', textAlign: align, boxSizing: 'border-box' }}>
       <a
         href={href ?? '#'}
@@ -80,6 +83,7 @@ export const Button: ComponentConfig<ButtonProps> = {
           cursor: 'pointer',
           ...VARIANT_STYLES[variant],
           ...SIZE_STYLES[size],
+          ...(fontSize ? { fontSize } : {}),
         }}
       >
         {label}

@@ -1,5 +1,7 @@
 import React from 'react';
 import type { ComponentConfig } from '@measured/puck';
+import { RichTextField } from '../fields/RichTextField';
+import { sanitizeHtml } from '../utils/sanitizeHtml';
 
 export interface RichTextProps {
   content: string;
@@ -12,8 +14,11 @@ export const RichText: ComponentConfig<RichTextProps> = {
   label: 'Rich Text',
   fields: {
     content: {
-      type: 'textarea',
-      label: 'Content (HTML supported)',
+      type: 'custom',
+      label: 'Content',
+      render: ({ value, onChange }) => (
+        <RichTextField value={value as string} onChange={onChange} />
+      ),
     },
     align: {
       type: 'select',
@@ -41,8 +46,8 @@ export const RichText: ComponentConfig<RichTextProps> = {
         margin: maxWidth ? '0 auto' : undefined,
         boxSizing: 'border-box',
       }}
-      // Puck stores raw HTML for rich text fields; this is controlled editor input
-      dangerouslySetInnerHTML={{ __html: content }}
+      // HTML from the rich-text editor, sanitized before injection
+      dangerouslySetInnerHTML={{ __html: sanitizeHtml(content) }}
     />
   ),
 };

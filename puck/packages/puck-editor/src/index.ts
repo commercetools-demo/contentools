@@ -34,6 +34,11 @@ export type { ImagePickerFieldProps } from './fields/ImagePickerField';
 export { DatasourceField } from './fields/DatasourceField';
 export type { DatasourceFieldProps, DatasourceValue, DatasourceType } from './fields/DatasourceField';
 
+export { RichTextField } from './fields/RichTextField';
+export type { RichTextFieldProps } from './fields/RichTextField';
+
+export { sanitizeHtml } from './utils/sanitizeHtml';
+
 // CMS components
 export * from './components/cms';
 

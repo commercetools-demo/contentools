@@ -14,6 +14,8 @@ const BASE_URL = import.meta.env.VITE_BASE_URL as string;
 const PROJECT_KEY = import.meta.env.VITE_PROJECT_KEY as string;
 const BUSINESS_UNIT_KEY = import.meta.env.VITE_BUSINESS_UNIT_KEY as string;
 const JWT_TOKEN = import.meta.env.VITE_JWT_TOKEN as string;
+// Content locale for locale-aware calls (e.g. product search). Defaults to en-US.
+const LOCALE = (import.meta.env.VITE_LOCALE as string) || 'en-US';
 
 // ---------------------------------------------------------------------------
 // Config warning
@@ -300,6 +302,7 @@ const App: React.FC = () => {
     projectKey: PROJECT_KEY,
     businessUnitKey: BUSINESS_UNIT_KEY,
     jwtToken: JWT_TOKEN,
+    locale: LOCALE,
   };
 
   const handleTabChange = (tab: Tab) => {

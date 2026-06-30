@@ -560,6 +560,8 @@ export interface ContentManagerProps {
   projectKey: string;
   businessUnitKey: string;
   jwtToken: string;
+  /** Content locale (e.g. "en-US") used for locale-aware calls like product search */
+  locale?: string;
   /** Puck component config — must match what's used in the renderer. Defaults to defaultPuckConfig. */
   config?: Config;
   defaultContentType?: string;
@@ -573,6 +575,7 @@ export const ContentManager: React.FC<ContentManagerProps> = ({
   projectKey,
   businessUnitKey,
   jwtToken,
+  locale,
   config = DEFAULT_CONFIG,
   defaultContentType,
   backButton,
@@ -583,6 +586,7 @@ export const ContentManager: React.FC<ContentManagerProps> = ({
       projectKey={projectKey}
       businessUnitKey={businessUnitKey}
       jwtToken={jwtToken}
+      locale={locale}
     >
       <BrowserRouter basename={parentUrl}>
         <ContentManagerRouterInner

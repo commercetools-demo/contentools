@@ -11,10 +11,11 @@ export const PuckApiProvider: React.FC<PuckApiProviderProps> = ({
   projectKey,
   businessUnitKey,
   jwtToken,
+  locale,
 }) => {
   return (
     <PuckApiContext.Provider
-      value={{ baseURL, projectKey, businessUnitKey, jwtToken }}
+      value={{ baseURL, projectKey, businessUnitKey, jwtToken, locale }}
     >
       {children}
     </PuckApiContext.Provider>

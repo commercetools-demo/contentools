@@ -13,5 +13,8 @@ export default defineConfig({
     '@commercetools-demo/puck-types',
     '@commercetools-demo/puck-api',
     '@commercetools-demo/puck-version-history',
+    // Keep external: it conditionally require()s jsdom for SSR sanitization,
+    // which must resolve from node_modules rather than be bundled.
+    'isomorphic-dompurify',
   ],
 });

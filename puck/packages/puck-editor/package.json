@@ -1,6 +1,6 @@
 {
   "name": "@commercetools-demo/puck-editor",
-  "version": "0.5.2",
+  "version": "0.6.0",
   "description": "Puck editor wrapper with built-in components and CMS API integration",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -42,7 +42,12 @@
     "@commercetools-uikit/tag": "^20.5.0",
     "@commercetools-uikit/text": "^20.5.0",
     "@commercetools-uikit/text-input": "^20.5.0",
-    "@measured/puck": "^0.18.2"
+    "@measured/puck": "^0.18.2",
+    "@tiptap/extension-text-style": "^3.27.1",
+    "@tiptap/pm": "^3.27.1",
+    "@tiptap/react": "^3.27.1",
+    "@tiptap/starter-kit": "^3.27.1",
+    "isomorphic-dompurify": "^3.18.0"
   },
   "peerDependencies": {
     "react": ">=19.0.0",

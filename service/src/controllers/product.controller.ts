@@ -1,7 +1,66 @@
+import { LocalizedString } from '@commercetools/platform-sdk';
 import { searchProducts } from '../services/products';
 import { logger } from '../utils/logger.utils';
 import CustomError from '../errors/custom.error';
 import { AuthenticatedRequest } from '../types/service.types';
+
+/** Slim product shape returned to the editor's product-search picker. */
+export interface ProductSearchResult {
+  id: string;
+  name?: string;
+  sku?: string;
+  image?: string;
+  slug?: string;
+}
+
+const pickLocalized = (
+  value: LocalizedString | undefined,
+  locale: string
+): string | undefined => {
+  if (!value) return undefined;
+  return (
+    value[locale] ?? value[locale.split('-')[0]] ?? Object.values(value)[0]
+  );
+};
+
+/**
+ * Free-text product search for the editor's product-selection picker (task #4).
+ * Returns a slim, picker-friendly shape rather than full ProductProjections.
+ */
+export const searchProductsController = async (
+  req: AuthenticatedRequest,
+  text: string,
+  limit = 20,
+  locale = 'en-US'
+): Promise<ProductSearchResult[]> => {
+  const term = (text ?? '').trim();
+  if (!term) return [];
+
+  const response = await searchProducts(req, {
+    query: { fullText: { field: 'name', language: locale, value: term } },
+    limit,
+    productProjectionParameters: {},
+  });
+
+  return (response.results ?? [])
+    .map((result) => {
+      const product = result.productProjection;
+      if (!product) return undefined;
+      const variant =
+        product.masterVariant?.sku != null
+          ? product.masterVariant
+          : product.variants?.find((v) => v.sku != null) ??
+            product.masterVariant;
+      return {
+        id: product.id,
+        name: pickLocalized(product.name, locale),
+        sku: variant?.sku,
+        image: variant?.images?.[0]?.url,
+        slug: pickLocalized(product.slug, locale),
+      } as ProductSearchResult;
+    })
+    .filter((p): p is ProductSearchResult => !!p);
+};
 
 export const getProductBySkuController = async (
   req: AuthenticatedRequest,

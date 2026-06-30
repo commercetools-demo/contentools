@@ -38,6 +38,10 @@ const SidebarTab: React.FC<{
   onClick: () => void;
 }> = ({ label, isActive, onClick }) => (
   <button
+    type="button"
+    aria-label={`Show ${label.toLowerCase()} panel`}
+    aria-pressed={isActive}
+    title={`Show ${label.toLowerCase()} panel`}
     onClick={onClick}
     style={{
       flex: 1,
@@ -118,7 +122,24 @@ export const ComponentsPanel: React.FC<{ children: ReactNode }> = ({ children })
               zIndex: 1,
             }}
           >
+            <label
+              htmlFor="puck-component-search"
+              style={{
+                position: 'absolute',
+                width: 1,
+                height: 1,
+                padding: 0,
+                margin: -1,
+                overflow: 'hidden',
+                clip: 'rect(0 0 0 0)',
+                whiteSpace: 'nowrap',
+                border: 0,
+              }}
+            >
+              Search components
+            </label>
             <TextInput
+              id="puck-component-search"
               placeholder="Search components…"
               value={search}
               onChange={(e) => setSearch(e.target.value)}

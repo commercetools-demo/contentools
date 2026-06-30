@@ -1,5 +1,7 @@
 import React from 'react';
 import { type ComponentConfig } from '@measured/puck';
+import { RichTextField } from '../../fields/RichTextField';
+import { sanitizeHtml } from '../../utils/sanitizeHtml';
 
 export interface TextBlockProps {
   content: string;
@@ -8,14 +10,20 @@ export interface TextBlockProps {
 export const TextBlock: ComponentConfig<TextBlockProps> = {
   label: 'Text Block',
   fields: {
-    content: { type: 'textarea', label: 'Content (HTML)' },
+    content: {
+      type: 'custom',
+      label: 'Content',
+      render: ({ value, onChange }) => (
+        <RichTextField value={value as string} onChange={onChange} />
+      ),
+    },
   },
   defaultProps: { content: '' },
   render: ({ content }) => {
     if (!content) return <></>;
     return (
       <div
-        dangerouslySetInnerHTML={{ __html: content }}
+        dangerouslySetInnerHTML={{ __html: sanitizeHtml(content) }}
         style={{
           maxWidth: '720px',
           margin: '0 auto',
