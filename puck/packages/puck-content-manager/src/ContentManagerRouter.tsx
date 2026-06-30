@@ -15,6 +15,7 @@ import {
   ComponentItemFilter,
   defaultPuckConfig,
   EditorToolbar,
+  nimbusFieldTypes,
   UnsavedChangesDialog,
   useDirtyState,
 } from '@commercetools-demo/puck-editor';
@@ -582,7 +583,7 @@ const ContentEditorRoute: React.FC<ContentEditorRouteProps> = ({ config, backBut
           <Text color="neutral.11">/</Text>
           <Text fontWeight="bold">{contentName}</Text>
         </div>
-        <div style={{ flex: 1, overflow: 'hidden' }}>
+        <div className="puck-editor-fill" style={{ flex: 1, overflow: 'hidden' }}>
           <ComponentSearchProvider>
             <Puck
               key={`${versionHistory.selectedVersionId ?? 'current'}:${reloadNonce}`}
@@ -591,6 +592,7 @@ const ContentEditorRoute: React.FC<ContentEditorRouteProps> = ({ config, backBut
               onChange={handleChange}
               onPublish={handlePublish}
               overrides={{
+                fieldTypes: nimbusFieldTypes,
                 header: () =>
                   versionHistory.isPreviewingHistory ? (
                     <Stack

@@ -1,4 +1,5 @@
 import React from 'react';
+import { type CustomField } from '@measured/puck';
 import { RichTextInput } from '@commercetools/nimbus';
 
 // ---------------------------------------------------------------------------
@@ -28,3 +29,16 @@ export const RichTextField: React.FC<RichTextFieldProps> = ({ value, onChange })
     placeholder="Start typing…"
   />
 );
+
+/**
+ * Puck `custom` field config that renders a rich-text editor (HTML in / out).
+ * Use in a component's `fields` for any prop that holds an HTML string, e.g.
+ *   fields: { body: richTextField('Body') }
+ */
+export const richTextField = (label: string): CustomField<string> => ({
+  type: 'custom',
+  label,
+  render: ({ value, onChange }) => (
+    <RichTextField value={value} onChange={onChange} />
+  ),
+});

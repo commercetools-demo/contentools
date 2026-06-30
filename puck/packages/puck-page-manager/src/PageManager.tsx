@@ -457,7 +457,7 @@ const PageEditorRoute: React.FC<RouteProps> = ({ config, backButton }) => {
         <Text color="neutral.11">/</Text>
         <Text fontWeight="bold">{pageName}</Text>
       </div>
-      <div style={{ flex: 1, overflow: 'hidden' }}>
+      <div className="puck-editor-fill" style={{ flex: 1, overflow: 'hidden' }}>
         <PuckEditor
           baseURL={baseURL}
           projectKey={projectKey}

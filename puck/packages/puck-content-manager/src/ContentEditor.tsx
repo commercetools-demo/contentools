@@ -10,6 +10,7 @@ import {
   ComponentsPanel,
   ComponentItemFilter,
   EditorToolbar,
+  nimbusFieldTypes,
   useDirtyState,
 } from '@commercetools-demo/puck-editor';
 import {
@@ -230,6 +231,7 @@ const ContentEditorInner: React.FC<ContentEditorInnerProps> = ({
           onChange={handleChange}
           onPublish={handlePublish}
           overrides={{
+            fieldTypes: nimbusFieldTypes,
             header: () =>
               versionHistory.isPreviewingHistory ? (
                 <Stack

@@ -1,5 +1,6 @@
 import React from 'react';
 import { type ComponentConfig } from '@measured/puck';
+import { richTextField } from '../../fields/RichTextField';
 
 export interface ThankYouContentProps {
   headline: string;
@@ -12,7 +13,7 @@ export const ThankYouContent: ComponentConfig<ThankYouContentProps> = {
   label: 'Thank You Content',
   fields: {
     headline: { type: 'text', label: 'Headline' },
-    message: { type: 'textarea', label: 'Message (HTML)' },
+    message: richTextField('Message'),
     ctaText: { type: 'text', label: 'CTA Text' },
     ctaLink: { type: 'text', label: 'CTA Link' },
   },

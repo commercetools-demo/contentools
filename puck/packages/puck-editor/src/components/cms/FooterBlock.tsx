@@ -1,5 +1,6 @@
 import React from 'react';
 import { type ComponentConfig } from '@measured/puck';
+import { richTextField } from '../../fields/RichTextField';
 
 export interface FooterBlockProps {
   column1: string;
@@ -11,9 +12,9 @@ export interface FooterBlockProps {
 export const FooterBlock: ComponentConfig<FooterBlockProps> = {
   label: 'Footer Block',
   fields: {
-    column1: { type: 'textarea', label: 'Column 1 (HTML)' },
-    column2: { type: 'textarea', label: 'Column 2 (HTML)' },
-    column3: { type: 'textarea', label: 'Column 3 (HTML)' },
+    column1: richTextField('Column 1'),
+    column2: richTextField('Column 2'),
+    column3: richTextField('Column 3'),
     copyright: { type: 'text', label: 'Copyright Text' },
   },
   defaultProps: { column1: '', column2: '', column3: '', copyright: '' },

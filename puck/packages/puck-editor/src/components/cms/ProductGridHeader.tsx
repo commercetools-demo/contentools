@@ -1,5 +1,6 @@
 import React from 'react';
 import { type ComponentConfig } from '@measured/puck';
+import { richTextField } from '../../fields/RichTextField';
 
 export interface ProductGridHeaderProps {
   title: string;
@@ -10,7 +11,7 @@ export const ProductGridHeader: ComponentConfig<ProductGridHeaderProps> = {
   label: 'Product Grid Header',
   fields: {
     title: { type: 'text', label: 'Title' },
-    description: { type: 'textarea', label: 'Description (HTML)' },
+    description: richTextField('Description'),
   },
   defaultProps: { title: '', description: '' },
   render: ({ title, description }) => (

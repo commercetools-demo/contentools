@@ -1,5 +1,6 @@
 import React from 'react';
 import { type ComponentConfig } from '@measured/puck';
+import { richTextField } from '../../fields/RichTextField';
 
 export interface TabContentProps {
   tabLabel: string;
@@ -10,7 +11,7 @@ export const TabContent: ComponentConfig<TabContentProps> = {
   label: 'Tab Content',
   fields: {
     tabLabel: { type: 'text', label: 'Tab Label' },
-    content: { type: 'textarea', label: 'Content (HTML)' },
+    content: richTextField('Content'),
   },
   defaultProps: { tabLabel: '', content: '' },
   render: ({ tabLabel, content }) => {

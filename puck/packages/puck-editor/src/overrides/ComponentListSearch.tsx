@@ -150,6 +150,18 @@ export const ComponentsPanel: React.FC<{ children: ReactNode }> = ({ children })
         [data-puck-dnd] > div:has([data-hidden-component]) { display: none !important; }
         [class*="DrawerItem-draggable"] { padding-top: 6px !important; padding-bottom: 6px !important; }
         [class*="PuckCanvas_"] { padding-left: 4px !important; padding-right: 4px !important; }
+        /* Make Puck fill its embedding container instead of 100dvh (which
+           overflows below the app's nav bars and hides the sidebars' scroll).
+           Puck nests unclassed wrapper divs between .Puck and the layout grid,
+           so a height:100% chain breaks; pinning the inner grid to the
+           container with absolute inset:0 bypasses those wrappers entirely.
+           Scoped to .puck-editor-fill so standalone usage keeps 100dvh. */
+        .puck-editor-fill { position: relative; }
+        .puck-editor-fill [class*="PuckLayout-inner"] {
+          position: absolute !important;
+          inset: 0 !important;
+          height: auto !important;
+        }
       `}</style>
 
       {/* Tab bar */}

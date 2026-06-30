@@ -2,6 +2,7 @@ import React from 'react';
 import { type ComponentConfig } from '@measured/puck';
 import { useDatasource } from '@commercetools-demo/puck-api';
 import { DatasourceField, type DatasourceValue } from '../fields/DatasourceField';
+import { richTextField } from '../fields/RichTextField';
 import {
   productLinkDefaults,
   productLinkFields,
@@ -190,10 +191,7 @@ export const ProductTeaser: ComponentConfig<ProductTeaserProps> = {
         <DatasourceField value={value} onChange={onChange} />
       ),
     },
-    richText: {
-      type: 'textarea',
-      label: 'Rich Text (HTML)',
-    },
+    richText: richTextField('Rich Text'),
     ...productLinkFields,
   },
   defaultProps: {

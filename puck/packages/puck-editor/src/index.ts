@@ -36,7 +36,7 @@ export type { ImagePickerFieldProps } from './fields/ImagePickerField';
 export { DatasourceField } from './fields/DatasourceField';
 export type { DatasourceFieldProps, DatasourceValue, DatasourceType } from './fields/DatasourceField';
 
-export { RichTextField } from './fields/RichTextField';
+export { RichTextField, richTextField } from './fields/RichTextField';
 export type { RichTextFieldProps } from './fields/RichTextField';
 
 export { sanitizeHtml } from './utils/sanitizeHtml';
@@ -62,3 +62,6 @@ export {
   ComponentsPanel,
   ComponentItemFilter,
 } from './overrides/ComponentListSearch';
+
+// Nimbus-styled field-type overrides (text/textarea/select/radio inputs)
+export { nimbusFieldTypes } from './overrides/NimbusFieldTypes';

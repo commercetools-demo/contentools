@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { type ComponentConfig } from '@measured/puck';
+import { richTextField } from '../../fields/RichTextField';
 
 export interface FAQAccordionProps {
   question1: string; answer1: string;
@@ -67,13 +68,13 @@ export const FAQAccordion: ComponentConfig<FAQAccordionProps> = {
   label: 'FAQ Accordion',
   fields: {
     question1: { type: 'text', label: 'Question 1' },
-    answer1: { type: 'textarea', label: 'Answer 1 (HTML)' },
+    answer1: richTextField('Answer 1'),
     question2: { type: 'text', label: 'Question 2' },
-    answer2: { type: 'textarea', label: 'Answer 2 (HTML)' },
+    answer2: richTextField('Answer 2'),
     question3: { type: 'text', label: 'Question 3' },
-    answer3: { type: 'textarea', label: 'Answer 3 (HTML)' },
+    answer3: richTextField('Answer 3'),
     question4: { type: 'text', label: 'Question 4' },
-    answer4: { type: 'textarea', label: 'Answer 4 (HTML)' },
+    answer4: richTextField('Answer 4'),
   },
   defaultProps: {
     question1: '', answer1: '',

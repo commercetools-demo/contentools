@@ -20,6 +20,7 @@ import {
   ComponentsPanel,
   ComponentItemFilter,
 } from './overrides/ComponentListSearch';
+import { nimbusFieldTypes } from './overrides/NimbusFieldTypes';
 import { Stack } from '@commercetools/nimbus';
 import { EnsureNimbusProvider } from './EnsureNimbusProvider';
 
@@ -236,6 +237,7 @@ const PuckEditorInner: React.FC<PuckEditorInnerProps> = ({
           onChange={handleChange}
           onPublish={() => void handlePublish()}
           overrides={{
+            fieldTypes: nimbusFieldTypes,
             header: () =>
               versionHistory.isPreviewingHistory ? (
                 <Stack

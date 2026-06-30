@@ -2,6 +2,7 @@ import React from 'react';
 import { type ComponentConfig } from '@measured/puck';
 import { useDatasource } from '@commercetools-demo/puck-api';
 import { DatasourceField, type DatasourceValue } from '../../fields/DatasourceField';
+import { richTextField } from '../../fields/RichTextField';
 import {
   formatPrice,
   getFirstPrice,
@@ -132,7 +133,7 @@ export const ProductBanner: ComponentConfig<ProductBannerProps> = {
   label: 'Product Banner',
   fields: {
     title: { type: 'text', label: 'Title' },
-    description: { type: 'textarea', label: 'Description (HTML)' },
+    description: richTextField('Description'),
     ctaText: { type: 'text', label: 'CTA Text' },
     ctaLink: { type: 'text', label: 'CTA Link' },
     product: {
