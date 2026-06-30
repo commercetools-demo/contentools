@@ -25,6 +25,7 @@ import {
   useVersionDiff,
 } from '@commercetools-demo/puck-version-history';
 import { EnsureIntlProvider } from './EnsureIntlProvider';
+import { EnsureNimbusProvider } from './EnsureNimbusProvider';
 
 const DEFAULT_CONFIG: Config = {
   ...defaultPuckConfig,
@@ -41,18 +42,20 @@ import type {
   PuckContentVersionEntry,
   PuckData,
 } from '@commercetools-demo/puck-types';
-import DataTable from '@commercetools-uikit/data-table';
-import PrimaryButton from '@commercetools-uikit/primary-button';
-import SecondaryButton from '@commercetools-uikit/secondary-button';
-import FlatButton from '@commercetools-uikit/flat-button';
-import Card from '@commercetools-uikit/card';
-import Spacings from '@commercetools-uikit/spacings';
-import Text from '@commercetools-uikit/text';
-import LoadingSpinner from '@commercetools-uikit/loading-spinner';
-import TextInput from '@commercetools-uikit/text-input';
-import Label from '@commercetools-uikit/label';
-import Stamp from '@commercetools-uikit/stamp';
-import { PlusThinIcon, SearchIcon, AngleLeftIcon } from '@commercetools-uikit/icons';
+import {
+  Badge,
+  Button,
+  Card,
+  DataTable,
+  FormField,
+  Icon,
+  LoadingSpinner,
+  Stack,
+  Text,
+  TextInput,
+  type DataTableColumnItem,
+} from '@commercetools/nimbus';
+import { Add, ChevronLeft, Search } from '@commercetools/nimbus-icons';
 
 // ---------------------------------------------------------------------------
 // Nav bar style
@@ -66,24 +69,16 @@ const NAV_BAR_STYLE: React.CSSProperties = {
   gap: '12px',
   padding: '8px 16px',
   background: 'var(--color-surface, #fff)',
-  borderBottom: '1px solid var(--color-neutral-90)',
+  borderBottom: '1px solid var(--color-neutral-90, #e0e0e0)',
   zIndex: 200,
   flexShrink: 0,
 };
 
 // ---------------------------------------------------------------------------
-// Table columns
+// Table row type
 // ---------------------------------------------------------------------------
 
-type ContentRow = PuckContentListItem & { id: string };
-
-const COLUMNS = [
-  { key: 'name', label: 'Name' },
-  { key: 'contentType', label: 'Content Type' },
-  { key: 'status', label: 'Status' },
-  { key: 'updatedAt', label: 'Updated' },
-  { key: 'actions', label: 'Actions', shouldIgnoreRowClick: true },
-];
+type ContentRow = PuckContentListItem & { id: string; [key: string]: unknown };
 
 // ---------------------------------------------------------------------------
 // ContentListRoute
@@ -144,156 +139,176 @@ const ContentListRoute: React.FC<ContentListRouteProps> = ({ defaultContentType,
 
   const rows: ContentRow[] = contents.map((c) => ({ ...c, id: c.key }));
 
+  const columns: DataTableColumnItem<ContentRow>[] = [
+    {
+      id: 'name',
+      header: 'Name',
+      accessor: (row) => row.value.name,
+      render: ({ row }) => <Text fontWeight="bold">{row.value.name}</Text>,
+    },
+    {
+      id: 'contentType',
+      header: 'Content Type',
+      accessor: (row) => row.value.contentType,
+      render: ({ row }) => (
+        <code
+          style={{
+            background: '#f4f4f4',
+            padding: '2px 6px',
+            borderRadius: '4px',
+            fontSize: '11px',
+            fontFamily: 'monospace',
+          }}
+        >
+          {row.value.contentType}
+        </code>
+      ),
+    },
+    {
+      id: 'status',
+      header: 'Status',
+      accessor: () => '',
+      isSortable: false,
+      render: ({ row }) => {
+        const hasDraft = !!row.states.draft;
+        const hasPublished = !!row.states.published;
+        return (
+          <Stack direction="row" gap="100" wrap="wrap">
+            {hasDraft && <Badge colorPalette="warning" size="xs">Draft</Badge>}
+            {hasPublished && <Badge colorPalette="positive" size="xs">Published</Badge>}
+            {!hasDraft && !hasPublished && <Badge colorPalette="neutral" size="xs">No state</Badge>}
+          </Stack>
+        );
+      },
+    },
+    {
+      id: 'updatedAt',
+      header: 'Updated',
+      accessor: (row) => row.value.updatedAt,
+      render: ({ row }) => (
+        <Text color="neutral.11">
+          {new Date(row.value.updatedAt).toLocaleDateString()}
+        </Text>
+      ),
+    },
+    {
+      id: 'actions',
+      header: 'Actions',
+      accessor: () => '',
+      isSortable: false,
+      render: ({ row }) => (
+        <Stack direction="row" gap="200" alignItems="center">
+          <Button
+            variant="solid"
+            size="xs"
+            onPress={() => history.push(`/${row.key}`, { contentName: row.value.name })}
+          >
+            Edit
+          </Button>
+          <Button
+            variant="ghost"
+            colorPalette="critical"
+            size="xs"
+            isDisabled={deleting === row.key}
+            onPress={() => void handleDelete(row.key)}
+          >
+            {deleting === row.key ? '…' : 'Delete'}
+          </Button>
+        </Stack>
+      ),
+    },
+  ];
+
   return (
     <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '32px 24px' }}>
-      <Spacings.Stack scale="l">
-        <Spacings.Inline justifyContent="space-between" alignItems="center">
-          <Spacings.Inline scale="m" alignItems="center">
+      <Stack direction="column" gap="600">
+        <Stack direction="row" justifyContent="space-between" alignItems="center">
+          <Stack direction="row" gap="400" alignItems="center">
             {backButton}
-            <Text.Headline as="h1">Content Items</Text.Headline>
-          </Spacings.Inline>
-          <PrimaryButton
-            label="New Content"
-            iconLeft={<PlusThinIcon />}
-            onClick={() => setShowCreate((v) => !v)}
-          />
-        </Spacings.Inline>
+            <Text as="h1" fontSize="2xl" fontWeight="700">Content Items</Text>
+          </Stack>
+          <Button variant="solid" onPress={() => setShowCreate((v) => !v)}>
+            <Icon as={Add} /> New Content
+          </Button>
+        </Stack>
 
         {showCreate && (
-          <Card insetScale="l">
-            <Spacings.Stack scale="m">
-              <Text.Subheadline as="h4" isBold>Create Content Item</Text.Subheadline>
-              {createError && <Text.Body tone="negative">{createError}</Text.Body>}
-              <Spacings.Inline scale="m">
-                <div style={{ flex: 1 }}>
-                  <Spacings.Stack scale="xs">
-                    <Label htmlFor="create-content-name">Name</Label>
-                    <TextInput
-                      id="create-content-name"
-                      value={createName}
-                      onChange={(e) => setCreateName(e.target.value)}
-                      placeholder="e.g. Homepage Hero"
-                    />
-                  </Spacings.Stack>
-                </div>
-                <div style={{ flex: 1 }}>
-                  <Spacings.Stack scale="xs">
-                    <Label htmlFor="create-content-type">Content Type</Label>
-                    <TextInput
-                      id="create-content-type"
-                      value={createType}
-                      onChange={(e) => setCreateType(e.target.value)}
-                      placeholder="e.g. hero, banner"
-                    />
-                  </Spacings.Stack>
-                </div>
-              </Spacings.Inline>
-              <Spacings.Inline scale="s">
-                <PrimaryButton
-                  label={creating ? 'Creating…' : 'Create'}
-                  onClick={() => void handleCreate()}
-                  isDisabled={creating}
-                />
-                <SecondaryButton label="Cancel" onClick={() => setShowCreate(false)} />
-              </Spacings.Inline>
-            </Spacings.Stack>
-          </Card>
+          <Card.Root variant="outlined">
+            <Card.Body>
+              <Stack direction="column" gap="400">
+                <Text as="h4" fontSize="xl" fontWeight="700">Create Content Item</Text>
+                {createError && <Text color="critical.11">{createError}</Text>}
+                <Stack direction="row" gap="400">
+                  <div style={{ flex: 1 }}>
+                    <FormField.Root>
+                      <FormField.Label>Name</FormField.Label>
+                      <FormField.Input>
+                        <TextInput
+                          value={createName}
+                          onChange={(v) => setCreateName(v)}
+                          placeholder="e.g. Homepage Hero"
+                        />
+                      </FormField.Input>
+                    </FormField.Root>
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <FormField.Root>
+                      <FormField.Label>Content Type</FormField.Label>
+                      <FormField.Input>
+                        <TextInput
+                          value={createType}
+                          onChange={(v) => setCreateType(v)}
+                          placeholder="e.g. hero, banner"
+                        />
+                      </FormField.Input>
+                    </FormField.Root>
+                  </div>
+                </Stack>
+                <Stack direction="row" gap="200">
+                  <Button variant="solid" onPress={() => void handleCreate()} isDisabled={creating}>
+                    {creating ? 'Creating…' : 'Create'}
+                  </Button>
+                  <Button variant="outline" onPress={() => setShowCreate(false)}>Cancel</Button>
+                </Stack>
+              </Stack>
+            </Card.Body>
+          </Card.Root>
         )}
 
-        <Spacings.Inline scale="s" alignItems="center">
+        <Stack direction="row" gap="200" alignItems="center">
           <div style={{ flex: 1, maxWidth: '280px' }}>
             <TextInput
               value={filterType}
-              onChange={(e) => setFilterType(e.target.value)}
+              onChange={(v) => setFilterType(v)}
               placeholder="Filter by content type…"
             />
           </div>
-          <SecondaryButton
-            label="Filter"
-            iconLeft={<SearchIcon />}
-            onClick={handleFilter}
-          />
-          <FlatButton
-            label="Clear"
-            onClick={() => { setFilterType(''); void fetchContents(undefined); }}
-          />
-          <FlatButton label="Refresh" onClick={() => void refresh()} />
-        </Spacings.Inline>
+          <Button variant="outline" onPress={handleFilter}>
+            <Icon as={Search} /> Filter
+          </Button>
+          <Button
+            variant="ghost"
+            onPress={() => { setFilterType(''); void fetchContents(undefined); }}
+          >
+            Clear
+          </Button>
+          <Button variant="ghost" onPress={() => void refresh()}>Refresh</Button>
+        </Stack>
 
-        {error && <Text.Body tone="negative">{error}</Text.Body>}
+        {error && <Text color="critical.11">{error}</Text>}
 
         {loading ? (
           <div style={{ display: 'flex', justifyContent: 'center', padding: '48px' }}>
             <LoadingSpinner />
           </div>
         ) : contents.length === 0 ? (
-          <Spacings.Stack scale="m" alignItems="center">
-            <Text.Body tone="secondary">No content items found.</Text.Body>
-          </Spacings.Stack>
+          <Stack direction="column" gap="400" alignItems="center">
+            <Text color="neutral.11">No content items found.</Text>
+          </Stack>
         ) : (
-          <DataTable
-            columns={COLUMNS}
-            rows={rows}
-            itemRenderer={(row: ContentRow, column) => {
-              switch (column.key) {
-                case 'name':
-                  return <Text.Body fontWeight="bold">{row.value.name}</Text.Body>;
-                case 'contentType':
-                  return (
-                    <code
-                      style={{
-                        background: 'var(--color-neutral-95)',
-                        padding: '2px 6px',
-                        borderRadius: 'var(--border-radius-4)',
-                        fontSize: 'var(--font-size-10)',
-                        fontFamily: 'monospace',
-                      }}
-                    >
-                      {row.value.contentType}
-                    </code>
-                  );
-                case 'status': {
-                  const hasDraft = !!row.states.draft;
-                  const hasPublished = !!row.states.published;
-                  return (
-                    <span style={{ display: 'inline-flex', gap: '4px', flexWrap: 'wrap' }}>
-                      {hasDraft && <Stamp tone="warning" label="Draft" isCondensed />}
-                      {hasPublished && <Stamp tone="positive" label="Published" isCondensed />}
-                      {!hasDraft && !hasPublished && <Stamp tone="secondary" label="No state" isCondensed />}
-                    </span>
-                  );
-                }
-                case 'updatedAt':
-                  return (
-                    <Text.Body tone="secondary">
-                      {new Date(row.value.updatedAt).toLocaleDateString()}
-                    </Text.Body>
-                  );
-                case 'actions':
-                  return (
-                    <Spacings.Inline scale="s" alignItems="center">
-                      <PrimaryButton
-                        label="Edit"
-                        size="20"
-                        onClick={() =>
-                          history.push(`/${row.key}`, { contentName: row.value.name })
-                        }
-                      />
-                      <FlatButton
-                        tone="critical"
-                        label={deleting === row.key ? '…' : 'Delete'}
-                        isDisabled={deleting === row.key}
-                        onClick={() => void handleDelete(row.key)}
-                      />
-                    </Spacings.Inline>
-                  );
-                default:
-                  return null;
-              }
-            }}
-          />
+          <DataTable columns={columns} rows={rows} aria-label="Content items" />
         )}
-      </Spacings.Stack>
+      </Stack>
     </div>
   );
 };
@@ -425,10 +440,10 @@ const ContentEditorRoute: React.FC<ContentEditorRouteProps> = ({ config, backBut
   if (loading) {
     return (
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
-        <Spacings.Stack scale="m" alignItems="center">
+        <Stack direction="column" gap="400" alignItems="center">
           <LoadingSpinner />
-          <Text.Body tone="secondary">Loading editor…</Text.Body>
-        </Spacings.Stack>
+          <Text color="neutral.11">Loading editor…</Text>
+        </Stack>
       </div>
     );
   }
@@ -436,7 +451,7 @@ const ContentEditorRoute: React.FC<ContentEditorRouteProps> = ({ config, backBut
   if (error) {
     return (
       <div style={{ padding: '32px' }}>
-        <Text.Body tone="negative"><strong>Error loading content:</strong> {error}</Text.Body>
+        <Text color="critical.11"><strong>Error loading content:</strong> {error}</Text>
       </div>
     );
   }
@@ -460,15 +475,12 @@ const ContentEditorRoute: React.FC<ContentEditorRouteProps> = ({ config, backBut
       <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
         <div style={NAV_BAR_STYLE}>
           {backButton}
-          {backButton && <Text.Body tone="secondary">/</Text.Body>}
-          <FlatButton
-            label="Content Items"
-            icon={<AngleLeftIcon />}
-            iconPosition="left"
-            onClick={() => history.push('/')}
-          />
-          <Text.Body tone="secondary">/</Text.Body>
-          <Text.Body fontWeight="bold">{contentName}</Text.Body>
+          {backButton && <Text color="neutral.11">/</Text>}
+          <Button variant="ghost" onPress={() => history.push('/')}>
+            <Icon as={ChevronLeft} /> Content Items
+          </Button>
+          <Text color="neutral.11">/</Text>
+          <Text fontWeight="bold">{contentName}</Text>
         </div>
         <div style={{ flex: 1, overflow: 'hidden' }}>
           <ComponentSearchProvider>
@@ -481,7 +493,7 @@ const ContentEditorRoute: React.FC<ContentEditorRouteProps> = ({ config, backBut
               overrides={{
                 headerActions: () =>
                   versionHistory.isPreviewingHistory ? (
-                    <Spacings.Inline scale="s" alignItems="center">
+                    <Stack direction="row" gap="200" alignItems="center">
                       <VersionPreviewBanner
                         timestamp={versionHistory.selectedVersion!.timestamp}
                         onApply={() => void handleApplyVersion()}
@@ -489,7 +501,7 @@ const ContentEditorRoute: React.FC<ContentEditorRouteProps> = ({ config, backBut
                         isApplying={isApplyingVersion}
                       />
                       <VersionHistoryButton disabled={isApplyingVersion} />
-                    </Spacings.Inline>
+                    </Stack>
                   ) : (
                     <EditorToolbar
                       saving={saving}
@@ -580,21 +592,23 @@ export const ContentManager: React.FC<ContentManagerProps> = ({
   defaultContentType,
   backButton,
 }) => (
-  <EnsureIntlProvider>
-    <PuckApiProvider
-      baseURL={baseURL}
-      projectKey={projectKey}
-      businessUnitKey={businessUnitKey}
-      jwtToken={jwtToken}
-      locale={locale}
-    >
-      <BrowserRouter basename={parentUrl}>
-        <ContentManagerRouterInner
-          config={config}
-          defaultContentType={defaultContentType}
-          backButton={backButton}
-        />
-      </BrowserRouter>
-    </PuckApiProvider>
-  </EnsureIntlProvider>
+  <EnsureNimbusProvider locale={locale}>
+    <EnsureIntlProvider>
+      <PuckApiProvider
+        baseURL={baseURL}
+        projectKey={projectKey}
+        businessUnitKey={businessUnitKey}
+        jwtToken={jwtToken}
+        locale={locale}
+      >
+        <BrowserRouter basename={parentUrl}>
+          <ContentManagerRouterInner
+            config={config}
+            defaultContentType={defaultContentType}
+            backButton={backButton}
+          />
+        </BrowserRouter>
+      </PuckApiProvider>
+    </EnsureIntlProvider>
+  </EnsureNimbusProvider>
 );

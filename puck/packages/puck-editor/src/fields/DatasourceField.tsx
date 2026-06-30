@@ -1,10 +1,6 @@
 import React, { useState } from 'react';
-import Label from '@commercetools-uikit/label';
-import TextInput from '@commercetools-uikit/text-input';
-import SelectInput from '@commercetools-uikit/select-input';
-import FlatButton from '@commercetools-uikit/flat-button';
-import Spacings from '@commercetools-uikit/spacings';
-import { CloseBoldIcon } from '@commercetools-uikit/icons';
+import { Button, FormField, Icon, Select, Stack, Text, TextInput } from '@commercetools/nimbus';
+import { Close } from '@commercetools/nimbus-icons';
 import { useProductSearch } from '@commercetools-demo/puck-api';
 
 // ---------------------------------------------------------------------------
@@ -54,14 +50,17 @@ const ProductSearchPicker: React.FC<ProductSearchPickerProps> = ({
   const { results, loading, error } = useProductSearch(query);
 
   return (
-    <Spacings.Stack scale="xs">
-      <Label htmlFor="datasource-product-search">Search products</Label>
-      <TextInput
-        id="datasource-product-search"
-        placeholder="Search by product name…"
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-      />
+    <Stack direction="column" gap="100">
+      <FormField.Root>
+        <FormField.Label>Search products</FormField.Label>
+        <FormField.Input>
+          <TextInput
+            placeholder="Search by product name…"
+            value={query}
+            onChange={(value) => setQuery(value)}
+          />
+        </FormField.Input>
+      </FormField.Root>
 
       {query.trim() !== '' && (
         <div
@@ -145,7 +144,7 @@ const ProductSearchPicker: React.FC<ProductSearchPickerProps> = ({
           })}
         </div>
       )}
-    </Spacings.Stack>
+    </Stack>
   );
 };
 
@@ -177,40 +176,46 @@ export const DatasourceField: React.FC<DatasourceFieldProps> = ({
   };
 
   return (
-    <Spacings.Stack scale="s">
-      <Spacings.Stack scale="xs">
-        <Label htmlFor="datasource-type">Datasource type</Label>
-        <SelectInput
-          id="datasource-type"
-          name="datasource-type"
-          value={current.type}
-          options={TYPE_OPTIONS}
-          onChange={(e) => {
-            const newType = e.target.value as DatasourceType;
-            onChange({ type: newType, skus: newType === 'product-by-sku' ? [current.skus[0] ?? ''] : current.skus });
-          }}
-        />
-      </Spacings.Stack>
+    <Stack direction="column" gap="200">
+      <FormField.Root>
+        <FormField.Label>Datasource type</FormField.Label>
+        <FormField.Input>
+          <Select.Root
+            selectedKey={current.type}
+            onSelectionChange={(key) => {
+              const newType = key as DatasourceType;
+              onChange({
+                type: newType,
+                skus: newType === 'product-by-sku' ? [current.skus[0] ?? ''] : current.skus,
+              });
+            }}
+          >
+            <Select.Options>
+              {TYPE_OPTIONS.map((o) => (
+                <Select.Option key={o.value} id={o.value}>{o.label}</Select.Option>
+              ))}
+            </Select.Options>
+          </Select.Root>
+        </FormField.Input>
+      </FormField.Root>
 
       <ProductSearchPicker
         selectedSkus={selectedSkus}
         onSelect={selectProduct}
       />
 
-      <Spacings.Stack scale="xs">
-        <Label>
-          {current.type === 'product-by-sku'
-            ? 'Selected product'
-            : 'Selected products'}
-        </Label>
+      <Stack direction="column" gap="100">
+        <Text fontSize="sm" fontWeight="700">
+          {current.type === 'product-by-sku' ? 'Selected product' : 'Selected products'}
+        </Text>
         {selectedSkus.length === 0 ? (
-          <span style={{ fontSize: 13, color: 'var(--color-neutral-40, #666)' }}>
+          <Text fontSize="sm" color="neutral.11">
             No product selected — search above to add one.
-          </span>
+          </Text>
         ) : (
-          <Spacings.Stack scale="xs">
+          <Stack direction="column" gap="100">
             {selectedSkus.map((sku) => (
-              <Spacings.Inline key={sku} scale="xs" alignItems="center" justifyContent="space-between">
+              <Stack key={sku} direction="row" gap="100" alignItems="center" justifyContent="space-between">
                 <span
                   style={{
                     flex: 1,
@@ -223,17 +228,19 @@ export const DatasourceField: React.FC<DatasourceFieldProps> = ({
                 >
                   SKU: {sku}
                 </span>
-                <FlatButton
-                  tone="critical"
-                  label="Remove"
-                  icon={<CloseBoldIcon />}
-                  onClick={() => removeSkuValue(sku)}
-                />
-              </Spacings.Inline>
+                <Button
+                  variant="ghost"
+                  colorPalette="critical"
+                  size="xs"
+                  onPress={() => removeSkuValue(sku)}
+                >
+                  <Icon as={Close} /> Remove
+                </Button>
+              </Stack>
             ))}
-          </Spacings.Stack>
+          </Stack>
         )}
-      </Spacings.Stack>
-    </Spacings.Stack>
+      </Stack>
+    </Stack>
   );
 };

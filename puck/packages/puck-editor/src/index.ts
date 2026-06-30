@@ -9,6 +9,7 @@ export { defaultPuckConfig } from './config/defaultPuckConfig';
 export {
   Hero,
   RichText,
+  Grid,
   Columns,
   Image,
   Button,
@@ -19,6 +20,7 @@ export {
 export type {
   HeroProps,
   RichTextProps,
+  GridProps,
   ColumnsProps,
   ImageProps,
   ButtonProps,

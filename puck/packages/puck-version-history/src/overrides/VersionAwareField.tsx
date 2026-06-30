@@ -1,9 +1,7 @@
 import React from 'react';
 import { usePuck } from '@measured/puck';
 import { useVersionHistoryContext } from '../context/VersionHistoryContext';
-import { Tag } from '@commercetools-uikit/tag';
-import Text from '@commercetools-uikit/text';
-import Spacings from '@commercetools-uikit/spacings';
+import { Badge, Stack, Text } from '@commercetools/nimbus';
 
 interface VersionAwareFieldsPanelProps {
   children: React.ReactNode;
@@ -50,17 +48,17 @@ export const VersionAwareFieldsPanel: React.FC<VersionAwareFieldsPanelProps> = (
             background: 'rgba(245, 158, 11, 0.07)',
           }}
         >
-          <Spacings.Stack scale="xs">
-            <Text.Detail isBold>Fields changed from this version:</Text.Detail>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
+          <Stack direction="column" gap="100">
+            <Text fontSize="sm" fontWeight="700">Fields changed from this version:</Text>
+            <Stack direction="row" gap="100" wrap="wrap">
               {componentDiff.changedProps
                 // hide internal puck `id` prop
                 .filter((p) => p !== 'id')
                 .map((prop) => (
-                  <Tag key={prop} type="normal">{prop}</Tag>
+                  <Badge key={prop} colorPalette="neutral" size="xs">{prop}</Badge>
                 ))}
-            </div>
-          </Spacings.Stack>
+            </Stack>
+          </Stack>
         </div>
       )}
 
@@ -73,14 +71,14 @@ export const VersionAwareFieldsPanel: React.FC<VersionAwareFieldsPanelProps> = (
             background: 'rgba(245, 158, 11, 0.07)',
           }}
         >
-          <Spacings.Stack scale="xs">
-            <Text.Detail isBold>Root fields changed:</Text.Detail>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
+          <Stack direction="column" gap="100">
+            <Text fontSize="sm" fontWeight="700">Root fields changed:</Text>
+            <Stack direction="row" gap="100" wrap="wrap">
               {diff.rootChanges.map((prop) => (
-                <Tag key={prop} type="normal">{prop}</Tag>
+                <Badge key={prop} colorPalette="neutral" size="xs">{prop}</Badge>
               ))}
-            </div>
-          </Spacings.Stack>
+            </Stack>
+          </Stack>
         </div>
       )}
 

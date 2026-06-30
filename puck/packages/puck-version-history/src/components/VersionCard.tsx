@@ -1,9 +1,6 @@
 import React from 'react';
 import type { VersionEntry } from '../types';
-import Stamp from '@commercetools-uikit/stamp';
-import Spacings from '@commercetools-uikit/spacings';
-import Text from '@commercetools-uikit/text';
-import {Tag} from '@commercetools-uikit/tag';
+import { Badge, Button, Text } from '@commercetools/nimbus';
 
 interface VersionCardProps {
   version: VersionEntry;
@@ -27,20 +24,20 @@ export const VersionCard: React.FC<VersionCardProps> = ({
   });
 
   return (
-    <Tag
-      onClick={() => onClick(version.id)}
-      isDisabled={isSelected}
+    <Button
+      variant={isSelected ? 'outline' : 'ghost'}
+      colorPalette={isSelected ? 'primary' : 'neutral'}
+      onPress={() => onClick(version.id)}
+      width="100%"
+      justifyContent="space-between"
+      px="300"
     >
-      <Spacings.Inline justifyContent="space-between" alignItems="center" scale="xs">
-        <Text.Detail
-          isBold={isSelected}
-        >
-          {formatted}
-        </Text.Detail>
-        {isCurrent && (
-          <Stamp tone="positive" label="current" isCondensed />
-        )}
-      </Spacings.Inline>
-    </Tag>
+      <Text fontSize="sm" fontWeight={isSelected ? '700' : '400'}>
+        {formatted}
+      </Text>
+      {isCurrent && (
+        <Badge colorPalette="positive" size="xs">current</Badge>
+      )}
+    </Button>
   );
 };

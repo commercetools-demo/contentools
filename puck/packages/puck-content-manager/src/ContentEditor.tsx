@@ -4,6 +4,7 @@ import '@measured/puck/puck.css';
 import { PuckApiProvider, usePuckContent } from '@commercetools-demo/puck-api';
 import type { PuckContentVersionEntry, PuckData } from '@commercetools-demo/puck-types';
 import { EnsureIntlProvider } from './EnsureIntlProvider';
+import { EnsureNimbusProvider } from './EnsureNimbusProvider';
 import {
   ComponentSearchProvider,
   ComponentsPanel,
@@ -18,9 +19,7 @@ import {
   useVersionHistoryPanel,
   useVersionDiff,
 } from '@commercetools-demo/puck-version-history';
-import LoadingSpinner from '@commercetools-uikit/loading-spinner';
-import Text from '@commercetools-uikit/text';
-import Spacings from '@commercetools-uikit/spacings';
+import { LoadingSpinner, Stack, Text } from '@commercetools/nimbus';
 
 // ---------------------------------------------------------------------------
 // Inner editor component (uses context)
@@ -177,10 +176,10 @@ const ContentEditorInner: React.FC<ContentEditorInnerProps> = ({
   if (loading) {
     return (
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
-        <Spacings.Stack scale="m" alignItems="center">
+        <Stack direction="column" gap="400" alignItems="center">
           <LoadingSpinner />
-          <Text.Body tone="secondary">Loading editor…</Text.Body>
-        </Spacings.Stack>
+          <Text color="neutral.11">Loading editor…</Text>
+        </Stack>
       </div>
     );
   }
@@ -188,7 +187,7 @@ const ContentEditorInner: React.FC<ContentEditorInnerProps> = ({
   if (error) {
     return (
       <div style={{ padding: '32px' }}>
-        <Text.Body tone="negative"><strong>Error loading content:</strong> {error}</Text.Body>
+        <Text color="critical.11"><strong>Error loading content:</strong> {error}</Text>
       </div>
     );
   }
@@ -222,7 +221,7 @@ const ContentEditorInner: React.FC<ContentEditorInnerProps> = ({
           overrides={{
             headerActions: () =>
               versionHistory.isPreviewingHistory ? (
-                <Spacings.Inline scale="s" alignItems="center">
+                <Stack direction="row" gap="200" alignItems="center">
                   <VersionPreviewBanner
                     timestamp={versionHistory.selectedVersion!.timestamp}
                     onApply={() => void handleApplyVersion()}
@@ -230,7 +229,7 @@ const ContentEditorInner: React.FC<ContentEditorInnerProps> = ({
                     isApplying={isApplyingVersion}
                   />
                   <VersionHistoryButton disabled={isApplyingVersion} />
-                </Spacings.Inline>
+                </Stack>
               ) : (
                 <EditorToolbar
                   saving={saving}
@@ -289,21 +288,23 @@ export const ContentEditor: React.FC<ContentEditorProps> = ({
   onSave,
   onError,
 }) => (
-  <EnsureIntlProvider>
-    <PuckApiProvider
-      baseURL={baseURL}
-      projectKey={projectKey}
-      businessUnitKey={businessUnitKey}
-      jwtToken={jwtToken}
-      locale={locale}
-    >
-      <ContentEditorInner
-        contentKey={contentKey}
-        config={config}
-        onPublish={onPublish}
-        onSave={onSave}
-        onError={onError}
-      />
-    </PuckApiProvider>
-  </EnsureIntlProvider>
+  <EnsureNimbusProvider locale={locale}>
+    <EnsureIntlProvider>
+      <PuckApiProvider
+        baseURL={baseURL}
+        projectKey={projectKey}
+        businessUnitKey={businessUnitKey}
+        jwtToken={jwtToken}
+        locale={locale}
+      >
+        <ContentEditorInner
+          contentKey={contentKey}
+          config={config}
+          onPublish={onPublish}
+          onSave={onSave}
+          onError={onError}
+        />
+      </PuckApiProvider>
+    </EnsureIntlProvider>
+  </EnsureNimbusProvider>
 );

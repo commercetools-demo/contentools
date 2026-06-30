@@ -1,20 +1,17 @@
 import React from 'react';
 import type { PuckDataDiff } from '../types';
-import Stamp from '@commercetools-uikit/stamp';
-import { Tag } from '@commercetools-uikit/tag';
-import Text from '@commercetools-uikit/text';
-import Spacings from '@commercetools-uikit/spacings';
-import Card from '@commercetools-uikit/card';
+import { Badge, Card, Stack, Text } from '@commercetools/nimbus';
+
 interface DiffSummaryProps {
   diff: PuckDataDiff;
 }
 
-type StatusTone = 'positive' | 'critical' | 'warning';
+type StatusPalette = 'positive' | 'critical' | 'warning';
 
-const STATUS_META: Record<string, { tone: StatusTone; label: string }> = {
-  added:   { tone: 'positive',  label: 'Added' },
-  removed: { tone: 'critical',  label: 'Removed' },
-  changed: { tone: 'warning',   label: 'Changed' },
+const STATUS_META: Record<string, { colorPalette: StatusPalette; label: string }> = {
+  added:   { colorPalette: 'positive', label: 'Added' },
+  removed: { colorPalette: 'critical', label: 'Removed' },
+  changed: { colorPalette: 'warning',  label: 'Changed' },
 };
 
 /**
@@ -24,57 +21,54 @@ const STATUS_META: Record<string, { tone: StatusTone; label: string }> = {
  */
 export const DiffSummary: React.FC<DiffSummaryProps> = ({ diff }) => {
   if (!diff.hasChanges) {
-    return (
-      <Text.Body tone="secondary">No differences from current version</Text.Body>
-    );
+    return <Text color="neutral.11">No differences from current version</Text>;
   }
 
   return (
-    <Spacings.Stack scale="s">
-      <Text.Detail isBold>Changes vs current</Text.Detail>
+    <Stack direction="column" gap="200">
+      <Text fontSize="sm" fontWeight="700">Changes vs current</Text>
 
       {diff.components.map((c) => {
         const meta = STATUS_META[c.status];
         return (
-          <Card
-            key={c.id}
-           
-          >
-            <Spacings.Stack scale="xs">
-              <Spacings.Inline scale="s" alignItems="center">
-                <Text.Detail isBold>{c.type}</Text.Detail>
-                <Stamp tone={meta.tone} label={meta.label} isCondensed />
-              </Spacings.Inline>
+          <Card.Root key={c.id} variant="outlined" size="sm">
+            <Card.Body>
+              <Stack direction="column" gap="100">
+                <Stack direction="row" gap="200" alignItems="center">
+                  <Text fontSize="sm" fontWeight="700">{c.type}</Text>
+                  <Badge colorPalette={meta.colorPalette} size="xs">{meta.label}</Badge>
+                </Stack>
 
-              {c.status === 'changed' && c.changedProps.length > 0 && (
-                <div style={{ paddingLeft: '4px', display: 'flex', flexWrap: 'wrap', gap: '3px' }}>
-                  {c.changedProps.map((prop) => (
-                    <Tag key={prop} type="normal">{prop}</Tag>
-                  ))}
-                </div>
-              )}
-            </Spacings.Stack>
-          </Card>
+                {c.status === 'changed' && c.changedProps.length > 0 && (
+                  <Stack direction="row" gap="100" wrap="wrap" paddingLeft="100">
+                    {c.changedProps.map((prop) => (
+                      <Badge key={prop} colorPalette="neutral" size="xs">{prop}</Badge>
+                    ))}
+                  </Stack>
+                )}
+              </Stack>
+            </Card.Body>
+          </Card.Root>
         );
       })}
 
       {diff.rootChanges.length > 0 && (
-        <Card
-       
-        >
-          <Spacings.Stack scale="xs">
-            <Spacings.Inline scale="s" alignItems="center">
-              <Text.Detail isBold>Root</Text.Detail>
-              <Stamp tone="warning" label="Changed" isCondensed />
-            </Spacings.Inline>
-            <div style={{ paddingLeft: '4px', display: 'flex', flexWrap: 'wrap', gap: '3px' }}>
-              {diff.rootChanges.map((prop) => (
-                <Tag key={prop} type="normal">{prop}</Tag>
-              ))}
-            </div>
-          </Spacings.Stack>
-        </Card>
+        <Card.Root variant="outlined" size="sm">
+          <Card.Body>
+            <Stack direction="column" gap="100">
+              <Stack direction="row" gap="200" alignItems="center">
+                <Text fontSize="sm" fontWeight="700">Root</Text>
+                <Badge colorPalette="warning" size="xs">Changed</Badge>
+              </Stack>
+              <Stack direction="row" gap="100" wrap="wrap" paddingLeft="100">
+                {diff.rootChanges.map((prop) => (
+                  <Badge key={prop} colorPalette="neutral" size="xs">{prop}</Badge>
+                ))}
+              </Stack>
+            </Stack>
+          </Card.Body>
+        </Card.Root>
       )}
-    </Spacings.Stack>
+    </Stack>
   );
 };

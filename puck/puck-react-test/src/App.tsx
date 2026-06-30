@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
-import Card from '@commercetools-uikit/card';
-import Spacings from '@commercetools-uikit/spacings';
-import Text from '@commercetools-uikit/text';
+import { Card, Stack, Text } from '@commercetools/nimbus';
 import { PageManager } from '@commercetools-demo/puck-page-manager';
 import { ThemeManager } from '@commercetools-demo/puck-theme-manager';
 import { ContentManager } from '@commercetools-demo/puck-content-manager';
@@ -22,27 +20,29 @@ const LOCALE = (import.meta.env.VITE_LOCALE as string) || 'en-US';
 // ---------------------------------------------------------------------------
 const ConfigWarning: React.FC = () => (
   <div style={{ maxWidth: '600px', margin: '48px auto', padding: '0 24px' }}>
-    <Card insetScale="l">
-      <Spacings.Stack scale="m">
-        <Text.Headline as="h3">Configuration required</Text.Headline>
-        <Text.Body>
-          Copy <code>.env.example</code> to <code>.env</code> and fill in your API credentials before using this app.
-        </Text.Body>
-        <pre
-          style={{
-            background: 'var(--color-neutral-95)',
-            border: '1px solid var(--color-neutral-90)',
-            borderRadius: 'var(--border-radius-4)',
-            padding: '12px',
-            fontSize: '12px',
-            overflow: 'auto',
-            margin: 0,
-          }}
-        >
-          {`VITE_BASE_URL=http://localhost:8080\nVITE_PROJECT_KEY=my-project\nVITE_BUSINESS_UNIT_KEY=my-bu\nVITE_JWT_TOKEN=your-jwt-token`}
-        </pre>
-      </Spacings.Stack>
-    </Card>
+    <Card.Root variant="outlined">
+      <Card.Body>
+        <Stack direction="column" gap="400">
+          <Text as="h3" fontSize="xl" fontWeight="700">Configuration required</Text>
+          <Text>
+            Copy <code>.env.example</code> to <code>.env</code> and fill in your API credentials before using this app.
+          </Text>
+          <pre
+            style={{
+              background: '#f4f4f4',
+              border: '1px solid #e0e0e0',
+              borderRadius: '4px',
+              padding: '12px',
+              fontSize: '12px',
+              overflow: 'auto',
+              margin: 0,
+            }}
+          >
+            {`VITE_BASE_URL=http://localhost:8080\nVITE_PROJECT_KEY=my-project\nVITE_BUSINESS_UNIT_KEY=my-bu\nVITE_JWT_TOKEN=your-jwt-token`}
+          </pre>
+        </Stack>
+      </Card.Body>
+    </Card.Root>
   </div>
 );
 
@@ -68,8 +68,8 @@ const TabNav: React.FC<TabNavProps> = ({ activeTab, onChange }) => (
   <div
     style={{
       display: 'flex',
-      borderBottom: '1px solid var(--color-neutral-90)',
-      background: 'var(--color-surface, #fff)',
+      borderBottom: '1px solid #e0e0e0',
+      background: '#fff',
       padding: '0 24px',
     }}
   >
@@ -81,15 +81,14 @@ const TabNav: React.FC<TabNavProps> = ({ activeTab, onChange }) => (
           padding: '12px 20px',
           border: 'none',
           borderBottom: activeTab === tab
-            ? '3px solid var(--color-primary)'
+            ? '3px solid #4a4ae0'
             : '3px solid transparent',
           marginBottom: '-1px',
           background: 'none',
           fontWeight: activeTab === tab ? 600 : 400,
-          fontSize: 'var(--font-size-20)',
-          color: activeTab === tab ? 'var(--color-primary)' : 'var(--color-neutral-50)',
+          fontSize: '14px',
+          color: activeTab === tab ? '#4a4ae0' : '#767676',
           cursor: 'pointer',
-          fontFamily: 'var(--font-family)',
         }}
       >
         {tab === 'pages' ? 'Pages' : tab === 'contents' ? 'Content Items' : 'Renderer'}
@@ -107,9 +106,8 @@ const INPUT_STYLE: React.CSSProperties = {
   boxSizing: 'border-box',
   padding: '6px 10px',
   borderRadius: '4px',
-  border: '1px solid var(--color-neutral-85)',
+  border: '1px solid #ccc',
   fontSize: '13px',
-  fontFamily: 'var(--font-family)',
 };
 
 const SELECT_STYLE: React.CSSProperties = {
@@ -121,7 +119,7 @@ const SELECT_STYLE: React.CSSProperties = {
 const LABEL_STYLE: React.CSSProperties = {
   fontSize: '12px',
   fontWeight: 600,
-  color: 'var(--color-neutral-40)',
+  color: '#666',
   marginBottom: '4px',
   display: 'block',
 };
@@ -153,118 +151,120 @@ const RendererPanel: React.FC<RendererPanelProps> = ({ baseURL, projectKey, busi
 
   return (
     <div style={{ maxWidth: '900px', margin: '0 auto', padding: '32px 24px' }}>
-      <Spacings.Stack scale="l">
-        <Text.Headline as="h1">Renderer</Text.Headline>
+      <Stack direction="column" gap="600">
+        <Text as="h1" fontSize="2xl" fontWeight="700">Renderer</Text>
 
-        <Card insetScale="l">
-          <Spacings.Stack scale="m">
-            {/* Type + Mode row */}
-            <Spacings.Inline scale="m">
-              <div style={{ flex: 1 }}>
-                <label style={LABEL_STYLE}>Type</label>
-                <select
-                  style={SELECT_STYLE}
-                  value={type}
-                  onChange={(e) => {
-                    setType(e.target.value as 'page' | 'content');
-                    setSubmitted(false);
+        <Card.Root variant="outlined">
+          <Card.Body>
+            <Stack direction="column" gap="400">
+              {/* Type + Mode row */}
+              <Stack direction="row" gap="400">
+                <div style={{ flex: 1 }}>
+                  <label style={LABEL_STYLE}>Type</label>
+                  <select
+                    style={SELECT_STYLE}
+                    value={type}
+                    onChange={(e) => {
+                      setType(e.target.value as 'page' | 'content');
+                      setSubmitted(false);
+                    }}
+                  >
+                    <option value="page">Page</option>
+                    <option value="content">Content</option>
+                  </select>
+                </div>
+                <div style={{ flex: 1 }}>
+                  <label style={LABEL_STYLE}>Mode</label>
+                  <select
+                    style={SELECT_STYLE}
+                    value={mode}
+                    onChange={(e) => setMode(e.target.value as 'published' | 'preview')}
+                  >
+                    <option value="published">Published</option>
+                    <option value="preview">Preview (draft)</option>
+                  </select>
+                </div>
+              </Stack>
+
+              {/* Page fields */}
+              {type === 'page' && (
+                <Stack direction="row" gap="400">
+                  <div style={{ flex: 1 }}>
+                    <label style={LABEL_STYLE}>Page Key</label>
+                    <input
+                      style={INPUT_STYLE}
+                      type="text"
+                      placeholder="e.g. home-page"
+                      value={pageKey}
+                      onChange={(e) => { setPageKey(e.target.value); setSlug(''); setSubmitted(false); }}
+                    />
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <label style={LABEL_STYLE}>Slug</label>
+                    <input
+                      style={INPUT_STYLE}
+                      type="text"
+                      placeholder="e.g. /home"
+                      value={slug}
+                      onChange={(e) => { setSlug(e.target.value); setPageKey(''); setSubmitted(false); }}
+                    />
+                  </div>
+                </Stack>
+              )}
+
+              {/* Content fields */}
+              {type === 'content' && (
+                <Stack direction="row" gap="400">
+                  <div style={{ flex: 1 }}>
+                    <label style={LABEL_STYLE}>Content Key</label>
+                    <input
+                      style={INPUT_STYLE}
+                      type="text"
+                      placeholder="e.g. hero-banner"
+                      value={contentKey}
+                      onChange={(e) => { setContentKey(e.target.value); setQuery(''); setSubmitted(false); }}
+                    />
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <label style={LABEL_STYLE}>Query (content type)</label>
+                    <input
+                      style={INPUT_STYLE}
+                      type="text"
+                      placeholder="e.g. hero"
+                      value={query}
+                      onChange={(e) => { setQuery(e.target.value); setContentKey(''); setSubmitted(false); }}
+                    />
+                  </div>
+                </Stack>
+              )}
+
+              <div>
+                <button
+                  onClick={handleRender}
+                  disabled={!hasTarget}
+                  style={{
+                    padding: '8px 20px',
+                    borderRadius: '4px',
+                    border: '1px solid #4a4ae0',
+                    background: hasTarget ? '#4a4ae0' : '#e0e0e0',
+                    color: hasTarget ? '#fff' : '#b3b3b3',
+                    fontWeight: 600,
+                    fontSize: '13px',
+                    cursor: hasTarget ? 'pointer' : 'not-allowed',
                   }}
                 >
-                  <option value="page">Page</option>
-                  <option value="content">Content</option>
-                </select>
+                  Render
+                </button>
               </div>
-              <div style={{ flex: 1 }}>
-                <label style={LABEL_STYLE}>Mode</label>
-                <select
-                  style={SELECT_STYLE}
-                  value={mode}
-                  onChange={(e) => setMode(e.target.value as 'published' | 'preview')}
-                >
-                  <option value="published">Published</option>
-                  <option value="preview">Preview (draft)</option>
-                </select>
-              </div>
-            </Spacings.Inline>
-
-            {/* Page fields */}
-            {type === 'page' && (
-              <Spacings.Inline scale="m">
-                <div style={{ flex: 1 }}>
-                  <label style={LABEL_STYLE}>Page Key</label>
-                  <input
-                    style={INPUT_STYLE}
-                    type="text"
-                    placeholder="e.g. home-page"
-                    value={pageKey}
-                    onChange={(e) => { setPageKey(e.target.value); setSlug(''); setSubmitted(false); }}
-                  />
-                </div>
-                <div style={{ flex: 1 }}>
-                  <label style={LABEL_STYLE}>Slug</label>
-                  <input
-                    style={INPUT_STYLE}
-                    type="text"
-                    placeholder="e.g. /home"
-                    value={slug}
-                    onChange={(e) => { setSlug(e.target.value); setPageKey(''); setSubmitted(false); }}
-                  />
-                </div>
-              </Spacings.Inline>
-            )}
-
-            {/* Content fields */}
-            {type === 'content' && (
-              <Spacings.Inline scale="m">
-                <div style={{ flex: 1 }}>
-                  <label style={LABEL_STYLE}>Content Key</label>
-                  <input
-                    style={INPUT_STYLE}
-                    type="text"
-                    placeholder="e.g. hero-banner"
-                    value={contentKey}
-                    onChange={(e) => { setContentKey(e.target.value); setQuery(''); setSubmitted(false); }}
-                  />
-                </div>
-                <div style={{ flex: 1 }}>
-                  <label style={LABEL_STYLE}>Query (content type)</label>
-                  <input
-                    style={INPUT_STYLE}
-                    type="text"
-                    placeholder="e.g. hero"
-                    value={query}
-                    onChange={(e) => { setQuery(e.target.value); setContentKey(''); setSubmitted(false); }}
-                  />
-                </div>
-              </Spacings.Inline>
-            )}
-
-            <div>
-              <button
-                onClick={handleRender}
-                disabled={!hasTarget}
-                style={{
-                  padding: '8px 20px',
-                  borderRadius: '4px',
-                  border: '1px solid var(--color-primary)',
-                  background: hasTarget ? 'var(--color-primary)' : 'var(--color-neutral-90)',
-                  color: hasTarget ? '#fff' : 'var(--color-neutral-60)',
-                  fontWeight: 600,
-                  fontSize: '13px',
-                  cursor: hasTarget ? 'pointer' : 'not-allowed',
-                }}
-              >
-                Render
-              </button>
-            </div>
-          </Spacings.Stack>
-        </Card>
+            </Stack>
+          </Card.Body>
+        </Card.Root>
 
         {submitted && hasTarget && (
           <div
             key={renderKey}
             style={{
-              border: '1px solid var(--color-neutral-90)',
+              border: '1px solid #e0e0e0',
               borderRadius: '8px',
               overflow: 'hidden',
             }}
@@ -282,7 +282,7 @@ const RendererPanel: React.FC<RendererPanelProps> = ({ baseURL, projectKey, busi
             />
           </div>
         )}
-      </Spacings.Stack>
+      </Stack>
     </div>
   );
 };

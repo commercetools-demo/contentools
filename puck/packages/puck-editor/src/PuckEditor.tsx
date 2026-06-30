@@ -19,7 +19,8 @@ import {
   ComponentsPanel,
   ComponentItemFilter,
 } from './overrides/ComponentListSearch';
-import Spacings from '@commercetools-uikit/spacings';
+import { Stack } from '@commercetools/nimbus';
+import { EnsureNimbusProvider } from './EnsureNimbusProvider';
 
 // ---------------------------------------------------------------------------
 // Inner component (uses context from PuckApiProvider)
@@ -213,7 +214,7 @@ const PuckEditorInner: React.FC<PuckEditorInnerProps> = ({
           overrides={{
             headerActions: () =>
               versionHistory.isPreviewingHistory ? (
-                <Spacings.Inline scale="s" alignItems="center">
+                <Stack direction="row" gap="200" alignItems="center">
                   <VersionPreviewBanner
                     timestamp={versionHistory.selectedVersion!.timestamp}
                     onApply={() => void handleApplyVersion()}
@@ -221,7 +222,7 @@ const PuckEditorInner: React.FC<PuckEditorInnerProps> = ({
                     isApplying={isApplyingVersion}
                   />
                   <VersionHistoryButton disabled={isApplyingVersion} />
-                </Spacings.Inline>
+                </Stack>
               ) : (
                 <EditorToolbar
                   saving={saving}
@@ -306,15 +307,17 @@ export const PuckEditor: React.FC<PuckEditorProps> = ({
       jwtToken={jwtToken}
       locale={locale}
     >
-      <PuckEditorInner
-        pageKey={pageKey}
-        config={config}
-        onPublish={onPublish}
-        onSave={onSave}
-        onError={onError}
-        showPublishButton={showPublishButton}
-        autoSaveDebounceMs={autoSaveDebounceMs}
-      />
+      <EnsureNimbusProvider locale={locale}>
+        <PuckEditorInner
+          pageKey={pageKey}
+          config={config}
+          onPublish={onPublish}
+          onSave={onSave}
+          onError={onError}
+          showPublishButton={showPublishButton}
+          autoSaveDebounceMs={autoSaveDebounceMs}
+        />
+      </EnsureNimbusProvider>
     </PuckApiProvider>
   );
 };

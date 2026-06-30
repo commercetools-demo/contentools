@@ -7,6 +7,11 @@ export interface ColumnsProps {
   padding?: string;
 }
 
+/**
+ * @deprecated Use `Grid` instead (columns + rows). `Columns` is kept registered
+ * for backward compatibility so pages saved with the original component (and its
+ * `column-N` drop zones) keep rendering. Prefer Grid for new content.
+ */
 export const Columns: ComponentConfig<ColumnsProps> = {
   label: 'Columns',
   fields: {

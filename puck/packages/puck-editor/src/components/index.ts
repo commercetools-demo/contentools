@@ -4,6 +4,10 @@ export type { HeroProps } from './Hero';
 export { RichText } from './RichText';
 export type { RichTextProps } from './RichText';
 
+export { Grid } from './Grid';
+export type { GridProps } from './Grid';
+
+// Deprecated — kept for backward compatibility with pages saved before Grid.
 export { Columns } from './Columns';
 export type { ColumnsProps } from './Columns';
 

@@ -1,6 +1,6 @@
 import React from 'react';
-import IconBiutton from '@commercetools-uikit/icon-button';
-import { ClockIcon, ClockWithArrowIcon } from '@commercetools-uikit/icons';
+import { IconButton } from '@commercetools/nimbus';
+import { History } from '@commercetools/nimbus-icons';
 import { useVersionHistoryContext } from '../context/VersionHistoryContext';
 
 interface VersionHistoryButtonProps {
@@ -25,26 +25,14 @@ export const VersionHistoryButton: React.FC<VersionHistoryButtonProps> = ({
     }
   };
 
-  if (isHistoryTabActive) {
-    return (
-      <IconBiutton
-        label="Hide version history"
-        icon={<ClockWithArrowIcon />}
-        onClick={handleClick}
-        isDisabled={disabled}
-        style={{
-          stroke: 'var(--puck-color-grey-12, #818181)',
-        }}
-      />
-    );
-  }
-
   return (
-    <IconBiutton
-      label="Show version history"
-      icon={<ClockWithArrowIcon />}
-      onClick={handleClick}
+    <IconButton
+      aria-label={isHistoryTabActive ? 'Hide version history' : 'Show version history'}
+      variant={isHistoryTabActive ? 'solid' : 'ghost'}
+      onPress={handleClick}
       isDisabled={disabled}
-    />
+    >
+      <History />
+    </IconButton>
   );
 };

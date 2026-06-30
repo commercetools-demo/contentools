@@ -4,33 +4,28 @@ import type {
   CreatePuckContentInput,
   PuckContentListItem,
 } from '@commercetools-demo/puck-types';
-import DataTable from '@commercetools-uikit/data-table';
-import PrimaryButton from '@commercetools-uikit/primary-button';
-import SecondaryButton from '@commercetools-uikit/secondary-button';
-import FlatButton from '@commercetools-uikit/flat-button';
-import Card from '@commercetools-uikit/card';
-import Spacings from '@commercetools-uikit/spacings';
-import Text from '@commercetools-uikit/text';
-import LoadingSpinner from '@commercetools-uikit/loading-spinner';
-import TextInput from '@commercetools-uikit/text-input';
-import Label from '@commercetools-uikit/label';
-import { PlusThinIcon, SearchIcon } from '@commercetools-uikit/icons';
-import Stamp from '@commercetools-uikit/stamp';
+import {
+  Badge,
+  Button,
+  Card,
+  DataTable,
+  FormField,
+  Icon,
+  LoadingSpinner,
+  Stack,
+  Text,
+  TextInput,
+  type DataTableColumnItem,
+} from '@commercetools/nimbus';
+import { Add, Search } from '@commercetools/nimbus-icons';
 import { EnsureIntlProvider } from './EnsureIntlProvider';
+import { EnsureNimbusProvider } from './EnsureNimbusProvider';
 
 // ---------------------------------------------------------------------------
 // Row type for DataTable
 // ---------------------------------------------------------------------------
 
-type ContentRow = PuckContentListItem & { id: string };
-
-const columns = [
-  { key: 'name', label: 'Name' },
-  { key: 'contentType', label: 'Content Type' },
-  { key: 'status', label: 'Status' },
-  { key: 'updatedAt', label: 'Updated' },
-  { key: 'actions', label: 'Actions', shouldIgnoreRowClick: true },
-];
+type ContentRow = PuckContentListItem & { id: string; [key: string]: unknown };
 
 // ---------------------------------------------------------------------------
 // Inner list component (uses context)
@@ -89,83 +84,157 @@ const ContentList: React.FC<ContentListProps> = ({ defaultContentType, onEdit })
 
   const rows: ContentRow[] = contents.map((c) => ({ ...c, id: c.key }));
 
+  const columns: DataTableColumnItem<ContentRow>[] = [
+    {
+      id: 'name',
+      header: 'Name',
+      accessor: (row) => row.value.name,
+      render: ({ row }) => <Text fontWeight="bold">{row.value.name}</Text>,
+    },
+    {
+      id: 'contentType',
+      header: 'Content Type',
+      accessor: (row) => row.value.contentType,
+      render: ({ row }) => (
+        <code
+          style={{
+            background: '#f4f4f4',
+            padding: '2px 6px',
+            borderRadius: '4px',
+            fontSize: '11px',
+            fontFamily: 'monospace',
+          }}
+        >
+          {row.value.contentType}
+        </code>
+      ),
+    },
+    {
+      id: 'status',
+      header: 'Status',
+      accessor: () => '',
+      isSortable: false,
+      render: ({ row }) => {
+        const hasDraft = !!row.states.draft;
+        const hasPublished = !!row.states.published;
+        return (
+          <Stack direction="row" gap="100" wrap="wrap">
+            {hasDraft && <Badge colorPalette="warning" size="xs">Draft</Badge>}
+            {hasPublished && <Badge colorPalette="positive" size="xs">Published</Badge>}
+            {!hasDraft && !hasPublished && <Badge colorPalette="neutral" size="xs">No state</Badge>}
+          </Stack>
+        );
+      },
+    },
+    {
+      id: 'updatedAt',
+      header: 'Updated',
+      accessor: (row) => row.value.updatedAt,
+      render: ({ row }) => (
+        <Text color="neutral.11">
+          {new Date(row.value.updatedAt).toLocaleDateString()}
+        </Text>
+      ),
+    },
+    {
+      id: 'actions',
+      header: 'Actions',
+      accessor: () => '',
+      isSortable: false,
+      render: ({ row }) => (
+        <Stack direction="row" gap="200" alignItems="center">
+          <Button variant="solid" size="xs" onPress={() => onEdit(row)}>Edit</Button>
+          <Button
+            variant="ghost"
+            colorPalette="critical"
+            size="xs"
+            isDisabled={deleting === row.key}
+            onPress={() => void handleDelete(row.key)}
+          >
+            {deleting === row.key ? '…' : 'Delete'}
+          </Button>
+        </Stack>
+      ),
+    },
+  ];
+
   return (
     <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '32px 24px' }}>
-      <Spacings.Stack scale="l">
+      <Stack direction="column" gap="600">
         {/* Header */}
-        <Spacings.Inline justifyContent="space-between" alignItems="center">
-          <Text.Headline as="h1">Content Items</Text.Headline>
-          <PrimaryButton
-            label="New Content"
-            iconLeft={<PlusThinIcon />}
-            onClick={() => setShowCreate((v) => !v)}
-          />
-        </Spacings.Inline>
+        <Stack direction="row" justifyContent="space-between" alignItems="center">
+          <Text as="h1" fontSize="2xl" fontWeight="700">Content Items</Text>
+          <Button variant="solid" onPress={() => setShowCreate((v) => !v)}>
+            <Icon as={Add} /> New Content
+          </Button>
+        </Stack>
 
         {/* Create form */}
         {showCreate && (
-          <Card insetScale="l">
-            <Spacings.Stack scale="m">
-              <Text.Subheadline as="h4" isBold>Create Content Item</Text.Subheadline>
-              {createError && <Text.Body tone="negative">{createError}</Text.Body>}
-              <Spacings.Inline scale="m">
-                <div style={{ flex: 1 }}>
-                  <Spacings.Stack scale="xs">
-                    <Label htmlFor="create-name">Name</Label>
-                    <TextInput
-                      id="create-name"
-                      value={createName}
-                      onChange={(e) => setCreateName(e.target.value)}
-                      placeholder="e.g. Homepage Hero"
-                    />
-                  </Spacings.Stack>
-                </div>
-                <div style={{ flex: 1 }}>
-                  <Spacings.Stack scale="xs">
-                    <Label htmlFor="create-type">Content Type</Label>
-                    <TextInput
-                      id="create-type"
-                      value={createType}
-                      onChange={(e) => setCreateType(e.target.value)}
-                      placeholder="e.g. hero, banner"
-                    />
-                  </Spacings.Stack>
-                </div>
-              </Spacings.Inline>
-              <Spacings.Inline scale="s">
-                <PrimaryButton
-                  label={creating ? 'Creating…' : 'Create'}
-                  onClick={() => void handleCreate()}
-                  isDisabled={creating}
-                />
-                <SecondaryButton label="Cancel" onClick={() => setShowCreate(false)} />
-              </Spacings.Inline>
-            </Spacings.Stack>
-          </Card>
+          <Card.Root variant="outlined">
+            <Card.Body>
+              <Stack direction="column" gap="400">
+                <Text as="h4" fontSize="xl" fontWeight="700">Create Content Item</Text>
+                {createError && <Text color="critical.11">{createError}</Text>}
+                <Stack direction="row" gap="400">
+                  <div style={{ flex: 1 }}>
+                    <FormField.Root>
+                      <FormField.Label>Name</FormField.Label>
+                      <FormField.Input>
+                        <TextInput
+                          value={createName}
+                          onChange={(v) => setCreateName(v)}
+                          placeholder="e.g. Homepage Hero"
+                        />
+                      </FormField.Input>
+                    </FormField.Root>
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <FormField.Root>
+                      <FormField.Label>Content Type</FormField.Label>
+                      <FormField.Input>
+                        <TextInput
+                          value={createType}
+                          onChange={(v) => setCreateType(v)}
+                          placeholder="e.g. hero, banner"
+                        />
+                      </FormField.Input>
+                    </FormField.Root>
+                  </div>
+                </Stack>
+                <Stack direction="row" gap="200">
+                  <Button variant="solid" onPress={() => void handleCreate()} isDisabled={creating}>
+                    {creating ? 'Creating…' : 'Create'}
+                  </Button>
+                  <Button variant="outline" onPress={() => setShowCreate(false)}>Cancel</Button>
+                </Stack>
+              </Stack>
+            </Card.Body>
+          </Card.Root>
         )}
 
         {/* Filter row */}
-        <Spacings.Inline scale="s" alignItems="center">
+        <Stack direction="row" gap="200" alignItems="center">
           <div style={{ flex: 1, maxWidth: '280px' }}>
             <TextInput
               value={filterType}
-              onChange={(e) => setFilterType(e.target.value)}
+              onChange={(v) => setFilterType(v)}
               placeholder="Filter by content type…"
             />
           </div>
-          <SecondaryButton
-            label="Filter"
-            iconLeft={<SearchIcon />}
-            onClick={handleFilter}
-          />
-          <FlatButton
-            label="Clear"
-            onClick={() => { setFilterType(''); void fetchContents(undefined); }}
-          />
-          <FlatButton label="Refresh" onClick={() => void refresh()} />
-        </Spacings.Inline>
+          <Button variant="outline" onPress={handleFilter}>
+            <Icon as={Search} /> Filter
+          </Button>
+          <Button
+            variant="ghost"
+            onPress={() => { setFilterType(''); void fetchContents(undefined); }}
+          >
+            Clear
+          </Button>
+          <Button variant="ghost" onPress={() => void refresh()}>Refresh</Button>
+        </Stack>
 
-        {error && <Text.Body tone="negative">{error}</Text.Body>}
+        {error && <Text color="critical.11">{error}</Text>}
 
         {/* Table */}
         {loading ? (
@@ -173,67 +242,13 @@ const ContentList: React.FC<ContentListProps> = ({ defaultContentType, onEdit })
             <LoadingSpinner />
           </div>
         ) : contents.length === 0 ? (
-          <Spacings.Stack scale="m" alignItems="center">
-            <Text.Body tone="secondary">No content items found.</Text.Body>
-          </Spacings.Stack>
+          <Stack direction="column" gap="400" alignItems="center">
+            <Text color="neutral.11">No content items found.</Text>
+          </Stack>
         ) : (
-          <DataTable
-            columns={columns}
-            rows={rows}
-            itemRenderer={(row: ContentRow, column) => {
-              switch (column.key) {
-                case 'name':
-                  return <Text.Body fontWeight="bold">{row.value.name}</Text.Body>;
-                case 'contentType':
-                  return (
-                    <code
-                      style={{
-                        background: 'var(--color-neutral-95)',
-                        padding: '2px 6px',
-                        borderRadius: 'var(--border-radius-4)',
-                        fontSize: 'var(--font-size-10)',
-                        fontFamily: 'monospace',
-                      }}
-                    >
-                      {row.value.contentType}
-                    </code>
-                  );
-                case 'status': {
-                  const hasDraft = !!row.states.draft;
-                  const hasPublished = !!row.states.published;
-                  return (
-                    <span style={{ display: 'inline-flex', gap: '4px', flexWrap: 'wrap' }}>
-                      {hasDraft && <Stamp tone="warning" label="Draft" isCondensed />}
-                      {hasPublished && <Stamp tone="positive" label="Published" isCondensed />}
-                      {!hasDraft && !hasPublished && <Stamp tone="secondary" label="No state" isCondensed />}
-                    </span>
-                  );
-                }
-                case 'updatedAt':
-                  return (
-                    <Text.Body tone="secondary">
-                      {new Date(row.value.updatedAt).toLocaleDateString()}
-                    </Text.Body>
-                  );
-                case 'actions':
-                  return (
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <PrimaryButton label="Edit" size="20" onClick={() => onEdit(row)} />
-                      <FlatButton
-                        tone="critical"
-                        label={deleting === row.key ? '…' : 'Delete'}
-                        isDisabled={deleting === row.key}
-                        onClick={() => void handleDelete(row.key)}
-                      />
-                    </div>
-                  );
-                default:
-                  return null;
-              }
-            }}
-          />
+          <DataTable columns={columns} rows={rows} aria-label="Content items" />
         )}
-      </Spacings.Stack>
+      </Stack>
     </div>
   );
 };
@@ -259,14 +274,16 @@ export const ContentManagerList: React.FC<ContentManagerListProps> = ({
   defaultContentType,
   onEdit,
 }) => (
-  <EnsureIntlProvider>
-    <PuckApiProvider
-      baseURL={baseURL}
-      projectKey={projectKey}
-      businessUnitKey={businessUnitKey}
-      jwtToken={jwtToken}
-    >
-      <ContentList defaultContentType={defaultContentType} onEdit={onEdit} />
-    </PuckApiProvider>
-  </EnsureIntlProvider>
+  <EnsureNimbusProvider>
+    <EnsureIntlProvider>
+      <PuckApiProvider
+        baseURL={baseURL}
+        projectKey={projectKey}
+        businessUnitKey={businessUnitKey}
+        jwtToken={jwtToken}
+      >
+        <ContentList defaultContentType={defaultContentType} onEdit={onEdit} />
+      </PuckApiProvider>
+    </EnsureIntlProvider>
+  </EnsureNimbusProvider>
 );

@@ -6,16 +6,17 @@ import React, {
 } from 'react';
 import { useMediaLibrary } from './hooks/useMediaLibrary';
 import type { MediaFile } from './types';
-import PrimaryButton from '@commercetools-uikit/primary-button';
-import SecondaryButton from '@commercetools-uikit/secondary-button';
-import FlatButton from '@commercetools-uikit/flat-button';
-import SecondaryIconButton from '@commercetools-uikit/secondary-icon-button';
-import TextInput from '@commercetools-uikit/text-input';
-import Label from '@commercetools-uikit/label';
-import LoadingSpinner from '@commercetools-uikit/loading-spinner';
-import Spacings from '@commercetools-uikit/spacings';
-import Text from '@commercetools-uikit/text';
-import { CloseIcon } from '@commercetools-uikit/icons';
+import {
+  Button,
+  FormField,
+  IconButton,
+  LoadingSpinner,
+  Stack,
+  Text,
+  TextInput,
+} from '@commercetools/nimbus';
+import { Close } from '@commercetools/nimbus-icons';
+import { EnsureNimbusProvider } from './EnsureNimbusProvider';
 
 // ---------------------------------------------------------------------------
 // Upload modal
@@ -89,36 +90,35 @@ const UploadModal: React.FC<UploadModalProps> = ({
             borderBottom: '1px solid #e5e7eb',
           }}
         >
-          <Text.Subheadline as="h4" isBold>Upload a file</Text.Subheadline>
-          <SecondaryIconButton
-            icon={<CloseIcon />}
-            label="Close"
-            onClick={onClose}
-            size="small"
-          />
+          <Text as="h4" fontSize="xl" fontWeight="700">Upload a file</Text>
+          <IconButton aria-label="Close" variant="ghost" size="xs" onPress={onClose}>
+            <Close />
+          </IconButton>
         </div>
 
         {/* Body */}
         <div style={{ flex: 1, overflow: 'auto', padding: '20px' }}>
-          <Spacings.Stack scale="m">
-            <Spacings.Stack scale="xs">
-              <Label htmlFor="upload-title">Title</Label>
-              <TextInput
-                id="upload-title"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="File title"
-              />
-            </Spacings.Stack>
-            <Spacings.Stack scale="xs">
-              <Label htmlFor="upload-description">Description</Label>
-              <TextInput
-                id="upload-description"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                placeholder="Optional description"
-              />
-            </Spacings.Stack>
+          <Stack direction="column" gap="400">
+            <FormField.Root>
+              <FormField.Label>Title</FormField.Label>
+              <FormField.Input>
+                <TextInput
+                  value={title}
+                  onChange={(value) => setTitle(value)}
+                  placeholder="File title"
+                />
+              </FormField.Input>
+            </FormField.Root>
+            <FormField.Root>
+              <FormField.Label>Description</FormField.Label>
+              <FormField.Input>
+                <TextInput
+                  value={description}
+                  onChange={(value) => setDescription(value)}
+                  placeholder="Optional description"
+                />
+              </FormField.Input>
+            </FormField.Root>
             <div
               style={{
                 border: dragging ? '2px dashed #3b82f6' : '2px dashed #d1d5db',
@@ -156,8 +156,8 @@ const UploadModal: React.FC<UploadModalProps> = ({
                 }}
               />
             </div>
-            {error && <Text.Body tone="negative">{error}</Text.Body>}
-          </Spacings.Stack>
+            {error && <Text color="critical.11">{error}</Text>}
+          </Stack>
         </div>
 
         {/* Footer */}
@@ -171,17 +171,19 @@ const UploadModal: React.FC<UploadModalProps> = ({
             gap: '12px',
           }}
         >
-          <Text.Detail tone="secondary" truncate>
+          <Text fontSize="sm" color="neutral.11" truncate>
             {file?.name ?? 'No file selected'}
-          </Text.Detail>
-          <Spacings.Inline scale="s">
-            <SecondaryButton label="Cancel" onClick={onClose} />
-            <PrimaryButton
-              label={uploading ? 'Uploading…' : 'Upload'}
+          </Text>
+          <Stack direction="row" gap="200">
+            <Button variant="outline" onPress={onClose}>Cancel</Button>
+            <Button
+              variant="solid"
               isDisabled={!file || uploading}
-              onClick={() => file && onUpload(file, title, description)}
-            />
-          </Spacings.Inline>
+              onPress={() => file && onUpload(file, title, description)}
+            >
+              {uploading ? 'Uploading…' : 'Upload'}
+            </Button>
+          </Stack>
         </div>
       </div>
     </div>
@@ -254,13 +256,10 @@ const LibraryModal: React.FC<LibraryModalProps> = ({
             borderBottom: '1px solid #e5e7eb',
           }}
         >
-          <Text.Subheadline as="h4" isBold>Select from Media Library</Text.Subheadline>
-          <SecondaryIconButton
-            icon={<CloseIcon />}
-            label="Close"
-            onClick={onClose}
-            size="small"
-          />
+          <Text as="h4" fontSize="xl" fontWeight="700">Select from Media Library</Text>
+          <IconButton aria-label="Close" variant="ghost" size="xs" onPress={onClose}>
+            <Close />
+          </IconButton>
         </div>
 
         {/* Body */}
@@ -270,9 +269,9 @@ const LibraryModal: React.FC<LibraryModalProps> = ({
               <LoadingSpinner />
             </div>
           ) : files.length === 0 ? (
-            <Text.Body tone="secondary">No files found.</Text.Body>
+            <Text color="neutral.11">No files found.</Text>
           ) : (
-            <Spacings.Stack scale="m">
+            <Stack direction="column" gap="400">
               <div
                 style={{
                   display: 'grid',
@@ -337,27 +336,31 @@ const LibraryModal: React.FC<LibraryModalProps> = ({
               </div>
 
               {pagination.totalPages > 1 && (
-                <Spacings.Inline alignItems="center" justifyContent="center" scale="s">
-                  <SecondaryButton
-                    label="← Prev"
+                <Stack direction="row" gap="200" alignItems="center" justifyContent="center">
+                  <Button
+                    variant="outline"
+                    size="sm"
                     isDisabled={pagination.currentPage <= 1}
-                    onClick={onPrevPage}
-                    size="small"
-                  />
-                  <Text.Detail tone="secondary">
+                    onPress={onPrevPage}
+                  >
+                    ← Prev
+                  </Button>
+                  <Text fontSize="sm" color="neutral.11">
                     {pagination.currentPage} / {pagination.totalPages}
-                  </Text.Detail>
-                  <SecondaryButton
-                    label="Next →"
+                  </Text>
+                  <Button
+                    variant="outline"
+                    size="sm"
                     isDisabled={pagination.currentPage >= pagination.totalPages}
-                    onClick={onNextPage}
-                    size="small"
-                  />
-                </Spacings.Inline>
+                    onPress={onNextPage}
+                  >
+                    Next →
+                  </Button>
+                </Stack>
               )}
-            </Spacings.Stack>
+            </Stack>
           )}
-          {error && <Text.Body tone="negative">{error}</Text.Body>}
+          {error && <Text color="critical.11">{error}</Text>}
         </div>
 
         {/* Footer */}
@@ -371,17 +374,15 @@ const LibraryModal: React.FC<LibraryModalProps> = ({
             gap: '12px',
           }}
         >
-          <Text.Detail tone="secondary" truncate>
+          <Text fontSize="sm" color="neutral.11" truncate>
             {selected ? (selected.title ?? selected.name) : 'Nothing selected'}
-          </Text.Detail>
-          <Spacings.Inline scale="s">
-            <SecondaryButton label="Cancel" onClick={onClose} />
-            <PrimaryButton
-              label="Select"
-              isDisabled={!selected}
-              onClick={handleConfirm}
-            />
-          </Spacings.Inline>
+          </Text>
+          <Stack direction="row" gap="200">
+            <Button variant="outline" onPress={onClose}>Cancel</Button>
+            <Button variant="solid" isDisabled={!selected} onPress={handleConfirm}>
+              Select
+            </Button>
+          </Stack>
         </div>
       </div>
     </div>
@@ -456,60 +457,64 @@ export const ImagePickerField: React.FC<ImagePickerFieldProps> = ({
   }, []);
 
   return (
-    <Spacings.Stack scale="s">
-      {value ? (
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '10px',
-            padding: '8px',
-            border: '1px solid #d1d5db',
-            borderRadius: '6px',
-            background: '#f9fafb',
-          }}
-        >
-          <img
-            src={value}
-            alt=""
-            style={{ width: '48px', height: '48px', objectFit: 'cover', borderRadius: '4px', flexShrink: 0 }}
-          />
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <Text.Detail tone="secondary" truncate>{value}</Text.Detail>
+    <EnsureNimbusProvider>
+      <Stack direction="column" gap="200">
+        {value ? (
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '10px',
+              padding: '8px',
+              border: '1px solid #d1d5db',
+              borderRadius: '6px',
+              background: '#f9fafb',
+            }}
+          >
+            <img
+              src={value}
+              alt=""
+              style={{ width: '48px', height: '48px', objectFit: 'cover', borderRadius: '4px', flexShrink: 0 }}
+            />
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <Text fontSize="sm" color="neutral.11" truncate>{value}</Text>
+            </div>
+            <Button variant="ghost" colorPalette="critical" size="xs" onPress={() => onChange('')}>
+              Remove
+            </Button>
           </div>
-          <FlatButton tone="critical" label="Remove" onClick={() => onChange('')} />
-        </div>
-      ) : (
-        <Text.Detail tone="secondary">No image selected</Text.Detail>
-      )}
+        ) : (
+          <Text fontSize="sm" color="neutral.11">No image selected</Text>
+        )}
 
-      <Spacings.Inline scale="s">
-        <SecondaryButton label="Upload" onClick={() => setShowUpload(true)} />
-        <PrimaryButton label="Media Library" onClick={openLibrary} />
-      </Spacings.Inline>
+        <Stack direction="row" gap="200">
+          <Button variant="outline" onPress={() => setShowUpload(true)}>Upload</Button>
+          <Button variant="solid" onPress={openLibrary}>Media Library</Button>
+        </Stack>
 
-      {showUpload && (
-        <UploadModal
-          uploading={uploading}
-          error={error}
-          imagesOnly={imagesOnly}
-          onUpload={(file, title, desc) => void handleUpload(file, title, desc)}
-          onClose={() => setShowUpload(false)}
-        />
-      )}
+        {showUpload && (
+          <UploadModal
+            uploading={uploading}
+            error={error}
+            imagesOnly={imagesOnly}
+            onUpload={(file, title, desc) => void handleUpload(file, title, desc)}
+            onClose={() => setShowUpload(false)}
+          />
+        )}
 
-      {showLibrary && (
-        <LibraryModal
-          files={files}
-          pagination={pagination}
-          loading={loading}
-          error={error}
-          onNextPage={() => void loadNextPage(extensions)}
-          onPrevPage={() => void loadPreviousPage(extensions)}
-          onSelect={handleSelect}
-          onClose={() => setShowLibrary(false)}
-        />
-      )}
-    </Spacings.Stack>
+        {showLibrary && (
+          <LibraryModal
+            files={files}
+            pagination={pagination}
+            loading={loading}
+            error={error}
+            onNextPage={() => void loadNextPage(extensions)}
+            onPrevPage={() => void loadPreviousPage(extensions)}
+            onSelect={handleSelect}
+            onClose={() => setShowLibrary(false)}
+          />
+        )}
+      </Stack>
+    </EnsureNimbusProvider>
   );
 };

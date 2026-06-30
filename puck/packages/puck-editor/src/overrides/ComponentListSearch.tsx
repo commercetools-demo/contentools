@@ -1,5 +1,13 @@
-import React, { createContext, useContext, useState, type ReactNode } from 'react';
-import TextInput from '@commercetools-uikit/text-input';
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+  type ReactNode,
+} from 'react';
+import { usePuck } from '@measured/puck';
+import { TextInput } from '@commercetools/nimbus';
 import {
   useVersionHistoryContext,
   VersionHistorySidebarContent,
@@ -64,6 +72,18 @@ const SidebarTab: React.FC<{
   </button>
 );
 
+// Remap the `expanded` flag of every category in Puck's componentList UI state.
+const remapExpanded = (
+  componentList: Record<string, { expanded?: boolean }> | undefined,
+  next: (key: string, current: boolean) => boolean
+): Record<string, { expanded?: boolean }> =>
+  Object.fromEntries(
+    Object.entries(componentList ?? {}).map(([key, value]) => [
+      key,
+      { ...value, expanded: next(key, !!value.expanded) },
+    ])
+  );
+
 // ---------------------------------------------------------------------------
 // ComponentsPanel override — tabs: "Components" | "History"
 //
@@ -76,6 +96,47 @@ const SidebarTab: React.FC<{
 export const ComponentsPanel: React.FC<{ children: ReactNode }> = ({ children }) => {
   const { search, setSearch } = useContext(ComponentSearchContext);
   const { isHistoryTabActive, openHistoryTab, closeHistoryTab } = useVersionHistoryContext();
+  const { dispatch, appState } = usePuck();
+
+  // Categories start collapsed for a tidy panel, but a search must never hide a
+  // match inside a collapsed group — so expand everything while searching and
+  // restore the author's prior expansion when the search is cleared.
+  const searching = search.trim() !== '';
+  const expansionSnapshot = useRef<Record<string, boolean> | null>(null);
+
+  useEffect(() => {
+    const componentList = (appState?.ui?.componentList ?? {}) as Record<
+      string,
+      { expanded?: boolean }
+    >;
+    if (searching) {
+      if (expansionSnapshot.current === null) {
+        expansionSnapshot.current = Object.fromEntries(
+          Object.entries(componentList).map(([k, v]) => [k, !!v.expanded])
+        );
+        dispatch({
+          type: 'setUi',
+          ui: (prev) => ({
+            componentList: remapExpanded(prev.componentList, () => true),
+          }),
+        });
+      }
+    } else if (expansionSnapshot.current) {
+      const snap = expansionSnapshot.current;
+      dispatch({
+        type: 'setUi',
+        ui: (prev) => ({
+          componentList: remapExpanded(
+            prev.componentList,
+            (key, current) => snap[key] ?? current
+          ),
+        }),
+      });
+      expansionSnapshot.current = null;
+    }
+    // Only react to the search on/off transition.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searching]);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
@@ -138,12 +199,43 @@ export const ComponentsPanel: React.FC<{ children: ReactNode }> = ({ children })
             >
               Search components
             </label>
-            <TextInput
-              id="puck-component-search"
-              placeholder="Search components…"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
+            <div style={{ position: 'relative' }}>
+              <TextInput
+                id="puck-component-search"
+                placeholder="Search components…"
+                value={search}
+                onChange={(value) => setSearch(value)}
+              />
+              {search !== '' && (
+                <button
+                  type="button"
+                  aria-label="Clear search"
+                  title="Clear search"
+                  onClick={() => setSearch('')}
+                  style={{
+                    position: 'absolute',
+                    top: '50%',
+                    right: 8,
+                    transform: 'translateY(-50%)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: 18,
+                    height: 18,
+                    padding: 0,
+                    border: 'none',
+                    borderRadius: '50%',
+                    background: 'var(--puck-color-grey-05, #d1d5db)',
+                    color: 'var(--puck-color-grey-11, #4b5563)',
+                    cursor: 'pointer',
+                    fontSize: 13,
+                    lineHeight: 1,
+                  }}
+                >
+                  ×
+                </button>
+              )}
+            </div>
           </div>
 
           {/* Scrollable component list */}

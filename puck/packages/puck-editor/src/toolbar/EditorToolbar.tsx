@@ -1,11 +1,7 @@
 import React from 'react';
 import type { PuckStateInfo } from '@commercetools-demo/puck-types';
 import { VersionHistoryButton } from '@commercetools-demo/puck-version-history';
-import Stamp from '@commercetools-uikit/stamp';
-import PrimaryButton from '@commercetools-uikit/primary-button';
-import SecondaryButton from '@commercetools-uikit/secondary-button';
-import FlatButton from '@commercetools-uikit/flat-button';
-import Spacings from '@commercetools-uikit/spacings';
+import { Badge, Button, Stack } from '@commercetools/nimbus';
 
 export interface EditorToolbarProps {
   saving: boolean;
@@ -30,42 +26,36 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
   const hasPublished = Boolean(states.published);
 
   return (
-    <Spacings.Inline scale="s" alignItems="center">
-      {/* Status stamps */}
-      <Spacings.Inline scale="xs" alignItems="center">
-        {saving && <Stamp tone="warning" label="Saving…" isCondensed />}
-        {!saving && isDirty && <Stamp tone="secondary" label="Unsaved" isCondensed />}
-        {!saving && !isDirty && hasDraft && <Stamp tone="information" label="Draft" isCondensed />}
-        {hasPublished && <Stamp tone="positive" label="Published" isCondensed />}
-      </Spacings.Inline>
+    <Stack direction="row" gap="200" alignItems="center">
+      {/* Status badges */}
+      <Stack direction="row" gap="100" alignItems="center">
+        {saving && <Badge colorPalette="warning" size="xs">Saving…</Badge>}
+        {!saving && isDirty && <Badge colorPalette="neutral" size="xs">Unsaved</Badge>}
+        {!saving && !isDirty && hasDraft && <Badge colorPalette="info" size="xs">Draft</Badge>}
+        {hasPublished && <Badge colorPalette="positive" size="xs">Published</Badge>}
+      </Stack>
 
       {/* Revert button — only when there's a draft and an existing published version */}
       {hasDraft && hasPublished && (
-        <FlatButton
-          label="Revert to Published"
-          onClick={onRevert}
-          isDisabled={saving}
-        />
+        <Button variant="ghost" size="sm" onPress={onRevert} isDisabled={saving}>
+          Revert to Published
+        </Button>
       )}
 
       {/* Save draft button */}
-      <SecondaryButton
-        label="Save"
-        onClick={onSave}
-        isDisabled={!isDirty || saving}
-      />
+      <Button variant="outline" size="sm" onPress={onSave} isDisabled={!isDirty || saving}>
+        Save
+      </Button>
 
       {/* Publish button */}
       {showPublishButton && (
-        <PrimaryButton
-          label={hasPublished ? 'Re-publish' : 'Publish'}
-          onClick={onPublish}
-          isDisabled={saving}
-        />
+        <Button variant="solid" size="sm" onPress={onPublish} isDisabled={saving}>
+          {hasPublished ? 'Re-publish' : 'Publish'}
+        </Button>
       )}
 
       {/* Version history toggle — self-contained, reads context */}
       <VersionHistoryButton disabled={saving} />
-    </Spacings.Inline>
+    </Stack>
   );
 };

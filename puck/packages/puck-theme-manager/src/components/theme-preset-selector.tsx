@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import type { ThemeTokens } from '@commercetools-demo/puck-types';
-import PrimaryButton from '@commercetools-uikit/primary-button';
-import Spacings from '@commercetools-uikit/spacings';
-import FieldLabel from '@commercetools-uikit/field-label';
+import { Button, Stack } from '@commercetools/nimbus';
 import {
   themePresets,
   paradigmLabels,
@@ -44,9 +42,14 @@ const ThemePresetSelector: React.FC<ThemePresetSelectorProps> = ({
   };
 
   return (
-    <Spacings.Stack scale="s">
-      <FieldLabel title="Quick apply preset" htmlFor="theme-preset-select" />
-      <Spacings.Inline scale="s" alignItems="center">
+    <Stack direction="column" gap="200">
+      <label
+        htmlFor="theme-preset-select"
+        style={{ display: 'block', marginBottom: 4, fontSize: 13, fontWeight: 600 }}
+      >
+        Quick apply preset
+      </label>
+      <Stack direction="row" gap="200" alignItems="center">
         <select
           id="theme-preset-select"
           value={selectedKey}
@@ -57,13 +60,11 @@ const ThemePresetSelector: React.FC<ThemePresetSelectorProps> = ({
             <option key={o.value} value={o.value}>{o.label}</option>
           ))}
         </select>
-        <PrimaryButton
-          label="Apply"
-          onClick={handleApply}
-          isDisabled={!selectedKey}
-        />
-      </Spacings.Inline>
-    </Spacings.Stack>
+        <Button variant="solid" onPress={handleApply} isDisabled={!selectedKey}>
+          Apply
+        </Button>
+      </Stack>
+    </Stack>
   );
 };
 

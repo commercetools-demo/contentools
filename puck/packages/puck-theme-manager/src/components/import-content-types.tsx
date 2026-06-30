@@ -2,11 +2,8 @@ import React, { useState, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 import { PuckApiProvider, usePuckContentType } from '@commercetools-demo/puck-api';
 import type { ImportResult } from '@commercetools-demo/puck-types';
-import Card from '@commercetools-uikit/card';
-import FlatButton from '@commercetools-uikit/flat-button';
-import PrimaryButton from '@commercetools-uikit/primary-button';
-import Spacings from '@commercetools-uikit/spacings';
-import Text from '@commercetools-uikit/text';
+import { Button, Card, Stack, Text } from '@commercetools/nimbus';
+import { EnsureNimbusProvider } from '../EnsureNimbusProvider';
 
 interface InnerProps {
   backButton?: {
@@ -49,70 +46,69 @@ const ImportContentTypesInner: React.FC<InnerProps> = ({ backButton }) => {
   }, [importDefaultContentTypes, clearError]);
 
   return (
-    <Spacings.Stack scale="l">
+    <Stack direction="column" gap="600">
       {backButton && (
-        <FlatButton
-          onClick={handleBack}
-          label={backButton.label}
-          icon={backButton.icon as any}
-        >
+        <Button variant="ghost" onPress={handleBack}>
+          {backButton.icon}
           {backButton.label}
-        </FlatButton>
+        </Button>
       )}
-      <Text.Headline as="h1">Import default content types</Text.Headline>
-      <Text.Body tone="secondary">
+      <Text as="h1" fontSize="2xl" fontWeight="700">Import default content types</Text>
+      <Text color="neutral.11">
         Import default content type definitions from samples. Existing content
         types with the same key may be skipped or cause errors.
-      </Text.Body>
+      </Text>
 
       {error && (
-        <Card>
-          <Spacings.Stack scale="m">
-            <Text.Headline as="h2">Error</Text.Headline>
-            <Text.Body tone="critical">{error}</Text.Body>
-          </Spacings.Stack>
-        </Card>
+        <Card.Root variant="outlined">
+          <Card.Body>
+            <Stack direction="column" gap="400">
+              <Text as="h2" fontSize="xl" fontWeight="700">Error</Text>
+              <Text color="critical.11">{error}</Text>
+            </Stack>
+          </Card.Body>
+        </Card.Root>
       )}
 
-      <Spacings.Inline scale="m" justifyContent="center">
-        <PrimaryButton
-          label={loading ? 'Importing…' : 'Import default content types'}
-          onClick={handleImport}
-          isDisabled={loading}
-        />
-      </Spacings.Inline>
+      <Stack direction="row" gap="400" justifyContent="center">
+        <Button variant="solid" onPress={handleImport} isDisabled={loading}>
+          {loading ? 'Importing…' : 'Import default content types'}
+        </Button>
+      </Stack>
       {result && (
-        <Card>
-          <Spacings.Stack scale="m">
-            <Text.Headline as="h2">Result</Text.Headline>
-            <Text.Body>
-              Imported: {result.imported.length} content type
-              {result.imported.length !== 1 ? 's' : ''}.
-            </Text.Body>
-            {result.imported.length > 0 && (
-              <Text.Body tone="secondary">
-                {result.imported.join(', ')}
-              </Text.Body>
-            )}
-            {result.failed.length > 0 && (
-              <>
-                <Text.Body tone="critical">
-                  Failed: {result.failed.length} content type
-                  {result.failed.length !== 1 ? 's' : ''}.
-                </Text.Body>
-                <Spacings.Stack scale="s">
-                  {result.failed.map(({ key, error: err }) => (
-                    <Text.Body key={key} tone="critical">
-                      {key}: {err}
-                    </Text.Body>
-                  ))}
-                </Spacings.Stack>
-              </>
-            )}
-          </Spacings.Stack>
-        </Card>
+        <Card.Root variant="outlined">
+          <Card.Body>
+            <Stack direction="column" gap="400">
+              <Text as="h2" fontSize="xl" fontWeight="700">Result</Text>
+              <Text>
+                Imported: {result.imported.length} content type
+                {result.imported.length !== 1 ? 's' : ''}.
+              </Text>
+              {result.imported.length > 0 && (
+                <Text color="neutral.11">
+                  {result.imported.join(', ')}
+                </Text>
+              )}
+              {result.failed.length > 0 && (
+                <>
+                  <Text color="critical.11">
+                    Failed: {result.failed.length} content type
+                    {result.failed.length !== 1 ? 's' : ''}.
+                  </Text>
+                  <Stack direction="column" gap="200">
+                    {result.failed.map(({ key, error: err }) => (
+                      <Text key={key} color="critical.11">
+                        {key}: {err}
+                      </Text>
+                    ))}
+                  </Stack>
+                </>
+              )}
+            </Stack>
+          </Card.Body>
+        </Card.Root>
       )}
-    </Spacings.Stack>
+    </Stack>
   );
 };
 
@@ -129,7 +125,9 @@ const ImportContentTypes: React.FC<ImportContentTypesProps> = ({
     businessUnitKey={businessUnitKey}
     jwtToken={jwtToken}
   >
-    <ImportContentTypesInner {...innerProps} />
+    <EnsureNimbusProvider>
+      <ImportContentTypesInner {...innerProps} />
+    </EnsureNimbusProvider>
   </PuckApiProvider>
 );
 

@@ -15,6 +15,7 @@ import {
 import { PuckEditor, defaultPuckConfig } from '@commercetools-demo/puck-editor';
 import { PuckRenderer } from '@commercetools-demo/puck-renderer';
 import { EnsureIntlProvider } from './EnsureIntlProvider';
+import { EnsureNimbusProvider } from './EnsureNimbusProvider';
 
 const DEFAULT_CONFIG: Config = {
   ...defaultPuckConfig,
@@ -22,46 +23,37 @@ const DEFAULT_CONFIG: Config = {
 };
 import type { Config } from '@measured/puck';
 import type { CreatePuckPageInput, PuckPageListItem } from '@commercetools-demo/puck-types';
-import DataTable from '@commercetools-uikit/data-table';
-import PrimaryButton from '@commercetools-uikit/primary-button';
-import SecondaryButton from '@commercetools-uikit/secondary-button';
-import FlatButton from '@commercetools-uikit/flat-button';
-import Card from '@commercetools-uikit/card';
-import Spacings from '@commercetools-uikit/spacings';
-import Text from '@commercetools-uikit/text';
-import LoadingSpinner from '@commercetools-uikit/loading-spinner';
-import TextInput from '@commercetools-uikit/text-input';
-import Label from '@commercetools-uikit/label';
-import { PlusThinIcon, AngleLeftIcon } from '@commercetools-uikit/icons';
+import {
+  Badge,
+  Button,
+  Card,
+  DataTable,
+  FormField,
+  Icon,
+  LoadingSpinner,
+  Stack,
+  Text,
+  TextInput,
+  type DataTableColumnItem,
+} from '@commercetools/nimbus';
+import { Add, ChevronLeft } from '@commercetools/nimbus-icons';
 
 // ---------------------------------------------------------------------------
 // Status badge
 // ---------------------------------------------------------------------------
 
+const STATUS_BADGE: Record<
+  'draft' | 'published' | 'none',
+  { colorPalette: 'warning' | 'positive' | 'neutral'; label: string }
+> = {
+  draft: { colorPalette: 'warning', label: 'Draft' },
+  published: { colorPalette: 'positive', label: 'Published' },
+  none: { colorPalette: 'neutral', label: 'No state' },
+};
+
 const StatusBadge: React.FC<{ variant: 'draft' | 'published' | 'none' }> = ({ variant }) => {
-  const styles: React.CSSProperties =
-    variant === 'published'
-      ? { background: 'var(--color-success-95)', color: 'var(--color-success-40)', border: '1px solid var(--color-success-85)' }
-      : variant === 'draft'
-        ? { background: 'var(--color-warning-95)', color: 'var(--color-warning-40)', border: '1px solid var(--color-warning-85)' }
-        : { background: 'var(--color-neutral-95)', color: 'var(--color-neutral-50)', border: '1px solid var(--color-neutral-85)' };
-  return (
-    <span
-      style={{
-        ...styles,
-        display: 'inline-flex',
-        alignItems: 'center',
-        padding: '2px 8px',
-        borderRadius: 'var(--border-radius-20)',
-        fontSize: 'var(--font-size-10)',
-        fontWeight: 'var(--font-weight-600)',
-        marginRight: '4px',
-        whiteSpace: 'nowrap',
-      }}
-    >
-      {variant === 'published' ? 'Published' : variant === 'draft' ? 'Draft' : 'No state'}
-    </span>
-  );
+  const meta = STATUS_BADGE[variant];
+  return <Badge colorPalette={meta.colorPalette} size="xs">{meta.label}</Badge>;
 };
 
 // ---------------------------------------------------------------------------
@@ -76,24 +68,16 @@ const NAV_BAR_STYLE: React.CSSProperties = {
   gap: '12px',
   padding: '8px 16px',
   background: 'var(--color-surface, #fff)',
-  borderBottom: '1px solid var(--color-neutral-90)',
+  borderBottom: '1px solid var(--color-neutral-90, #e0e0e0)',
   zIndex: 200,
   flexShrink: 0,
 };
 
 // ---------------------------------------------------------------------------
-// Table columns
+// Table row type
 // ---------------------------------------------------------------------------
 
-type PageRow = PuckPageListItem & { id: string };
-
-const COLUMNS = [
-  { key: 'name', label: 'Name' },
-  { key: 'slug', label: 'Slug' },
-  { key: 'status', label: 'Status' },
-  { key: 'updatedAt', label: 'Updated' },
-  { key: 'actions', label: 'Actions', shouldIgnoreRowClick: true },
-];
+type PageRow = PuckPageListItem & { id: string; [key: string]: unknown };
 
 // ---------------------------------------------------------------------------
 // PageList route
@@ -158,154 +142,173 @@ const PageList: React.FC<PageListProps> = ({ backButton }) => {
   if (error) {
     return (
       <div style={{ padding: '32px' }}>
-        <Text.Body tone="negative">Error: {error}</Text.Body>
+        <Text color="critical.11">Error: {error}</Text>
       </div>
     );
   }
 
   const rows: PageRow[] = pages.map((p: PuckPageListItem) => ({ ...p, id: p.key }));
 
+  const columns: DataTableColumnItem<PageRow>[] = [
+    {
+      id: 'name',
+      header: 'Name',
+      accessor: (row) => row.value.name,
+      render: ({ row }) => (
+        <Stack direction="column" gap="100">
+          <Text fontWeight="bold">{row.value.name}</Text>
+          <Text fontSize="sm" color="neutral.11">{row.key}</Text>
+        </Stack>
+      ),
+    },
+    {
+      id: 'slug',
+      header: 'Slug',
+      accessor: (row) => row.value.slug,
+      render: ({ row }) => (
+        <code
+          style={{
+            background: '#f4f4f4',
+            padding: '2px 6px',
+            borderRadius: '4px',
+            fontSize: '11px',
+            fontFamily: 'monospace',
+          }}
+        >
+          {row.value.slug}
+        </code>
+      ),
+    },
+    {
+      id: 'status',
+      header: 'Status',
+      accessor: () => '',
+      isSortable: false,
+      render: ({ row }) => (
+        <Stack direction="row" gap="100" wrap="wrap">
+          {row.states.draft && <StatusBadge variant="draft" />}
+          {row.states.published && <StatusBadge variant="published" />}
+          {!row.states.draft && !row.states.published && <StatusBadge variant="none" />}
+        </Stack>
+      ),
+    },
+    {
+      id: 'updatedAt',
+      header: 'Updated',
+      accessor: (row) => row.value.updatedAt,
+      render: ({ row }) => (
+        <Text color="neutral.11">
+          {new Date(row.value.updatedAt).toLocaleString()}
+        </Text>
+      ),
+    },
+    {
+      id: 'actions',
+      header: 'Actions',
+      accessor: () => '',
+      isSortable: false,
+      render: ({ row }) => (
+        <Stack direction="row" gap="200" alignItems="center">
+          <Button
+            variant="solid"
+            size="xs"
+            onPress={() => history.push(`/${row.key}/edit`, { pageName: row.value.name })}
+          >
+            Edit
+          </Button>
+          <Button
+            variant="outline"
+            size="xs"
+            onPress={() => history.push(`/${row.key}/preview`, { pageName: row.value.name })}
+          >
+            Preview
+          </Button>
+          <Button
+            variant="ghost"
+            colorPalette="critical"
+            size="xs"
+            isDisabled={deleting === row.key}
+            onPress={() => void handleDelete(row)}
+          >
+            {deleting === row.key ? '…' : 'Delete'}
+          </Button>
+        </Stack>
+      ),
+    },
+  ];
+
   return (
     <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '32px 24px' }}>
-      <Spacings.Stack scale="l">
-        <Spacings.Inline justifyContent="space-between" alignItems="center">
-          <Spacings.Inline scale="m" alignItems="center">
+      <Stack direction="column" gap="600">
+        <Stack direction="row" justifyContent="space-between" alignItems="center">
+          <Stack direction="row" gap="400" alignItems="center">
             {backButton}
-            <Text.Headline as="h1">Puck Pages</Text.Headline>
-          </Spacings.Inline>
-          <PrimaryButton
-            label="New Page"
-            iconLeft={<PlusThinIcon />}
-            onClick={() => setCreating(true)}
-          />
-        </Spacings.Inline>
+            <Text as="h1" fontSize="2xl" fontWeight="700">Pages</Text>
+          </Stack>
+          <Button variant="solid" onPress={() => setCreating(true)}>
+            <Icon as={Add} /> New Page
+          </Button>
+        </Stack>
 
         {creating && (
-          <Card insetScale="l">
-            <Spacings.Stack scale="m">
-              <Text.Subheadline as="h4" isBold>Create New Page</Text.Subheadline>
-              <Spacings.Inline scale="m">
-                <div style={{ flex: 1 }}>
-                  <Spacings.Stack scale="xs">
-                    <Label htmlFor="new-page-name">Name *</Label>
-                    <TextInput
-                      id="new-page-name"
-                      value={newName}
-                      onChange={(e) => setNewName(e.target.value)}
-                      placeholder="Home Page"
-                    />
-                  </Spacings.Stack>
-                </div>
-                <div style={{ flex: 1 }}>
-                  <Spacings.Stack scale="xs">
-                    <Label htmlFor="new-page-slug">Slug *</Label>
-                    <TextInput
-                      id="new-page-slug"
-                      value={newSlug}
-                      onChange={(e) => setNewSlug(e.target.value)}
-                      placeholder="/home"
-                    />
-                  </Spacings.Stack>
-                </div>
-              </Spacings.Inline>
-              {formError && <Text.Body tone="negative">{formError}</Text.Body>}
-              <Spacings.Inline scale="s">
-                <PrimaryButton
-                  label={submitting ? 'Creating…' : 'Create'}
-                  onClick={() => void handleCreate()}
-                  isDisabled={submitting}
-                />
-                <SecondaryButton
-                  label="Cancel"
-                  onClick={() => { setCreating(false); setFormError(''); }}
-                />
-              </Spacings.Inline>
-            </Spacings.Stack>
-          </Card>
+          <Card.Root variant="outlined">
+            <Card.Body>
+              <Stack direction="column" gap="400">
+                <Text as="h4" fontSize="xl" fontWeight="700">Create New Page</Text>
+                <Stack direction="row" gap="400">
+                  <div style={{ flex: 1 }}>
+                    <FormField.Root isRequired>
+                      <FormField.Label>Name</FormField.Label>
+                      <FormField.Input>
+                        <TextInput
+                          value={newName}
+                          onChange={(v) => setNewName(v)}
+                          placeholder="Home Page"
+                        />
+                      </FormField.Input>
+                    </FormField.Root>
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <FormField.Root isRequired>
+                      <FormField.Label>Slug</FormField.Label>
+                      <FormField.Input>
+                        <TextInput
+                          value={newSlug}
+                          onChange={(v) => setNewSlug(v)}
+                          placeholder="/home"
+                        />
+                      </FormField.Input>
+                    </FormField.Root>
+                  </div>
+                </Stack>
+                {formError && <Text color="critical.11">{formError}</Text>}
+                <Stack direction="row" gap="200">
+                  <Button variant="solid" onPress={() => void handleCreate()} isDisabled={submitting}>
+                    {submitting ? 'Creating…' : 'Create'}
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onPress={() => { setCreating(false); setFormError(''); }}
+                  >
+                    Cancel
+                  </Button>
+                </Stack>
+              </Stack>
+            </Card.Body>
+          </Card.Root>
         )}
 
         {pages.length === 0 && !creating ? (
-          <Spacings.Stack scale="m" alignItems="center">
-            <Text.Body tone="secondary">No pages yet.</Text.Body>
-            <PrimaryButton
-              label="Create first page"
-              iconLeft={<PlusThinIcon />}
-              onClick={() => setCreating(true)}
-            />
-          </Spacings.Stack>
+          <Stack direction="column" gap="400" alignItems="center">
+            <Text color="neutral.11">No pages yet.</Text>
+            <Button variant="solid" onPress={() => setCreating(true)}>
+              <Icon as={Add} /> Create first page
+            </Button>
+          </Stack>
         ) : pages.length > 0 ? (
-          <DataTable
-            columns={COLUMNS}
-            rows={rows}
-            itemRenderer={(row: PageRow, column) => {
-              switch (column.key) {
-                case 'name':
-                  return (
-                    <Spacings.Stack scale="xs">
-                      <Text.Body isBold>{row.value.name}</Text.Body>
-                      <Text.Detail tone="secondary">{row.key}</Text.Detail>
-                    </Spacings.Stack>
-                  );
-                case 'slug':
-                  return (
-                    <code
-                      style={{
-                        background: 'var(--color-neutral-95)',
-                        padding: '2px 6px',
-                        borderRadius: 'var(--border-radius-4)',
-                        fontSize: 'var(--font-size-10)',
-                        fontFamily: 'monospace',
-                      }}
-                    >
-                      {row.value.slug}
-                    </code>
-                  );
-                case 'status':
-                  return (
-                    <span>
-                      {row.states.draft && <StatusBadge variant="draft" />}
-                      {row.states.published && <StatusBadge variant="published" />}
-                      {!row.states.draft && !row.states.published && <StatusBadge variant="none" />}
-                    </span>
-                  );
-                case 'updatedAt':
-                  return (
-                    <Text.Body tone="secondary">
-                      {new Date(row.value.updatedAt).toLocaleString()}
-                    </Text.Body>
-                  );
-                case 'actions':
-                  return (
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <PrimaryButton
-                        label="Edit"
-                        size="20"
-                        onClick={() =>
-                          history.push(`/${row.key}/edit`, { pageName: row.value.name })
-                        }
-                      />
-                      <SecondaryButton
-                        label="Preview"
-                        size="20"
-                        onClick={() =>
-                          history.push(`/${row.key}/preview`, { pageName: row.value.name })
-                        }
-                      />
-                      <FlatButton
-                        tone="critical"
-                        label={deleting === row.key ? '…' : 'Delete'}
-                        isDisabled={deleting === row.key}
-                        onClick={() => void handleDelete(row)}
-                      />
-                    </div>
-                  );
-                default:
-                  return null;
-              }
-            }}
-          />
+          <DataTable columns={columns} rows={rows} aria-label="Pages" />
         ) : null}
-      </Spacings.Stack>
+      </Stack>
     </div>
   );
 };
@@ -331,15 +334,12 @@ const PageEditorRoute: React.FC<RouteProps> = ({ config, backButton }) => {
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       <div style={NAV_BAR_STYLE}>
         {backButton}
-        {backButton && <Text.Body tone="secondary">/</Text.Body>}
-        <FlatButton
-          label="Pages"
-          icon={<AngleLeftIcon />}
-          iconPosition="left"
-          onClick={() => history.push('/')}
-        />
-        <Text.Body tone="secondary">/</Text.Body>
-        <Text.Body isBold>{pageName}</Text.Body>
+        {backButton && <Text color="neutral.11">/</Text>}
+        <Button variant="ghost" onPress={() => history.push('/')}>
+          <Icon as={ChevronLeft} /> Pages
+        </Button>
+        <Text color="neutral.11">/</Text>
+        <Text fontWeight="bold">{pageName}</Text>
       </div>
       <div style={{ flex: 1, overflow: 'hidden' }}>
         <PuckEditor
@@ -372,30 +372,13 @@ const PagePreviewRoute: React.FC<RouteProps> = ({ config, backButton }) => {
     <div>
       <div style={NAV_BAR_STYLE}>
         {backButton}
-        {backButton && <Text.Body tone="secondary">/</Text.Body>}
-        <FlatButton
-          label="Pages"
-          icon={<AngleLeftIcon />}
-          iconPosition="left"
-          onClick={() => history.push('/')}
-        />
-        <Text.Body tone="secondary">/</Text.Body>
-        <Text.Body isBold>{pageName}</Text.Body>
-        <span
-          style={{
-            background: 'var(--color-primary-95)',
-            color: 'var(--color-primary-25)',
-            border: '1px solid var(--color-primary-85)',
-            display: 'inline-flex',
-            alignItems: 'center',
-            padding: '2px 10px',
-            borderRadius: 'var(--border-radius-20)',
-            fontSize: 'var(--font-size-10)',
-            fontWeight: 'var(--font-weight-600)',
-          }}
-        >
-          Preview
-        </span>
+        {backButton && <Text color="neutral.11">/</Text>}
+        <Button variant="ghost" onPress={() => history.push('/')}>
+          <Icon as={ChevronLeft} /> Pages
+        </Button>
+        <Text color="neutral.11">/</Text>
+        <Text fontWeight="bold">{pageName}</Text>
+        <Badge colorPalette="primary" size="xs">Preview</Badge>
       </div>
       <PuckRenderer pageKey={pageKey} mode="preview" config={config} />
     </div>
@@ -454,17 +437,19 @@ export const PageManager: React.FC<PageManagerProps> = ({
   config = DEFAULT_CONFIG,
   backButton,
 }) => (
-  <EnsureIntlProvider>
-    <PuckApiProvider
-      baseURL={baseURL}
-      projectKey={projectKey}
-      businessUnitKey={businessUnitKey}
-      jwtToken={jwtToken}
-      locale={locale}
-    >
-      <BrowserRouter basename={parentUrl}>
-        <PageManagerInner config={config} backButton={backButton} />
-      </BrowserRouter>
-    </PuckApiProvider>
-  </EnsureIntlProvider>
+  <EnsureNimbusProvider locale={locale}>
+    <EnsureIntlProvider>
+      <PuckApiProvider
+        baseURL={baseURL}
+        projectKey={projectKey}
+        businessUnitKey={businessUnitKey}
+        jwtToken={jwtToken}
+        locale={locale}
+      >
+        <BrowserRouter basename={parentUrl}>
+          <PageManagerInner config={config} backButton={backButton} />
+        </BrowserRouter>
+      </PuckApiProvider>
+    </EnsureIntlProvider>
+  </EnsureNimbusProvider>
 );

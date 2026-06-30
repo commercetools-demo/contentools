@@ -2,19 +2,155 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 import { PuckApiProvider, usePuckConfiguration } from '@commercetools-demo/puck-api';
 import type { ThemeTokens } from '@commercetools-demo/puck-types';
-import Card from '@commercetools-uikit/card';
-import FlatButton from '@commercetools-uikit/flat-button';
-import PrimaryButton from '@commercetools-uikit/primary-button';
-import SecondaryButton from '@commercetools-uikit/secondary-button';
-import FieldLabel from '@commercetools-uikit/field-label';
-import NumberInput from '@commercetools-uikit/number-input';
-import Spacings from '@commercetools-uikit/spacings';
-import Text from '@commercetools-uikit/text';
-import TextInput from '@commercetools-uikit/text-input';
-import LoadingSpinner from '@commercetools-uikit/loading-spinner';
-import Grid from '@commercetools-uikit/grid';
+import {
+  Button,
+  Card as NimbusCard,
+  Grid as NimbusGrid,
+  LoadingSpinner,
+  NumberInput as NimbusNumberInput,
+  Stack,
+  Text as NimbusText,
+  TextInput as NimbusTextInput,
+} from '@commercetools/nimbus';
 import { DEFAULT_THEME } from '../constants';
+import { EnsureNimbusProvider } from '../EnsureNimbusProvider';
 import ThemePresetSelector from './theme-preset-selector';
+
+// ---------------------------------------------------------------------------
+// Thin Nimbus adapters
+//
+// This is a large, highly repetitive settings form. To keep the markup below
+// readable and avoid a risky line-by-line rewrite, these adapters preserve the
+// original component call-sites while rendering Nimbus components underneath.
+// ---------------------------------------------------------------------------
+
+const SCALE_TO_GAP: Record<string, string> = {
+  xs: '100',
+  s: '200',
+  m: '400',
+  l: '600',
+  xl: '800',
+};
+
+interface SpacingsLayoutProps {
+  scale?: string;
+  alignItems?: string;
+  justifyContent?: string;
+  children?: React.ReactNode;
+}
+
+const Spacings = {
+  Stack: ({ scale = 'm', alignItems, justifyContent, children }: SpacingsLayoutProps) => (
+    <Stack
+      direction="column"
+      gap={SCALE_TO_GAP[scale] ?? '400'}
+      alignItems={alignItems}
+      justifyContent={justifyContent}
+    >
+      {children}
+    </Stack>
+  ),
+  Inline: ({ scale = 'm', alignItems, justifyContent, children }: SpacingsLayoutProps) => (
+    <Stack
+      direction="row"
+      gap={SCALE_TO_GAP[scale] ?? '400'}
+      alignItems={alignItems}
+      justifyContent={justifyContent}
+    >
+      {children}
+    </Stack>
+  ),
+};
+
+const TONE_TO_COLOR: Record<string, string | undefined> = {
+  secondary: 'neutral.11',
+  critical: 'critical.11',
+  positive: 'positive.11',
+};
+
+const Text = {
+  Headline: ({ as = 'h2', children }: { as?: React.ElementType; children?: React.ReactNode }) => (
+    <NimbusText as={as} fontSize={as === 'h1' ? '2xl' : 'xl'} fontWeight="700">
+      {children}
+    </NimbusText>
+  ),
+  Body: ({ tone, children }: { tone?: string; children?: React.ReactNode }) => (
+    <NimbusText color={tone ? TONE_TO_COLOR[tone] : undefined}>{children}</NimbusText>
+  ),
+};
+
+const Card = ({ children }: { children?: React.ReactNode }) => (
+  <NimbusCard.Root variant="outlined">
+    <NimbusCard.Body>{children}</NimbusCard.Body>
+  </NimbusCard.Root>
+);
+
+const Grid = Object.assign(
+  ({
+    gridGap,
+    gridTemplateColumns,
+    gridAutoColumns,
+    children,
+  }: {
+    gridGap?: string;
+    gridTemplateColumns?: string;
+    gridAutoColumns?: string;
+    children?: React.ReactNode;
+  }) => (
+    <NimbusGrid gap={gridGap} templateColumns={gridTemplateColumns} autoColumns={gridAutoColumns}>
+      {children}
+    </NimbusGrid>
+  ),
+  {
+    Item: ({ children }: { children?: React.ReactNode }) => (
+      <NimbusGrid.Item>{children}</NimbusGrid.Item>
+    ),
+  }
+);
+
+interface AdapterButtonProps {
+  label?: React.ReactNode;
+  onClick?: () => void;
+  isDisabled?: boolean;
+  icon?: React.ReactNode;
+  children?: React.ReactNode;
+}
+const PrimaryButton = ({ label, onClick, isDisabled }: AdapterButtonProps) => (
+  <Button variant="solid" onPress={onClick} isDisabled={isDisabled}>{label}</Button>
+);
+const SecondaryButton = ({ label, onClick, isDisabled }: AdapterButtonProps) => (
+  <Button variant="outline" onPress={onClick} isDisabled={isDisabled}>{label}</Button>
+);
+const FlatButton = ({ label, onClick, isDisabled, icon }: AdapterButtonProps) => (
+  <Button variant="ghost" onPress={onClick} isDisabled={isDisabled}>{icon}{label}</Button>
+);
+
+const FieldLabel = ({ title, htmlFor }: { title: string; htmlFor?: string }) => (
+  <label htmlFor={htmlFor} style={{ display: 'block', marginBottom: 4, fontSize: 13, fontWeight: 600 }}>
+    {title}
+  </label>
+);
+
+interface AdapterInputProps {
+  id?: string;
+  value?: string | number;
+  onChange?: (e: { target: { value: string } }) => void;
+  horizontalConstraint?: number;
+}
+const TextInput = ({ id, value, onChange }: AdapterInputProps) => (
+  <NimbusTextInput
+    id={id}
+    value={value == null ? '' : String(value)}
+    onChange={(v) => onChange?.({ target: { value: v } })}
+  />
+);
+const NumberInput = ({ id, value, onChange }: AdapterInputProps) => (
+  <NimbusNumberInput
+    id={id}
+    value={value == null || value === '' ? 0 : Number(value)}
+    onChange={(n) => onChange?.({ target: { value: Number.isNaN(n) ? '' : String(n) } })}
+  />
+);
 
 const BORDER_RADIUS_OPTIONS = [
   { value: 'none', label: 'None' },
@@ -1300,7 +1436,9 @@ const ThemeManager: React.FC<ThemeManagerProps> = ({
     businessUnitKey={businessUnitKey}
     jwtToken={jwtToken}
   >
-    <ThemeEditorInner {...innerProps} />
+    <EnsureNimbusProvider>
+      <ThemeEditorInner {...innerProps} />
+    </EnsureNimbusProvider>
   </PuckApiProvider>
 );
 

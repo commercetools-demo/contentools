@@ -2,8 +2,8 @@ import type { Field } from '@measured/puck';
 
 /**
  * Reusable font-size control for plain-text component props (headings, labels,
- * etc.) — task #2. Rich-text fields get inline font sizing from the toolbar
- * instead; this covers the text elements that aren't edited through TipTap.
+ * etc.). This covers the text elements that aren't edited through the rich-text
+ * editor (the Nimbus RichTextInput has no inline font-size control).
  *
  * The stored value is a CSS size string (e.g. "1.5rem"); the empty option means
  * "inherit the component default", so render with `value || defaultSize`.

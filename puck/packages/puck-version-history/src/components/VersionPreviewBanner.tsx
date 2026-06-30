@@ -1,9 +1,6 @@
 import React from 'react';
-import Stamp from '@commercetools-uikit/stamp';
-import PrimaryButton from '@commercetools-uikit/primary-button';
-import SecondaryButton from '@commercetools-uikit/secondary-button';
-import Spacings from '@commercetools-uikit/spacings';
-import { ClockIcon } from '@commercetools-uikit/icons';
+import { Badge, Button, Icon, Stack } from '@commercetools/nimbus';
+import { AccessTime } from '@commercetools/nimbus-icons';
 
 interface VersionPreviewBannerProps {
   timestamp: string;
@@ -30,27 +27,22 @@ export const VersionPreviewBanner: React.FC<VersionPreviewBannerProps> = ({
   });
 
   return (
-    <Spacings.Inline scale="s" alignItems="center">
+    <Stack direction="row" gap="200" alignItems="center">
       {/* Version label */}
-      <Stamp
-        tone="information"
-        label={`Previewing: ${formatted}`}
-        icon={<ClockIcon />}
-      />
+      <Badge colorPalette="info">
+        <Icon as={AccessTime} size="xs" />
+        {`Previewing: ${formatted}`}
+      </Badge>
 
       {/* Apply version button */}
-      <PrimaryButton
-        label={isApplying ? 'Applying…' : 'Apply this Version'}
-        onClick={onApply}
-        isDisabled={isApplying}
-      />
+      <Button variant="solid" onPress={onApply} isDisabled={isApplying}>
+        {isApplying ? 'Applying…' : 'Apply this Version'}
+      </Button>
 
       {/* Discard / back to current */}
-      <SecondaryButton
-        label="Back to Current"
-        onClick={onDiscard}
-        isDisabled={isApplying}
-      />
-    </Spacings.Inline>
+      <Button variant="outline" onPress={onDiscard} isDisabled={isApplying}>
+        Back to Current
+      </Button>
+    </Stack>
   );
 };

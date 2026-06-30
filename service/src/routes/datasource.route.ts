@@ -1,7 +1,10 @@
 import { Router } from 'express';
 import { logger } from '../utils/logger.utils';
 import { getFirestoreClient } from '../utils/firestore.utils';
-import { resolveDatasource } from '../controllers/datasource-resolution.route';
+import {
+  isBuiltInDatasource,
+  resolveDatasource,
+} from '../controllers/datasource-resolution.route';
 import { validateJwt } from '../middleware/jwt.middleware';
 import { validateProject } from '../middleware/project.middleware';
 import { requireProjectKey } from '../middleware/project-key.middleware';
@@ -90,10 +93,14 @@ datasourceRouter.delete('/datasource/:key', validateJwt, validateProject, async 
 datasourceRouter.post('/datasource/:key/test', validateJwt, validateProject, async (req: AuthenticatedRequest, res, next) => {
   try {
     const { key } = req.params;
-    const doc = await getDatasourcesCollection(req.project!.projectKey).doc(key).get();
-    if (!doc.exists) {
-      res.status(404).json({ error: `Datasource '${key}' not found` });
-      return;
+    // Built-in datasources (product-by-sku / products-by-sku) resolve via the
+    // commercetools API and don't require a registered Firestore document.
+    if (!isBuiltInDatasource(key)) {
+      const doc = await getDatasourcesCollection(req.project!.projectKey).doc(key).get();
+      if (!doc.exists) {
+        res.status(404).json({ error: `Datasource '${key}' not found` });
+        return;
+      }
     }
     const { params } = req.body;
     const result = await resolveDatasource(req, key, params);

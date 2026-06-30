@@ -2,11 +2,7 @@ import React from 'react';
 import { useVersionHistoryContext } from '../context/VersionHistoryContext';
 import { VersionCard } from './VersionCard';
 import { DiffSummary } from './DiffSummary';
-import PrimaryButton from '@commercetools-uikit/primary-button';
-import SecondaryButton from '@commercetools-uikit/secondary-button';
-import LoadingSpinner from '@commercetools-uikit/loading-spinner';
-import Text from '@commercetools-uikit/text';
-import Spacings from '@commercetools-uikit/spacings';
+import { Button, LoadingSpinner, Stack, Text } from '@commercetools/nimbus';
 
 /**
  * Inline version history panel for Puck's left sidebar.
@@ -35,11 +31,11 @@ export const VersionHistorySidebarContent: React.FC = () => {
           </div>
         ) : versions.length === 0 ? (
           <div style={{ padding: '12px 0' }}>
-            <Text.Body tone="secondary">No saved versions yet</Text.Body>
+            <Text color="neutral.11">No saved versions yet</Text>
           </div>
         ) : (
-          <Spacings.Stack scale="s">
-            <Text.Detail isBold>Saved versions</Text.Detail>
+          <Stack direction="column" gap="200">
+            <Text fontSize="sm" fontWeight="700">Saved versions</Text>
             {versions.map((v, i) => (
               <VersionCard
                 key={v.id}
@@ -49,7 +45,7 @@ export const VersionHistorySidebarContent: React.FC = () => {
                 onClick={onVersionSelect}
               />
             ))}
-          </Spacings.Stack>
+          </Stack>
         )}
 
         {/* Diff summary when a version is selected */}
@@ -75,20 +71,24 @@ export const VersionHistorySidebarContent: React.FC = () => {
             flexShrink: 0,
           }}
         >
-          <Spacings.Inline scale="s" justifyContent='space-between'>
-              <PrimaryButton
-                label={isApplying ? 'Applying…' : 'Apply'}
-                onClick={onApply}
-                isDisabled={isApplying}
-                size='10'
-              />
-              <SecondaryButton
-                label="Revert"
-                onClick={onDiscard}
-                isDisabled={isApplying}
-                size='10'
-              />
-          </Spacings.Inline>
+          <Stack direction="row" gap="200" justifyContent="space-between">
+            <Button
+              variant="solid"
+              size="sm"
+              onPress={onApply}
+              isDisabled={isApplying}
+            >
+              {isApplying ? 'Applying…' : 'Apply'}
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onPress={onDiscard}
+              isDisabled={isApplying}
+            >
+              Revert
+            </Button>
+          </Stack>
         </div>
       )}
     </div>
