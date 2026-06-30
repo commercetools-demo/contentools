@@ -32,15 +32,24 @@ import {
   Button,
   Card,
   DataTable,
+  Dialog,
   FormField,
   Icon,
+  IconButton,
   LoadingSpinner,
   Stack,
   Text,
   TextInput,
   type DataTableColumnItem,
 } from '@commercetools/nimbus';
-import { Add, ChevronLeft, Close } from '@commercetools/nimbus-icons';
+import {
+  Add,
+  ChevronLeft,
+  Close,
+  Delete,
+  Edit,
+  Visibility,
+} from '@commercetools/nimbus-icons';
 
 // ---------------------------------------------------------------------------
 // Status badge
@@ -101,6 +110,10 @@ const PageList: React.FC<PageListProps> = ({ backButton }) => {
   const [formError, setFormError] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [deleting, setDeleting] = useState<string | null>(null);
+  // Page targeted by the (Nimbus) delete-confirmation dialog.
+  const [pendingDelete, setPendingDelete] = useState<PuckPageListItem | null>(null);
+  // Free-text filter over page name / slug.
+  const [search, setSearch] = useState('');
 
   const handleCreate = async () => {
     if (!newName.trim()) { setFormError('Name is required'); return; }
@@ -125,11 +138,11 @@ const PageList: React.FC<PageListProps> = ({ backButton }) => {
   };
 
   const handleDelete = async (page: PuckPageListItem) => {
-    if (!confirm(`Delete "${page.value.name}"? This cannot be undone.`)) return;
     setDeleting(page.key);
     try {
       await deletePage(page.key);
       await refresh();
+      setPendingDelete(null);
     } finally {
       setDeleting(null);
     }
@@ -151,7 +164,16 @@ const PageList: React.FC<PageListProps> = ({ backButton }) => {
     );
   }
 
-  const rows: PageRow[] = pages.map((p: PuckPageListItem) => ({ ...p, id: p.key }));
+  const term = search.trim().toLowerCase();
+  const filteredPages = term
+    ? pages.filter(
+        (p: PuckPageListItem) =>
+          p.value.name.toLowerCase().includes(term) ||
+          p.value.slug.toLowerCase().includes(term)
+      )
+    : pages;
+
+  const rows: PageRow[] = filteredPages.map((p: PuckPageListItem) => ({ ...p, id: p.key }));
 
   const columns: DataTableColumnItem<PageRow>[] = [
     {
@@ -212,30 +234,33 @@ const PageList: React.FC<PageListProps> = ({ backButton }) => {
       accessor: () => '',
       isSortable: false,
       render: ({ row }) => (
-        <Stack direction="row" gap="200" alignItems="center">
-          <Button
-            variant="solid"
+        <Stack direction="row" gap="100" alignItems="center">
+          <IconButton
+            aria-label={`Edit ${row.value.name}`}
+            variant="ghost"
             size="xs"
             onPress={() => history.push(`/${row.key}/edit`, { pageName: row.value.name })}
           >
-            Edit
-          </Button>
-          <Button
-            variant="outline"
+            <Edit />
+          </IconButton>
+          <IconButton
+            aria-label={`Preview ${row.value.name}`}
+            variant="ghost"
             size="xs"
             onPress={() => history.push(`/${row.key}/preview`, { pageName: row.value.name })}
           >
-            Preview
-          </Button>
-          <Button
+            <Visibility />
+          </IconButton>
+          <IconButton
+            aria-label={`Delete ${row.value.name}`}
             variant="ghost"
             colorPalette="critical"
             size="xs"
             isDisabled={deleting === row.key}
-            onPress={() => void handleDelete(row)}
+            onPress={() => setPendingDelete(row)}
           >
-            {deleting === row.key ? '…' : 'Delete'}
-          </Button>
+            <Delete />
+          </IconButton>
         </Stack>
       ),
     },
@@ -310,9 +335,82 @@ const PageList: React.FC<PageListProps> = ({ backButton }) => {
             </Button>
           </Stack>
         ) : pages.length > 0 ? (
-          <DataTable columns={columns} rows={rows} aria-label="Pages" />
+          <Stack direction="column" gap="400">
+            {/* Search by name or path */}
+            <div style={{ maxWidth: 360 }}>
+              <TextInput
+                aria-label="Search pages"
+                placeholder="Search by name or path…"
+                value={search}
+                onChange={(v) => setSearch(v)}
+                width="100%"
+                trailingElement={
+                  search !== '' ? (
+                    <IconButton
+                      aria-label="Clear search"
+                      variant="ghost"
+                      colorPalette="neutral"
+                      size="2xs"
+                      onPress={() => setSearch('')}
+                    >
+                      <Close />
+                    </IconButton>
+                  ) : undefined
+                }
+              />
+            </div>
+            {/* DataTable always renders an internal "pin rows" column with no
+                public prop to disable it — hide it (header + body cells) for
+                this list only. The table uses table-layout:fixed, so the column
+                collapses cleanly. */}
+            <div className="puck-page-list">
+              <style>{`
+                .puck-page-list .pin-rows-column-header,
+                .puck-page-list [data-slot="pin-row-cell"] { display: none !important; }
+              `}</style>
+              <DataTable columns={columns} rows={rows} aria-label="Pages" />
+            </div>
+          </Stack>
         ) : null}
       </Stack>
+
+      {/* Delete confirmation (Nimbus) */}
+      <Dialog.Root
+        isOpen={pendingDelete !== null}
+        onOpenChange={(open) => {
+          if (!open) setPendingDelete(null);
+        }}
+      >
+        <Dialog.Content>
+          <Dialog.Header>
+            <Dialog.Title>Delete page?</Dialog.Title>
+            <Dialog.CloseTrigger />
+          </Dialog.Header>
+          <Dialog.Body>
+            <Text>
+              Are you sure you want to delete{' '}
+              <Text as="span" fontWeight="700">
+                {pendingDelete?.value.name}
+              </Text>
+              ? This cannot be undone.
+            </Text>
+          </Dialog.Body>
+          <Dialog.Footer>
+            <Button slot="close" variant="outline" isDisabled={deleting !== null}>
+              Cancel
+            </Button>
+            <Button
+              colorPalette="critical"
+              isDisabled={deleting !== null}
+              onPress={() => {
+                if (pendingDelete) void handleDelete(pendingDelete);
+              }}
+            >
+              {deleting !== null ? 'Deleting…' : 'Delete'}
+            </Button>
+          </Dialog.Footer>
+        </Dialog.Content>
+      </Dialog.Root>
     </div>
   );
 };
