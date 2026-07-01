@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import tailwindcss from '@tailwindcss/vite';
 import { fileURLToPath, URL } from 'node:url';
 
 const pkg = (rel: string) => fileURLToPath(new URL(rel, import.meta.url));
@@ -31,7 +32,7 @@ const sourceAlias: Record<string, string> = {
 };
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), tailwindcss()],
   resolve: {
     alias: sourceAlias,
   },
