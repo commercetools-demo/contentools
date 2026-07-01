@@ -51,6 +51,13 @@ export {
   getPuckContentVersionsApi,
 } from './api/puck-content-states.api';
 
+// Raw API functions (templates)
+export {
+  listPuckTemplatesApi,
+  createPuckTemplateApi,
+  deletePuckTemplateApi,
+} from './api/puck-templates.api';
+
 // Hooks (pages)
 export { usePuckPages } from './hooks/usePuckPages';
 export type { UsePuckPagesReturn } from './hooks/usePuckPages';
@@ -67,6 +74,10 @@ export type { UsePuckContentsReturn } from './hooks/usePuckContents';
 
 export { usePuckContent } from './hooks/usePuckContent';
 export type { UsePuckContentReturn } from './hooks/usePuckContent';
+
+// Hooks (templates)
+export { usePuckTemplates } from './hooks/usePuckTemplates';
+export type { UsePuckTemplatesReturn } from './hooks/usePuckTemplates';
 
 // Datasource API & hook
 export { resolveDatasourceApi } from './api/datasource.api';

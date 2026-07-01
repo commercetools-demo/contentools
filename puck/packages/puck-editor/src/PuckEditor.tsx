@@ -1,7 +1,11 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Puck, type Config, type Data } from '@measured/puck';
 import '@measured/puck/puck.css';
-import { PuckApiProvider, usePuckPage } from '@commercetools-demo/puck-api';
+import {
+  PuckApiProvider,
+  usePuckPage,
+  usePuckTemplates,
+} from '@commercetools-demo/puck-api';
 import type { PuckData } from '@commercetools-demo/puck-types';
 import type { PuckPageVersionEntry } from '@commercetools-demo/puck-types';
 import {
@@ -14,6 +18,8 @@ import {
 } from '@commercetools-demo/puck-version-history';
 import { defaultPuckConfig } from './config/defaultPuckConfig';
 import { EditorToolbar } from './toolbar/EditorToolbar';
+import { CreateTemplateDialog } from './toolbar/CreateTemplateDialog';
+import { stripPuckDataToTemplate } from './utils/stripTemplateData';
 import { useDirtyState } from './hooks/useDirtyState';
 import {
   ComponentSearchProvider,
@@ -66,10 +72,15 @@ const PuckEditorInner: React.FC<PuckEditorInnerProps> = ({
     loadVersions,
   } = usePuckPage(pageKey);
 
+  const { createTemplate } = usePuckTemplates('page');
+
   const latestDataRef = useRef<Data | null>(null);
   const [isApplyingVersion, setIsApplyingVersion] = useState(false);
   // Bumped on revert so the Puck canvas remounts and re-reads the restored data.
   const [reloadNonce, setReloadNonce] = useState(0);
+  // "Create template from this page" dialog.
+  const [templateDialogOpen, setTemplateDialogOpen] = useState(false);
+  const [templateSaving, setTemplateSaving] = useState(false);
 
   // Current live data (draft preferred, fallback to page value)
   const currentData: PuckData =
@@ -177,6 +188,30 @@ const PuckEditorInner: React.FC<PuckEditorInnerProps> = ({
   }, [versionHistory, saveDraft, onSave, onError, markSaved]);
 
   // -------------------------------------------------------------------------
+  // Create template from this page
+  // -------------------------------------------------------------------------
+
+  const handleCreateTemplate = useCallback(
+    async (name: string, withoutData: boolean) => {
+      // Prefer the live canvas (may hold unsaved edits); fall back to saved data.
+      const source = (latestDataRef.current as PuckData | null) ?? currentData;
+      const puckData = withoutData
+        ? (stripPuckDataToTemplate(source as Data, config) as PuckData)
+        : source;
+      setTemplateSaving(true);
+      try {
+        await createTemplate({ name, kind: 'page', puckData });
+        setTemplateDialogOpen(false);
+      } catch (err) {
+        onError?.(err as Error);
+      } finally {
+        setTemplateSaving(false);
+      }
+    },
+    [createTemplate, currentData, config, onError]
+  );
+
+  // -------------------------------------------------------------------------
   // Loading / error states
   // -------------------------------------------------------------------------
 
@@ -266,6 +301,7 @@ const PuckEditorInner: React.FC<PuckEditorInnerProps> = ({
                   onPublish={() => void handlePublish()}
                   onRevert={() => void handleRevert()}
                   onPreview={onPreview}
+                  onCreateTemplate={() => setTemplateDialogOpen(true)}
                   showPublishButton={showPublishButton}
                 />
               ),
@@ -279,6 +315,12 @@ const PuckEditorInner: React.FC<PuckEditorInnerProps> = ({
               </VersionAwareFieldsPanel>
             ),
           }}
+        />
+        <CreateTemplateDialog
+          isOpen={templateDialogOpen}
+          onOpenChange={(open) => setTemplateDialogOpen(open)}
+          onConfirm={handleCreateTemplate}
+          saving={templateSaving}
         />
       </ComponentSearchProvider>
     </VersionHistoryProvider>

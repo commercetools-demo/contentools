@@ -107,3 +107,6 @@ export const PUCK_CONTENT_STATE_CONTAINER =
 
 export const PUCK_CONTENT_VERSION_CONTAINER =
   process.env.PUCK_CONTENT_VERSION_CONTAINER || 'puck-content-version';
+
+export const PUCK_TEMPLATE_CONTAINER =
+  process.env.PUCK_TEMPLATE_CONTAINER || 'puck-template';

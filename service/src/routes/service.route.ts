@@ -17,6 +17,7 @@ import pageContentItemStateRouter from './page-content-item-state.route';
 import authRouter from './auth.route';
 import puckPageRouter from './puck-page.route';
 import puckContentRouter from './puck-content.route';
+import puckTemplateRouter from './puck-template.route';
 import { deprecationMiddleware } from '../middleware/deprecation.middleware';
 
 const serviceRouter = Router();
@@ -43,5 +44,6 @@ serviceRouter.use('/', pagesRouter);
 serviceRouter.use('/', authRouter);
 serviceRouter.use('/', puckPageRouter);
 serviceRouter.use('/', puckContentRouter);
+serviceRouter.use('/', puckTemplateRouter);
 
 export default serviceRouter;

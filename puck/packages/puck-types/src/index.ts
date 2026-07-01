@@ -32,6 +32,15 @@ export type {
   PuckContentVersion,
 } from './puck-content.types';
 
+export type {
+  PuckTemplateKind,
+  PuckTemplateValue,
+  PuckTemplateListItem,
+  CreatePuckTemplateInput,
+  PuckTemplateResponse,
+  PuckTemplateListResponse,
+} from './puck-template.types';
+
 export type { ThemeTokens, ImportResult } from './theme-types';
 
 export type {

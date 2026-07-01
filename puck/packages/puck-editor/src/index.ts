@@ -52,6 +52,11 @@ export type { EditorToolbarProps } from './toolbar/EditorToolbar';
 export { UnsavedChangesDialog } from './toolbar/UnsavedChangesDialog';
 export type { UnsavedChangesDialogProps } from './toolbar/UnsavedChangesDialog';
 
+// Create-template dialog (Nimbus) + "without data" stripping util
+export { CreateTemplateDialog } from './toolbar/CreateTemplateDialog';
+export type { CreateTemplateDialogProps } from './toolbar/CreateTemplateDialog';
+export { stripPuckDataToTemplate } from './utils/stripTemplateData';
+
 // Dirty-state tracking hook (skips Puck's normalising mount onChange)
 export { useDirtyState } from './hooks/useDirtyState';
 export type { DirtyState } from './hooks/useDirtyState';

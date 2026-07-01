@@ -10,6 +10,7 @@ import {
 import {
   PuckApiProvider,
   usePuckPages,
+  usePuckTemplates,
   usePuckApiContext,
 } from '@commercetools-demo/puck-api';
 import {
@@ -38,6 +39,7 @@ import {
   Icon,
   IconButton,
   LoadingSpinner,
+  Select,
   Stack,
   Text,
   TextInput,
@@ -104,10 +106,13 @@ interface PageListProps {
 const PageList: React.FC<PageListProps> = ({ backButton }) => {
   const history = useHistory();
   const { pages, loading, error, createPage, deletePage, refresh } = usePuckPages();
+  const { templates } = usePuckTemplates('page');
 
   const [creating, setCreating] = useState(false);
   const [newName, setNewName] = useState('');
   const [newSlug, setNewSlug] = useState('');
+  // Selected template for the new page ('' = Empty, today's behaviour).
+  const [templateKey, setTemplateKey] = useState('');
   const [formError, setFormError] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [deleting, setDeleting] = useState<string | null>(null);
@@ -126,10 +131,16 @@ const PageList: React.FC<PageListProps> = ({ backButton }) => {
         name: newName.trim(),
         slug: newSlug.trim().startsWith('/') ? newSlug.trim() : `/${newSlug.trim()}`,
       };
+      // Seed from the selected template (Empty leaves puckData unset).
+      if (templateKey) {
+        const template = templates.find((t) => t.key === templateKey);
+        if (template) input.puckData = template.value.puckData;
+      }
       const created = await createPage(input);
       setCreating(false);
       setNewName('');
       setNewSlug('');
+      setTemplateKey('');
       history.push(`/${created.key}/edit`, { pageName: created.value.name });
     } catch (err) {
       setFormError((err as Error).message);
@@ -306,6 +317,27 @@ const PageList: React.FC<PageListProps> = ({ backButton }) => {
                     </FormField.Root>
                   </div>
                 </Stack>
+                <FormField.Root>
+                  <FormField.Label>Template</FormField.Label>
+                  <FormField.Input>
+                    <Select.Root
+                      aria-label="Template"
+                      selectedKey={templateKey || 'empty'}
+                      onSelectionChange={(key) =>
+                        setTemplateKey(key == null || key === 'empty' ? '' : String(key))
+                      }
+                    >
+                      <Select.Options>
+                        <Select.Option id="empty">Empty</Select.Option>
+                        {templates.map((t) => (
+                          <Select.Option key={t.key} id={t.key}>
+                            {t.value.name}
+                          </Select.Option>
+                        ))}
+                      </Select.Options>
+                    </Select.Root>
+                  </FormField.Input>
+                </FormField.Root>
                 {formError && <Text color="critical.11">{formError}</Text>}
                 <Stack direction="row" gap="200">
                   <Button variant="solid" onPress={() => void handleCreate()} isDisabled={submitting}>

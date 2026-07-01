@@ -1,7 +1,11 @@
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { Puck, type Config, type Data } from '@measured/puck';
 import '@measured/puck/puck.css';
-import { PuckApiProvider, usePuckContent } from '@commercetools-demo/puck-api';
+import {
+  PuckApiProvider,
+  usePuckContent,
+  usePuckTemplates,
+} from '@commercetools-demo/puck-api';
 import type { PuckContentVersionEntry, PuckData } from '@commercetools-demo/puck-types';
 import { EnsureIntlProvider } from './EnsureIntlProvider';
 import { EnsureNimbusProvider } from './EnsureNimbusProvider';
@@ -9,8 +13,10 @@ import {
   ComponentSearchProvider,
   ComponentsPanel,
   ComponentItemFilter,
+  CreateTemplateDialog,
   EditorToolbar,
   nimbusFieldTypes,
+  stripPuckDataToTemplate,
   useDirtyState,
 } from '@commercetools-demo/puck-editor';
 import {
@@ -55,10 +61,15 @@ const ContentEditorInner: React.FC<ContentEditorInnerProps> = ({
     loadVersions,
   } = usePuckContent(contentKey);
 
+  const { createTemplate } = usePuckTemplates('content');
+
   const latestDataRef = useRef<Data | null>(null);
   const [isApplyingVersion, setIsApplyingVersion] = useState(false);
   // Bumped on revert so the Puck canvas remounts and re-reads the restored data.
   const [reloadNonce, setReloadNonce] = useState(0);
+  // "Create template from this content" dialog.
+  const [templateDialogOpen, setTemplateDialogOpen] = useState(false);
+  const [templateSaving, setTemplateSaving] = useState(false);
 
   // Current live data (draft preferred, fallback to content value)
   const currentData: PuckData =
@@ -185,6 +196,26 @@ const ContentEditorInner: React.FC<ContentEditorInnerProps> = ({
     };
   }, [config]);
 
+  const handleCreateTemplate = useCallback(
+    async (name: string, withoutData: boolean) => {
+      const source =
+        (latestDataRef.current as PuckData | null) ?? currentData;
+      const puckData = withoutData
+        ? (stripPuckDataToTemplate(source as Data, contentConfig) as PuckData)
+        : source;
+      setTemplateSaving(true);
+      try {
+        await createTemplate({ name, kind: 'content', puckData });
+        setTemplateDialogOpen(false);
+      } catch (err) {
+        onError?.(err as Error);
+      } finally {
+        setTemplateSaving(false);
+      }
+    },
+    [createTemplate, currentData, contentConfig, onError]
+  );
+
   if (loading) {
     return (
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
@@ -259,6 +290,8 @@ const ContentEditorInner: React.FC<ContentEditorInnerProps> = ({
                   onSave={() => void handleSave()}
                   onPublish={() => void handlePublish(activeData as Data)}
                   onRevert={() => void handleRevert()}
+                  onCreateTemplate={() => setTemplateDialogOpen(true)}
+                  createTemplateLabel="Create a template from this content"
                   showPublishButton
                 />
               ),
@@ -272,6 +305,12 @@ const ContentEditorInner: React.FC<ContentEditorInnerProps> = ({
               </VersionAwareFieldsPanel>
             ),
           }}
+        />
+        <CreateTemplateDialog
+          isOpen={templateDialogOpen}
+          onOpenChange={(open) => setTemplateDialogOpen(open)}
+          onConfirm={handleCreateTemplate}
+          saving={templateSaving}
         />
       </ComponentSearchProvider>
     </VersionHistoryProvider>

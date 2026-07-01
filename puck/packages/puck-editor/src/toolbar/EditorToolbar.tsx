@@ -14,6 +14,7 @@ import {
 import {
   History,
   MoreVert,
+  PostAdd,
   Redo,
   SettingsBackupRestore,
   Tune,
@@ -33,6 +34,10 @@ export interface EditorToolbarProps {
   onRevert: () => void;
   /** When provided, renders a Preview button that opens the preview view. */
   onPreview?: () => void;
+  /** When provided, adds a "Create a template from this…" overflow-menu item. */
+  onCreateTemplate?: () => void;
+  /** Label for the create-template menu item. */
+  createTemplateLabel?: string;
   showPublishButton: boolean;
 }
 
@@ -52,6 +57,8 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
   onPublish,
   onRevert,
   onPreview,
+  onCreateTemplate,
+  createTemplateLabel = 'Create a template from this page',
   showPublishButton,
 }) => {
   const { dispatch, appState, history } = usePuck();
@@ -187,6 +194,7 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
             onAction={(key) => {
               if (key === 'history') toggleHistory();
               else if (key === 'revert') onRevert();
+              else if (key === 'create-template') onCreateTemplate?.();
             }}
           >
             <Menu.Trigger asChild>
@@ -214,6 +222,14 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
                     <SettingsBackupRestore />
                   </Icon>
                   <Text slot="label">Revert to published</Text>
+                </Menu.Item>
+              )}
+              {onCreateTemplate && (
+                <Menu.Item id="create-template">
+                  <Icon slot="icon">
+                    <PostAdd />
+                  </Icon>
+                  <Text slot="label">{createTemplateLabel}</Text>
                 </Menu.Item>
               )}
             </Menu.Content>

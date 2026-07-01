@@ -13,10 +13,12 @@ import {
   ComponentSearchProvider,
   ComponentsPanel,
   ComponentItemFilter,
+  CreateTemplateDialog,
   defaultPuckConfig,
   EditorToolbar,
   nimbusFieldTypes,
   PropertiesResizer,
+  stripPuckDataToTemplate,
   UnsavedChangesDialog,
   useDirtyState,
 } from '@commercetools-demo/puck-editor';
@@ -40,6 +42,7 @@ import {
   PuckApiProvider,
   usePuckContents,
   usePuckContent,
+  usePuckTemplates,
 } from '@commercetools-demo/puck-api';
 import type {
   CreatePuckContentInput,
@@ -57,6 +60,7 @@ import {
   Icon,
   IconButton,
   LoadingSpinner,
+  Select,
   Stack,
   Text,
   TextInput,
@@ -107,11 +111,14 @@ const ContentListRoute: React.FC<ContentListRouteProps> = ({ defaultContentType,
   const history = useHistory();
   const { contents, loading, error, createContent, deleteContent } =
     usePuckContents(defaultContentType);
+  const { templates } = usePuckTemplates('content');
 
   const [search, setSearch] = useState('');
   const [showCreate, setShowCreate] = useState(false);
   const [createName, setCreateName] = useState('');
   const [createType, setCreateType] = useState(defaultContentType ?? '');
+  // Selected template for the new content item ('' = Empty).
+  const [templateKey, setTemplateKey] = useState('');
   const [createError, setCreateError] = useState<string | null>(null);
   const [creating, setCreating] = useState(false);
   const [deleting, setDeleting] = useState<string | null>(null);
@@ -124,15 +131,19 @@ const ContentListRoute: React.FC<ContentListRouteProps> = ({ defaultContentType,
     if (!createType.trim()) { setCreateError('Content type is required'); return; }
     setCreating(true);
     try {
+      const template = templateKey
+        ? templates.find((t) => t.key === templateKey)
+        : undefined;
       const input: CreatePuckContentInput = {
         name: createName.trim(),
         contentType: createType.trim(),
-        data: { content: [], root: { props: {} } },
+        data: template?.value.puckData ?? { content: [], root: { props: {} } },
       };
       const created = await createContent(input);
       setShowCreate(false);
       setCreateName('');
       setCreateType(defaultContentType ?? '');
+      setTemplateKey('');
       history.push(`/${created.key}`, { contentName: created.value.name });
     } catch (err) {
       setCreateError((err as Error).message);
@@ -299,6 +310,27 @@ const ContentListRoute: React.FC<ContentListRouteProps> = ({ defaultContentType,
                     </FormField.Root>
                   </div>
                 </Stack>
+                <FormField.Root>
+                  <FormField.Label>Template</FormField.Label>
+                  <FormField.Input>
+                    <Select.Root
+                      aria-label="Template"
+                      selectedKey={templateKey || 'empty'}
+                      onSelectionChange={(key) =>
+                        setTemplateKey(key == null || key === 'empty' ? '' : String(key))
+                      }
+                    >
+                      <Select.Options>
+                        <Select.Option id="empty">Empty</Select.Option>
+                        {templates.map((t) => (
+                          <Select.Option key={t.key} id={t.key}>
+                            {t.value.name}
+                          </Select.Option>
+                        ))}
+                      </Select.Options>
+                    </Select.Root>
+                  </FormField.Input>
+                </FormField.Root>
                 <Stack direction="row" gap="200">
                   <Button variant="solid" onPress={() => void handleCreate()} isDisabled={creating}>
                     {creating ? 'Creating…' : 'Create'}
@@ -418,12 +450,17 @@ const ContentEditorRoute: React.FC<ContentEditorRouteProps> = ({ config, backBut
     loadVersions,
   } = usePuckContent(contentKey!);
 
+  const { createTemplate } = usePuckTemplates('content');
+
   const latestDataRef = useRef<Data | null>(null);
   const [isApplyingVersion, setIsApplyingVersion] = useState(false);
   // Bumped on revert so the Puck canvas remounts and re-reads the restored data.
   const [reloadNonce, setReloadNonce] = useState(0);
   // Deferred navigation while the unsaved-changes dialog is open.
   const [pendingNav, setPendingNav] = useState<(() => void) | null>(null);
+  // "Create template from this content" dialog.
+  const [templateDialogOpen, setTemplateDialogOpen] = useState(false);
+  const [templateSaving, setTemplateSaving] = useState(false);
 
   const currentData: PuckData =
     states.draft?.data ??
@@ -536,6 +573,26 @@ const ContentEditorRoute: React.FC<ContentEditorRouteProps> = ({ config, backBut
     };
   }, [config]);
 
+  const handleCreateTemplate = useCallback(
+    async (name: string, withoutData: boolean) => {
+      const source =
+        (latestDataRef.current as PuckData | null) ?? currentData;
+      const puckData = withoutData
+        ? (stripPuckDataToTemplate(source as Data, contentConfig) as PuckData)
+        : source;
+      setTemplateSaving(true);
+      try {
+        await createTemplate({ name, kind: 'content', puckData });
+        setTemplateDialogOpen(false);
+      } catch (err) {
+        console.error('[ContentManagerRouter] create template error:', err);
+      } finally {
+        setTemplateSaving(false);
+      }
+    },
+    [createTemplate, currentData, contentConfig]
+  );
+
   if (loading) {
     return (
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
@@ -626,6 +683,8 @@ const ContentEditorRoute: React.FC<ContentEditorRouteProps> = ({ config, backBut
                           history.push(`/${contentKey}/preview`, { contentName })
                         )
                       }
+                      onCreateTemplate={() => setTemplateDialogOpen(true)}
+                      createTemplateLabel="Create a template from this content"
                       showPublishButton
                     />
                   ),
@@ -650,6 +709,12 @@ const ContentEditorRoute: React.FC<ContentEditorRouteProps> = ({ config, backBut
           if (!open) setPendingNav(null);
         }}
         onConfirm={() => pendingNav?.()}
+      />
+      <CreateTemplateDialog
+        isOpen={templateDialogOpen}
+        onOpenChange={(open) => setTemplateDialogOpen(open)}
+        onConfirm={handleCreateTemplate}
+        saving={templateSaving}
       />
     </VersionHistoryProvider>
   );

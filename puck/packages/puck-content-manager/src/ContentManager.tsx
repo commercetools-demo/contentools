@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
-import { PuckApiProvider, usePuckContents } from '@commercetools-demo/puck-api';
+import {
+  PuckApiProvider,
+  usePuckContents,
+  usePuckTemplates,
+} from '@commercetools-demo/puck-api';
 import type {
   CreatePuckContentInput,
   PuckContentListItem,
@@ -14,6 +18,7 @@ import {
   Icon,
   IconButton,
   LoadingSpinner,
+  Select,
   Stack,
   Text,
   TextInput,
@@ -41,11 +46,13 @@ interface ContentListProps {
 const ContentList: React.FC<ContentListProps> = ({ defaultContentType, onEdit }) => {
   const { contents, loading, error, createContent, deleteContent } =
     usePuckContents(defaultContentType);
+  const { templates } = usePuckTemplates('content');
 
   const [search, setSearch] = useState('');
   const [showCreate, setShowCreate] = useState(false);
   const [createName, setCreateName] = useState('');
   const [createType, setCreateType] = useState(defaultContentType ?? '');
+  const [templateKey, setTemplateKey] = useState('');
   const [createError, setCreateError] = useState<string | null>(null);
   const [creating, setCreating] = useState(false);
   const [deleting, setDeleting] = useState<string | null>(null);
@@ -58,15 +65,19 @@ const ContentList: React.FC<ContentListProps> = ({ defaultContentType, onEdit })
     if (!createType.trim()) { setCreateError('Content type is required'); return; }
     setCreating(true);
     try {
+      const template = templateKey
+        ? templates.find((t) => t.key === templateKey)
+        : undefined;
       const input: CreatePuckContentInput = {
         name: createName.trim(),
         contentType: createType.trim(),
-        data: { content: [], root: { props: {} } },
+        data: template?.value.puckData ?? { content: [], root: { props: {} } },
       };
       await createContent(input);
       setShowCreate(false);
       setCreateName('');
       setCreateType(defaultContentType ?? '');
+      setTemplateKey('');
     } catch (err) {
       setCreateError((err as Error).message);
     } finally {
@@ -221,6 +232,27 @@ const ContentList: React.FC<ContentListProps> = ({ defaultContentType, onEdit })
                     </FormField.Root>
                   </div>
                 </Stack>
+                <FormField.Root>
+                  <FormField.Label>Template</FormField.Label>
+                  <FormField.Input>
+                    <Select.Root
+                      aria-label="Template"
+                      selectedKey={templateKey || 'empty'}
+                      onSelectionChange={(key) =>
+                        setTemplateKey(key == null || key === 'empty' ? '' : String(key))
+                      }
+                    >
+                      <Select.Options>
+                        <Select.Option id="empty">Empty</Select.Option>
+                        {templates.map((t) => (
+                          <Select.Option key={t.key} id={t.key}>
+                            {t.value.name}
+                          </Select.Option>
+                        ))}
+                      </Select.Options>
+                    </Select.Root>
+                  </FormField.Input>
+                </FormField.Root>
                 <Stack direction="row" gap="200">
                   <Button variant="solid" onPress={() => void handleCreate()} isDisabled={creating}>
                     {creating ? 'Creating…' : 'Create'}
