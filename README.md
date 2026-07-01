@@ -71,8 +71,6 @@ backend service, and ships with a ready-to-use Merchant Center custom applicatio
 | --------------- | ------------------------------------------------------------------------------------------- |
 | `puck/`         | Yarn workspace with the 9 publishable `@commercetools-demo/puck-*` packages + a Vite test app |
 | `service/`      | The multi-tenant backend service (Express + TypeScript), deployed to Cloud Run             |
-| `contentools/`  | Merchant Center custom application that hosts the Puck editors                              |
-| `connect.yaml`  | commercetools Connect deployment descriptor for the backend service                        |
 
 > The repository also contains a legacy web-component CMS (`cms/`) and an MCP integration
 > (`mcp/`). Those are out of scope for this document.

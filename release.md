@@ -81,7 +81,3 @@
 | 2026-06-30 | `130d14f` | Behnam Tehrani | feat: integrate Nimbus field types and replace textarea fields with rich text fields in various components | 15 files, +230/−18 |
 | 2026-06-30 | `6d5d609` | Behnam Tehrani | feat: add PropertiesResizer component for draggable resizing of properties panel | 5 files, +207 |
 | 2026-07-01 | `8d91c13` | Behnam Tehrani | feat: add template management functionality | 18 files, +815/−5 |
-| 2026-07-01 | `37db108` | Behnam Tehrani | bump versions | 5 files, +29/−11 |
-| 2026-07-01 | `fbaa501` | Behnam Tehrani | update dependencies | 2 files, +2427/−170 |
-| 2026-07-01 | `7cd11e8` | Behnam Tehrani | feat: add release notes for template management and various improvements | 1 file, +78 |
-| 2026-07-01 | `47b9a73` | Behnam Tehrani | Stop leaking nimus styles to reset tailwind | 14 files, +181/−61 |
