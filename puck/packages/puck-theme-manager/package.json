@@ -1,6 +1,6 @@
 {
   "name": "@commercetools-demo/puck-theme-manager",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "Theme manager and content type import components for Puck CMS",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -29,6 +29,7 @@
     "@commercetools-demo/puck-types": "workspace:^"
   },
   "peerDependencies": {
+    "@chakra-ui/react": "^3.36.0",
     "@commercetools/nimbus": "^3.2.0",
     "react": ">=19.0.0",
     "react-dom": ">=19.0.0",

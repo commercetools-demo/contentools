@@ -1,6 +1,6 @@
 {
   "name": "@commercetools-demo/puck-page-manager",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "Router-aware page manager UI (list, editor, preview) for the Puck CMS integration",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -32,6 +32,7 @@
     "@measured/puck": "^0.18.2"
   },
   "peerDependencies": {
+    "@chakra-ui/react": "^3.36.0",
     "@commercetools/nimbus": "^3.2.0",
     "@commercetools/nimbus-icons": "^3.2.0",
     "react": ">=19.0.0",

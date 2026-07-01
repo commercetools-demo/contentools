@@ -1,6 +1,6 @@
 {
   "name": "@commercetools-demo/puck-editor",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "Puck editor wrapper with built-in components and CMS API integration",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -32,6 +32,7 @@
     "isomorphic-dompurify": "^3.18.0"
   },
   "peerDependencies": {
+    "@chakra-ui/react": "^3.36.0",
     "@commercetools/nimbus": "^3.2.0",
     "@commercetools/nimbus-icons": "^3.2.0",
     "react": ">=19.0.0",
