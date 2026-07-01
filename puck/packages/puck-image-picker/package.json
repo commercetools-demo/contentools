@@ -1,6 +1,6 @@
 {
   "name": "@commercetools-demo/puck-image-picker",
-  "version": "0.4.1",
+  "version": "0.6.0",
   "description": "Standalone ImagePickerField component with media library support",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

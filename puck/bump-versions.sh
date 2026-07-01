@@ -1,7 +1,9 @@
 #!/bin/bash
 
 # Version bump script for Puck packages
-# Usage: ./bump-versions.sh [patch|minor|major] [--yes]
+# Usage: ./bump-versions.sh [patch|minor|major|<version>] [--yes]
+#   patch|minor|major : bump each package's current version
+#   <version>         : set all packages to this exact version (e.g. 1.2.3)
 
 set -e
 
@@ -29,10 +31,16 @@ for arg in "$@"; do
     [[ "$arg" == "--yes" || "$arg" == "-y" ]] && AUTO_YES=true
 done
 
+# The first arg is either a bump type or an explicit version (e.g. 1.2.3).
+EXPLICIT_VERSION=""
 if [[ "$BUMP_TYPE" != "patch" && "$BUMP_TYPE" != "minor" && "$BUMP_TYPE" != "major" ]]; then
-    echo -e "${RED}❌ Invalid bump type: $BUMP_TYPE${NC}"
-    echo "Usage: $0 [patch|minor|major] [--yes]"
-    exit 1
+    if [[ "$BUMP_TYPE" =~ ^[0-9]+\.[0-9]+\.[0-9]+([-+].+)?$ ]]; then
+        EXPLICIT_VERSION="$BUMP_TYPE"
+    else
+        echo -e "${RED}❌ Invalid bump type or version: $BUMP_TYPE${NC}"
+        echo "Usage: $0 [patch|minor|major|<version>] [--yes]"
+        exit 1
+    fi
 fi
 
 bump_version() {
@@ -49,8 +57,14 @@ bump_version() {
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR"
 
+if [ -n "$EXPLICIT_VERSION" ]; then
+    HEADER_LABEL="set → ${EXPLICIT_VERSION}"
+else
+    HEADER_LABEL="${BUMP_TYPE}"
+fi
+
 echo -e "${BLUE}===========================================${NC}"
-echo -e "${BLUE}   Puck Package Version Bump (${BUMP_TYPE})${NC}"
+echo -e "${BLUE}   Puck Package Version Bump (${HEADER_LABEL})${NC}"
 echo -e "${BLUE}===========================================${NC}"
 
 NEW_VERSION_KEYS=()
@@ -63,7 +77,11 @@ for pkg in "${PACKAGES[@]}"; do
         continue
     fi
     current=$(node -p "require('./$pkg_json').version")
-    new_ver=$(bump_version "$current" "$BUMP_TYPE")
+    if [ -n "$EXPLICIT_VERSION" ]; then
+        new_ver="$EXPLICIT_VERSION"
+    else
+        new_ver=$(bump_version "$current" "$BUMP_TYPE")
+    fi
     NEW_VERSION_KEYS+=("$pkg")
     NEW_VERSION_VALS+=("$new_ver")
     name=$(node -p "require('./$pkg_json').name")
@@ -98,5 +116,5 @@ echo ""
 echo -e "${GREEN}🎉 Version bump complete!${NC}"
 echo -e "${YELLOW}Next steps:${NC}"
 echo -e "  1. Review changes: git diff"
-echo -e "  2. Commit: git add -A && git commit -m 'chore: bump puck packages ($BUMP_TYPE)'"
+echo -e "  2. Commit: git add -A && git commit -m 'chore: bump puck packages ($HEADER_LABEL)'"
 echo -e "  3. Publish: ./publish-puck-packages.sh"
