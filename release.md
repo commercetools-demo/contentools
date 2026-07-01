@@ -21,6 +21,7 @@
 
 ## 🛠 Improvements & Fixes
 
+- **Stop leaking Nimbus styles into the host app** (`47b9a73`) — Replaced the plain `NimbusProvider` with a memoized, globally-scoped `ChakraProvider` built from Nimbus's fully-merged config but with `preflight: false` and an empty `globalCss`. This keeps all Nimbus theming intact while preventing Nimbus/Chakra's global CSS reset from clobbering the host application's Tailwind styles. Applied across every mountable package (editor, content-manager, page-manager, image-picker, theme-manager); packages bumped to 0.6.1.
 - **Nimbus UI migration** (`0caba0e`) — Large UI pass adopting Nimbus (44 files).
 - **PuckEditor publish handling** (`9197771`) — Improved publish handling (with a 0.5.1 version bump).
 - **`EnsureIntlProvider`** (`ee14cf0`) — Added for context management (with a 0.5.2 version bump).
@@ -33,10 +34,14 @@
 
 - **dependabot: npm_and_yarn group, 5 directories, 18 updates** (`6654a7d`, merged in `01f1739` / PR #60) — incl. `uuid` 11→14, `vite`, `postcss`, `hono`, `protobufjs`, and transitive security bumps.
 - **dependabot: npm_and_yarn group, 5 directories, 12 updates** (`7ae9137`, merged in `cc7a9a2` / PR #61) — incl. `@babel/core`, `vite` 6.4.2→6.4.3, `multer`, `tar`, `shell-quote`, `hono`, `protobufjs`.
+- **contentools dependency update** (`fbaa501`) — Bumped `@commercetools-demo/puck-*` to `^0.6.0`; added `@chakra-ui/react` (`^3.36.0`), `@commercetools/nimbus` / `nimbus-icons` / `nimbus-tokens` (`^3.2.0`), and the Slate rich-text editor stack (`slate`, `slate-dom`, `slate-history`, `slate-hyperscript`, `slate-react`); large `yarn.lock` refresh.
 - **Update dependencies** (`091c467`).
 
 ## 🔖 Versioning & Chores
 
+- **Package versions → 0.6.0** (`37db108`) — Aligned all puck packages on 0.6.0 (image-picker `0.4.1`, theme-manager `0.2.1`, types `0.5.1`, version-history `0.5.0` → `0.6.0`) and improved the `bump-versions.sh` helper.
+- **Package versions → 0.6.1** (`47b9a73`) — Bumped all puck packages `0.6.0 → 0.6.1` alongside the Nimbus style-scoping fix.
+- **Release notes** (`7cd11e8`) — Added this `release.md`.
 - **Package versions → 0.5.0 / 0.4.0** (`2b27e1f`).
 - **`@commercetools-demo/puck` components → 0.5.0** (`3536a37`).
 - **Package versions → latest releases** (`dee75ba`).
@@ -76,3 +81,7 @@
 | 2026-06-30 | `130d14f` | Behnam Tehrani | feat: integrate Nimbus field types and replace textarea fields with rich text fields in various components | 15 files, +230/−18 |
 | 2026-06-30 | `6d5d609` | Behnam Tehrani | feat: add PropertiesResizer component for draggable resizing of properties panel | 5 files, +207 |
 | 2026-07-01 | `8d91c13` | Behnam Tehrani | feat: add template management functionality | 18 files, +815/−5 |
+| 2026-07-01 | `37db108` | Behnam Tehrani | bump versions | 5 files, +29/−11 |
+| 2026-07-01 | `fbaa501` | Behnam Tehrani | update dependencies | 2 files, +2427/−170 |
+| 2026-07-01 | `7cd11e8` | Behnam Tehrani | feat: add release notes for template management and various improvements | 1 file, +78 |
+| 2026-07-01 | `47b9a73` | Behnam Tehrani | Stop leaking nimus styles to reset tailwind | 14 files, +181/−61 |
