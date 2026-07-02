@@ -1,5 +1,6 @@
 import React from 'react';
 import { type ComponentConfig } from '@measured/puck';
+import type { IntlShape } from 'react-intl';
 import { ImagePickerField } from '../../fields/ImagePickerField';
 
 export interface EmptyStateProps {
@@ -10,17 +11,19 @@ export interface EmptyStateProps {
   ctaLink: string;
 }
 
-export const EmptyState: ComponentConfig<EmptyStateProps> = {
-  label: 'Empty State',
+export const createEmptyStateConfig = (
+  intl: IntlShape
+): ComponentConfig<EmptyStateProps> => ({
+  label: intl.formatMessage({ id: 'Editor.cfg.emptyState.label' }),
   fields: {
     image: {
-      type: 'custom', label: 'Image',
+      type: 'custom', label: intl.formatMessage({ id: 'Editor.cfg.emptyState.field.image' }),
       render: ({ value, onChange }) => <ImagePickerField value={value ?? ''} onChange={onChange} />,
     },
-    title: { type: 'text', label: 'Title' },
-    description: { type: 'text', label: 'Description' },
-    ctaText: { type: 'text', label: 'CTA Text' },
-    ctaLink: { type: 'text', label: 'CTA Link' },
+    title: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.emptyState.field.title' }) },
+    description: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.emptyState.field.description' }) },
+    ctaText: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.emptyState.field.ctaText' }) },
+    ctaLink: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.emptyState.field.ctaLink' }) },
   },
   defaultProps: { image: '', title: '', description: '', ctaText: '', ctaLink: '' },
   render: ({ image, title, description, ctaText, ctaLink }) => (
@@ -56,4 +59,4 @@ export const EmptyState: ComponentConfig<EmptyStateProps> = {
       )}
     </div>
   ),
-};
+});

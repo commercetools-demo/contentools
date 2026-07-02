@@ -1,5 +1,6 @@
 import React from 'react';
 import { type ComponentConfig } from '@measured/puck';
+import type { IntlShape } from 'react-intl';
 import { ImagePickerField } from '../../fields/ImagePickerField';
 
 export interface CategoryHeroProps {
@@ -10,17 +11,19 @@ export interface CategoryHeroProps {
   ctaLink: string;
 }
 
-export const CategoryHero: ComponentConfig<CategoryHeroProps> = {
-  label: 'Category Hero',
+export const createCategoryHeroConfig = (
+  intl: IntlShape
+): ComponentConfig<CategoryHeroProps> => ({
+  label: intl.formatMessage({ id: 'Editor.cfg.categoryHero.label' }),
   fields: {
-    title: { type: 'text', label: 'Title' },
-    subtitle: { type: 'text', label: 'Subtitle' },
+    title: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.categoryHero.field.title' }) },
+    subtitle: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.categoryHero.field.subtitle' }) },
     image: {
-      type: 'custom', label: 'Background Image',
+      type: 'custom', label: intl.formatMessage({ id: 'Editor.cfg.categoryHero.field.image' }),
       render: ({ value, onChange }) => <ImagePickerField value={value ?? ''} onChange={onChange} />,
     },
-    ctaText: { type: 'text', label: 'CTA Text' },
-    ctaLink: { type: 'text', label: 'CTA Link' },
+    ctaText: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.categoryHero.field.ctaText' }) },
+    ctaLink: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.categoryHero.field.ctaLink' }) },
   },
   defaultProps: { title: '', subtitle: '', image: '', ctaText: '', ctaLink: '' },
   render: ({ title, subtitle, image, ctaText, ctaLink }) => (
@@ -82,4 +85,4 @@ export const CategoryHero: ComponentConfig<CategoryHeroProps> = {
       </div>
     </div>
   ),
-};
+});

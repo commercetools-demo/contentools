@@ -1,5 +1,6 @@
 import React from 'react';
 import { type ComponentConfig } from '@measured/puck';
+import type { IntlShape } from 'react-intl';
 import { richTextField } from '../../fields/RichTextField';
 
 export interface TabContentProps {
@@ -7,11 +8,13 @@ export interface TabContentProps {
   content: string;
 }
 
-export const TabContent: ComponentConfig<TabContentProps> = {
-  label: 'Tab Content',
+export const createTabContentConfig = (
+  intl: IntlShape
+): ComponentConfig<TabContentProps> => ({
+  label: intl.formatMessage({ id: 'Editor.cfg.tabContent.label' }),
   fields: {
-    tabLabel: { type: 'text', label: 'Tab Label' },
-    content: richTextField('Content'),
+    tabLabel: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.tabContent.field.tabLabel' }) },
+    content: richTextField(intl.formatMessage({ id: 'Editor.cfg.tabContent.field.content' })),
   },
   defaultProps: { tabLabel: '', content: '' },
   render: ({ tabLabel, content }) => {
@@ -23,4 +26,4 @@ export const TabContent: ComponentConfig<TabContentProps> = {
       </div>
     );
   },
-};
+});

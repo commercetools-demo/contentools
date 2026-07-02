@@ -1,9 +1,11 @@
 import React, { useState, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
+import { FormattedMessage, useIntl } from 'react-intl';
 import { PuckApiProvider, usePuckContentType } from '@commercetools-demo/puck-api';
 import type { ImportResult } from '@commercetools-demo/puck-types';
 import { Button, Card, Stack, Text } from '@commercetools/nimbus';
 import { EnsureNimbusProvider } from '../EnsureNimbusProvider';
+import { EnsureIntlProvider } from '../EnsureIntlProvider';
 
 interface InnerProps {
   backButton?: {
@@ -18,10 +20,15 @@ export interface ImportContentTypesProps extends InnerProps {
   projectKey: string;
   businessUnitKey: string;
   jwtToken: string;
+  /** Content locale (e.g. "en-US"). Resolves to en/es; unsupported → en. */
+  locale?: string;
+  /** Per-key overrides for UI strings, applied on top of the resolved catalog. */
+  messageOverrides?: Record<string, string>;
 }
 
 const ImportContentTypesInner: React.FC<InnerProps> = ({ backButton }) => {
   const history = useHistory();
+  const intl = useIntl();
   const { importDefaultContentTypes, loading, error, clearError } =
     usePuckContentType();
   const [result, setResult] = useState<ImportResult | null>(null);
@@ -53,17 +60,20 @@ const ImportContentTypesInner: React.FC<InnerProps> = ({ backButton }) => {
           {backButton.label}
         </Button>
       )}
-      <Text as="h1" fontSize="2xl" fontWeight="700">Import default content types</Text>
+      <Text as="h1" fontSize="2xl" fontWeight="700">
+        <FormattedMessage id="ThemeManager.importTitle" />
+      </Text>
       <Text color="neutral.11">
-        Import default content type definitions from samples. Existing content
-        types with the same key may be skipped or cause errors.
+        <FormattedMessage id="ThemeManager.importIntro" />
       </Text>
 
       {error && (
         <Card.Root variant="outlined">
           <Card.Body>
             <Stack direction="column" gap="400">
-              <Text as="h2" fontSize="xl" fontWeight="700">Error</Text>
+              <Text as="h2" fontSize="xl" fontWeight="700">
+                <FormattedMessage id="ThemeManager.errorHeading" />
+              </Text>
               <Text color="critical.11">{error}</Text>
             </Stack>
           </Card.Body>
@@ -72,17 +82,23 @@ const ImportContentTypesInner: React.FC<InnerProps> = ({ backButton }) => {
 
       <Stack direction="row" gap="400" justifyContent="center">
         <Button variant="solid" onPress={handleImport} isDisabled={loading}>
-          {loading ? 'Importing…' : 'Import default content types'}
+          {loading
+            ? intl.formatMessage({ id: 'ThemeManager.importing' })
+            : intl.formatMessage({ id: 'ThemeManager.importButton' })}
         </Button>
       </Stack>
       {result && (
         <Card.Root variant="outlined">
           <Card.Body>
             <Stack direction="column" gap="400">
-              <Text as="h2" fontSize="xl" fontWeight="700">Result</Text>
+              <Text as="h2" fontSize="xl" fontWeight="700">
+                <FormattedMessage id="ThemeManager.resultHeading" />
+              </Text>
               <Text>
-                Imported: {result.imported.length} content type
-                {result.imported.length !== 1 ? 's' : ''}.
+                <FormattedMessage
+                  id="ThemeManager.importedCount"
+                  values={{ count: result.imported.length }}
+                />
               </Text>
               {result.imported.length > 0 && (
                 <Text color="neutral.11">
@@ -92,13 +108,18 @@ const ImportContentTypesInner: React.FC<InnerProps> = ({ backButton }) => {
               {result.failed.length > 0 && (
                 <>
                   <Text color="critical.11">
-                    Failed: {result.failed.length} content type
-                    {result.failed.length !== 1 ? 's' : ''}.
+                    <FormattedMessage
+                      id="ThemeManager.failedCount"
+                      values={{ count: result.failed.length }}
+                    />
                   </Text>
                   <Stack direction="column" gap="200">
                     {result.failed.map(({ key, error: err }) => (
                       <Text key={key} color="critical.11">
-                        {key}: {err}
+                        <FormattedMessage
+                          id="ThemeManager.failedItem"
+                          values={{ key, error: err }}
+                        />
                       </Text>
                     ))}
                   </Stack>
@@ -117,6 +138,8 @@ const ImportContentTypes: React.FC<ImportContentTypesProps> = ({
   projectKey,
   businessUnitKey,
   jwtToken,
+  locale,
+  messageOverrides,
   ...innerProps
 }) => (
   <PuckApiProvider
@@ -125,8 +148,10 @@ const ImportContentTypes: React.FC<ImportContentTypesProps> = ({
     businessUnitKey={businessUnitKey}
     jwtToken={jwtToken}
   >
-    <EnsureNimbusProvider>
-      <ImportContentTypesInner {...innerProps} />
+    <EnsureNimbusProvider locale={locale}>
+      <EnsureIntlProvider locale={locale} messageOverrides={messageOverrides}>
+        <ImportContentTypesInner {...innerProps} />
+      </EnsureIntlProvider>
     </EnsureNimbusProvider>
   </PuckApiProvider>
 );

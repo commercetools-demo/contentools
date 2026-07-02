@@ -7,6 +7,8 @@ import {
   useParams,
   useLocation,
 } from 'react-router-dom';
+import { useIntl, FormattedMessage, type MessageDescriptor } from 'react-intl';
+import type { IntlShape } from 'react-intl';
 import { Puck, type Config, type Data } from '@measured/puck';
 import '@measured/puck/puck.css';
 import {
@@ -14,7 +16,7 @@ import {
   ComponentsPanel,
   ComponentItemFilter,
   CreateTemplateDialog,
-  defaultPuckConfig,
+  createDefaultPuckConfig,
   EditorToolbar,
   nimbusFieldTypes,
   PropertiesResizer,
@@ -33,11 +35,6 @@ import {
 } from '@commercetools-demo/puck-version-history';
 import { EnsureIntlProvider } from './EnsureIntlProvider';
 import { EnsureNimbusProvider } from './EnsureNimbusProvider';
-
-const DEFAULT_CONFIG: Config = {
-  ...defaultPuckConfig,
-  components: { ...defaultPuckConfig.components },
-};
 import {
   PuckApiProvider,
   usePuckContents,
@@ -93,6 +90,57 @@ const NAV_BAR_STYLE: React.CSSProperties = {
 };
 
 // ---------------------------------------------------------------------------
+// Status badge
+// ---------------------------------------------------------------------------
+
+const STATUS_BADGE: Record<
+  'draft' | 'published' | 'none',
+  { colorPalette: 'warning' | 'positive' | 'neutral'; message: MessageDescriptor }
+> = {
+  draft: { colorPalette: 'warning', message: { id: 'ContentManager.statusDraft' } },
+  published: { colorPalette: 'positive', message: { id: 'ContentManager.statusPublished' } },
+  none: { colorPalette: 'neutral', message: { id: 'ContentManager.statusNone' } },
+};
+
+const StatusBadge: React.FC<{ variant: 'draft' | 'published' | 'none' }> = ({ variant }) => {
+  const intl = useIntl();
+  const meta = STATUS_BADGE[variant];
+  return (
+    <Badge colorPalette={meta.colorPalette} size="xs">
+      {intl.formatMessage(meta.message)}
+    </Badge>
+  );
+};
+
+// ---------------------------------------------------------------------------
+// Content-specific Puck config: inject localized title + slot root fields.
+// The `defaultProps` (title/slot) are stored content data, not UI chrome, so
+// they stay as literal values; only the field `label`s are localized.
+// ---------------------------------------------------------------------------
+
+function buildContentConfig(config: Config, intl: IntlShape): Config {
+  const otherRootFields = Object.fromEntries(
+    Object.entries(config.root?.fields ?? {}).filter(([k]) => k !== 'title')
+  );
+  return {
+    ...config,
+    root: {
+      ...config.root,
+      fields: {
+        title: { type: 'text', label: intl.formatMessage({ id: 'ContentManager.contentTitleFieldLabel' }) },
+        slot: { type: 'text', label: intl.formatMessage({ id: 'ContentManager.slotFieldLabel' }) },
+        ...otherRootFields,
+      },
+      defaultProps: {
+        title: 'New Content',
+        slot: '',
+        ...config.root?.defaultProps,
+      },
+    },
+  };
+}
+
+// ---------------------------------------------------------------------------
 // Table row type
 // ---------------------------------------------------------------------------
 
@@ -108,6 +156,7 @@ interface ContentListRouteProps {
 }
 
 const ContentListRoute: React.FC<ContentListRouteProps> = ({ defaultContentType, backButton }) => {
+  const intl = useIntl();
   const history = useHistory();
   const { contents, loading, error, createContent, deleteContent } =
     usePuckContents(defaultContentType);
@@ -127,8 +176,8 @@ const ContentListRoute: React.FC<ContentListRouteProps> = ({ defaultContentType,
 
   const handleCreate = async () => {
     setCreateError(null);
-    if (!createName.trim()) { setCreateError('Name is required'); return; }
-    if (!createType.trim()) { setCreateError('Content type is required'); return; }
+    if (!createName.trim()) { setCreateError(intl.formatMessage({ id: 'ContentManager.validationNameRequired' })); return; }
+    if (!createType.trim()) { setCreateError(intl.formatMessage({ id: 'ContentManager.validationContentTypeRequired' })); return; }
     setCreating(true);
     try {
       const template = templateKey
@@ -176,13 +225,13 @@ const ContentListRoute: React.FC<ContentListRouteProps> = ({ defaultContentType,
   const columns: DataTableColumnItem<ContentRow>[] = [
     {
       id: 'name',
-      header: 'Name',
+      header: intl.formatMessage({ id: 'ContentManager.columnName' }),
       accessor: (row) => row.value.name,
       render: ({ row }) => <Text fontWeight="bold">{row.value.name}</Text>,
     },
     {
       id: 'contentType',
-      header: 'Content Type',
+      header: intl.formatMessage({ id: 'ContentManager.columnContentType' }),
       accessor: (row) => row.value.contentType,
       render: ({ row }) => (
         <code
@@ -200,7 +249,7 @@ const ContentListRoute: React.FC<ContentListRouteProps> = ({ defaultContentType,
     },
     {
       id: 'status',
-      header: 'Status',
+      header: intl.formatMessage({ id: 'ContentManager.columnStatus' }),
       accessor: () => '',
       isSortable: false,
       render: ({ row }) => {
@@ -208,16 +257,16 @@ const ContentListRoute: React.FC<ContentListRouteProps> = ({ defaultContentType,
         const hasPublished = !!row.states.published;
         return (
           <Stack direction="row" gap="100" wrap="wrap">
-            {hasDraft && <Badge colorPalette="warning" size="xs">Draft</Badge>}
-            {hasPublished && <Badge colorPalette="positive" size="xs">Published</Badge>}
-            {!hasDraft && !hasPublished && <Badge colorPalette="neutral" size="xs">No state</Badge>}
+            {hasDraft && <StatusBadge variant="draft" />}
+            {hasPublished && <StatusBadge variant="published" />}
+            {!hasDraft && !hasPublished && <StatusBadge variant="none" />}
           </Stack>
         );
       },
     },
     {
       id: 'updatedAt',
-      header: 'Updated',
+      header: intl.formatMessage({ id: 'ContentManager.columnUpdated' }),
       accessor: (row) => row.value.updatedAt,
       render: ({ row }) => (
         <Text color="neutral.11">
@@ -227,13 +276,13 @@ const ContentListRoute: React.FC<ContentListRouteProps> = ({ defaultContentType,
     },
     {
       id: 'actions',
-      header: 'Actions',
+      header: intl.formatMessage({ id: 'ContentManager.columnActions' }),
       accessor: () => '',
       isSortable: false,
       render: ({ row }) => (
         <Stack direction="row" gap="100" alignItems="center">
           <IconButton
-            aria-label={`Edit ${row.value.name}`}
+            aria-label={intl.formatMessage({ id: 'ContentManager.editAria' }, { name: row.value.name })}
             variant="ghost"
             size="xs"
             onPress={() => history.push(`/${row.key}`, { contentName: row.value.name })}
@@ -241,7 +290,7 @@ const ContentListRoute: React.FC<ContentListRouteProps> = ({ defaultContentType,
             <Edit />
           </IconButton>
           <IconButton
-            aria-label={`Preview ${row.value.name}`}
+            aria-label={intl.formatMessage({ id: 'ContentManager.previewAria' }, { name: row.value.name })}
             variant="ghost"
             size="xs"
             onPress={() =>
@@ -251,7 +300,7 @@ const ContentListRoute: React.FC<ContentListRouteProps> = ({ defaultContentType,
             <Visibility />
           </IconButton>
           <IconButton
-            aria-label={`Delete ${row.value.name}`}
+            aria-label={intl.formatMessage({ id: 'ContentManager.deleteAria' }, { name: row.value.name })}
             variant="ghost"
             colorPalette="critical"
             size="xs"
@@ -271,10 +320,12 @@ const ContentListRoute: React.FC<ContentListRouteProps> = ({ defaultContentType,
         <Stack direction="row" justifyContent="space-between" alignItems="center">
           <Stack direction="row" gap="400" alignItems="center">
             {backButton}
-            <Text as="h1" fontSize="2xl" fontWeight="700">Content Items</Text>
+            <Text as="h1" fontSize="2xl" fontWeight="700">
+              <FormattedMessage id="ContentManager.contentItemsTitle" />
+            </Text>
           </Stack>
           <Button variant="solid" onPress={() => setShowCreate((v) => !v)}>
-            <Icon as={Add} /> New Content
+            <Icon as={Add} /> <FormattedMessage id="ContentManager.newContent" />
           </Button>
         </Stack>
 
@@ -282,46 +333,56 @@ const ContentListRoute: React.FC<ContentListRouteProps> = ({ defaultContentType,
           <Card.Root variant="outlined">
             <Card.Body>
               <Stack direction="column" gap="400">
-                <Text as="h4" fontSize="xl" fontWeight="700">Create Content Item</Text>
+                <Text as="h4" fontSize="xl" fontWeight="700">
+                  <FormattedMessage id="ContentManager.createContentItem" />
+                </Text>
                 {createError && <Text color="critical.11">{createError}</Text>}
                 <Stack direction="row" gap="400">
                   <div style={{ flex: 1 }}>
                     <FormField.Root>
-                      <FormField.Label>Name</FormField.Label>
+                      <FormField.Label>
+                        <FormattedMessage id="ContentManager.nameLabel" />
+                      </FormField.Label>
                       <FormField.Input>
                         <TextInput
                           value={createName}
                           onChange={(v) => setCreateName(v)}
-                          placeholder="e.g. Homepage Hero"
+                          placeholder={intl.formatMessage({ id: 'ContentManager.namePlaceholder' })}
                         />
                       </FormField.Input>
                     </FormField.Root>
                   </div>
                   <div style={{ flex: 1 }}>
                     <FormField.Root>
-                      <FormField.Label>Content Type</FormField.Label>
+                      <FormField.Label>
+                        <FormattedMessage id="ContentManager.contentTypeLabel" />
+                      </FormField.Label>
                       <FormField.Input>
                         <TextInput
                           value={createType}
                           onChange={(v) => setCreateType(v)}
-                          placeholder="e.g. hero, banner"
+                          placeholder={intl.formatMessage({ id: 'ContentManager.contentTypePlaceholder' })}
                         />
                       </FormField.Input>
                     </FormField.Root>
                   </div>
                 </Stack>
                 <FormField.Root>
-                  <FormField.Label>Template</FormField.Label>
+                  <FormField.Label>
+                    <FormattedMessage id="ContentManager.templateLabel" />
+                  </FormField.Label>
                   <FormField.Input>
                     <Select.Root
-                      aria-label="Template"
+                      aria-label={intl.formatMessage({ id: 'ContentManager.templateLabel' })}
                       selectedKey={templateKey || 'empty'}
                       onSelectionChange={(key) =>
                         setTemplateKey(key == null || key === 'empty' ? '' : String(key))
                       }
                     >
                       <Select.Options>
-                        <Select.Option id="empty">Empty</Select.Option>
+                        <Select.Option id="empty">
+                          {intl.formatMessage({ id: 'ContentManager.templateEmpty' })}
+                        </Select.Option>
                         {templates.map((t) => (
                           <Select.Option key={t.key} id={t.key}>
                             {t.value.name}
@@ -333,9 +394,13 @@ const ContentListRoute: React.FC<ContentListRouteProps> = ({ defaultContentType,
                 </FormField.Root>
                 <Stack direction="row" gap="200">
                   <Button variant="solid" onPress={() => void handleCreate()} isDisabled={creating}>
-                    {creating ? 'Creating…' : 'Create'}
+                    {creating
+                      ? intl.formatMessage({ id: 'ContentManager.creating' })
+                      : intl.formatMessage({ id: 'ContentManager.create' })}
                   </Button>
-                  <Button variant="outline" onPress={() => setShowCreate(false)}>Cancel</Button>
+                  <Button variant="outline" onPress={() => setShowCreate(false)}>
+                    <FormattedMessage id="ContentManager.cancel" />
+                  </Button>
                 </Stack>
               </Stack>
             </Card.Body>
@@ -344,15 +409,15 @@ const ContentListRoute: React.FC<ContentListRouteProps> = ({ defaultContentType,
 
         <div style={{ maxWidth: 360 }}>
           <TextInput
-            aria-label="Search content"
-            placeholder="Search by name or content type…"
+            aria-label={intl.formatMessage({ id: 'ContentManager.searchAria' })}
+            placeholder={intl.formatMessage({ id: 'ContentManager.searchPlaceholder' })}
             value={search}
             onChange={(v) => setSearch(v)}
             width="100%"
             trailingElement={
               search !== '' ? (
                 <IconButton
-                  aria-label="Clear search"
+                  aria-label={intl.formatMessage({ id: 'ContentManager.clearSearch' })}
                   variant="ghost"
                   colorPalette="neutral"
                   size="2xs"
@@ -373,10 +438,16 @@ const ContentListRoute: React.FC<ContentListRouteProps> = ({ defaultContentType,
           </div>
         ) : contents.length === 0 ? (
           <Stack direction="column" gap="400" alignItems="center">
-            <Text color="neutral.11">No content items found.</Text>
+            <Text color="neutral.11">
+              <FormattedMessage id="ContentManager.noContent" />
+            </Text>
           </Stack>
         ) : (
-          <DataTable columns={columns} rows={rows} aria-label="Content items" />
+          <DataTable
+            columns={columns}
+            rows={rows}
+            aria-label={intl.formatMessage({ id: 'ContentManager.contentItemsTableAria' })}
+          />
         )}
       </Stack>
 
@@ -389,21 +460,29 @@ const ContentListRoute: React.FC<ContentListRouteProps> = ({ defaultContentType,
       >
         <Dialog.Content>
           <Dialog.Header>
-            <Dialog.Title>Delete content item?</Dialog.Title>
+            <Dialog.Title>
+              <FormattedMessage id="ContentManager.deleteContentTitle" />
+            </Dialog.Title>
             <Dialog.CloseTrigger />
           </Dialog.Header>
           <Dialog.Body>
             <Text>
-              Are you sure you want to delete{' '}
-              <Text as="span" fontWeight="700">
-                {pendingDelete?.value.name}
-              </Text>{' '}
-              and all its versions? This cannot be undone.
+              <FormattedMessage
+                id="ContentManager.deleteConfirm"
+                values={{
+                  name: pendingDelete?.value.name,
+                  b: (chunks) => (
+                    <Text as="span" fontWeight="700">
+                      {chunks}
+                    </Text>
+                  ),
+                }}
+              />
             </Text>
           </Dialog.Body>
           <Dialog.Footer>
             <Button slot="close" variant="outline" isDisabled={deleting !== null}>
-              Cancel
+              <FormattedMessage id="ContentManager.cancel" />
             </Button>
             <Button
               colorPalette="critical"
@@ -412,7 +491,9 @@ const ContentListRoute: React.FC<ContentListRouteProps> = ({ defaultContentType,
                 if (pendingDelete) void handleDelete(pendingDelete);
               }}
             >
-              {deleting !== null ? 'Deleting…' : 'Delete'}
+              {deleting !== null
+                ? intl.formatMessage({ id: 'ContentManager.deleting' })
+                : intl.formatMessage({ id: 'ContentManager.delete' })}
             </Button>
           </Dialog.Footer>
         </Dialog.Content>
@@ -431,11 +512,14 @@ interface ContentEditorRouteProps {
 }
 
 const ContentEditorRoute: React.FC<ContentEditorRouteProps> = ({ config, backButton }) => {
+  const intl = useIntl();
   const { contentKey } = useParams<{ contentKey: string }>();
   const history = useHistory();
   const location = useLocation();
   const contentName =
-    (location.state as { contentName?: string } | null)?.contentName ?? contentKey ?? 'Content';
+    (location.state as { contentName?: string } | null)?.contentName ??
+    contentKey ??
+    intl.formatMessage({ id: 'ContentManager.defaultContentName' });
 
   const {
     content,
@@ -551,27 +635,10 @@ const ContentEditorRoute: React.FC<ContentEditorRouteProps> = ({ config, backBut
     }
   }, [versionHistory, saveDraft, markSaved]);
 
-  const contentConfig = useMemo((): Config => {
-    const otherRootFields = Object.fromEntries(
-      Object.entries(config.root?.fields ?? {}).filter(([k]) => k !== 'title')
-    );
-    return {
-      ...config,
-      root: {
-        ...config.root,
-        fields: {
-          title: { type: 'text', label: 'Content Title' },
-          slot: { type: 'text', label: 'Slot' },
-          ...otherRootFields,
-        },
-        defaultProps: {
-          title: 'New Content',
-          slot: '',
-          ...config.root?.defaultProps,
-        },
-      },
-    };
-  }, [config]);
+  const contentConfig = useMemo(
+    (): Config => buildContentConfig(config, intl),
+    [config, intl]
+  );
 
   const handleCreateTemplate = useCallback(
     async (name: string, withoutData: boolean) => {
@@ -598,7 +665,7 @@ const ContentEditorRoute: React.FC<ContentEditorRouteProps> = ({ config, backBut
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
         <Stack direction="column" gap="400" alignItems="center">
           <LoadingSpinner />
-          <Text color="neutral.11">Loading editor…</Text>
+          <Text color="neutral.11">{intl.formatMessage({ id: 'ContentManager.loadingEditor' })}</Text>
         </Stack>
       </div>
     );
@@ -607,7 +674,12 @@ const ContentEditorRoute: React.FC<ContentEditorRouteProps> = ({ config, backBut
   if (error) {
     return (
       <div style={{ padding: '32px' }}>
-        <Text color="critical.11"><strong>Error loading content:</strong> {error}</Text>
+        <Text color="critical.11">
+          {intl.formatMessage({ id: 'ContentManager.errorLoadingContent' }, {
+            message: error,
+            b: (chunks) => <strong>{chunks}</strong>,
+          })}
+        </Text>
       </div>
     );
   }
@@ -636,7 +708,7 @@ const ContentEditorRoute: React.FC<ContentEditorRouteProps> = ({ config, backBut
             variant="ghost"
             onPress={() => guardedNavigate(() => history.push('/'))}
           >
-            <Icon as={ChevronLeft} /> Content Items
+            <Icon as={ChevronLeft} /> <FormattedMessage id="ContentManager.contentItemsTitle" />
           </Button>
           <Text color="neutral.11">/</Text>
           <Text fontWeight="bold">{contentName}</Text>
@@ -684,7 +756,7 @@ const ContentEditorRoute: React.FC<ContentEditorRouteProps> = ({ config, backBut
                         )
                       }
                       onCreateTemplate={() => setTemplateDialogOpen(true)}
-                      createTemplateLabel="Create a template from this content"
+                      createTemplateLabel={intl.formatMessage({ id: 'ContentManager.createTemplateLabel' })}
                       showPublishButton
                     />
                   ),
@@ -725,11 +797,14 @@ const ContentEditorRoute: React.FC<ContentEditorRouteProps> = ({ config, backBut
 // ---------------------------------------------------------------------------
 
 const ContentPreviewRoute: React.FC<ContentEditorRouteProps> = ({ config, backButton }) => {
+  const intl = useIntl();
   const { contentKey } = useParams<{ contentKey: string }>();
   const history = useHistory();
   const location = useLocation();
   const contentName =
-    (location.state as { contentName?: string } | null)?.contentName ?? contentKey ?? 'Content';
+    (location.state as { contentName?: string } | null)?.contentName ??
+    contentKey ??
+    intl.formatMessage({ id: 'ContentManager.defaultContentName' });
 
   return (
     <div>
@@ -737,7 +812,7 @@ const ContentPreviewRoute: React.FC<ContentEditorRouteProps> = ({ config, backBu
         {backButton}
         {backButton && <Text color="neutral.11">/</Text>}
         <Button variant="ghost" onPress={() => history.push('/')}>
-          <Icon as={ChevronLeft} /> Content Items
+          <Icon as={ChevronLeft} /> <FormattedMessage id="ContentManager.contentItemsTitle" />
         </Button>
         <Text color="neutral.11">/</Text>
         <Button
@@ -746,10 +821,12 @@ const ContentPreviewRoute: React.FC<ContentEditorRouteProps> = ({ config, backBu
         >
           {contentName}
         </Button>
-        <Badge colorPalette="primary" size="xs">Preview</Badge>
+        <Badge colorPalette="primary" size="xs">
+          <FormattedMessage id="ContentManager.previewBadge" />
+        </Badge>
         <div style={{ marginLeft: 'auto' }}>
           <Button variant="outline" size="xs" onPress={() => history.goBack()}>
-            <Icon as={Close} /> Close preview
+            <Icon as={Close} /> <FormattedMessage id="ContentManager.closePreview" />
           </Button>
         </div>
       </div>
@@ -763,36 +840,44 @@ const ContentPreviewRoute: React.FC<ContentEditorRouteProps> = ({ config, backBu
 // ---------------------------------------------------------------------------
 
 interface ContentManagerRouterInnerProps {
-  config: Config;
+  config?: Config;
   defaultContentType?: string;
   backButton?: ReactNode;
 }
 
 const ContentManagerRouterInner: React.FC<ContentManagerRouterInnerProps> = ({
-  config,
+  config: configProp,
   defaultContentType,
   backButton,
-}) => (
-  <Switch>
-    <Route
-      exact
-      path="/"
-      render={() => (
-        <ContentListRoute defaultContentType={defaultContentType} backButton={backButton} />
-      )}
-    />
-    {/* Preview must precede the catch-all editor route ("/:contentKey" also
-        matches "/:contentKey/preview" because it is not exact). */}
-    <Route
-      path="/:contentKey/preview"
-      render={() => <ContentPreviewRoute config={config} backButton={backButton} />}
-    />
-    <Route
-      path="/:contentKey"
-      render={() => <ContentEditorRoute config={config} backButton={backButton} />}
-    />
-  </Switch>
-);
+}) => {
+  const intl = useIntl();
+  // Build a locale-aware default config unless the host supplied one.
+  const config = useMemo(
+    () => configProp ?? createDefaultPuckConfig(intl),
+    [configProp, intl]
+  );
+  return (
+    <Switch>
+      <Route
+        exact
+        path="/"
+        render={() => (
+          <ContentListRoute defaultContentType={defaultContentType} backButton={backButton} />
+        )}
+      />
+      {/* Preview must precede the catch-all editor route ("/:contentKey" also
+          matches "/:contentKey/preview" because it is not exact). */}
+      <Route
+        path="/:contentKey/preview"
+        render={() => <ContentPreviewRoute config={config} backButton={backButton} />}
+      />
+      <Route
+        path="/:contentKey"
+        render={() => <ContentEditorRoute config={config} backButton={backButton} />}
+      />
+    </Switch>
+  );
+};
 
 // ---------------------------------------------------------------------------
 // Public component
@@ -807,11 +892,16 @@ export interface ContentManagerProps {
   jwtToken: string;
   /** Content locale (e.g. "en-US") used for locale-aware calls like product search */
   locale?: string;
-  /** Puck component config — must match what's used in the renderer. Defaults to defaultPuckConfig. */
+  /** Puck component config — passed to editor and preview. Defaults to a locale-aware config. */
   config?: Config;
   defaultContentType?: string;
   /** Optional element rendered before the breadcrumb in the editor header */
   backButton?: ReactNode;
+  /**
+   * Optional per-key overrides for UI strings, applied on top of the resolved
+   * locale catalog. Keys are message ids (e.g. "ContentManager.contentItemsTitle").
+   */
+  messageOverrides?: Record<string, string>;
 }
 
 export const ContentManager: React.FC<ContentManagerProps> = ({
@@ -821,12 +911,13 @@ export const ContentManager: React.FC<ContentManagerProps> = ({
   businessUnitKey,
   jwtToken,
   locale,
-  config = DEFAULT_CONFIG,
+  config,
   defaultContentType,
   backButton,
+  messageOverrides,
 }) => (
   <EnsureNimbusProvider locale={locale}>
-    <EnsureIntlProvider>
+    <EnsureIntlProvider locale={locale} messageOverrides={messageOverrides}>
       <PuckApiProvider
         baseURL={baseURL}
         projectKey={projectKey}

@@ -1,4 +1,5 @@
 import React from 'react';
+import { FormattedMessage } from 'react-intl';
 import { Button, Dialog, Stack, Text } from '@commercetools/nimbus';
 
 export interface UnsavedChangesDialogProps {
@@ -23,20 +24,21 @@ export const UnsavedChangesDialog: React.FC<UnsavedChangesDialogProps> = ({
   <Dialog.Root isOpen={isOpen} onOpenChange={onOpenChange}>
     <Dialog.Content>
       <Dialog.Header>
-        <Dialog.Title>Discard unsaved changes?</Dialog.Title>
+        <Dialog.Title>
+          <FormattedMessage id="Editor.discardChangesTitle" />
+        </Dialog.Title>
         <Dialog.CloseTrigger />
       </Dialog.Header>
       <Dialog.Body>
         <Stack direction="column" gap="200">
           <Text>
-            You have unsaved changes on this page. If you leave now, those
-            changes will be lost.
+            <FormattedMessage id="Editor.discardChangesBody" />
           </Text>
         </Stack>
       </Dialog.Body>
       <Dialog.Footer>
         <Button slot="close" variant="outline">
-          Stay on page
+          <FormattedMessage id="Editor.stayOnPage" />
         </Button>
         <Button
           colorPalette="critical"
@@ -45,7 +47,7 @@ export const UnsavedChangesDialog: React.FC<UnsavedChangesDialogProps> = ({
             onConfirm();
           }}
         >
-          Leave &amp; discard
+          <FormattedMessage id="Editor.leaveAndDiscard" />
         </Button>
       </Dialog.Footer>
     </Dialog.Content>

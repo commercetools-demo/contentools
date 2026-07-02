@@ -1,5 +1,6 @@
 // Shared helpers used across CMS Puck components
 import type { Fields } from '@measured/puck';
+import type { IntlShape } from 'react-intl';
 
 export const getLocalizedText = (obj?: Record<string, string> | null): string => {
   if (!obj) return '';
@@ -88,21 +89,24 @@ export interface ProductLinkProps {
   baseUrl: string;
 }
 
-/** Puck field definitions for the shared link props — spread into a component's `fields`. */
-export const productLinkFields: Fields<ProductLinkProps> = {
+/**
+ * Puck field definitions for the shared link props — spread into a component's
+ * `fields`. Factory form so the labels resolve through react-intl.
+ */
+export const createProductLinkFields = (intl: IntlShape): Fields<ProductLinkProps> => ({
   linkWith: {
     type: 'radio',
-    label: 'Link products by',
+    label: intl.formatMessage({ id: 'Editor.cfg.shared.field.linkWith' }),
     options: [
-      { value: 'slug', label: 'Slug' },
-      { value: 'sku', label: 'SKU' },
+      { value: 'slug', label: intl.formatMessage({ id: 'Editor.cfg.shared.linkWith.slug' }) },
+      { value: 'sku', label: intl.formatMessage({ id: 'Editor.cfg.shared.linkWith.sku' }) },
     ],
   },
   baseUrl: {
     type: 'text',
-    label: 'Link base URL',
+    label: intl.formatMessage({ id: 'Editor.cfg.shared.field.baseUrl' }),
   },
-};
+});
 
 /** Default values for the shared link props — spread into a component's defaultProps. */
 export const productLinkDefaults: ProductLinkProps = {

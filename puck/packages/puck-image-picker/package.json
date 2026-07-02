@@ -1,6 +1,6 @@
 {
   "name": "@commercetools-demo/puck-image-picker",
-  "version": "0.6.1",
+  "version": "0.7.0",
   "description": "Standalone ImagePickerField component with media library support",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -29,7 +29,8 @@
     "@commercetools/nimbus": "^3.2.0",
     "@commercetools/nimbus-icons": "^3.2.0",
     "react": ">=19.0.0",
-    "react-dom": ">=19.0.0"
+    "react-dom": ">=19.0.0",
+    "react-intl": ">=6.0.0"
   },
   "devDependencies": {
     "@types/react": "^19",

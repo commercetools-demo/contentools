@@ -7,6 +7,7 @@ import React, {
   type ReactNode,
 } from 'react';
 import { usePuck } from '@measured/puck';
+import { useIntl } from 'react-intl';
 import { IconButton, TextInput } from '@commercetools/nimbus';
 import { Close } from '@commercetools/nimbus-icons';
 import {
@@ -43,14 +44,15 @@ export const ComponentSearchProvider: React.FC<{ children: ReactNode }> = ({ chi
 
 const SidebarTab: React.FC<{
   label: string;
+  ariaLabel: string;
   isActive: boolean;
   onClick: () => void;
-}> = ({ label, isActive, onClick }) => (
+}> = ({ label, ariaLabel, isActive, onClick }) => (
   <button
     type="button"
-    aria-label={`Show ${label.toLowerCase()} panel`}
+    aria-label={ariaLabel}
     aria-pressed={isActive}
-    title={`Show ${label.toLowerCase()} panel`}
+    title={ariaLabel}
     onClick={onClick}
     style={{
       flex: 1,
@@ -95,9 +97,12 @@ const remapExpanded = (
 // ---------------------------------------------------------------------------
 
 export const ComponentsPanel: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const intl = useIntl();
   const { search, setSearch } = useContext(ComponentSearchContext);
   const { isHistoryTabActive, openHistoryTab, closeHistoryTab } = useVersionHistoryContext();
   const { dispatch, appState } = usePuck();
+  const componentsLabel = intl.formatMessage({ id: 'Editor.tabComponents' });
+  const historyLabel = intl.formatMessage({ id: 'Editor.tabHistory' });
 
   // Categories start collapsed for a tidy panel, but a search must never hide a
   // match inside a collapsed group — so expand everything while searching and
@@ -200,12 +205,18 @@ export const ComponentsPanel: React.FC<{ children: ReactNode }> = ({ children })
         }}
       >
         <SidebarTab
-          label="Components"
+          label={componentsLabel}
+          ariaLabel={intl.formatMessage({ id: 'Editor.showPanel' }, {
+            panel: componentsLabel.toLowerCase(),
+          })}
           isActive={!isHistoryTabActive}
           onClick={closeHistoryTab}
         />
         <SidebarTab
-          label="History"
+          label={historyLabel}
+          ariaLabel={intl.formatMessage({ id: 'Editor.showPanel' }, {
+            panel: historyLabel.toLowerCase(),
+          })}
           isActive={isHistoryTabActive}
           onClick={openHistoryTab}
         />
@@ -245,18 +256,18 @@ export const ComponentsPanel: React.FC<{ children: ReactNode }> = ({ children })
                 border: 0,
               }}
             >
-              Search components
+              {intl.formatMessage({ id: 'Editor.searchComponents' })}
             </label>
             <TextInput
               id="puck-component-search"
-              placeholder="Search components…"
+              placeholder={intl.formatMessage({ id: 'Editor.searchComponentsPlaceholder' })}
               value={search}
               onChange={(value) => setSearch(value)}
               width="100%"
               trailingElement={
                 search !== '' ? (
                   <IconButton
-                    aria-label="Clear search"
+                    aria-label={intl.formatMessage({ id: 'Editor.clearSearch' })}
                     variant="ghost"
                     colorPalette="neutral"
                     size="2xs"

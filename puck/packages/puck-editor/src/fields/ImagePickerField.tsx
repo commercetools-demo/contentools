@@ -4,6 +4,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
+import { useIntl, FormattedMessage } from 'react-intl';
 import { useMediaLibrary } from '@commercetools-demo/puck-api';
 import type { MediaFile } from '@commercetools-demo/puck-types';
 import {
@@ -35,6 +36,7 @@ const UploadModal: React.FC<UploadModalProps> = ({
   onUpload,
   onClose,
 }) => {
+  const intl = useIntl();
   const [file, setFile] = useState<File | null>(null);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -88,8 +90,15 @@ const UploadModal: React.FC<UploadModalProps> = ({
             borderBottom: '1px solid #e5e7eb',
           }}
         >
-          <Text as="h4" fontSize="xl" fontWeight="700">Upload a file</Text>
-          <IconButton aria-label="Close" variant="ghost" size="xs" onPress={onClose}>
+          <Text as="h4" fontSize="xl" fontWeight="700">
+            <FormattedMessage id="Editor.uploadAFile" />
+          </Text>
+          <IconButton
+            aria-label={intl.formatMessage({ id: 'Editor.close' })}
+            variant="ghost"
+            size="xs"
+            onPress={onClose}
+          >
             <Close />
           </IconButton>
         </div>
@@ -98,22 +107,26 @@ const UploadModal: React.FC<UploadModalProps> = ({
         <div style={{ flex: 1, overflow: 'auto', padding: '20px' }}>
           <Stack direction="column" gap="400">
             <FormField.Root>
-              <FormField.Label>Title</FormField.Label>
+              <FormField.Label>
+                <FormattedMessage id="Editor.title" />
+              </FormField.Label>
               <FormField.Input>
                 <TextInput
                   value={title}
                   onChange={(value) => setTitle(value)}
-                  placeholder="File title"
+                  placeholder={intl.formatMessage({ id: 'Editor.fileTitlePlaceholder' })}
                 />
               </FormField.Input>
             </FormField.Root>
             <FormField.Root>
-              <FormField.Label>Description</FormField.Label>
+              <FormField.Label>
+                <FormattedMessage id="Editor.description" />
+              </FormField.Label>
               <FormField.Input>
                 <TextInput
                   value={description}
                   onChange={(value) => setDescription(value)}
-                  placeholder="Optional description"
+                  placeholder={intl.formatMessage({ id: 'Editor.optionalDescriptionPlaceholder' })}
                 />
               </FormField.Input>
             </FormField.Root>
@@ -141,7 +154,7 @@ const UploadModal: React.FC<UploadModalProps> = ({
                   </div>
                 </>
               ) : (
-                <div>📁 Click or drag &amp; drop to select a file</div>
+                <div>📁 <FormattedMessage id="Editor.dropToSelectFile" /></div>
               )}
               <input
                 ref={inputRef}
@@ -170,16 +183,20 @@ const UploadModal: React.FC<UploadModalProps> = ({
           }}
         >
           <Text fontSize="sm" color="neutral.11" truncate>
-            {file?.name ?? 'No file selected'}
+            {file?.name ?? intl.formatMessage({ id: 'Editor.noFileSelected' })}
           </Text>
           <Stack direction="row" gap="200">
-            <Button variant="outline" onPress={onClose}>Cancel</Button>
+            <Button variant="outline" onPress={onClose}>
+              <FormattedMessage id="Editor.cancel" />
+            </Button>
             <Button
               variant="solid"
               isDisabled={!file || uploading}
               onPress={() => file && onUpload(file, title, description)}
             >
-              {uploading ? 'Uploading…' : 'Upload'}
+              {uploading
+                ? intl.formatMessage({ id: 'Editor.uploading' })
+                : intl.formatMessage({ id: 'Editor.upload' })}
             </Button>
           </Stack>
         </div>
@@ -213,6 +230,7 @@ const LibraryModal: React.FC<LibraryModalProps> = ({
   onSelect,
   onClose,
 }) => {
+  const intl = useIntl();
   const [selected, setSelected] = useState<MediaFile | null>(null);
 
   const handleConfirm = () => {
@@ -254,8 +272,15 @@ const LibraryModal: React.FC<LibraryModalProps> = ({
             borderBottom: '1px solid #e5e7eb',
           }}
         >
-          <Text as="h4" fontSize="xl" fontWeight="700">Select from Media Library</Text>
-          <IconButton aria-label="Close" variant="ghost" size="xs" onPress={onClose}>
+          <Text as="h4" fontSize="xl" fontWeight="700">
+            <FormattedMessage id="Editor.selectFromMediaLibrary" />
+          </Text>
+          <IconButton
+            aria-label={intl.formatMessage({ id: 'Editor.close' })}
+            variant="ghost"
+            size="xs"
+            onPress={onClose}
+          >
             <Close />
           </IconButton>
         </div>
@@ -267,7 +292,9 @@ const LibraryModal: React.FC<LibraryModalProps> = ({
               <LoadingSpinner />
             </div>
           ) : files.length === 0 ? (
-            <Text color="neutral.11">No files found.</Text>
+            <Text color="neutral.11">
+              <FormattedMessage id="Editor.noFilesFound" />
+            </Text>
           ) : (
             <Stack direction="column" gap="400">
               <div
@@ -341,7 +368,7 @@ const LibraryModal: React.FC<LibraryModalProps> = ({
                     isDisabled={pagination.currentPage <= 1}
                     onPress={onPrevPage}
                   >
-                    ← Prev
+                    <FormattedMessage id="Editor.prev" />
                   </Button>
                   <Text fontSize="sm" color="neutral.11">
                     {pagination.currentPage} / {pagination.totalPages}
@@ -352,7 +379,7 @@ const LibraryModal: React.FC<LibraryModalProps> = ({
                     isDisabled={pagination.currentPage >= pagination.totalPages}
                     onPress={onNextPage}
                   >
-                    Next →
+                    <FormattedMessage id="Editor.next" />
                   </Button>
                 </Stack>
               )}
@@ -373,12 +400,16 @@ const LibraryModal: React.FC<LibraryModalProps> = ({
           }}
         >
           <Text fontSize="sm" color="neutral.11" truncate>
-            {selected ? (selected.title ?? selected.name) : 'Nothing selected'}
+            {selected
+              ? (selected.title ?? selected.name)
+              : intl.formatMessage({ id: 'Editor.nothingSelected' })}
           </Text>
           <Stack direction="row" gap="200">
-            <Button variant="outline" onPress={onClose}>Cancel</Button>
+            <Button variant="outline" onPress={onClose}>
+              <FormattedMessage id="Editor.cancel" />
+            </Button>
             <Button variant="solid" isDisabled={!selected} onPress={handleConfirm}>
-              Select
+              <FormattedMessage id="Editor.select" />
             </Button>
           </Stack>
         </div>
@@ -403,6 +434,7 @@ export const ImagePickerField: React.FC<ImagePickerFieldProps> = ({
   onChange,
   imagesOnly = true,
 }) => {
+  const intl = useIntl();
   const {
     files,
     pagination,
@@ -470,23 +502,29 @@ export const ImagePickerField: React.FC<ImagePickerFieldProps> = ({
         >
           <img
             src={value}
-            alt="Selected image preview"
+            alt={intl.formatMessage({ id: 'Editor.selectedImagePreview' })}
             style={{ width: '48px', height: '48px', objectFit: 'cover', borderRadius: '4px', flexShrink: 0 }}
           />
           <div style={{ flex: 1, minWidth: 0 }}>
             <Text fontSize="sm" color="neutral.11" truncate>{value}</Text>
           </div>
           <Button variant="ghost" colorPalette="critical" size="xs" onPress={() => onChange('')}>
-            Remove
+            <FormattedMessage id="Editor.remove" />
           </Button>
         </div>
       ) : (
-        <Text fontSize="sm" color="neutral.11">No image selected</Text>
+        <Text fontSize="sm" color="neutral.11">
+          <FormattedMessage id="Editor.noImageSelected" />
+        </Text>
       )}
 
       <Stack direction="row" gap="200">
-        <Button variant="outline" onPress={() => setShowUpload(true)}>Upload</Button>
-        <Button variant="solid" onPress={openLibrary}>Media Library</Button>
+        <Button variant="outline" onPress={() => setShowUpload(true)}>
+          <FormattedMessage id="Editor.upload" />
+        </Button>
+        <Button variant="solid" onPress={openLibrary}>
+          <FormattedMessage id="Editor.mediaLibrary" />
+        </Button>
       </Stack>
 
       {showUpload && (

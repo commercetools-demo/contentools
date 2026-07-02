@@ -1,6 +1,7 @@
 import React from 'react';
 import type { ComponentConfig } from '@measured/puck';
-import { FONT_SIZE_FIELD } from '../fields/fontSizeField';
+import type { IntlShape } from 'react-intl';
+import { createFontSizeField } from '../fields/fontSizeField';
 
 export interface HeroProps {
   heading: string;
@@ -14,25 +15,25 @@ export interface HeroProps {
   minHeight?: string;
 }
 
-export const Hero: ComponentConfig<HeroProps> = {
-  label: 'Hero',
+export const createHeroConfig = (intl: IntlShape): ComponentConfig<HeroProps> => ({
+  label: intl.formatMessage({ id: 'Editor.cfg.hero.label' }),
   fields: {
-    heading: { type: 'text', label: 'Heading' },
-    headingFontSize: FONT_SIZE_FIELD('Heading Font Size'),
-    subheading: { type: 'textarea', label: 'Subheading' },
-    subheadingFontSize: FONT_SIZE_FIELD('Subheading Font Size'),
-    backgroundImage: { type: 'text', label: 'Background Image URL' },
-    ctaText: { type: 'text', label: 'CTA Button Text' },
-    ctaUrl: { type: 'text', label: 'CTA Button URL' },
+    heading: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.hero.field.heading' }) },
+    headingFontSize: createFontSizeField(intl, intl.formatMessage({ id: 'Editor.cfg.hero.field.headingFontSize' })),
+    subheading: { type: 'textarea', label: intl.formatMessage({ id: 'Editor.cfg.hero.field.subheading' }) },
+    subheadingFontSize: createFontSizeField(intl, intl.formatMessage({ id: 'Editor.cfg.hero.field.subheadingFontSize' })),
+    backgroundImage: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.hero.field.backgroundImage' }) },
+    ctaText: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.hero.field.ctaText' }) },
+    ctaUrl: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.hero.field.ctaUrl' }) },
     layout: {
       type: 'select',
-      label: 'Layout',
+      label: intl.formatMessage({ id: 'Editor.cfg.hero.field.layout' }),
       options: [
-        { value: 'centered', label: 'Centered' },
-        { value: 'left-aligned', label: 'Left Aligned' },
+        { value: 'centered', label: intl.formatMessage({ id: 'Editor.cfg.hero.layout.centered' }) },
+        { value: 'left-aligned', label: intl.formatMessage({ id: 'Editor.cfg.hero.layout.leftAligned' }) },
       ],
     },
-    minHeight: { type: 'text', label: 'Min Height (CSS, e.g. 400px)' },
+    minHeight: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.hero.field.minHeight' }) },
   },
   defaultProps: {
     heading: 'Welcome',
@@ -114,4 +115,4 @@ export const Hero: ComponentConfig<HeroProps> = {
       </section>
     );
   },
-};
+});

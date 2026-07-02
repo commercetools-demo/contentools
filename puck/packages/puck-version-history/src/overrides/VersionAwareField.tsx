@@ -1,4 +1,5 @@
 import React from 'react';
+import { FormattedMessage } from 'react-intl';
 import { usePuck } from '@measured/puck';
 import { useVersionHistoryContext } from '../context/VersionHistoryContext';
 import { Badge, Stack, Text } from '@commercetools/nimbus';
@@ -49,7 +50,9 @@ export const VersionAwareFieldsPanel: React.FC<VersionAwareFieldsPanelProps> = (
           }}
         >
           <Stack direction="column" gap="100">
-            <Text fontSize="sm" fontWeight="700">Fields changed from this version:</Text>
+            <Text fontSize="sm" fontWeight="700">
+              <FormattedMessage id="VersionHistory.fieldsChanged" />
+            </Text>
             <Stack direction="row" gap="100" wrap="wrap">
               {componentDiff.changedProps
                 // hide internal puck `id` prop
@@ -72,7 +75,9 @@ export const VersionAwareFieldsPanel: React.FC<VersionAwareFieldsPanelProps> = (
           }}
         >
           <Stack direction="column" gap="100">
-            <Text fontSize="sm" fontWeight="700">Root fields changed:</Text>
+            <Text fontSize="sm" fontWeight="700">
+              <FormattedMessage id="VersionHistory.rootFieldsChanged" />
+            </Text>
             <Stack direction="row" gap="100" wrap="wrap">
               {diff.rootChanges.map((prop) => (
                 <Badge key={prop} colorPalette="neutral" size="xs">{prop}</Badge>

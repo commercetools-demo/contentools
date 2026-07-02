@@ -1,4 +1,5 @@
 import React from 'react';
+import { FormattedMessage, type IntlShape } from 'react-intl';
 import { type ComponentConfig } from '@measured/puck';
 import { useDatasource } from '@commercetools-demo/puck-api';
 import { DatasourceField, type DatasourceValue } from '../../fields/DatasourceField';
@@ -8,7 +9,7 @@ import {
   getLocalizedText,
   getProductImage,
   productLinkDefaults,
-  productLinkFields,
+  createProductLinkFields,
   resolveProductLink,
   type ProductLinkProps,
 } from './shared';
@@ -37,9 +38,9 @@ const ProductSliderRender: React.FC<ProductSliderProps> = ({ title, subtitle, pr
           {subtitle && <p style={{ fontSize: '1.1rem', color: '#666', margin: 0 }}>{subtitle}</p>}
         </div>
       )}
-      {loading && <div style={{ textAlign: 'center', color: '#999', padding: '2rem' }}>Loading products…</div>}
+      {loading && <div style={{ textAlign: 'center', color: '#999', padding: '2rem' }}><FormattedMessage id="Editor.loadingProducts" /></div>}
       {!loading && items.length === 0 && (
-        <div style={{ textAlign: 'center', color: '#999', padding: '2rem', fontSize: '13px' }}>No products configured</div>
+        <div style={{ textAlign: 'center', color: '#999', padding: '2rem', fontSize: '13px' }}><FormattedMessage id="Editor.noProductsConfigured" /></div>
       )}
       {items.length > 0 && (
         <div
@@ -74,7 +75,7 @@ const ProductSliderRender: React.FC<ProductSliderProps> = ({ title, subtitle, pr
                 <div style={{ width: '100%', height: '200px', background: '#f5f5f5', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
                   {imageUrl
                     ? <img src={imageUrl} alt={name} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
-                    : <span style={{ color: '#999', fontSize: '0.85rem' }}>No image</span>
+                    : <span style={{ color: '#999', fontSize: '0.85rem' }}><FormattedMessage id="Editor.noImage" /></span>
                   }
                 </div>
                 <div style={{ padding: '1.5rem' }}>
@@ -99,16 +100,18 @@ const ProductSliderRender: React.FC<ProductSliderProps> = ({ title, subtitle, pr
   );
 };
 
-export const ProductSlider: ComponentConfig<ProductSliderProps> = {
-  label: 'Product Slider',
+export const createProductSliderConfig = (
+  intl: IntlShape
+): ComponentConfig<ProductSliderProps> => ({
+  label: intl.formatMessage({ id: 'Editor.cfg.productSlider.label' }),
   fields: {
-    title: { type: 'text', label: 'Title' },
-    subtitle: { type: 'text', label: 'Subtitle' },
+    title: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.productSlider.field.title' }) },
+    subtitle: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.productSlider.field.subtitle' }) },
     products: {
-      type: 'custom', label: 'Products',
+      type: 'custom', label: intl.formatMessage({ id: 'Editor.cfg.productSlider.field.products' }),
       render: ({ value, onChange }) => <DatasourceField value={value} onChange={onChange} />,
     },
-    ...productLinkFields,
+    ...createProductLinkFields(intl),
   },
   defaultProps: {
     title: '',
@@ -117,4 +120,4 @@ export const ProductSlider: ComponentConfig<ProductSliderProps> = {
     ...productLinkDefaults,
   },
   render: (props) => <ProductSliderRender {...props} />,
-};
+});

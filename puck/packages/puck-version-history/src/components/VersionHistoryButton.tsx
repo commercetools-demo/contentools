@@ -1,4 +1,5 @@
 import React from 'react';
+import { useIntl } from 'react-intl';
 import { IconButton } from '@commercetools/nimbus';
 import { History } from '@commercetools/nimbus-icons';
 import { useVersionHistoryContext } from '../context/VersionHistoryContext';
@@ -14,6 +15,7 @@ interface VersionHistoryButtonProps {
 export const VersionHistoryButton: React.FC<VersionHistoryButtonProps> = ({
   disabled = false,
 }) => {
+  const intl = useIntl();
   const { isHistoryTabActive, openHistoryTab, closeHistoryTab } =
     useVersionHistoryContext();
 
@@ -27,7 +29,9 @@ export const VersionHistoryButton: React.FC<VersionHistoryButtonProps> = ({
 
   return (
     <IconButton
-      aria-label={isHistoryTabActive ? 'Hide version history' : 'Show version history'}
+      aria-label={intl.formatMessage(
+        isHistoryTabActive ? { id: 'VersionHistory.hideHistory' } : { id: 'VersionHistory.showHistory' }
+      )}
       variant={isHistoryTabActive ? 'solid' : 'ghost'}
       onPress={handleClick}
       isDisabled={disabled}

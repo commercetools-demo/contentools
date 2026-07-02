@@ -4,6 +4,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
+import { FormattedMessage, useIntl } from 'react-intl';
 import { useMediaLibrary } from './hooks/useMediaLibrary';
 import type { MediaFile } from './types';
 import {
@@ -17,6 +18,7 @@ import {
 } from '@commercetools/nimbus';
 import { Close } from '@commercetools/nimbus-icons';
 import { EnsureNimbusProvider } from './EnsureNimbusProvider';
+import { EnsureIntlProvider } from './EnsureIntlProvider';
 
 // ---------------------------------------------------------------------------
 // Upload modal
@@ -37,6 +39,7 @@ const UploadModal: React.FC<UploadModalProps> = ({
   onUpload,
   onClose,
 }) => {
+  const intl = useIntl();
   const [file, setFile] = useState<File | null>(null);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -90,8 +93,15 @@ const UploadModal: React.FC<UploadModalProps> = ({
             borderBottom: '1px solid #e5e7eb',
           }}
         >
-          <Text as="h4" fontSize="xl" fontWeight="700">Upload a file</Text>
-          <IconButton aria-label="Close" variant="ghost" size="xs" onPress={onClose}>
+          <Text as="h4" fontSize="xl" fontWeight="700">
+            <FormattedMessage id="ImagePicker.uploadTitle" />
+          </Text>
+          <IconButton
+            aria-label={intl.formatMessage({ id: 'ImagePicker.close' })}
+            variant="ghost"
+            size="xs"
+            onPress={onClose}
+          >
             <Close />
           </IconButton>
         </div>
@@ -100,22 +110,26 @@ const UploadModal: React.FC<UploadModalProps> = ({
         <div style={{ flex: 1, overflow: 'auto', padding: '20px' }}>
           <Stack direction="column" gap="400">
             <FormField.Root>
-              <FormField.Label>Title</FormField.Label>
+              <FormField.Label>
+                <FormattedMessage id="ImagePicker.titleLabel" />
+              </FormField.Label>
               <FormField.Input>
                 <TextInput
                   value={title}
                   onChange={(value) => setTitle(value)}
-                  placeholder="File title"
+                  placeholder={intl.formatMessage({ id: 'ImagePicker.titlePlaceholder' })}
                 />
               </FormField.Input>
             </FormField.Root>
             <FormField.Root>
-              <FormField.Label>Description</FormField.Label>
+              <FormField.Label>
+                <FormattedMessage id="ImagePicker.descriptionLabel" />
+              </FormField.Label>
               <FormField.Input>
                 <TextInput
                   value={description}
                   onChange={(value) => setDescription(value)}
-                  placeholder="Optional description"
+                  placeholder={intl.formatMessage({ id: 'ImagePicker.descriptionPlaceholder' })}
                 />
               </FormField.Input>
             </FormField.Root>
@@ -139,11 +153,16 @@ const UploadModal: React.FC<UploadModalProps> = ({
                 <>
                   <div>📎 {file.name}</div>
                   <div style={{ fontSize: '11px', marginTop: '4px', color: '#9ca3af' }}>
-                    {(file.size / 1024).toFixed(0)} KB
+                    <FormattedMessage
+                      id="ImagePicker.fileSize"
+                      values={{ size: (file.size / 1024).toFixed(0) }}
+                    />
                   </div>
                 </>
               ) : (
-                <div>📁 Click or drag &amp; drop to select a file</div>
+                <div>
+                  📁 <FormattedMessage id="ImagePicker.dropzoneHint" />
+                </div>
               )}
               <input
                 ref={inputRef}
@@ -172,16 +191,22 @@ const UploadModal: React.FC<UploadModalProps> = ({
           }}
         >
           <Text fontSize="sm" color="neutral.11" truncate>
-            {file?.name ?? 'No file selected'}
+            {file?.name ?? intl.formatMessage({ id: 'ImagePicker.noFileSelected' })}
           </Text>
           <Stack direction="row" gap="200">
-            <Button variant="outline" onPress={onClose}>Cancel</Button>
+            <Button variant="outline" onPress={onClose}>
+              <FormattedMessage id="ImagePicker.cancel" />
+            </Button>
             <Button
               variant="solid"
               isDisabled={!file || uploading}
               onPress={() => file && onUpload(file, title, description)}
             >
-              {uploading ? 'Uploading…' : 'Upload'}
+              {uploading ? (
+                <FormattedMessage id="ImagePicker.uploading" />
+              ) : (
+                <FormattedMessage id="ImagePicker.uploadAction" />
+              )}
             </Button>
           </Stack>
         </div>
@@ -215,6 +240,7 @@ const LibraryModal: React.FC<LibraryModalProps> = ({
   onSelect,
   onClose,
 }) => {
+  const intl = useIntl();
   const [selected, setSelected] = useState<MediaFile | null>(null);
 
   const handleConfirm = () => {
@@ -256,8 +282,15 @@ const LibraryModal: React.FC<LibraryModalProps> = ({
             borderBottom: '1px solid #e5e7eb',
           }}
         >
-          <Text as="h4" fontSize="xl" fontWeight="700">Select from Media Library</Text>
-          <IconButton aria-label="Close" variant="ghost" size="xs" onPress={onClose}>
+          <Text as="h4" fontSize="xl" fontWeight="700">
+            <FormattedMessage id="ImagePicker.libraryTitle" />
+          </Text>
+          <IconButton
+            aria-label={intl.formatMessage({ id: 'ImagePicker.close' })}
+            variant="ghost"
+            size="xs"
+            onPress={onClose}
+          >
             <Close />
           </IconButton>
         </div>
@@ -269,7 +302,9 @@ const LibraryModal: React.FC<LibraryModalProps> = ({
               <LoadingSpinner />
             </div>
           ) : files.length === 0 ? (
-            <Text color="neutral.11">No files found.</Text>
+            <Text color="neutral.11">
+              <FormattedMessage id="ImagePicker.noFilesFound" />
+            </Text>
           ) : (
             <Stack direction="column" gap="400">
               <div
@@ -343,10 +378,16 @@ const LibraryModal: React.FC<LibraryModalProps> = ({
                     isDisabled={pagination.currentPage <= 1}
                     onPress={onPrevPage}
                   >
-                    ← Prev
+                    <FormattedMessage id="ImagePicker.prevPage" />
                   </Button>
                   <Text fontSize="sm" color="neutral.11">
-                    {pagination.currentPage} / {pagination.totalPages}
+                    <FormattedMessage
+                      id="ImagePicker.pageIndicator"
+                      values={{
+                        current: pagination.currentPage,
+                        total: pagination.totalPages,
+                      }}
+                    />
                   </Text>
                   <Button
                     variant="outline"
@@ -354,7 +395,7 @@ const LibraryModal: React.FC<LibraryModalProps> = ({
                     isDisabled={pagination.currentPage >= pagination.totalPages}
                     onPress={onNextPage}
                   >
-                    Next →
+                    <FormattedMessage id="ImagePicker.nextPage" />
                   </Button>
                 </Stack>
               )}
@@ -375,12 +416,16 @@ const LibraryModal: React.FC<LibraryModalProps> = ({
           }}
         >
           <Text fontSize="sm" color="neutral.11" truncate>
-            {selected ? (selected.title ?? selected.name) : 'Nothing selected'}
+            {selected
+              ? (selected.title ?? selected.name)
+              : intl.formatMessage({ id: 'ImagePicker.nothingSelected' })}
           </Text>
           <Stack direction="row" gap="200">
-            <Button variant="outline" onPress={onClose}>Cancel</Button>
+            <Button variant="outline" onPress={onClose}>
+              <FormattedMessage id="ImagePicker.cancel" />
+            </Button>
             <Button variant="solid" isDisabled={!selected} onPress={handleConfirm}>
-              Select
+              <FormattedMessage id="ImagePicker.select" />
             </Button>
           </Stack>
         </div>
@@ -398,12 +443,18 @@ export interface ImagePickerFieldProps {
   onChange: (value: string) => void;
   /** Only show images (default: true) */
   imagesOnly?: boolean;
+  /** Content locale (e.g. "en-US"). Resolves to en/es; unsupported → en. */
+  locale?: string;
+  /** Per-key message overrides applied on top of the resolved catalog. */
+  messageOverrides?: Record<string, string>;
 }
 
 export const ImagePickerField: React.FC<ImagePickerFieldProps> = ({
   value,
   onChange,
   imagesOnly = true,
+  locale,
+  messageOverrides,
 }) => {
   const {
     files,
@@ -457,64 +508,72 @@ export const ImagePickerField: React.FC<ImagePickerFieldProps> = ({
   }, []);
 
   return (
-    <EnsureNimbusProvider>
-      <Stack direction="column" gap="200">
-        {value ? (
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '10px',
-              padding: '8px',
-              border: '1px solid #d1d5db',
-              borderRadius: '6px',
-              background: '#f9fafb',
-            }}
-          >
-            <img
-              src={value}
-              alt=""
-              style={{ width: '48px', height: '48px', objectFit: 'cover', borderRadius: '4px', flexShrink: 0 }}
-            />
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <Text fontSize="sm" color="neutral.11" truncate>{value}</Text>
+    <EnsureIntlProvider locale={locale} messageOverrides={messageOverrides}>
+      <EnsureNimbusProvider locale={locale}>
+        <Stack direction="column" gap="200">
+          {value ? (
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '10px',
+                padding: '8px',
+                border: '1px solid #d1d5db',
+                borderRadius: '6px',
+                background: '#f9fafb',
+              }}
+            >
+              <img
+                src={value}
+                alt=""
+                style={{ width: '48px', height: '48px', objectFit: 'cover', borderRadius: '4px', flexShrink: 0 }}
+              />
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <Text fontSize="sm" color="neutral.11" truncate>{value}</Text>
+              </div>
+              <Button variant="ghost" colorPalette="critical" size="xs" onPress={() => onChange('')}>
+                <FormattedMessage id="ImagePicker.remove" />
+              </Button>
             </div>
-            <Button variant="ghost" colorPalette="critical" size="xs" onPress={() => onChange('')}>
-              Remove
+          ) : (
+            <Text fontSize="sm" color="neutral.11">
+              <FormattedMessage id="ImagePicker.noImageSelected" />
+            </Text>
+          )}
+
+          <Stack direction="row" gap="200">
+            <Button variant="outline" onPress={() => setShowUpload(true)}>
+              <FormattedMessage id="ImagePicker.upload" />
             </Button>
-          </div>
-        ) : (
-          <Text fontSize="sm" color="neutral.11">No image selected</Text>
-        )}
+            <Button variant="solid" onPress={openLibrary}>
+              <FormattedMessage id="ImagePicker.mediaLibrary" />
+            </Button>
+          </Stack>
 
-        <Stack direction="row" gap="200">
-          <Button variant="outline" onPress={() => setShowUpload(true)}>Upload</Button>
-          <Button variant="solid" onPress={openLibrary}>Media Library</Button>
+          {showUpload && (
+            <UploadModal
+              uploading={uploading}
+              error={error}
+              imagesOnly={imagesOnly}
+              onUpload={(file, title, desc) => void handleUpload(file, title, desc)}
+              onClose={() => setShowUpload(false)}
+            />
+          )}
+
+          {showLibrary && (
+            <LibraryModal
+              files={files}
+              pagination={pagination}
+              loading={loading}
+              error={error}
+              onNextPage={() => void loadNextPage(extensions)}
+              onPrevPage={() => void loadPreviousPage(extensions)}
+              onSelect={handleSelect}
+              onClose={() => setShowLibrary(false)}
+            />
+          )}
         </Stack>
-
-        {showUpload && (
-          <UploadModal
-            uploading={uploading}
-            error={error}
-            imagesOnly={imagesOnly}
-            onUpload={(file, title, desc) => void handleUpload(file, title, desc)}
-            onClose={() => setShowUpload(false)}
-          />
-        )}
-
-        {showLibrary && (
-          <LibraryModal
-            files={files}
-            pagination={pagination}
-            loading={loading}
-            error={error}
-            onNextPage={() => void loadNextPage(extensions)}
-            onPrevPage={() => void loadPreviousPage(extensions)}
-            onSelect={handleSelect}
-            onClose={() => setShowLibrary(false)}
-          />
-        )}
-      </Stack>
-    </EnsureNimbusProvider>
+      </EnsureNimbusProvider>
+    </EnsureIntlProvider>
   );
 };

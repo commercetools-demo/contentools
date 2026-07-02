@@ -1,5 +1,6 @@
 import React from 'react';
 import type { ComponentConfig } from '@measured/puck';
+import type { IntlShape } from 'react-intl';
 import { RichTextField } from '../fields/RichTextField';
 import { sanitizeHtml } from '../utils/sanitizeHtml';
 
@@ -10,27 +11,27 @@ export interface RichTextProps {
   padding?: string;
 }
 
-export const RichText: ComponentConfig<RichTextProps> = {
-  label: 'Rich Text',
+export const createRichTextConfig = (intl: IntlShape): ComponentConfig<RichTextProps> => ({
+  label: intl.formatMessage({ id: 'Editor.cfg.richText.label' }),
   fields: {
     content: {
       type: 'custom',
-      label: 'Content',
+      label: intl.formatMessage({ id: 'Editor.cfg.richText.field.content' }),
       render: ({ value, onChange }) => (
         <RichTextField value={value as string} onChange={onChange} />
       ),
     },
     align: {
       type: 'select',
-      label: 'Text Alignment',
+      label: intl.formatMessage({ id: 'Editor.cfg.richText.field.align' }),
       options: [
-        { value: 'left', label: 'Left' },
-        { value: 'center', label: 'Center' },
-        { value: 'right', label: 'Right' },
+        { value: 'left', label: intl.formatMessage({ id: 'Editor.cfg.align.left' }) },
+        { value: 'center', label: intl.formatMessage({ id: 'Editor.cfg.align.center' }) },
+        { value: 'right', label: intl.formatMessage({ id: 'Editor.cfg.align.right' }) },
       ],
     },
-    maxWidth: { type: 'text', label: 'Max Width (CSS)' },
-    padding: { type: 'text', label: 'Padding (CSS)' },
+    maxWidth: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.richText.field.maxWidth' }) },
+    padding: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.richText.field.padding' }) },
   },
   defaultProps: {
     content: '<p>Add your content here…</p>',
@@ -50,4 +51,4 @@ export const RichText: ComponentConfig<RichTextProps> = {
       dangerouslySetInnerHTML={{ __html: sanitizeHtml(content) }}
     />
   ),
-};
+});

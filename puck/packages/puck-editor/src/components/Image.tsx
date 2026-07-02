@@ -1,4 +1,5 @@
 import React from 'react';
+import { FormattedMessage, type IntlShape } from 'react-intl';
 import type { ComponentConfig } from '@measured/puck';
 import { ImagePickerField } from '../fields/ImagePickerField';
 
@@ -13,12 +14,12 @@ export interface ImageProps {
   align?: 'left' | 'center' | 'right';
 }
 
-export const Image: ComponentConfig<ImageProps> = {
-  label: 'Image',
+export const createImageConfig = (intl: IntlShape): ComponentConfig<ImageProps> => ({
+  label: intl.formatMessage({ id: 'Editor.cfg.image.label' }),
   fields: {
     src: {
       type: 'custom',
-      label: 'Image',
+      label: intl.formatMessage({ id: 'Editor.cfg.image.field.src' }),
       render: ({ value, onChange }) => (
         <ImagePickerField
           value={value as string}
@@ -27,27 +28,27 @@ export const Image: ComponentConfig<ImageProps> = {
         />
       ),
     },
-    alt: { type: 'text', label: 'Alt Text' },
-    caption: { type: 'text', label: 'Caption' },
-    width: { type: 'text', label: 'Width (CSS, e.g. 100%)' },
-    height: { type: 'text', label: 'Height (CSS, e.g. 300px)' },
+    alt: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.image.field.alt' }) },
+    caption: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.image.field.caption' }) },
+    width: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.image.field.width' }) },
+    height: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.image.field.height' }) },
     objectFit: {
       type: 'select',
-      label: 'Object Fit',
+      label: intl.formatMessage({ id: 'Editor.cfg.image.field.objectFit' }),
       options: [
-        { value: 'cover', label: 'Cover' },
-        { value: 'contain', label: 'Contain' },
-        { value: 'fill', label: 'Fill' },
+        { value: 'cover', label: intl.formatMessage({ id: 'Editor.cfg.image.objectFit.cover' }) },
+        { value: 'contain', label: intl.formatMessage({ id: 'Editor.cfg.image.objectFit.contain' }) },
+        { value: 'fill', label: intl.formatMessage({ id: 'Editor.cfg.image.objectFit.fill' }) },
       ],
     },
-    borderRadius: { type: 'text', label: 'Border Radius (CSS)' },
+    borderRadius: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.image.field.borderRadius' }) },
     align: {
       type: 'select',
-      label: 'Alignment',
+      label: intl.formatMessage({ id: 'Editor.cfg.image.field.align' }),
       options: [
-        { value: 'left', label: 'Left' },
-        { value: 'center', label: 'Center' },
-        { value: 'right', label: 'Right' },
+        { value: 'left', label: intl.formatMessage({ id: 'Editor.cfg.align.left' }) },
+        { value: 'center', label: intl.formatMessage({ id: 'Editor.cfg.align.center' }) },
+        { value: 'right', label: intl.formatMessage({ id: 'Editor.cfg.align.right' }) },
       ],
     },
   },
@@ -94,7 +95,7 @@ export const Image: ComponentConfig<ImageProps> = {
             borderRadius,
           }}
         >
-          No image selected
+          <FormattedMessage id="Editor.noImageSelected" />
         </div>
       )}
       {caption && (
@@ -106,4 +107,4 @@ export const Image: ComponentConfig<ImageProps> = {
       )}
     </figure>
   ),
-};
+});

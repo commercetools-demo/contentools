@@ -1,4 +1,5 @@
 import React from 'react';
+import { FormattedMessage, type IntlShape } from 'react-intl';
 import { type ComponentConfig } from '@measured/puck';
 import { ImagePickerField } from '../../fields/ImagePickerField';
 
@@ -9,22 +10,24 @@ export interface VideoBlockProps {
   caption: string;
 }
 
-export const VideoBlock: ComponentConfig<VideoBlockProps> = {
-  label: 'Video Block',
+export const createVideoBlockConfig = (
+  intl: IntlShape
+): ComponentConfig<VideoBlockProps> => ({
+  label: intl.formatMessage({ id: 'Editor.cfg.videoBlock.label' }),
   fields: {
-    videoUrl: { type: 'text', label: 'Video URL' },
+    videoUrl: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.videoBlock.field.videoUrl' }) },
     posterImage: {
-      type: 'custom', label: 'Poster Image',
+      type: 'custom', label: intl.formatMessage({ id: 'Editor.cfg.videoBlock.field.posterImage' }),
       render: ({ value, onChange }) => <ImagePickerField value={value ?? ''} onChange={onChange} />,
     },
-    title: { type: 'text', label: 'Title' },
-    caption: { type: 'text', label: 'Caption' },
+    title: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.videoBlock.field.title' }) },
+    caption: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.videoBlock.field.caption' }) },
   },
   defaultProps: { videoUrl: '', posterImage: '', title: '', caption: '' },
   render: ({ videoUrl, posterImage, title, caption }) => {
     if (!videoUrl) return (
       <div style={{ padding: '2rem', textAlign: 'center', color: '#999', background: '#f5f5f5', borderRadius: '8px' }}>
-        No video URL configured
+        <FormattedMessage id="Editor.noVideoUrlConfigured" />
       </div>
     );
     return (
@@ -59,4 +62,4 @@ export const VideoBlock: ComponentConfig<VideoBlockProps> = {
       </div>
     );
   },
-};
+});

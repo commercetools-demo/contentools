@@ -1,5 +1,6 @@
 import React from 'react';
 import { DropZone, type ComponentConfig } from '@measured/puck';
+import type { IntlShape } from 'react-intl';
 
 export interface ColumnsProps {
   columnCount?: 2 | 3 | 4;
@@ -12,20 +13,20 @@ export interface ColumnsProps {
  * for backward compatibility so pages saved with the original component (and its
  * `column-N` drop zones) keep rendering. Prefer Grid for new content.
  */
-export const Columns: ComponentConfig<ColumnsProps> = {
-  label: 'Columns',
+export const createColumnsConfig = (intl: IntlShape): ComponentConfig<ColumnsProps> => ({
+  label: intl.formatMessage({ id: 'Editor.cfg.columns.label' }),
   fields: {
     columnCount: {
       type: 'select',
-      label: 'Number of Columns',
+      label: intl.formatMessage({ id: 'Editor.cfg.columns.field.columnCount' }),
       options: [
-        { value: 2, label: '2 Columns' },
-        { value: 3, label: '3 Columns' },
-        { value: 4, label: '4 Columns' },
+        { value: 2, label: intl.formatMessage({ id: 'Editor.cfg.columns.count.2' }) },
+        { value: 3, label: intl.formatMessage({ id: 'Editor.cfg.columns.count.3' }) },
+        { value: 4, label: intl.formatMessage({ id: 'Editor.cfg.columns.count.4' }) },
       ],
     },
-    gap: { type: 'text', label: 'Column Gap (CSS)' },
-    padding: { type: 'text', label: 'Padding (CSS)' },
+    gap: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.columns.field.gap' }) },
+    padding: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.columns.field.padding' }) },
   },
   defaultProps: {
     columnCount: 2,
@@ -52,4 +53,4 @@ export const Columns: ComponentConfig<ColumnsProps> = {
       </div>
     );
   },
-};
+});

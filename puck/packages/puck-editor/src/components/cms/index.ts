@@ -1,77 +1,77 @@
-export { HeroBanner } from './HeroBanner';
+export { createHeroBannerConfig } from './HeroBanner';
 export type { HeroBannerProps } from './HeroBanner';
 
-export { TextBlock } from './TextBlock';
+export { createTextBlockConfig } from './TextBlock';
 export type { TextBlockProps } from './TextBlock';
 
-export { CategoryGrid } from './CategoryGrid';
+export { createCategoryGridConfig } from './CategoryGrid';
 export type { CategoryGridProps } from './CategoryGrid';
 
-export { CategoryHero } from './CategoryHero';
+export { createCategoryHeroConfig } from './CategoryHero';
 export type { CategoryHeroProps } from './CategoryHero';
 
-export { CheckoutPromoBanner } from './CheckoutPromoBanner';
+export { createCheckoutPromoBannerConfig } from './CheckoutPromoBanner';
 export type { CheckoutPromoBannerProps } from './CheckoutPromoBanner';
 
-export { CountdownBanner } from './CountdownBanner';
+export { createCountdownBannerConfig } from './CountdownBanner';
 export type { CountdownBannerProps } from './CountdownBanner';
 
-export { CrossSellBlock } from './CrossSellBlock';
+export { createCrossSellBlockConfig } from './CrossSellBlock';
 export type { CrossSellBlockProps } from './CrossSellBlock';
 
-export { DeliveryMessage } from './DeliveryMessage';
+export { createDeliveryMessageConfig } from './DeliveryMessage';
 export type { DeliveryMessageProps } from './DeliveryMessage';
 
-export { Divider } from './Divider';
+export { createDividerConfig } from './Divider';
 export type { DividerProps } from './Divider';
 
-export { EmptyState } from './EmptyState';
+export { createEmptyStateConfig } from './EmptyState';
 export type { EmptyStateProps } from './EmptyState';
 
-export { FAQAccordion } from './FAQAccordion';
+export { createFAQAccordionConfig } from './FAQAccordion';
 export type { FAQAccordionProps } from './FAQAccordion';
 
-export { FooterBlock } from './FooterBlock';
+export { createFooterBlockConfig } from './FooterBlock';
 export type { FooterBlockProps } from './FooterBlock';
 
-export { ImageBlock } from './ImageBlock';
+export { createImageBlockConfig } from './ImageBlock';
 export type { ImageBlockProps } from './ImageBlock';
 
-export { NewsletterSignup } from './NewsletterSignup';
+export { createNewsletterSignupConfig } from './NewsletterSignup';
 export type { NewsletterSignupProps } from './NewsletterSignup';
 
-export { ProductBanner } from './ProductBanner';
+export { createProductBannerConfig } from './ProductBanner';
 export type { ProductBannerProps } from './ProductBanner';
 
-export { ProductGridHeader } from './ProductGridHeader';
+export { createProductGridHeaderConfig } from './ProductGridHeader';
 export type { ProductGridHeaderProps } from './ProductGridHeader';
 
-export { ProductSlider } from './ProductSlider';
+export { createProductSliderConfig } from './ProductSlider';
 export type { ProductSliderProps } from './ProductSlider';
 
-export { PromotionalBanner } from './PromotionalBanner';
+export { createPromotionalBannerConfig } from './PromotionalBanner';
 export type { PromotionalBannerProps } from './PromotionalBanner';
 
-export { RelatedProductsSlider } from './RelatedProductsSlider';
+export { createRelatedProductsSliderConfig } from './RelatedProductsSlider';
 export type { RelatedProductsSliderProps } from './RelatedProductsSlider';
 
-export { SocialLinks } from './SocialLinks';
+export { createSocialLinksConfig } from './SocialLinks';
 export type { SocialLinksProps } from './SocialLinks';
 
-export { TabContent } from './TabContent';
+export { createTabContentConfig } from './TabContent';
 export type { TabContentProps } from './TabContent';
 
-export { TestimonialsSlider } from './TestimonialsSlider';
+export { createTestimonialsSliderConfig } from './TestimonialsSlider';
 export type { TestimonialsSliderProps } from './TestimonialsSlider';
 
-export { ThankYouContent } from './ThankYouContent';
+export { createThankYouContentConfig } from './ThankYouContent';
 export type { ThankYouContentProps } from './ThankYouContent';
 
-export { TrustBadges } from './TrustBadges';
+export { createTrustBadgesConfig } from './TrustBadges';
 export type { TrustBadgesProps } from './TrustBadges';
 
-export { VideoBlock } from './VideoBlock';
+export { createVideoBlockConfig } from './VideoBlock';
 export type { VideoBlockProps } from './VideoBlock';
 
-export { WebsiteLogo } from './WebsiteLogo';
+export { createWebsiteLogoConfig } from './WebsiteLogo';
 export type { WebsiteLogoProps } from './WebsiteLogo';

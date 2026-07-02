@@ -1,4 +1,5 @@
 import React from 'react';
+import { FormattedMessage, type IntlShape } from 'react-intl';
 import { type ComponentConfig } from '@measured/puck';
 import { ImagePickerField } from '../../fields/ImagePickerField';
 
@@ -17,21 +18,30 @@ const imgField = (label: string) => ({
   ),
 });
 
-export const CategoryGrid: ComponentConfig<CategoryGridProps> = {
-  label: 'Category Grid',
+export const createCategoryGridConfig = (
+  intl: IntlShape
+): ComponentConfig<CategoryGridProps> => {
+  const imageLabel = (n: number) =>
+    intl.formatMessage({ id: 'Editor.cfg.categoryGrid.field.image' }, { n });
+  const labelLabel = (n: number) =>
+    intl.formatMessage({ id: 'Editor.cfg.categoryGrid.field.label' }, { n });
+  const linkLabel = (n: number) =>
+    intl.formatMessage({ id: 'Editor.cfg.categoryGrid.field.link' }, { n });
+  return {
+  label: intl.formatMessage({ id: 'Editor.cfg.categoryGrid.label' }),
   fields: {
-    category1Image: imgField('Category 1 Image'),
-    category1Label: { type: 'text', label: 'Category 1 Label' },
-    category1Link: { type: 'text', label: 'Category 1 Link' },
-    category2Image: imgField('Category 2 Image'),
-    category2Label: { type: 'text', label: 'Category 2 Label' },
-    category2Link: { type: 'text', label: 'Category 2 Link' },
-    category3Image: imgField('Category 3 Image'),
-    category3Label: { type: 'text', label: 'Category 3 Label' },
-    category3Link: { type: 'text', label: 'Category 3 Link' },
-    category4Image: imgField('Category 4 Image'),
-    category4Label: { type: 'text', label: 'Category 4 Label' },
-    category4Link: { type: 'text', label: 'Category 4 Link' },
+    category1Image: imgField(imageLabel(1)),
+    category1Label: { type: 'text', label: labelLabel(1) },
+    category1Link: { type: 'text', label: linkLabel(1) },
+    category2Image: imgField(imageLabel(2)),
+    category2Label: { type: 'text', label: labelLabel(2) },
+    category2Link: { type: 'text', label: linkLabel(2) },
+    category3Image: imgField(imageLabel(3)),
+    category3Label: { type: 'text', label: labelLabel(3) },
+    category3Link: { type: 'text', label: linkLabel(3) },
+    category4Image: imgField(imageLabel(4)),
+    category4Label: { type: 'text', label: labelLabel(4) },
+    category4Link: { type: 'text', label: linkLabel(4) },
   },
   defaultProps: {
     category1Image: '', category1Label: '', category1Link: '',
@@ -49,7 +59,7 @@ export const CategoryGrid: ComponentConfig<CategoryGridProps> = {
 
     if (categories.length === 0) return (
       <div style={{ padding: '2rem', textAlign: 'center', color: '#999', fontSize: '13px' }}>
-        No categories configured
+        <FormattedMessage id="Editor.noCategoriesConfigured" />
       </div>
     );
 
@@ -100,4 +110,5 @@ export const CategoryGrid: ComponentConfig<CategoryGridProps> = {
       </div>
     );
   },
+  };
 };

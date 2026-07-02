@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo, useRef, useState } from 'react';
+import { useIntl, type IntlShape } from 'react-intl';
 import { Puck, type Config, type Data } from '@measured/puck';
 import '@measured/puck/puck.css';
 import {
@@ -30,6 +31,34 @@ import {
 import { LoadingSpinner, Stack, Text } from '@commercetools/nimbus';
 
 // ---------------------------------------------------------------------------
+// Content-specific Puck config: inject localized title + slot root fields.
+// The `defaultProps` (title/slot) are stored content data, not UI chrome, so
+// they stay as literal values; only the field `label`s are localized.
+// ---------------------------------------------------------------------------
+
+function buildContentConfig(config: Config, intl: IntlShape): Config {
+  const otherRootFields = Object.fromEntries(
+    Object.entries(config.root?.fields ?? {}).filter(([k]) => k !== 'title')
+  );
+  return {
+    ...config,
+    root: {
+      ...config.root,
+      fields: {
+        title: { type: 'text', label: intl.formatMessage({ id: 'ContentManager.contentTitleFieldLabel' }) },
+        slot: { type: 'text', label: intl.formatMessage({ id: 'ContentManager.slotFieldLabel' }) },
+        ...otherRootFields,
+      },
+      defaultProps: {
+        title: 'New Content',
+        slot: '',
+        ...config.root?.defaultProps,
+      },
+    },
+  };
+}
+
+// ---------------------------------------------------------------------------
 // Inner editor component (uses context)
 // ---------------------------------------------------------------------------
 
@@ -48,6 +77,7 @@ const ContentEditorInner: React.FC<ContentEditorInnerProps> = ({
   onSave,
   onError,
 }) => {
+  const intl = useIntl();
   const {
     content,
     states,
@@ -174,27 +204,10 @@ const ContentEditorInner: React.FC<ContentEditorInnerProps> = ({
   // Content-specific Puck config: inject title + slot root fields
   // -------------------------------------------------------------------------
 
-  const contentConfig = useMemo((): Config => {
-    const otherRootFields = Object.fromEntries(
-      Object.entries(config.root?.fields ?? {}).filter(([k]) => k !== 'title')
-    );
-    return {
-      ...config,
-      root: {
-        ...config.root,
-        fields: {
-          title: { type: 'text', label: 'Content Title' },
-          slot: { type: 'text', label: 'Slot' },
-          ...otherRootFields,
-        },
-        defaultProps: {
-          title: 'New Content',
-          slot: '',
-          ...config.root?.defaultProps,
-        },
-      },
-    };
-  }, [config]);
+  const contentConfig = useMemo(
+    (): Config => buildContentConfig(config, intl),
+    [config, intl]
+  );
 
   const handleCreateTemplate = useCallback(
     async (name: string, withoutData: boolean) => {
@@ -221,7 +234,7 @@ const ContentEditorInner: React.FC<ContentEditorInnerProps> = ({
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
         <Stack direction="column" gap="400" alignItems="center">
           <LoadingSpinner />
-          <Text color="neutral.11">Loading editor…</Text>
+          <Text color="neutral.11">{intl.formatMessage({ id: 'ContentManager.loadingEditor' })}</Text>
         </Stack>
       </div>
     );
@@ -230,7 +243,12 @@ const ContentEditorInner: React.FC<ContentEditorInnerProps> = ({
   if (error) {
     return (
       <div style={{ padding: '32px' }}>
-        <Text color="critical.11"><strong>Error loading content:</strong> {error}</Text>
+        <Text color="critical.11">
+          {intl.formatMessage({ id: 'ContentManager.errorLoadingContent' }, {
+            message: error,
+            b: (chunks) => <strong>{chunks}</strong>,
+          })}
+        </Text>
       </div>
     );
   }
@@ -283,7 +301,7 @@ const ContentEditorInner: React.FC<ContentEditorInnerProps> = ({
                 </Stack>
               ) : (
                 <EditorToolbar
-                  title={content?.name ?? 'Content'}
+                  title={content?.name ?? intl.formatMessage({ id: 'ContentManager.defaultContentName' })}
                   saving={saving}
                   isDirty={hasUnsavedChanges}
                   states={toolbarStates}
@@ -291,7 +309,7 @@ const ContentEditorInner: React.FC<ContentEditorInnerProps> = ({
                   onPublish={() => void handlePublish(activeData as Data)}
                   onRevert={() => void handleRevert()}
                   onCreateTemplate={() => setTemplateDialogOpen(true)}
-                  createTemplateLabel="Create a template from this content"
+                  createTemplateLabel={intl.formatMessage({ id: 'ContentManager.createTemplateLabel' })}
                   showPublishButton
                 />
               ),
@@ -334,6 +352,11 @@ export interface ContentEditorProps {
   onPublish?: (data: PuckData) => void;
   onSave?: (data: PuckData) => void;
   onError?: (error: Error) => void;
+  /**
+   * Optional per-key overrides for UI strings, applied on top of the resolved
+   * locale catalog. Keys are message ids (e.g. "ContentManager.loadingEditor").
+   */
+  messageOverrides?: Record<string, string>;
 }
 
 export const ContentEditor: React.FC<ContentEditorProps> = ({
@@ -347,9 +370,10 @@ export const ContentEditor: React.FC<ContentEditorProps> = ({
   onPublish,
   onSave,
   onError,
+  messageOverrides,
 }) => (
   <EnsureNimbusProvider locale={locale}>
-    <EnsureIntlProvider>
+    <EnsureIntlProvider locale={locale} messageOverrides={messageOverrides}>
       <PuckApiProvider
         baseURL={baseURL}
         projectKey={projectKey}

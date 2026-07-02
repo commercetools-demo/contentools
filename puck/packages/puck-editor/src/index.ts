@@ -2,20 +2,21 @@
 export { PuckEditor } from './PuckEditor';
 export type { PuckEditorProps } from './PuckEditor';
 
-// Default config (consumers can extend this)
-export { defaultPuckConfig } from './config/defaultPuckConfig';
+// Default config: build a localized one with createDefaultPuckConfig(intl).
+// `defaultPuckConfig` is a deprecated English-only const kept for back-compat.
+export { createDefaultPuckConfig, defaultPuckConfig } from './config/defaultPuckConfig';
 
-// Built-in components (export so consumers can compose custom configs)
+// Built-in component config factories (compose custom configs with these)
 export {
-  Hero,
-  RichText,
-  Grid,
-  Columns,
-  Image,
-  Button,
-  Card,
-  Spacer,
-  ProductTeaser,
+  createHeroConfig,
+  createRichTextConfig,
+  createGridConfig,
+  createColumnsConfig,
+  createImageConfig,
+  createButtonConfig,
+  createCardConfig,
+  createSpacerConfig,
+  createProductTeaserConfig,
 } from './components';
 export type {
   HeroProps,
@@ -74,3 +75,6 @@ export { nimbusFieldTypes } from './overrides/NimbusFieldTypes';
 // Draggable resize handle for the properties (right) panel
 export { PropertiesResizer } from './overrides/PropertiesResizer';
 export type { PropertiesResizerProps } from './overrides/PropertiesResizer';
+
+// i18n message catalogs (merge into a host IntlProvider to translate editor UI)
+export { catalogs as intlCatalogs } from './intl';

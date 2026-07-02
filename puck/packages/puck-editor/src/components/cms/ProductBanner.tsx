@@ -1,4 +1,5 @@
 import React from 'react';
+import { FormattedMessage, type IntlShape } from 'react-intl';
 import { type ComponentConfig } from '@measured/puck';
 import { useDatasource } from '@commercetools-demo/puck-api';
 import { DatasourceField, type DatasourceValue } from '../../fields/DatasourceField';
@@ -8,7 +9,7 @@ import {
   getFirstPrice,
   getLocalizedText,
   productLinkDefaults,
-  productLinkFields,
+  createProductLinkFields,
   resolveProductLink,
   type ProductLinkProps,
 } from './shared';
@@ -85,7 +86,7 @@ const ProductBannerRender: React.FC<ProductBannerProps> = ({
 
       {/* Product side */}
       <div style={{ flex: 1, minWidth: '200px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        {loading && <div style={{ color: '#999', padding: '2rem' }}>Loading product…</div>}
+        {loading && <div style={{ color: '#999', padding: '2rem' }}><FormattedMessage id="Editor.loadingProduct" /></div>}
         {name && (
           <a href={productHref} style={{ textDecoration: 'none', color: 'inherit' }}>
             <h3 style={{ fontSize: '1.5rem', fontWeight: 600, marginBottom: '0.5rem', textAlign: 'center' }}>{name}</h3>
@@ -118,37 +119,41 @@ const ProductBannerRender: React.FC<ProductBannerProps> = ({
         )}
         {sku && (
           <span style={{ fontSize: '0.85rem', color: '#666', background: 'rgba(255,255,255,0.6)', padding: '0.25rem 0.75rem', borderRadius: '2px' }}>
-            SKU: {sku}
+            <FormattedMessage id="Editor.skuLabel" values={{ sku }} />
           </span>
         )}
         {!loading && !p && (
-          <div style={{ color: '#999', fontSize: '13px', padding: '2rem', textAlign: 'center' }}>No product selected</div>
+          <div style={{ color: '#999', fontSize: '13px', padding: '2rem', textAlign: 'center' }}>
+            <FormattedMessage id="Editor.noProductSelected" />
+          </div>
         )}
       </div>
     </div>
   );
 };
 
-export const ProductBanner: ComponentConfig<ProductBannerProps> = {
-  label: 'Product Banner',
+export const createProductBannerConfig = (
+  intl: IntlShape
+): ComponentConfig<ProductBannerProps> => ({
+  label: intl.formatMessage({ id: 'Editor.cfg.productBanner.label' }),
   fields: {
-    title: { type: 'text', label: 'Title' },
-    description: richTextField('Description'),
-    ctaText: { type: 'text', label: 'CTA Text' },
-    ctaLink: { type: 'text', label: 'CTA Link' },
+    title: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.productBanner.field.title' }) },
+    description: richTextField(intl.formatMessage({ id: 'Editor.cfg.productBanner.field.description' })),
+    ctaText: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.productBanner.field.ctaText' }) },
+    ctaLink: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.productBanner.field.ctaLink' }) },
     product: {
-      type: 'custom', label: 'Product',
+      type: 'custom', label: intl.formatMessage({ id: 'Editor.cfg.productBanner.field.product' }),
       render: ({ value, onChange }) => <DatasourceField value={value} onChange={onChange} />,
     },
     productOnLeft: {
-      type: 'radio', label: 'Product Position',
+      type: 'radio', label: intl.formatMessage({ id: 'Editor.cfg.productBanner.field.productOnLeft' }),
       options: [
-        { value: false, label: 'Product on Right' },
-        { value: true, label: 'Product on Left' },
+        { value: false, label: intl.formatMessage({ id: 'Editor.cfg.productBanner.productPosition.right' }) },
+        { value: true, label: intl.formatMessage({ id: 'Editor.cfg.productBanner.productPosition.left' }) },
       ],
     },
-    background: { type: 'text', label: 'Background Color' },
-    ...productLinkFields,
+    background: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.productBanner.field.background' }) },
+    ...createProductLinkFields(intl),
   },
   defaultProps: {
     title: '',
@@ -161,4 +166,4 @@ export const ProductBanner: ComponentConfig<ProductBannerProps> = {
     ...productLinkDefaults,
   },
   render: (props) => <ProductBannerRender {...props} />,
-};
+});

@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
+import { useIntl, type MessageDescriptor } from 'react-intl';
 import { PuckApiProvider, usePuckConfiguration } from '@commercetools-demo/puck-api';
 import type { ThemeTokens } from '@commercetools-demo/puck-types';
 import {
@@ -14,6 +15,7 @@ import {
 } from '@commercetools/nimbus';
 import { DEFAULT_THEME } from '../constants';
 import { EnsureNimbusProvider } from '../EnsureNimbusProvider';
+import { EnsureIntlProvider } from '../EnsureIntlProvider';
 import ThemePresetSelector from './theme-preset-selector';
 
 // ---------------------------------------------------------------------------
@@ -152,90 +154,98 @@ const NumberInput = ({ id, value, onChange }: AdapterInputProps) => (
   />
 );
 
-const BORDER_RADIUS_OPTIONS = [
-  { value: 'none', label: 'None' },
-  { value: 'sm', label: 'Small' },
-  { value: 'md', label: 'Medium' },
-  { value: 'lg', label: 'Large' },
-  { value: 'full', label: 'Full' },
+// Select option lists. `label` holds a MessageDescriptor resolved at the
+// `<option>` render site via `intl.formatMessage`; numeric-only labels (border
+// width, font weight) are code-like values kept as plain strings.
+interface SelectOption {
+  value: string;
+  label: MessageDescriptor | string;
+}
+
+const BORDER_RADIUS_OPTIONS: SelectOption[] = [
+  { value: 'none', label: { id: 'ThemeManager.optionNone' } },
+  { value: 'sm', label: { id: 'ThemeManager.optionSmall' } },
+  { value: 'md', label: { id: 'ThemeManager.optionMedium' } },
+  { value: 'lg', label: { id: 'ThemeManager.optionLarge' } },
+  { value: 'full', label: { id: 'ThemeManager.optionFull' } },
 ];
 
-const BORDER_WIDTH_OPTIONS = [
+const BORDER_WIDTH_OPTIONS: SelectOption[] = [
   { value: '0', label: '0' },
   { value: '1', label: '1' },
   { value: '2', label: '2' },
 ];
 
-const BUTTON_STYLE_OPTIONS = [
-  { value: 'solid', label: 'Solid' },
-  { value: 'outline', label: 'Outline' },
-  { value: 'ghost', label: 'Ghost' },
+const BUTTON_STYLE_OPTIONS: SelectOption[] = [
+  { value: 'solid', label: { id: 'ThemeManager.optionSolid' } },
+  { value: 'outline', label: { id: 'ThemeManager.optionOutline' } },
+  { value: 'ghost', label: { id: 'ThemeManager.optionGhost' } },
 ];
 
-const CARD_SHADOW_OPTIONS = [
-  { value: 'none', label: 'None' },
-  { value: 'sm', label: 'Small' },
-  { value: 'md', label: 'Medium' },
-  { value: 'lg', label: 'Large' },
+const CARD_SHADOW_OPTIONS: SelectOption[] = [
+  { value: 'none', label: { id: 'ThemeManager.optionNone' } },
+  { value: 'sm', label: { id: 'ThemeManager.optionSmall' } },
+  { value: 'md', label: { id: 'ThemeManager.optionMedium' } },
+  { value: 'lg', label: { id: 'ThemeManager.optionLarge' } },
 ];
 
-const HEADER_STYLE_OPTIONS = [
-  { value: 'transparent', label: 'Transparent' },
-  { value: 'solid', label: 'Solid' },
-  { value: 'minimal', label: 'Minimal' },
+const HEADER_STYLE_OPTIONS: SelectOption[] = [
+  { value: 'transparent', label: { id: 'ThemeManager.optionTransparent' } },
+  { value: 'solid', label: { id: 'ThemeManager.optionSolid' } },
+  { value: 'minimal', label: { id: 'ThemeManager.optionMinimal' } },
 ];
 
-const SHADOW_STYLE_OPTIONS = [
-  { value: 'none', label: 'None' },
-  { value: 'soft', label: 'Soft' },
-  { value: 'hard-offset', label: 'Hard offset' },
-  { value: 'neumorphic', label: 'Neumorphic' },
-  { value: 'clay', label: 'Clay' },
-  { value: 'glow', label: 'Glow' },
+const SHADOW_STYLE_OPTIONS: SelectOption[] = [
+  { value: 'none', label: { id: 'ThemeManager.optionNone' } },
+  { value: 'soft', label: { id: 'ThemeManager.optionSoft' } },
+  { value: 'hard-offset', label: { id: 'ThemeManager.optionHardOffset' } },
+  { value: 'neumorphic', label: { id: 'ThemeManager.optionNeumorphic' } },
+  { value: 'clay', label: { id: 'ThemeManager.optionClay' } },
+  { value: 'glow', label: { id: 'ThemeManager.optionGlow' } },
 ];
 
-const SURFACE_BLUR_OPTIONS = [
-  { value: 'none', label: 'None' },
-  { value: 'sm', label: 'Small' },
-  { value: 'md', label: 'Medium' },
-  { value: 'lg', label: 'Large' },
+const SURFACE_BLUR_OPTIONS: SelectOption[] = [
+  { value: 'none', label: { id: 'ThemeManager.optionNone' } },
+  { value: 'sm', label: { id: 'ThemeManager.optionSmall' } },
+  { value: 'md', label: { id: 'ThemeManager.optionMedium' } },
+  { value: 'lg', label: { id: 'ThemeManager.optionLarge' } },
 ];
 
-const FONT_WEIGHT_BASE_OPTIONS = [
+const FONT_WEIGHT_BASE_OPTIONS: SelectOption[] = [
   { value: '300', label: '300' },
   { value: '400', label: '400' },
   { value: '500', label: '500' },
 ];
 
-const FONT_WEIGHT_HEADING_OPTIONS = [
+const FONT_WEIGHT_HEADING_OPTIONS: SelectOption[] = [
   { value: '400', label: '400' },
   { value: '500', label: '500' },
   { value: '700', label: '700' },
   { value: '900', label: '900' },
 ];
 
-const LETTER_SPACING_OPTIONS = [
-  { value: 'tight', label: 'Tight' },
-  { value: 'normal', label: 'Normal' },
-  { value: 'wide', label: 'Wide' },
-  { value: 'wider', label: 'Wider' },
+const LETTER_SPACING_OPTIONS: SelectOption[] = [
+  { value: 'tight', label: { id: 'ThemeManager.optionTight' } },
+  { value: 'normal', label: { id: 'ThemeManager.optionNormal' } },
+  { value: 'wide', label: { id: 'ThemeManager.optionWide' } },
+  { value: 'wider', label: { id: 'ThemeManager.optionWider' } },
 ];
 
-const TEXT_TRANSFORM_OPTIONS = [
-  { value: 'none', label: 'None' },
-  { value: 'uppercase', label: 'Uppercase' },
+const TEXT_TRANSFORM_OPTIONS: SelectOption[] = [
+  { value: 'none', label: { id: 'ThemeManager.optionNone' } },
+  { value: 'uppercase', label: { id: 'ThemeManager.optionUppercase' } },
 ];
 
-const BORDER_STYLE_OPTIONS = [
-  { value: 'solid', label: 'Solid' },
-  { value: 'dashed', label: 'Dashed' },
-  { value: 'double', label: 'Double' },
+const BORDER_STYLE_OPTIONS: SelectOption[] = [
+  { value: 'solid', label: { id: 'ThemeManager.optionSolid' } },
+  { value: 'dashed', label: { id: 'ThemeManager.optionDashed' } },
+  { value: 'double', label: { id: 'ThemeManager.optionDouble' } },
 ];
 
-const BACKGROUND_STYLE_OPTIONS = [
-  { value: 'solid', label: 'Solid' },
-  { value: 'gradient', label: 'Gradient' },
-  { value: 'noise', label: 'Noise' },
+const BACKGROUND_STYLE_OPTIONS: SelectOption[] = [
+  { value: 'solid', label: { id: 'ThemeManager.optionSolid' } },
+  { value: 'gradient', label: { id: 'ThemeManager.optionGradient' } },
+  { value: 'noise', label: { id: 'ThemeManager.optionNoise' } },
 ];
 
 const SELECT_STYLE: React.CSSProperties = {
@@ -261,10 +271,15 @@ export interface ThemeManagerProps extends InnerProps {
   projectKey: string;
   businessUnitKey: string;
   jwtToken: string;
+  /** Content locale (e.g. "en-US"). Resolves to en/es; unsupported → en. */
+  locale?: string;
+  /** Per-key overrides for UI strings, applied on top of the resolved catalog. */
+  messageOverrides?: Record<string, string>;
 }
 
 const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
   const history = useHistory();
+  const intl = useIntl();
   const {
     theme,
     loading,
@@ -274,6 +289,10 @@ const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
     updateTheme,
     clearError,
   } = usePuckConfiguration();
+
+  // Resolve a select option's label: MessageDescriptor → translated, string → as-is.
+  const formatOption = (label: MessageDescriptor | string): string =>
+    typeof label === 'string' ? label : intl.formatMessage(label);
 
   const [formValues, setFormValues] = useState<ThemeTokens>(DEFAULT_THEME);
   const [saving, setSaving] = useState(false);
@@ -400,23 +419,29 @@ const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
       )}
       <div style={{ padding: '0 20px' }}>
         <Spacings.Stack scale="l" alignItems="flex-start">
-          <Text.Headline as="h1">Theme</Text.Headline>
+          <Text.Headline as="h1">
+            {intl.formatMessage({ id: 'ThemeManager.themeTitle' })}
+          </Text.Headline>
           <Text.Body tone="secondary">
-            Customize colors, typography, spacing, and component styles.
+            {intl.formatMessage({ id: 'ThemeManager.themeIntro' })}
           </Text.Body>
         </Spacings.Stack>
       </div>
       {error && (
         <Card>
           <Spacings.Stack scale="m">
-            <Text.Headline as="h2">Error</Text.Headline>
+            <Text.Headline as="h2">
+              {intl.formatMessage({ id: 'ThemeManager.errorHeading' })}
+            </Text.Headline>
             <Text.Body tone="critical">{error}</Text.Body>
           </Spacings.Stack>
         </Card>
       )}
 
       {saveSuccess && (
-        <Text.Body tone="positive">Theme saved successfully.</Text.Body>
+        <Text.Body tone="positive">
+          {intl.formatMessage({ id: 'ThemeManager.saveSuccess' })}
+        </Text.Body>
       )}
 
       <Spacings.Stack scale="l">
@@ -446,7 +471,9 @@ const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
                 background: 'transparent',
               }}
             >
-              <Text.Headline as="h2">Theme configuration</Text.Headline>
+              <Text.Headline as="h2">
+                {intl.formatMessage({ id: 'ThemeManager.themeConfiguration' })}
+              </Text.Headline>
               <span
                 style={{
                   display: 'inline-block',
@@ -465,7 +492,9 @@ const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
             <div style={{ padding: '0 20px' }}>
               <Spacings.Stack scale="l">
                 <Spacings.Stack scale="xl">
-                  <Text.Headline as="h2">Colors</Text.Headline>
+                  <Text.Headline as="h2">
+                    {intl.formatMessage({ id: 'ThemeManager.sectionColors' })}
+                  </Text.Headline>
                   <Grid
                     gridGap="16px"
                     gridAutoColumns="1fr"
@@ -473,7 +502,7 @@ const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
                   >
                     <Grid.Item>
                       <div style={{ marginBottom: '1.5rem' }}>
-                        <FieldLabel title="Primary" htmlFor="colorPrimary" />
+                        <FieldLabel title={intl.formatMessage({ id: 'ThemeManager.fieldPrimary' })} htmlFor="colorPrimary" />
                         <Spacings.Inline alignItems="center" scale="s">
                           <input
                             type="color"
@@ -497,7 +526,7 @@ const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
                     <Grid.Item>
                       <div style={{ marginBottom: '1.5rem' }}>
                         <FieldLabel
-                          title="Primary Hover"
+                          title={intl.formatMessage({ id: 'ThemeManager.fieldPrimaryHover' })}
                           htmlFor="colorPrimaryHover"
                         />
                         <Spacings.Inline alignItems="center" scale="s">
@@ -522,7 +551,7 @@ const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
                     </Grid.Item>
                     <Grid.Item>
                       <div style={{ marginBottom: '1.5rem' }}>
-                        <FieldLabel title="Secondary" htmlFor="colorSecondary" />
+                        <FieldLabel title={intl.formatMessage({ id: 'ThemeManager.fieldSecondary' })} htmlFor="colorSecondary" />
                         <Spacings.Inline alignItems="center" scale="s">
                           <input
                             type="color"
@@ -546,7 +575,7 @@ const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
                     <Grid.Item>
                       <div style={{ marginBottom: '1.5rem' }}>
                         <FieldLabel
-                          title="Background"
+                          title={intl.formatMessage({ id: 'ThemeManager.fieldBackground' })}
                           htmlFor="colorBackground"
                         />
                         <Spacings.Inline alignItems="center" scale="s">
@@ -571,7 +600,7 @@ const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
                     </Grid.Item>
                     <Grid.Item>
                       <div style={{ marginBottom: '1.5rem' }}>
-                        <FieldLabel title="Surface" htmlFor="colorSurface" />
+                        <FieldLabel title={intl.formatMessage({ id: 'ThemeManager.fieldSurface' })} htmlFor="colorSurface" />
                         <Spacings.Inline alignItems="center" scale="s">
                           <input
                             type="color"
@@ -594,7 +623,7 @@ const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
                     </Grid.Item>
                     <Grid.Item>
                       <div style={{ marginBottom: '1.5rem' }}>
-                        <FieldLabel title="Text" htmlFor="colorText" />
+                        <FieldLabel title={intl.formatMessage({ id: 'ThemeManager.fieldText' })} htmlFor="colorText" />
                         <Spacings.Inline alignItems="center" scale="s">
                           <input
                             type="color"
@@ -617,7 +646,7 @@ const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
                     </Grid.Item>
                     <Grid.Item>
                       <div style={{ marginBottom: '1.5rem' }}>
-                        <FieldLabel title="Text Muted" htmlFor="colorTextMuted" />
+                        <FieldLabel title={intl.formatMessage({ id: 'ThemeManager.fieldTextMuted' })} htmlFor="colorTextMuted" />
                         <Spacings.Inline alignItems="center" scale="s">
                           <input
                             type="color"
@@ -640,10 +669,11 @@ const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
                     </Grid.Item>
                   </Grid>
 
-                  <Text.Headline as="h2">Extended colors</Text.Headline>
+                  <Text.Headline as="h2">
+                    {intl.formatMessage({ id: 'ThemeManager.sectionExtendedColors' })}
+                  </Text.Headline>
                   <Text.Body tone="secondary">
-                    Optional theme tokens for foregrounds, muted, destructive,
-                    accent, border, input, and ring.
+                    {intl.formatMessage({ id: 'ThemeManager.sectionExtendedColorsIntro' })}
                   </Text.Body>
                   <Grid
                     gridGap="16px"
@@ -653,7 +683,7 @@ const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
                     <Grid.Item>
                       <div style={{ marginBottom: '1.5rem' }}>
                         <FieldLabel
-                          title="Primary Foreground"
+                          title={intl.formatMessage({ id: 'ThemeManager.fieldPrimaryForeground' })}
                           htmlFor="colorPrimaryForeground"
                         />
                         <Spacings.Inline alignItems="center" scale="s">
@@ -682,7 +712,7 @@ const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
                     <Grid.Item>
                       <div style={{ marginBottom: '1.5rem' }}>
                         <FieldLabel
-                          title="Secondary Foreground"
+                          title={intl.formatMessage({ id: 'ThemeManager.fieldSecondaryForeground' })}
                           htmlFor="colorSecondaryForeground"
                         />
                         <Spacings.Inline alignItems="center" scale="s">
@@ -710,7 +740,7 @@ const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
                     </Grid.Item>
                     <Grid.Item>
                       <div style={{ marginBottom: '1.5rem' }}>
-                        <FieldLabel title="Foreground" htmlFor="colorForeground" />
+                        <FieldLabel title={intl.formatMessage({ id: 'ThemeManager.fieldForeground' })} htmlFor="colorForeground" />
                         <Spacings.Inline alignItems="center" scale="s">
                           <input
                             type="color"
@@ -736,7 +766,7 @@ const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
                     </Grid.Item>
                     <Grid.Item>
                       <div style={{ marginBottom: '1.5rem' }}>
-                        <FieldLabel title="Muted" htmlFor="colorMuted" />
+                        <FieldLabel title={intl.formatMessage({ id: 'ThemeManager.fieldMuted' })} htmlFor="colorMuted" />
                         <Spacings.Inline alignItems="center" scale="s">
                           <input
                             type="color"
@@ -763,7 +793,7 @@ const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
                     <Grid.Item>
                       <div style={{ marginBottom: '1.5rem' }}>
                         <FieldLabel
-                          title="Muted Foreground"
+                          title={intl.formatMessage({ id: 'ThemeManager.fieldMutedForeground' })}
                           htmlFor="colorMutedForeground"
                         />
                         <Spacings.Inline alignItems="center" scale="s">
@@ -791,7 +821,7 @@ const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
                     </Grid.Item>
                     <Grid.Item>
                       <div style={{ marginBottom: '1.5rem' }}>
-                        <FieldLabel title="Destructive" htmlFor="colorDestructive" />
+                        <FieldLabel title={intl.formatMessage({ id: 'ThemeManager.fieldDestructive' })} htmlFor="colorDestructive" />
                         <Spacings.Inline alignItems="center" scale="s">
                           <input
                             type="color"
@@ -818,7 +848,7 @@ const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
                     <Grid.Item>
                       <div style={{ marginBottom: '1.5rem' }}>
                         <FieldLabel
-                          title="Destructive Foreground"
+                          title={intl.formatMessage({ id: 'ThemeManager.fieldDestructiveForeground' })}
                           htmlFor="colorDestructiveForeground"
                         />
                         <Spacings.Inline alignItems="center" scale="s">
@@ -846,7 +876,7 @@ const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
                     </Grid.Item>
                     <Grid.Item>
                       <div style={{ marginBottom: '1.5rem' }}>
-                        <FieldLabel title="Accent" htmlFor="colorAccent" />
+                        <FieldLabel title={intl.formatMessage({ id: 'ThemeManager.fieldAccent' })} htmlFor="colorAccent" />
                         <Spacings.Inline alignItems="center" scale="s">
                           <input
                             type="color"
@@ -873,7 +903,7 @@ const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
                     <Grid.Item>
                       <div style={{ marginBottom: '1.5rem' }}>
                         <FieldLabel
-                          title="Accent Foreground"
+                          title={intl.formatMessage({ id: 'ThemeManager.fieldAccentForeground' })}
                           htmlFor="colorAccentForeground"
                         />
                         <Spacings.Inline alignItems="center" scale="s">
@@ -901,7 +931,7 @@ const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
                     </Grid.Item>
                     <Grid.Item>
                       <div style={{ marginBottom: '1.5rem' }}>
-                        <FieldLabel title="Border" htmlFor="colorBorder" />
+                        <FieldLabel title={intl.formatMessage({ id: 'ThemeManager.fieldBorder' })} htmlFor="colorBorder" />
                         <Spacings.Inline alignItems="center" scale="s">
                           <input
                             type="color"
@@ -927,7 +957,7 @@ const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
                     </Grid.Item>
                     <Grid.Item>
                       <div style={{ marginBottom: '1.5rem' }}>
-                        <FieldLabel title="Input" htmlFor="colorInput" />
+                        <FieldLabel title={intl.formatMessage({ id: 'ThemeManager.fieldInput' })} htmlFor="colorInput" />
                         <Spacings.Inline alignItems="center" scale="s">
                           <input
                             type="color"
@@ -953,7 +983,7 @@ const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
                     </Grid.Item>
                     <Grid.Item>
                       <div style={{ marginBottom: '1.5rem' }}>
-                        <FieldLabel title="Ring" htmlFor="colorRing" />
+                        <FieldLabel title={intl.formatMessage({ id: 'ThemeManager.fieldRing' })} htmlFor="colorRing" />
                         <Spacings.Inline alignItems="center" scale="s">
                           <input
                             type="color"
@@ -979,7 +1009,9 @@ const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
                     </Grid.Item>
                   </Grid>
 
-                  <Text.Headline as="h2">Typography</Text.Headline>
+                  <Text.Headline as="h2">
+                    {intl.formatMessage({ id: 'ThemeManager.sectionTypography' })}
+                  </Text.Headline>
                   <Grid
                     gridGap="16px"
                     gridAutoColumns="1fr"
@@ -987,7 +1019,7 @@ const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
                   >
                     <Grid.Item>
                       <div style={{ marginBottom: '1.5rem' }}>
-                        <FieldLabel title="Font Family" htmlFor="fontFamily" />
+                        <FieldLabel title={intl.formatMessage({ id: 'ThemeManager.fieldFontFamily' })} htmlFor="fontFamily" />
                         <TextInput
                           horizontalConstraint={4}
                           id="fontFamily"
@@ -1000,7 +1032,7 @@ const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
                     </Grid.Item>
                     <Grid.Item>
                       <div style={{ marginBottom: '1.5rem' }}>
-                        <FieldLabel title="Heading Font" htmlFor="fontHeading" />
+                        <FieldLabel title={intl.formatMessage({ id: 'ThemeManager.fieldHeadingFont' })} htmlFor="fontHeading" />
                         <TextInput
                           horizontalConstraint={4}
                           id="fontHeading"
@@ -1013,7 +1045,9 @@ const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
                     </Grid.Item>
                   </Grid>
 
-                  <Text.Headline as="h2">Layout &amp; Components</Text.Headline>
+                  <Text.Headline as="h2">
+                    {intl.formatMessage({ id: 'ThemeManager.sectionLayoutComponents' })}
+                  </Text.Headline>
                   <Grid
                     gridGap="16px"
                     gridAutoColumns="1fr"
@@ -1021,7 +1055,7 @@ const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
                   >
                     <Grid.Item>
                       <div style={{ marginBottom: '1.5rem' }}>
-                        <FieldLabel title="Spacing Scale" htmlFor="spacingScale" />
+                        <FieldLabel title={intl.formatMessage({ id: 'ThemeManager.fieldSpacingScale' })} htmlFor="spacingScale" />
                         <NumberInput
                           id="spacingScale"
                           horizontalConstraint={3}
@@ -1037,7 +1071,7 @@ const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
                     </Grid.Item>
                     <Grid.Item>
                       <div style={{ marginBottom: '1.5rem' }}>
-                        <FieldLabel title="Border Radius" htmlFor="borderRadius" />
+                        <FieldLabel title={intl.formatMessage({ id: 'ThemeManager.fieldBorderRadius' })} htmlFor="borderRadius" />
                         <select
                           id="borderRadius"
                           value={formValues.borderRadius}
@@ -1050,14 +1084,14 @@ const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
                           style={SELECT_STYLE}
                         >
                           {BORDER_RADIUS_OPTIONS.map((o) => (
-                            <option key={o.value} value={o.value}>{o.label}</option>
+                            <option key={o.value} value={o.value}>{formatOption(o.label)}</option>
                           ))}
                         </select>
                       </div>
                     </Grid.Item>
                     <Grid.Item>
                       <div style={{ marginBottom: '1.5rem' }}>
-                        <FieldLabel title="Border Width" htmlFor="borderWidth" />
+                        <FieldLabel title={intl.formatMessage({ id: 'ThemeManager.fieldBorderWidth' })} htmlFor="borderWidth" />
                         <select
                           id="borderWidth"
                           value={formValues.borderWidth}
@@ -1070,14 +1104,14 @@ const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
                           style={SELECT_STYLE}
                         >
                           {BORDER_WIDTH_OPTIONS.map((o) => (
-                            <option key={o.value} value={o.value}>{o.label}</option>
+                            <option key={o.value} value={o.value}>{formatOption(o.label)}</option>
                           ))}
                         </select>
                       </div>
                     </Grid.Item>
                     <Grid.Item>
                       <div style={{ marginBottom: '1.5rem' }}>
-                        <FieldLabel title="Button Style" htmlFor="buttonStyle" />
+                        <FieldLabel title={intl.formatMessage({ id: 'ThemeManager.fieldButtonStyle' })} htmlFor="buttonStyle" />
                         <select
                           id="buttonStyle"
                           value={formValues.buttonStyle}
@@ -1090,14 +1124,14 @@ const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
                           style={SELECT_STYLE}
                         >
                           {BUTTON_STYLE_OPTIONS.map((o) => (
-                            <option key={o.value} value={o.value}>{o.label}</option>
+                            <option key={o.value} value={o.value}>{formatOption(o.label)}</option>
                           ))}
                         </select>
                       </div>
                     </Grid.Item>
                     <Grid.Item>
                       <div style={{ marginBottom: '1.5rem' }}>
-                        <FieldLabel title="Card Shadow" htmlFor="cardShadow" />
+                        <FieldLabel title={intl.formatMessage({ id: 'ThemeManager.fieldCardShadow' })} htmlFor="cardShadow" />
                         <select
                           id="cardShadow"
                           value={formValues.cardShadow}
@@ -1110,14 +1144,14 @@ const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
                           style={SELECT_STYLE}
                         >
                           {CARD_SHADOW_OPTIONS.map((o) => (
-                            <option key={o.value} value={o.value}>{o.label}</option>
+                            <option key={o.value} value={o.value}>{formatOption(o.label)}</option>
                           ))}
                         </select>
                       </div>
                     </Grid.Item>
                     <Grid.Item>
                       <div style={{ marginBottom: '1.5rem' }}>
-                        <FieldLabel title="Header Style" htmlFor="headerStyle" />
+                        <FieldLabel title={intl.formatMessage({ id: 'ThemeManager.fieldHeaderStyle' })} htmlFor="headerStyle" />
                         <select
                           id="headerStyle"
                           value={formValues.headerStyle}
@@ -1130,14 +1164,16 @@ const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
                           style={SELECT_STYLE}
                         >
                           {HEADER_STYLE_OPTIONS.map((o) => (
-                            <option key={o.value} value={o.value}>{o.label}</option>
+                            <option key={o.value} value={o.value}>{formatOption(o.label)}</option>
                           ))}
                         </select>
                       </div>
                     </Grid.Item>
                   </Grid>
 
-                  <Text.Headline as="h2">Shadow &amp; surface</Text.Headline>
+                  <Text.Headline as="h2">
+                    {intl.formatMessage({ id: 'ThemeManager.sectionShadowSurface' })}
+                  </Text.Headline>
                   <Grid
                     gridGap="16px"
                     gridAutoColumns="1fr"
@@ -1145,7 +1181,7 @@ const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
                   >
                     <Grid.Item>
                       <div style={{ marginBottom: '1.5rem' }}>
-                        <FieldLabel title="Shadow Light" htmlFor="colorShadowLight" />
+                        <FieldLabel title={intl.formatMessage({ id: 'ThemeManager.fieldShadowLight' })} htmlFor="colorShadowLight" />
                         <Spacings.Inline alignItems="center" scale="s">
                           <input
                             type="color"
@@ -1171,7 +1207,7 @@ const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
                     </Grid.Item>
                     <Grid.Item>
                       <div style={{ marginBottom: '1.5rem' }}>
-                        <FieldLabel title="Shadow Dark" htmlFor="colorShadowDark" />
+                        <FieldLabel title={intl.formatMessage({ id: 'ThemeManager.fieldShadowDark' })} htmlFor="colorShadowDark" />
                         <Spacings.Inline alignItems="center" scale="s">
                           <input
                             type="color"
@@ -1197,7 +1233,7 @@ const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
                     </Grid.Item>
                     <Grid.Item>
                       <div style={{ marginBottom: '1.5rem' }}>
-                        <FieldLabel title="Surface Glass" htmlFor="colorSurfaceGlass" />
+                        <FieldLabel title={intl.formatMessage({ id: 'ThemeManager.fieldSurfaceGlass' })} htmlFor="colorSurfaceGlass" />
                         <TextInput
                           horizontalConstraint={3}
                           id="colorSurfaceGlass"
@@ -1213,7 +1249,7 @@ const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
                     </Grid.Item>
                     <Grid.Item>
                       <div style={{ marginBottom: '1.5rem' }}>
-                        <FieldLabel title="Shadow Style" htmlFor="shadowStyle" />
+                        <FieldLabel title={intl.formatMessage({ id: 'ThemeManager.fieldShadowStyle' })} htmlFor="shadowStyle" />
                         <select
                           id="shadowStyle"
                           value={formValues.shadowStyle ?? DEFAULT_THEME.shadowStyle}
@@ -1226,14 +1262,14 @@ const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
                           style={SELECT_STYLE}
                         >
                           {SHADOW_STYLE_OPTIONS.map((o) => (
-                            <option key={o.value} value={o.value}>{o.label}</option>
+                            <option key={o.value} value={o.value}>{formatOption(o.label)}</option>
                           ))}
                         </select>
                       </div>
                     </Grid.Item>
                     <Grid.Item>
                       <div style={{ marginBottom: '1.5rem' }}>
-                        <FieldLabel title="Surface Blur" htmlFor="surfaceBlur" />
+                        <FieldLabel title={intl.formatMessage({ id: 'ThemeManager.fieldSurfaceBlur' })} htmlFor="surfaceBlur" />
                         <select
                           id="surfaceBlur"
                           value={formValues.surfaceBlur ?? DEFAULT_THEME.surfaceBlur}
@@ -1246,14 +1282,14 @@ const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
                           style={SELECT_STYLE}
                         >
                           {SURFACE_BLUR_OPTIONS.map((o) => (
-                            <option key={o.value} value={o.value}>{o.label}</option>
+                            <option key={o.value} value={o.value}>{formatOption(o.label)}</option>
                           ))}
                         </select>
                       </div>
                     </Grid.Item>
                     <Grid.Item>
                       <div style={{ marginBottom: '1.5rem' }}>
-                        <FieldLabel title="Surface Opacity" htmlFor="surfaceOpacity" />
+                        <FieldLabel title={intl.formatMessage({ id: 'ThemeManager.fieldSurfaceOpacity' })} htmlFor="surfaceOpacity" />
                         <NumberInput
                           id="surfaceOpacity"
                           horizontalConstraint={3}
@@ -1271,7 +1307,7 @@ const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
                     </Grid.Item>
                     <Grid.Item>
                       <div style={{ marginBottom: '1.5rem' }}>
-                        <FieldLabel title="Border Style" htmlFor="borderStyle" />
+                        <FieldLabel title={intl.formatMessage({ id: 'ThemeManager.fieldBorderStyle' })} htmlFor="borderStyle" />
                         <select
                           id="borderStyle"
                           value={formValues.borderStyle ?? DEFAULT_THEME.borderStyle}
@@ -1284,14 +1320,14 @@ const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
                           style={SELECT_STYLE}
                         >
                           {BORDER_STYLE_OPTIONS.map((o) => (
-                            <option key={o.value} value={o.value}>{o.label}</option>
+                            <option key={o.value} value={o.value}>{formatOption(o.label)}</option>
                           ))}
                         </select>
                       </div>
                     </Grid.Item>
                     <Grid.Item>
                       <div style={{ marginBottom: '1.5rem' }}>
-                        <FieldLabel title="Background Style" htmlFor="backgroundStyle" />
+                        <FieldLabel title={intl.formatMessage({ id: 'ThemeManager.fieldBackgroundStyle' })} htmlFor="backgroundStyle" />
                         <select
                           id="backgroundStyle"
                           value={formValues.backgroundStyle ?? DEFAULT_THEME.backgroundStyle}
@@ -1304,7 +1340,7 @@ const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
                           style={SELECT_STYLE}
                         >
                           {BACKGROUND_STYLE_OPTIONS.map((o) => (
-                            <option key={o.value} value={o.value}>{o.label}</option>
+                            <option key={o.value} value={o.value}>{formatOption(o.label)}</option>
                           ))}
                         </select>
                       </div>
@@ -1312,7 +1348,7 @@ const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
                   </Grid>
 
                   <Text.Headline as="h2">
-                    Typography (weight &amp; transform)
+                    {intl.formatMessage({ id: 'ThemeManager.sectionTypographyWeightTransform' })}
                   </Text.Headline>
                   <Grid
                     gridGap="16px"
@@ -1321,7 +1357,7 @@ const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
                   >
                     <Grid.Item>
                       <div style={{ marginBottom: '1.5rem' }}>
-                        <FieldLabel title="Font Weight Base" htmlFor="fontWeightBase" />
+                        <FieldLabel title={intl.formatMessage({ id: 'ThemeManager.fieldFontWeightBase' })} htmlFor="fontWeightBase" />
                         <select
                           id="fontWeightBase"
                           value={formValues.fontWeightBase ?? DEFAULT_THEME.fontWeightBase}
@@ -1334,14 +1370,14 @@ const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
                           style={SELECT_STYLE}
                         >
                           {FONT_WEIGHT_BASE_OPTIONS.map((o) => (
-                            <option key={o.value} value={o.value}>{o.label}</option>
+                            <option key={o.value} value={o.value}>{formatOption(o.label)}</option>
                           ))}
                         </select>
                       </div>
                     </Grid.Item>
                     <Grid.Item>
                       <div style={{ marginBottom: '1.5rem' }}>
-                        <FieldLabel title="Font Weight Heading" htmlFor="fontWeightHeading" />
+                        <FieldLabel title={intl.formatMessage({ id: 'ThemeManager.fieldFontWeightHeading' })} htmlFor="fontWeightHeading" />
                         <select
                           id="fontWeightHeading"
                           value={formValues.fontWeightHeading ?? DEFAULT_THEME.fontWeightHeading}
@@ -1354,14 +1390,14 @@ const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
                           style={SELECT_STYLE}
                         >
                           {FONT_WEIGHT_HEADING_OPTIONS.map((o) => (
-                            <option key={o.value} value={o.value}>{o.label}</option>
+                            <option key={o.value} value={o.value}>{formatOption(o.label)}</option>
                           ))}
                         </select>
                       </div>
                     </Grid.Item>
                     <Grid.Item>
                       <div style={{ marginBottom: '1.5rem' }}>
-                        <FieldLabel title="Letter Spacing" htmlFor="letterSpacing" />
+                        <FieldLabel title={intl.formatMessage({ id: 'ThemeManager.fieldLetterSpacing' })} htmlFor="letterSpacing" />
                         <select
                           id="letterSpacing"
                           value={formValues.letterSpacing ?? DEFAULT_THEME.letterSpacing}
@@ -1374,14 +1410,14 @@ const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
                           style={SELECT_STYLE}
                         >
                           {LETTER_SPACING_OPTIONS.map((o) => (
-                            <option key={o.value} value={o.value}>{o.label}</option>
+                            <option key={o.value} value={o.value}>{formatOption(o.label)}</option>
                           ))}
                         </select>
                       </div>
                     </Grid.Item>
                     <Grid.Item>
                       <div style={{ marginBottom: '1.5rem' }}>
-                        <FieldLabel title="Text Transform" htmlFor="textTransform" />
+                        <FieldLabel title={intl.formatMessage({ id: 'ThemeManager.fieldTextTransform' })} htmlFor="textTransform" />
                         <select
                           id="textTransform"
                           value={formValues.textTransform ?? DEFAULT_THEME.textTransform}
@@ -1394,7 +1430,7 @@ const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
                           style={SELECT_STYLE}
                         >
                           {TEXT_TRANSFORM_OPTIONS.map((o) => (
-                            <option key={o.value} value={o.value}>{o.label}</option>
+                            <option key={o.value} value={o.value}>{formatOption(o.label)}</option>
                           ))}
                         </select>
                       </div>
@@ -1403,12 +1439,16 @@ const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
 
                   <Spacings.Inline>
                     <PrimaryButton
-                      label={saving ? 'Saving…' : 'Save'}
+                      label={
+                        saving
+                          ? intl.formatMessage({ id: 'ThemeManager.saving' })
+                          : intl.formatMessage({ id: 'ThemeManager.save' })
+                      }
                       onClick={handleSave}
                       isDisabled={saving}
                     />
                     <SecondaryButton
-                      label="Reset to default"
+                      label={intl.formatMessage({ id: 'ThemeManager.resetToDefault' })}
                       onClick={handleResetToDefault}
                       isDisabled={saving}
                     />
@@ -1428,6 +1468,8 @@ const ThemeManager: React.FC<ThemeManagerProps> = ({
   projectKey,
   businessUnitKey,
   jwtToken,
+  locale,
+  messageOverrides,
   ...innerProps
 }) => (
   <PuckApiProvider
@@ -1436,8 +1478,10 @@ const ThemeManager: React.FC<ThemeManagerProps> = ({
     businessUnitKey={businessUnitKey}
     jwtToken={jwtToken}
   >
-    <EnsureNimbusProvider>
-      <ThemeEditorInner {...innerProps} />
+    <EnsureNimbusProvider locale={locale}>
+      <EnsureIntlProvider locale={locale} messageOverrides={messageOverrides}>
+        <ThemeEditorInner {...innerProps} />
+      </EnsureIntlProvider>
     </EnsureNimbusProvider>
   </PuckApiProvider>
 );

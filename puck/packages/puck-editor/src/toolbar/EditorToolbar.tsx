@@ -1,4 +1,5 @@
 import React from 'react';
+import { useIntl, FormattedMessage } from 'react-intl';
 import type { PuckStateInfo } from '@commercetools-demo/puck-types';
 import { usePuck } from '@measured/puck';
 import { useVersionHistoryContext } from '@commercetools-demo/puck-version-history';
@@ -58,10 +59,13 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
   onRevert,
   onPreview,
   onCreateTemplate,
-  createTemplateLabel = 'Create a template from this page',
+  createTemplateLabel,
   showPublishButton,
 }) => {
+  const intl = useIntl();
   const { dispatch, appState, history } = usePuck();
+  const createTemplateText =
+    createTemplateLabel ?? intl.formatMessage({ id: 'Editor.createTemplateFromPage' });
   const { isHistoryTabActive, openHistoryTab, closeHistoryTab } =
     useVersionHistoryContext();
 
@@ -106,7 +110,7 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
         {/* LEFT — panel toggle + undo / redo */}
         <Stack direction="row" gap="100" alignItems="center" justifyContent="flex-start">
           <IconButton
-            aria-label="Toggle components panel"
+            aria-label={intl.formatMessage({ id: 'Editor.toggleComponentsPanel' })}
             variant="ghost"
             size="xs"
             onPress={toggleLeftPanel}
@@ -114,7 +118,7 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
             <Category />
           </IconButton>
           <IconButton
-            aria-label="Toggle properties panel"
+            aria-label={intl.formatMessage({ id: 'Editor.togglePropertiesPanel' })}
             variant="ghost"
             size="xs"
             onPress={toggleRightPanel}
@@ -122,7 +126,7 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
             <Tune />
           </IconButton>
           <IconButton
-            aria-label="Undo"
+            aria-label={intl.formatMessage({ id: 'Editor.undo' })}
             variant="ghost"
             size="xs"
             isDisabled={!history.hasPast}
@@ -131,7 +135,7 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
             <Undo />
           </IconButton>
           <IconButton
-            aria-label="Redo"
+            aria-label={intl.formatMessage({ id: 'Editor.redo' })}
             variant="ghost"
             size="xs"
             isDisabled={!history.hasFuture}
@@ -149,22 +153,22 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
           <Stack direction="row" gap="100" alignItems="center">
             {saving && (
               <Badge colorPalette="warning" size="xs">
-                Saving…
+                <FormattedMessage id="Editor.badgeSaving" />
               </Badge>
             )}
             {!saving && isDirty && (
               <Badge colorPalette="neutral" size="xs">
-                Unsaved
+                <FormattedMessage id="Editor.badgeUnsaved" />
               </Badge>
             )}
             {!saving && !isDirty && hasDraft && (
               <Badge colorPalette="info" size="xs">
-                Draft
+                <FormattedMessage id="Editor.badgeDraft" />
               </Badge>
             )}
             {hasPublished && (
               <Badge colorPalette="positive" size="xs">
-                Published
+                <FormattedMessage id="Editor.badgePublished" />
               </Badge>
             )}
           </Stack>
@@ -174,7 +178,7 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
         <Stack direction="row" gap="200" alignItems="center" justifyContent="flex-end">
           {onPreview && (
             <Button variant="ghost" size="xs" onPress={onPreview} isDisabled={saving}>
-              <Icon as={Visibility} /> Preview
+              <Icon as={Visibility} /> <FormattedMessage id="Editor.preview" />
             </Button>
           )}
           <Button
@@ -183,11 +187,11 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
             onPress={onSave}
             isDisabled={!isDirty || saving}
           >
-            Save
+            <FormattedMessage id="Editor.save" />
           </Button>
           {showPublishButton && (
             <Button variant="solid" size="xs" onPress={onPublish} isDisabled={saving}>
-              Publish
+              <FormattedMessage id="Editor.publish" />
             </Button>
           )}
           <Menu.Root
@@ -199,7 +203,7 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
           >
             <Menu.Trigger asChild>
               <IconButton
-                aria-label="More options"
+                aria-label={intl.formatMessage({ id: 'Editor.moreOptions' })}
                 variant="ghost"
                 size="xs"
                 isDisabled={saving}
@@ -213,7 +217,9 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
                   <History />
                 </Icon>
                 <Text slot="label">
-                  {isHistoryTabActive ? 'Hide version history' : 'Version history'}
+                  {isHistoryTabActive
+                    ? intl.formatMessage({ id: 'Editor.hideVersionHistory' })
+                    : intl.formatMessage({ id: 'Editor.versionHistory' })}
                 </Text>
               </Menu.Item>
               {canRevert && (
@@ -221,7 +227,9 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
                   <Icon slot="icon">
                     <SettingsBackupRestore />
                   </Icon>
-                  <Text slot="label">Revert to published</Text>
+                  <Text slot="label">
+                    <FormattedMessage id="Editor.revertToPublished" />
+                  </Text>
                 </Menu.Item>
               )}
               {onCreateTemplate && (
@@ -229,7 +237,7 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({
                   <Icon slot="icon">
                     <PostAdd />
                   </Icon>
-                  <Text slot="label">{createTemplateLabel}</Text>
+                  <Text slot="label">{createTemplateText}</Text>
                 </Menu.Item>
               )}
             </Menu.Content>

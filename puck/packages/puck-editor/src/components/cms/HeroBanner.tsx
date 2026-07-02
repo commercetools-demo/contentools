@@ -1,5 +1,6 @@
 import React from 'react';
 import { type ComponentConfig } from '@measured/puck';
+import type { IntlShape } from 'react-intl';
 import { ImagePickerField } from '../../fields/ImagePickerField';
 
 export interface HeroBannerProps {
@@ -8,14 +9,16 @@ export interface HeroBannerProps {
   image: string;
 }
 
-export const HeroBanner: ComponentConfig<HeroBannerProps> = {
-  label: 'Hero Banner',
+export const createHeroBannerConfig = (
+  intl: IntlShape
+): ComponentConfig<HeroBannerProps> => ({
+  label: intl.formatMessage({ id: 'Editor.cfg.heroBanner.label' }),
   fields: {
-    title: { type: 'text', label: 'Title' },
-    subtitle: { type: 'text', label: 'Subtitle' },
+    title: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.heroBanner.field.title' }) },
+    subtitle: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.heroBanner.field.subtitle' }) },
     image: {
       type: 'custom',
-      label: 'Image',
+      label: intl.formatMessage({ id: 'Editor.cfg.heroBanner.field.image' }),
       render: ({ value, onChange }) => (
         <ImagePickerField value={value ?? ''} onChange={onChange} />
       ),
@@ -99,4 +102,4 @@ export const HeroBanner: ComponentConfig<HeroBannerProps> = {
       </div>
     </div>
   ),
-};
+});

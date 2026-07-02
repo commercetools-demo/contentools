@@ -1,4 +1,5 @@
 import React from 'react';
+import { useIntl } from 'react-intl';
 import { type CustomField } from '@measured/puck';
 import { RichTextInput } from '@commercetools/nimbus';
 
@@ -22,13 +23,16 @@ export interface RichTextFieldProps {
 // no migration.
 // ---------------------------------------------------------------------------
 
-export const RichTextField: React.FC<RichTextFieldProps> = ({ value, onChange }) => (
-  <RichTextInput
-    value={value ?? ''}
-    onChange={onChange}
-    placeholder="Start typing…"
-  />
-);
+export const RichTextField: React.FC<RichTextFieldProps> = ({ value, onChange }) => {
+  const intl = useIntl();
+  return (
+    <RichTextInput
+      value={value ?? ''}
+      onChange={onChange}
+      placeholder={intl.formatMessage({ id: 'Editor.richTextPlaceholder' })}
+    />
+  );
+};
 
 /**
  * Puck `custom` field config that renders a rich-text editor (HTML in / out).

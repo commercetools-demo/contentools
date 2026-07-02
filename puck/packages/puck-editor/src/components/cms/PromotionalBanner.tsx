@@ -1,5 +1,6 @@
 import React from 'react';
 import { type ComponentConfig } from '@measured/puck';
+import type { IntlShape } from 'react-intl';
 import { ImagePickerField } from '../../fields/ImagePickerField';
 
 export interface PromotionalBannerProps {
@@ -11,18 +12,20 @@ export interface PromotionalBannerProps {
   background: string;
 }
 
-export const PromotionalBanner: ComponentConfig<PromotionalBannerProps> = {
-  label: 'Promotional Banner',
+export const createPromotionalBannerConfig = (
+  intl: IntlShape
+): ComponentConfig<PromotionalBannerProps> => ({
+  label: intl.formatMessage({ id: 'Editor.cfg.promotionalBanner.label' }),
   fields: {
     image: {
-      type: 'custom', label: 'Image',
+      type: 'custom', label: intl.formatMessage({ id: 'Editor.cfg.promotionalBanner.field.image' }),
       render: ({ value, onChange }) => <ImagePickerField value={value ?? ''} onChange={onChange} />,
     },
-    title: { type: 'text', label: 'Title' },
-    subtitle: { type: 'text', label: 'Subtitle' },
-    ctaText: { type: 'text', label: 'CTA Text' },
-    ctaLink: { type: 'text', label: 'CTA Link' },
-    background: { type: 'text', label: 'Background Color' },
+    title: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.promotionalBanner.field.title' }) },
+    subtitle: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.promotionalBanner.field.subtitle' }) },
+    ctaText: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.promotionalBanner.field.ctaText' }) },
+    ctaLink: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.promotionalBanner.field.ctaLink' }) },
+    background: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.promotionalBanner.field.background' }) },
   },
   defaultProps: { image: '', title: '', subtitle: '', ctaText: '', ctaLink: '', background: '#f5f5f5' },
   render: ({ image, title, subtitle, ctaText, ctaLink, background }) => (
@@ -67,4 +70,4 @@ export const PromotionalBanner: ComponentConfig<PromotionalBannerProps> = {
       </div>
     </div>
   ),
-};
+});

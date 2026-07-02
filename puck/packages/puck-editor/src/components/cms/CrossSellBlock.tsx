@@ -1,4 +1,5 @@
 import React from 'react';
+import { FormattedMessage, type IntlShape } from 'react-intl';
 import { type ComponentConfig } from '@measured/puck';
 import { useDatasource } from '@commercetools-demo/puck-api';
 import { DatasourceField, type DatasourceValue } from '../../fields/DatasourceField';
@@ -8,7 +9,7 @@ import {
   getLocalizedText,
   getProductImage,
   productLinkDefaults,
-  productLinkFields,
+  createProductLinkFields,
   resolveProductLink,
   type ProductLinkProps,
 } from './shared';
@@ -34,7 +35,7 @@ const CrossSellRender: React.FC<CrossSellBlockProps> = ({ title, products, ctaTe
   return (
     <div style={{ padding: '2rem 0', borderTop: '1px solid #eee' }}>
       {title && <h3 style={{ fontSize: '1.5rem', marginBottom: '1.5rem', color: '#333' }}>{title || 'Frequently bought together'}</h3>}
-      {loading && <div style={{ color: '#999', padding: '1rem' }}>Loading…</div>}
+      {loading && <div style={{ color: '#999', padding: '1rem' }}><FormattedMessage id="Editor.loading" /></div>}
       {items.length > 0 && (
         <div
           style={{
@@ -86,16 +87,18 @@ const CrossSellRender: React.FC<CrossSellBlockProps> = ({ title, products, ctaTe
   );
 };
 
-export const CrossSellBlock: ComponentConfig<CrossSellBlockProps> = {
-  label: 'Cross-Sell Block',
+export const createCrossSellBlockConfig = (
+  intl: IntlShape
+): ComponentConfig<CrossSellBlockProps> => ({
+  label: intl.formatMessage({ id: 'Editor.cfg.crossSellBlock.label' }),
   fields: {
-    title: { type: 'text', label: 'Title' },
+    title: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.crossSellBlock.field.title' }) },
     products: {
-      type: 'custom', label: 'Products',
+      type: 'custom', label: intl.formatMessage({ id: 'Editor.cfg.crossSellBlock.field.products' }),
       render: ({ value, onChange }) => <DatasourceField value={value} onChange={onChange} />,
     },
-    ctaText: { type: 'text', label: 'CTA Text' },
-    ...productLinkFields,
+    ctaText: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.crossSellBlock.field.ctaText' }) },
+    ...createProductLinkFields(intl),
   },
   defaultProps: {
     title: 'Frequently bought together',
@@ -104,4 +107,4 @@ export const CrossSellBlock: ComponentConfig<CrossSellBlockProps> = {
     ...productLinkDefaults,
   },
   render: (props) => <CrossSellRender {...props} />,
-};
+});

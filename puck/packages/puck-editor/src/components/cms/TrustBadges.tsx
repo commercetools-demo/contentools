@@ -1,5 +1,6 @@
 import React from 'react';
 import { type ComponentConfig } from '@measured/puck';
+import type { IntlShape } from 'react-intl';
 import { ImagePickerField } from '../../fields/ImagePickerField';
 
 export interface TrustBadgesProps {
@@ -17,17 +18,24 @@ const iconField = (label: string) => ({
   ),
 });
 
-export const TrustBadges: ComponentConfig<TrustBadgesProps> = {
-  label: 'Trust Badges',
+export const createTrustBadgesConfig = (
+  intl: IntlShape
+): ComponentConfig<TrustBadgesProps> => {
+  const iconLabel = (n: number) =>
+    intl.formatMessage({ id: 'Editor.cfg.trustBadges.field.icon' }, { n });
+  const labelLabel = (n: number) =>
+    intl.formatMessage({ id: 'Editor.cfg.trustBadges.field.label' }, { n });
+  return {
+  label: intl.formatMessage({ id: 'Editor.cfg.trustBadges.label' }),
   fields: {
-    badge1Icon: iconField('Badge 1 Icon'),
-    badge1Label: { type: 'text', label: 'Badge 1 Label' },
-    badge2Icon: iconField('Badge 2 Icon'),
-    badge2Label: { type: 'text', label: 'Badge 2 Label' },
-    badge3Icon: iconField('Badge 3 Icon'),
-    badge3Label: { type: 'text', label: 'Badge 3 Label' },
-    badge4Icon: iconField('Badge 4 Icon'),
-    badge4Label: { type: 'text', label: 'Badge 4 Label' },
+    badge1Icon: iconField(iconLabel(1)),
+    badge1Label: { type: 'text', label: labelLabel(1) },
+    badge2Icon: iconField(iconLabel(2)),
+    badge2Label: { type: 'text', label: labelLabel(2) },
+    badge3Icon: iconField(iconLabel(3)),
+    badge3Label: { type: 'text', label: labelLabel(3) },
+    badge4Icon: iconField(iconLabel(4)),
+    badge4Label: { type: 'text', label: labelLabel(4) },
   },
   defaultProps: {
     badge1Icon: '', badge1Label: '',
@@ -70,4 +78,5 @@ export const TrustBadges: ComponentConfig<TrustBadgesProps> = {
       </div>
     );
   },
+  };
 };

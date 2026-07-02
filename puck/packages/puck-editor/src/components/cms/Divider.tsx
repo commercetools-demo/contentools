@@ -1,24 +1,27 @@
 import React from 'react';
 import { type ComponentConfig } from '@measured/puck';
+import type { IntlShape } from 'react-intl';
 
 export interface DividerProps {
   lineStyle: 'solid' | 'dashed' | 'dotted';
   spacing: string;
 }
 
-export const Divider: ComponentConfig<DividerProps> = {
-  label: 'Divider',
+export const createDividerConfig = (
+  intl: IntlShape
+): ComponentConfig<DividerProps> => ({
+  label: intl.formatMessage({ id: 'Editor.cfg.divider.label' }),
   fields: {
     lineStyle: {
       type: 'select',
-      label: 'Line Style',
+      label: intl.formatMessage({ id: 'Editor.cfg.divider.field.lineStyle' }),
       options: [
-        { value: 'solid', label: 'Solid' },
-        { value: 'dashed', label: 'Dashed' },
-        { value: 'dotted', label: 'Dotted' },
+        { value: 'solid', label: intl.formatMessage({ id: 'Editor.cfg.divider.lineStyle.solid' }) },
+        { value: 'dashed', label: intl.formatMessage({ id: 'Editor.cfg.divider.lineStyle.dashed' }) },
+        { value: 'dotted', label: intl.formatMessage({ id: 'Editor.cfg.divider.lineStyle.dotted' }) },
       ],
     },
-    spacing: { type: 'text', label: 'Spacing (px)' },
+    spacing: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.divider.field.spacing' }) },
   },
   defaultProps: { lineStyle: 'solid', spacing: '24' },
   render: ({ lineStyle, spacing }) => {
@@ -33,4 +36,4 @@ export const Divider: ComponentConfig<DividerProps> = {
       />
     );
   },
-};
+});

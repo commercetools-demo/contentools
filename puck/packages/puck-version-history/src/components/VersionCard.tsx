@@ -1,4 +1,5 @@
 import React from 'react';
+import { FormattedMessage } from 'react-intl';
 import type { VersionEntry } from '../types';
 import { Badge, Button, Text } from '@commercetools/nimbus';
 
@@ -36,7 +37,9 @@ export const VersionCard: React.FC<VersionCardProps> = ({
         {formatted}
       </Text>
       {isCurrent && (
-        <Badge colorPalette="positive" size="2xs">current</Badge>
+        <Badge colorPalette="positive" size="2xs">
+          <FormattedMessage id="VersionHistory.currentBadge" />
+        </Badge>
       )}
     </Button>
   );

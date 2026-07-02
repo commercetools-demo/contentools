@@ -21,3 +21,6 @@ export { VersionPreviewBanner } from './components/VersionPreviewBanner';
 
 // Puck overrides
 export { VersionAwareFieldsPanel } from './overrides/VersionAwareField';
+
+// Locale catalogs owned by this package (merged by the host app's intl provider)
+export { catalogs as intlCatalogs } from './intl';

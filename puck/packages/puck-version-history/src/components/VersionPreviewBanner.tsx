@@ -1,4 +1,5 @@
 import React from 'react';
+import { useIntl } from 'react-intl';
 import { Badge, Button, Icon, Stack } from '@commercetools/nimbus';
 import { AccessTime } from '@commercetools/nimbus-icons';
 
@@ -21,6 +22,7 @@ export const VersionPreviewBanner: React.FC<VersionPreviewBannerProps> = ({
   onDiscard,
   isApplying = false,
 }) => {
+  const intl = useIntl();
   const formatted = new Date(timestamp).toLocaleString(undefined, {
     dateStyle: 'medium',
     timeStyle: 'short',
@@ -31,17 +33,17 @@ export const VersionPreviewBanner: React.FC<VersionPreviewBannerProps> = ({
       {/* Version label */}
       <Badge colorPalette="info">
         <Icon as={AccessTime} size="xs" />
-        {`Previewing: ${formatted}`}
+        {intl.formatMessage({ id: 'VersionHistory.previewingVersion' }, { timestamp: formatted })}
       </Badge>
 
       {/* Apply version button */}
       <Button variant="solid" onPress={onApply} isDisabled={isApplying}>
-        {isApplying ? 'Applying…' : 'Apply this Version'}
+        {intl.formatMessage(isApplying ? { id: 'VersionHistory.applying' } : { id: 'VersionHistory.applyThisVersion' })}
       </Button>
 
       {/* Discard / back to current */}
       <Button variant="outline" onPress={onDiscard} isDisabled={isApplying}>
-        Back to Current
+        {intl.formatMessage({ id: 'VersionHistory.backToCurrent' })}
       </Button>
     </Stack>
   );

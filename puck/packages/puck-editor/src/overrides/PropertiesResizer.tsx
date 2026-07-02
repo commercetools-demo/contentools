@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useIntl } from 'react-intl';
 
 const STORAGE_KEY = 'puck-properties-width';
 
@@ -34,6 +35,7 @@ export const PropertiesResizer: React.FC<PropertiesResizerProps> = ({
   minWidth = 240,
   maxWidth = 680,
 }) => {
+  const intl = useIntl();
   const ref = useRef<HTMLDivElement>(null);
   const boxRef = useRef<HandleBox | null>(null);
   const [box, setBox] = useState<HandleBox | null>(null);
@@ -152,7 +154,7 @@ export const PropertiesResizer: React.FC<PropertiesResizerProps> = ({
       onPointerDown={startDrag}
       role="separator"
       aria-orientation="vertical"
-      aria-label="Resize properties panel"
+      aria-label={intl.formatMessage({ id: 'Editor.resizePropertiesPanel' })}
       style={
         box
           ? {

@@ -1,4 +1,5 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useIntl, FormattedMessage } from 'react-intl';
 import { Puck, type Config, type Data } from '@measured/puck';
 import '@measured/puck/puck.css';
 import {
@@ -16,7 +17,7 @@ import {
   useVersionHistoryPanel,
   useVersionDiff,
 } from '@commercetools-demo/puck-version-history';
-import { defaultPuckConfig } from './config/defaultPuckConfig';
+import { createDefaultPuckConfig } from './config/defaultPuckConfig';
 import { EditorToolbar } from './toolbar/EditorToolbar';
 import { CreateTemplateDialog } from './toolbar/CreateTemplateDialog';
 import { stripPuckDataToTemplate } from './utils/stripTemplateData';
@@ -29,6 +30,7 @@ import {
 import { nimbusFieldTypes } from './overrides/NimbusFieldTypes';
 import { Stack } from '@commercetools/nimbus';
 import { EnsureNimbusProvider } from './EnsureNimbusProvider';
+import { EnsureIntlProvider } from './EnsureIntlProvider';
 
 // ---------------------------------------------------------------------------
 // Inner component (uses context from PuckApiProvider)
@@ -36,7 +38,7 @@ import { EnsureNimbusProvider } from './EnsureNimbusProvider';
 
 interface PuckEditorInnerProps {
   pageKey: string;
-  config: Config;
+  config?: Config;
   onPublish?: (puckData: PuckData) => void;
   onSave?: (puckData: PuckData) => void;
   onError?: (error: Error) => void;
@@ -50,7 +52,7 @@ interface PuckEditorInnerProps {
 
 const PuckEditorInner: React.FC<PuckEditorInnerProps> = ({
   pageKey,
-  config,
+  config: configProp,
   onPublish,
   onSave,
   onError,
@@ -59,6 +61,12 @@ const PuckEditorInner: React.FC<PuckEditorInnerProps> = ({
   showPublishButton,
   autoSaveDebounceMs: _autoSaveDebounceMs,
 }) => {
+  const intl = useIntl();
+  // Fall back to a locale-aware default config when the host doesn't supply one.
+  const config = useMemo(
+    () => configProp ?? createDefaultPuckConfig(intl),
+    [configProp, intl]
+  );
   const {
     page,
     states,
@@ -227,7 +235,7 @@ const PuckEditorInner: React.FC<PuckEditorInnerProps> = ({
           color: 'var(--puck-color-grey-07)',
         }}
       >
-        Loading editor…
+        {intl.formatMessage({ id: 'Editor.loadingEditor' })}
       </div>
     );
   }
@@ -243,7 +251,10 @@ const PuckEditorInner: React.FC<PuckEditorInnerProps> = ({
           margin: '16px',
         }}
       >
-        <strong>Error loading page:</strong> {error}
+        <strong>
+          <FormattedMessage id="Editor.errorLoadingPage" />
+        </strong>{' '}
+        {error}
       </div>
     );
   }
@@ -364,6 +375,11 @@ export interface PuckEditorProps {
   showPublishButton?: boolean;
   /** Debounce delay for auto-save in ms. Default: 1500 */
   autoSaveDebounceMs?: number;
+  /**
+   * Optional per-key overrides for UI strings, applied on top of the resolved
+   * locale catalog. Keys are message ids (e.g. "Editor.save").
+   */
+  messageOverrides?: Record<string, string>;
 }
 
 export const PuckEditor: React.FC<PuckEditorProps> = ({
@@ -373,7 +389,7 @@ export const PuckEditor: React.FC<PuckEditorProps> = ({
   jwtToken,
   locale,
   pageKey,
-  config = defaultPuckConfig,
+  config,
   onPublish,
   onSave,
   onError,
@@ -381,6 +397,7 @@ export const PuckEditor: React.FC<PuckEditorProps> = ({
   onDirtyChange,
   showPublishButton = true,
   autoSaveDebounceMs = 1500,
+  messageOverrides,
 }) => {
   return (
     <PuckApiProvider
@@ -391,17 +408,19 @@ export const PuckEditor: React.FC<PuckEditorProps> = ({
       locale={locale}
     >
       <EnsureNimbusProvider locale={locale}>
-        <PuckEditorInner
-          pageKey={pageKey}
-          config={config}
-          onPublish={onPublish}
-          onSave={onSave}
-          onError={onError}
-          onPreview={onPreview}
-          onDirtyChange={onDirtyChange}
-          showPublishButton={showPublishButton}
-          autoSaveDebounceMs={autoSaveDebounceMs}
-        />
+        <EnsureIntlProvider locale={locale} messageOverrides={messageOverrides}>
+          <PuckEditorInner
+            pageKey={pageKey}
+            config={config}
+            onPublish={onPublish}
+            onSave={onSave}
+            onError={onError}
+            onPreview={onPreview}
+            onDirtyChange={onDirtyChange}
+            showPublishButton={showPublishButton}
+            autoSaveDebounceMs={autoSaveDebounceMs}
+          />
+        </EnsureIntlProvider>
       </EnsureNimbusProvider>
     </PuckApiProvider>
   );

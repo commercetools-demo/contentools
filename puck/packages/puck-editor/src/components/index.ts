@@ -1,29 +1,29 @@
-export { Hero } from './Hero';
+export { createHeroConfig } from './Hero';
 export type { HeroProps } from './Hero';
 
-export { RichText } from './RichText';
+export { createRichTextConfig } from './RichText';
 export type { RichTextProps } from './RichText';
 
-export { Grid } from './Grid';
+export { createGridConfig } from './Grid';
 export type { GridProps } from './Grid';
 
 // Deprecated — kept for backward compatibility with pages saved before Grid.
-export { Columns } from './Columns';
+export { createColumnsConfig } from './Columns';
 export type { ColumnsProps } from './Columns';
 
-export { Image } from './Image';
+export { createImageConfig } from './Image';
 export type { ImageProps } from './Image';
 
-export { Button } from './Button';
+export { createButtonConfig } from './Button';
 export type { ButtonProps } from './Button';
 
-export { Card } from './Card';
+export { createCardConfig } from './Card';
 export type { CardProps } from './Card';
 
-export { Spacer } from './Spacer';
+export { createSpacerConfig } from './Spacer';
 export type { SpacerProps } from './Spacer';
 
-export { ProductTeaser } from './ProductTeaser';
+export { createProductTeaserConfig } from './ProductTeaser';
 export type { ProductTeaserProps } from './ProductTeaser';
 
 // CMS components (from /service/src/samples/CMS)

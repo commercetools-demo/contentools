@@ -1,5 +1,6 @@
 import React from 'react';
 import { type ComponentConfig } from '@measured/puck';
+import type { IntlShape } from 'react-intl';
 
 export interface TestimonialsSliderProps {
   quote1: string; author1: string; role1: string;
@@ -7,18 +8,27 @@ export interface TestimonialsSliderProps {
   quote3: string; author3: string; role3: string;
 }
 
-export const TestimonialsSlider: ComponentConfig<TestimonialsSliderProps> = {
-  label: 'Testimonials',
+export const createTestimonialsSliderConfig = (
+  intl: IntlShape
+): ComponentConfig<TestimonialsSliderProps> => {
+  const quoteLabel = (n: number) =>
+    intl.formatMessage({ id: 'Editor.cfg.testimonials.field.quote' }, { n });
+  const authorLabel = (n: number) =>
+    intl.formatMessage({ id: 'Editor.cfg.testimonials.field.author' }, { n });
+  const roleLabel = (n: number) =>
+    intl.formatMessage({ id: 'Editor.cfg.testimonials.field.role' }, { n });
+  return {
+  label: intl.formatMessage({ id: 'Editor.cfg.testimonials.label' }),
   fields: {
-    quote1: { type: 'textarea', label: 'Quote 1' },
-    author1: { type: 'text', label: 'Author 1' },
-    role1: { type: 'text', label: 'Role 1' },
-    quote2: { type: 'textarea', label: 'Quote 2' },
-    author2: { type: 'text', label: 'Author 2' },
-    role2: { type: 'text', label: 'Role 2' },
-    quote3: { type: 'textarea', label: 'Quote 3' },
-    author3: { type: 'text', label: 'Author 3' },
-    role3: { type: 'text', label: 'Role 3' },
+    quote1: { type: 'textarea', label: quoteLabel(1) },
+    author1: { type: 'text', label: authorLabel(1) },
+    role1: { type: 'text', label: roleLabel(1) },
+    quote2: { type: 'textarea', label: quoteLabel(2) },
+    author2: { type: 'text', label: authorLabel(2) },
+    role2: { type: 'text', label: roleLabel(2) },
+    quote3: { type: 'textarea', label: quoteLabel(3) },
+    author3: { type: 'text', label: authorLabel(3) },
+    role3: { type: 'text', label: roleLabel(3) },
   },
   defaultProps: {
     quote1: '', author1: '', role1: '',
@@ -59,4 +69,5 @@ export const TestimonialsSlider: ComponentConfig<TestimonialsSliderProps> = {
       </div>
     );
   },
+  };
 };

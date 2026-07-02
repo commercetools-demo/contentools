@@ -1,4 +1,5 @@
 import React from 'react';
+import { FormattedMessage, type IntlShape } from 'react-intl';
 import { type ComponentConfig } from '@measured/puck';
 import { ImagePickerField } from '../../fields/ImagePickerField';
 
@@ -8,21 +9,23 @@ export interface ImageBlockProps {
   link: string;
 }
 
-export const ImageBlock: ComponentConfig<ImageBlockProps> = {
-  label: 'Image Block',
+export const createImageBlockConfig = (
+  intl: IntlShape
+): ComponentConfig<ImageBlockProps> => ({
+  label: intl.formatMessage({ id: 'Editor.cfg.imageBlock.label' }),
   fields: {
     image: {
-      type: 'custom', label: 'Image',
+      type: 'custom', label: intl.formatMessage({ id: 'Editor.cfg.imageBlock.field.image' }),
       render: ({ value, onChange }) => <ImagePickerField value={value ?? ''} onChange={onChange} />,
     },
-    caption: { type: 'text', label: 'Caption' },
-    link: { type: 'text', label: 'Link URL' },
+    caption: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.imageBlock.field.caption' }) },
+    link: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.imageBlock.field.link' }) },
   },
   defaultProps: { image: '', caption: '', link: '' },
   render: ({ image, caption, link }) => {
     if (!image) return (
       <div style={{ padding: '2rem', textAlign: 'center', color: '#999', background: '#f5f5f5', borderRadius: '4px' }}>
-        No image selected
+        <FormattedMessage id="Editor.noImageSelected" />
       </div>
     );
     const img = (
@@ -43,4 +46,4 @@ export const ImageBlock: ComponentConfig<ImageBlockProps> = {
       </figure>
     );
   },
-};
+});

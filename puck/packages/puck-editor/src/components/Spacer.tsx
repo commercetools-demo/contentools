@@ -1,5 +1,6 @@
 import React from 'react';
 import type { ComponentConfig } from '@measured/puck';
+import type { IntlShape } from 'react-intl';
 
 export interface SpacerProps {
   height?: string;
@@ -7,19 +8,19 @@ export interface SpacerProps {
   lineColor?: string;
 }
 
-export const Spacer: ComponentConfig<SpacerProps> = {
-  label: 'Spacer',
+export const createSpacerConfig = (intl: IntlShape): ComponentConfig<SpacerProps> => ({
+  label: intl.formatMessage({ id: 'Editor.cfg.spacer.label' }),
   fields: {
-    height: { type: 'text', label: 'Height (CSS, e.g. 48px)' },
+    height: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.spacer.field.height' }) },
     showLine: {
       type: 'radio',
-      label: 'Show Divider Line',
+      label: intl.formatMessage({ id: 'Editor.cfg.spacer.field.showLine' }),
       options: [
-        { value: true, label: 'Yes' },
-        { value: false, label: 'No' },
+        { value: true, label: intl.formatMessage({ id: 'Editor.cfg.yesNo.yes' }) },
+        { value: false, label: intl.formatMessage({ id: 'Editor.cfg.yesNo.no' }) },
       ],
     },
-    lineColor: { type: 'text', label: 'Line Color (CSS color)' },
+    lineColor: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.spacer.field.lineColor' }) },
   },
   defaultProps: {
     height: '48px',
@@ -41,4 +42,4 @@ export const Spacer: ComponentConfig<SpacerProps> = {
       )}
     </div>
   ),
-};
+});

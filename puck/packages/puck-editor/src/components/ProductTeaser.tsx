@@ -1,11 +1,12 @@
 import React from 'react';
+import { FormattedMessage, type IntlShape } from 'react-intl';
 import { type ComponentConfig } from '@measured/puck';
 import { useDatasource } from '@commercetools-demo/puck-api';
 import { DatasourceField, type DatasourceValue } from '../fields/DatasourceField';
 import { richTextField } from '../fields/RichTextField';
 import {
   productLinkDefaults,
-  productLinkFields,
+  createProductLinkFields,
   resolveProductLink,
   type ProductLinkProps,
 } from './cms/shared';
@@ -104,7 +105,7 @@ const ProductTeaserRender: React.FC<ProductTeaserProps> = ({
               fontSize: '13px',
             }}
           >
-            Loading…
+            <FormattedMessage id="Editor.loading" />
           </div>
         ) : imageUrl ? (
           <a href={href} style={{ display: 'block' }}>
@@ -134,7 +135,11 @@ const ProductTeaserRender: React.FC<ProductTeaserProps> = ({
               fontSize: '13px',
             }}
           >
-            {error ? 'Error loading product' : 'No product selected'}
+            {error ? (
+              <FormattedMessage id="Editor.errorLoadingProduct" />
+            ) : (
+              <FormattedMessage id="Editor.noProductSelected" />
+            )}
           </div>
         )}
       </div>
@@ -153,7 +158,7 @@ const ProductTeaserRender: React.FC<ProductTeaserProps> = ({
           <div dangerouslySetInnerHTML={{ __html: richText }} />
         ) : (
           <div style={{ color: '#9ca3af', fontSize: '13px' }}>
-            No description
+            <FormattedMessage id="Editor.noDescription" />
           </div>
         )}
 
@@ -181,18 +186,20 @@ const ProductTeaserRender: React.FC<ProductTeaserProps> = ({
 // Puck component config
 // ---------------------------------------------------------------------------
 
-export const ProductTeaser: ComponentConfig<ProductTeaserProps> = {
-  label: 'Product Teaser',
+export const createProductTeaserConfig = (
+  intl: IntlShape
+): ComponentConfig<ProductTeaserProps> => ({
+  label: intl.formatMessage({ id: 'Editor.cfg.productTeaser.label' }),
   fields: {
     datasource: {
       type: 'custom',
-      label: 'Product Datasource',
+      label: intl.formatMessage({ id: 'Editor.cfg.productTeaser.field.datasource' }),
       render: ({ value, onChange }) => (
         <DatasourceField value={value} onChange={onChange} />
       ),
     },
-    richText: richTextField('Rich Text'),
-    ...productLinkFields,
+    richText: richTextField(intl.formatMessage({ id: 'Editor.cfg.productTeaser.field.richText' })),
+    ...createProductLinkFields(intl),
   },
   defaultProps: {
     datasource: { type: 'product-by-sku', skus: [''] },
@@ -200,4 +207,4 @@ export const ProductTeaser: ComponentConfig<ProductTeaserProps> = {
     ...productLinkDefaults,
   },
   render: (props) => <ProductTeaserRender {...props} />,
-};
+});

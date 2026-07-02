@@ -1,5 +1,6 @@
 import React from 'react';
 import { type ComponentConfig } from '@measured/puck';
+import type { IntlShape } from 'react-intl';
 
 export interface SocialLinksProps {
   link1Label: string; link1Url: string;
@@ -8,17 +9,24 @@ export interface SocialLinksProps {
   link4Label: string; link4Url: string;
 }
 
-export const SocialLinks: ComponentConfig<SocialLinksProps> = {
-  label: 'Social Links',
+export const createSocialLinksConfig = (
+  intl: IntlShape
+): ComponentConfig<SocialLinksProps> => {
+  const labelLabel = (n: number) =>
+    intl.formatMessage({ id: 'Editor.cfg.socialLinks.field.label' }, { n });
+  const urlLabel = (n: number) =>
+    intl.formatMessage({ id: 'Editor.cfg.socialLinks.field.url' }, { n });
+  return {
+  label: intl.formatMessage({ id: 'Editor.cfg.socialLinks.label' }),
   fields: {
-    link1Label: { type: 'text', label: 'Link 1 Label' },
-    link1Url: { type: 'text', label: 'Link 1 URL' },
-    link2Label: { type: 'text', label: 'Link 2 Label' },
-    link2Url: { type: 'text', label: 'Link 2 URL' },
-    link3Label: { type: 'text', label: 'Link 3 Label' },
-    link3Url: { type: 'text', label: 'Link 3 URL' },
-    link4Label: { type: 'text', label: 'Link 4 Label' },
-    link4Url: { type: 'text', label: 'Link 4 URL' },
+    link1Label: { type: 'text', label: labelLabel(1) },
+    link1Url: { type: 'text', label: urlLabel(1) },
+    link2Label: { type: 'text', label: labelLabel(2) },
+    link2Url: { type: 'text', label: urlLabel(2) },
+    link3Label: { type: 'text', label: labelLabel(3) },
+    link3Url: { type: 'text', label: urlLabel(3) },
+    link4Label: { type: 'text', label: labelLabel(4) },
+    link4Url: { type: 'text', label: urlLabel(4) },
   },
   defaultProps: {
     link1Label: '', link1Url: '',
@@ -50,4 +58,5 @@ export const SocialLinks: ComponentConfig<SocialLinksProps> = {
       </div>
     );
   },
+  };
 };

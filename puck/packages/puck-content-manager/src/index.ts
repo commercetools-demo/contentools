@@ -6,3 +6,5 @@ export type { ContentEditorProps } from './ContentEditor';
 
 export { ContentManager } from './ContentManagerRouter';
 export type { ContentManagerProps } from './ContentManagerRouter';
+
+export { catalogs as intlCatalogs } from './intl';

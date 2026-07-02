@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useIntl, FormattedMessage } from 'react-intl';
 import {
   Button,
   Checkbox,
@@ -33,6 +34,7 @@ export const CreateTemplateDialog: React.FC<CreateTemplateDialogProps> = ({
   onConfirm,
   saving = false,
 }) => {
+  const intl = useIntl();
   const [name, setName] = useState('');
   const [withoutData, setWithoutData] = useState(true);
   const [error, setError] = useState('');
@@ -48,7 +50,7 @@ export const CreateTemplateDialog: React.FC<CreateTemplateDialogProps> = ({
 
   const handleConfirm = () => {
     if (!name.trim()) {
-      setError('Name is required');
+      setError(intl.formatMessage({ id: 'Editor.nameRequired' }));
       return;
     }
     setError('');
@@ -59,18 +61,22 @@ export const CreateTemplateDialog: React.FC<CreateTemplateDialogProps> = ({
     <Dialog.Root isOpen={isOpen} onOpenChange={onOpenChange}>
       <Dialog.Content>
         <Dialog.Header>
-          <Dialog.Title>Create a new template</Dialog.Title>
+          <Dialog.Title>
+            <FormattedMessage id="Editor.createTemplateTitle" />
+          </Dialog.Title>
           <Dialog.CloseTrigger />
         </Dialog.Header>
         <Dialog.Body>
           <Stack direction="column" gap="400">
             <FormField.Root isRequired>
-              <FormField.Label>Name</FormField.Label>
+              <FormField.Label>
+                <FormattedMessage id="Editor.nameLabel" />
+              </FormField.Label>
               <FormField.Input>
                 <TextInput
                   value={name}
                   onChange={(v) => setName(v)}
-                  placeholder="e.g. Landing page"
+                  placeholder={intl.formatMessage({ id: 'Editor.templateNamePlaceholder' })}
                   autoFocus
                 />
               </FormField.Input>
@@ -80,17 +86,19 @@ export const CreateTemplateDialog: React.FC<CreateTemplateDialogProps> = ({
               onChange={(selected) => setWithoutData(selected)}
               isDisabled={saving}
             >
-              Create template without data
+              <FormattedMessage id="Editor.createTemplateWithoutData" />
             </Checkbox>
             {error && <Text color="critical.11">{error}</Text>}
           </Stack>
         </Dialog.Body>
         <Dialog.Footer>
           <Button slot="close" variant="outline" isDisabled={saving}>
-            Cancel
+            <FormattedMessage id="Editor.cancel" />
           </Button>
           <Button variant="solid" onPress={handleConfirm} isDisabled={saving}>
-            {saving ? 'Creating…' : 'Create'}
+            {saving
+              ? intl.formatMessage({ id: 'Editor.creating' })
+              : intl.formatMessage({ id: 'Editor.create' })}
           </Button>
         </Dialog.Footer>
       </Dialog.Content>

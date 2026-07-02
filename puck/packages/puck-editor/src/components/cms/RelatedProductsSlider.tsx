@@ -1,4 +1,5 @@
 import React from 'react';
+import { FormattedMessage, type IntlShape } from 'react-intl';
 import { type ComponentConfig } from '@measured/puck';
 import { useDatasource } from '@commercetools-demo/puck-api';
 import { DatasourceField, type DatasourceValue } from '../../fields/DatasourceField';
@@ -8,7 +9,7 @@ import {
   getLocalizedText,
   getProductImage,
   productLinkDefaults,
-  productLinkFields,
+  createProductLinkFields,
   resolveProductLink,
   type ProductLinkProps,
 } from './shared';
@@ -39,7 +40,7 @@ const RelatedProductsRender: React.FC<RelatedProductsSliderProps> = ({ title, su
           {subtitle && <p style={{ fontSize: '1.1rem', color: '#666', margin: 0 }}>{subtitle}</p>}
         </div>
       )}
-      {loading && <div style={{ textAlign: 'center', color: '#999', padding: '2rem' }}>Loading…</div>}
+      {loading && <div style={{ textAlign: 'center', color: '#999', padding: '2rem' }}><FormattedMessage id="Editor.loading" /></div>}
       {items.length > 0 && (
         <div
           style={{
@@ -72,7 +73,7 @@ const RelatedProductsRender: React.FC<RelatedProductsSliderProps> = ({ title, su
                 <div style={{ width: '100%', height: '200px', background: '#f5f5f5', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
                   {imageUrl
                     ? <img src={imageUrl} alt={name} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
-                    : <span style={{ color: '#999', fontSize: '0.85rem' }}>No image</span>
+                    : <span style={{ color: '#999', fontSize: '0.85rem' }}><FormattedMessage id="Editor.noImage" /></span>
                   }
                 </div>
                 <div style={{ padding: '1.5rem' }}>
@@ -92,16 +93,18 @@ const RelatedProductsRender: React.FC<RelatedProductsSliderProps> = ({ title, su
   );
 };
 
-export const RelatedProductsSlider: ComponentConfig<RelatedProductsSliderProps> = {
-  label: 'Related Products',
+export const createRelatedProductsSliderConfig = (
+  intl: IntlShape
+): ComponentConfig<RelatedProductsSliderProps> => ({
+  label: intl.formatMessage({ id: 'Editor.cfg.relatedProducts.label' }),
   fields: {
-    title: { type: 'text', label: 'Title' },
-    subtitle: { type: 'text', label: 'Subtitle' },
+    title: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.relatedProducts.field.title' }) },
+    subtitle: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.relatedProducts.field.subtitle' }) },
     products: {
-      type: 'custom', label: 'Products',
+      type: 'custom', label: intl.formatMessage({ id: 'Editor.cfg.relatedProducts.field.products' }),
       render: ({ value, onChange }) => <DatasourceField value={value} onChange={onChange} />,
     },
-    ...productLinkFields,
+    ...createProductLinkFields(intl),
   },
   defaultProps: {
     title: 'Related Products',
@@ -110,4 +113,4 @@ export const RelatedProductsSlider: ComponentConfig<RelatedProductsSliderProps> 
     ...productLinkDefaults,
   },
   render: (props) => <RelatedProductsRender {...props} />,
-};
+});

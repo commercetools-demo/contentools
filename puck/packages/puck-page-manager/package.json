@@ -1,6 +1,6 @@
 {
   "name": "@commercetools-demo/puck-page-manager",
-  "version": "0.6.1",
+  "version": "0.7.0",
   "description": "Router-aware page manager UI (list, editor, preview) for the Puck CMS integration",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -29,6 +29,7 @@
     "@commercetools-demo/puck-editor": "workspace:^",
     "@commercetools-demo/puck-renderer": "workspace:^",
     "@commercetools-demo/puck-types": "workspace:^",
+    "@commercetools-demo/puck-version-history": "workspace:^",
     "@measured/puck": "^0.18.2"
   },
   "peerDependencies": {

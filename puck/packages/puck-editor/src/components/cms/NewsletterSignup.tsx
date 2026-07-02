@@ -1,5 +1,6 @@
 import React from 'react';
 import { type ComponentConfig } from '@measured/puck';
+import type { IntlShape } from 'react-intl';
 
 export interface NewsletterSignupProps {
   title: string;
@@ -8,13 +9,15 @@ export interface NewsletterSignupProps {
   placeholder: string;
 }
 
-export const NewsletterSignup: ComponentConfig<NewsletterSignupProps> = {
-  label: 'Newsletter Signup',
+export const createNewsletterSignupConfig = (
+  intl: IntlShape
+): ComponentConfig<NewsletterSignupProps> => ({
+  label: intl.formatMessage({ id: 'Editor.cfg.newsletterSignup.label' }),
   fields: {
-    title: { type: 'text', label: 'Title' },
-    subtitle: { type: 'text', label: 'Subtitle' },
-    ctaText: { type: 'text', label: 'Button Text' },
-    placeholder: { type: 'text', label: 'Input Placeholder' },
+    title: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.newsletterSignup.field.title' }) },
+    subtitle: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.newsletterSignup.field.subtitle' }) },
+    ctaText: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.newsletterSignup.field.ctaText' }) },
+    placeholder: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.newsletterSignup.field.placeholder' }) },
   },
   defaultProps: { title: '', subtitle: '', ctaText: 'Subscribe', placeholder: 'Enter your email' },
   render: ({ title, subtitle, ctaText, placeholder }) => (
@@ -37,7 +40,7 @@ export const NewsletterSignup: ComponentConfig<NewsletterSignupProps> = {
         <input
           type="email"
           placeholder={placeholder}
-          aria-label="Email"
+          aria-label={intl.formatMessage({ id: 'Editor.newsletterEmailAria' })}
           style={{
             padding: '0.75rem 1rem',
             border: '1px solid #ddd',
@@ -63,4 +66,4 @@ export const NewsletterSignup: ComponentConfig<NewsletterSignupProps> = {
       </form>
     </div>
   ),
-};
+});

@@ -1,5 +1,6 @@
 import React from 'react';
 import { type ComponentConfig } from '@measured/puck';
+import type { IntlShape } from 'react-intl';
 import { richTextField } from '../../fields/RichTextField';
 
 export interface ThankYouContentProps {
@@ -9,13 +10,15 @@ export interface ThankYouContentProps {
   ctaLink: string;
 }
 
-export const ThankYouContent: ComponentConfig<ThankYouContentProps> = {
-  label: 'Thank You Content',
+export const createThankYouContentConfig = (
+  intl: IntlShape
+): ComponentConfig<ThankYouContentProps> => ({
+  label: intl.formatMessage({ id: 'Editor.cfg.thankYouContent.label' }),
   fields: {
-    headline: { type: 'text', label: 'Headline' },
-    message: richTextField('Message'),
-    ctaText: { type: 'text', label: 'CTA Text' },
-    ctaLink: { type: 'text', label: 'CTA Link' },
+    headline: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.thankYouContent.field.headline' }) },
+    message: richTextField(intl.formatMessage({ id: 'Editor.cfg.thankYouContent.field.message' })),
+    ctaText: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.thankYouContent.field.ctaText' }) },
+    ctaLink: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.thankYouContent.field.ctaLink' }) },
   },
   defaultProps: { headline: 'Thank you for your order!', message: '', ctaText: '', ctaLink: '' },
   render: ({ headline, message, ctaText, ctaLink }) => (
@@ -47,4 +50,4 @@ export const ThankYouContent: ComponentConfig<ThankYouContentProps> = {
       )}
     </div>
   ),
-};
+});

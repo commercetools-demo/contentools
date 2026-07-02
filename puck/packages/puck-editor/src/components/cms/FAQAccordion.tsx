@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { FormattedMessage, type IntlShape } from 'react-intl';
 import { type ComponentConfig } from '@measured/puck';
 import { richTextField } from '../../fields/RichTextField';
 
@@ -20,7 +21,9 @@ const FAQRender: React.FC<FAQAccordionProps> = (props) => {
   const [open, setOpen] = useState<number | null>(null);
 
   if (items.length === 0) return (
-    <div style={{ padding: '1rem', color: '#999', fontSize: '13px' }}>No FAQ items configured</div>
+    <div style={{ padding: '1rem', color: '#999', fontSize: '13px' }}>
+      <FormattedMessage id="Editor.noFaqItemsConfigured" />
+    </div>
   );
 
   return (
@@ -64,17 +67,24 @@ const FAQRender: React.FC<FAQAccordionProps> = (props) => {
   );
 };
 
-export const FAQAccordion: ComponentConfig<FAQAccordionProps> = {
-  label: 'FAQ Accordion',
+export const createFAQAccordionConfig = (
+  intl: IntlShape
+): ComponentConfig<FAQAccordionProps> => {
+  const questionLabel = (n: number) =>
+    intl.formatMessage({ id: 'Editor.cfg.faqAccordion.field.question' }, { n });
+  const answerLabel = (n: number) =>
+    intl.formatMessage({ id: 'Editor.cfg.faqAccordion.field.answer' }, { n });
+  return {
+  label: intl.formatMessage({ id: 'Editor.cfg.faqAccordion.label' }),
   fields: {
-    question1: { type: 'text', label: 'Question 1' },
-    answer1: richTextField('Answer 1'),
-    question2: { type: 'text', label: 'Question 2' },
-    answer2: richTextField('Answer 2'),
-    question3: { type: 'text', label: 'Question 3' },
-    answer3: richTextField('Answer 3'),
-    question4: { type: 'text', label: 'Question 4' },
-    answer4: richTextField('Answer 4'),
+    question1: { type: 'text', label: questionLabel(1) },
+    answer1: richTextField(answerLabel(1)),
+    question2: { type: 'text', label: questionLabel(2) },
+    answer2: richTextField(answerLabel(2)),
+    question3: { type: 'text', label: questionLabel(3) },
+    answer3: richTextField(answerLabel(3)),
+    question4: { type: 'text', label: questionLabel(4) },
+    answer4: richTextField(answerLabel(4)),
   },
   defaultProps: {
     question1: '', answer1: '',
@@ -83,4 +93,5 @@ export const FAQAccordion: ComponentConfig<FAQAccordionProps> = {
     question4: '', answer4: '',
   },
   render: (props) => <FAQRender {...props} />,
+  };
 };

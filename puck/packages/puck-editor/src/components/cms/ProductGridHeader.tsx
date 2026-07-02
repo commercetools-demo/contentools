@@ -1,5 +1,6 @@
 import React from 'react';
 import { type ComponentConfig } from '@measured/puck';
+import type { IntlShape } from 'react-intl';
 import { richTextField } from '../../fields/RichTextField';
 
 export interface ProductGridHeaderProps {
@@ -7,11 +8,13 @@ export interface ProductGridHeaderProps {
   description: string;
 }
 
-export const ProductGridHeader: ComponentConfig<ProductGridHeaderProps> = {
-  label: 'Product Grid Header',
+export const createProductGridHeaderConfig = (
+  intl: IntlShape
+): ComponentConfig<ProductGridHeaderProps> => ({
+  label: intl.formatMessage({ id: 'Editor.cfg.productGridHeader.label' }),
   fields: {
-    title: { type: 'text', label: 'Title' },
-    description: richTextField('Description'),
+    title: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.productGridHeader.field.title' }) },
+    description: richTextField(intl.formatMessage({ id: 'Editor.cfg.productGridHeader.field.description' })),
   },
   defaultProps: { title: '', description: '' },
   render: ({ title, description }) => (
@@ -29,4 +32,4 @@ export const ProductGridHeader: ComponentConfig<ProductGridHeaderProps> = {
       )}
     </div>
   ),
-};
+});

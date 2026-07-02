@@ -1,6 +1,7 @@
 import React from 'react';
 import type { ComponentConfig } from '@measured/puck';
-import { FONT_SIZE_FIELD } from '../fields/fontSizeField';
+import type { IntlShape } from 'react-intl';
+import { createFontSizeField } from '../fields/fontSizeField';
 
 export interface ButtonProps {
   label: string;
@@ -24,42 +25,42 @@ const SIZE_STYLES: Record<string, React.CSSProperties> = {
   lg: { padding: '14px 32px', fontSize: '18px' },
 };
 
-export const Button: ComponentConfig<ButtonProps> = {
-  label: 'Button',
+export const createButtonConfig = (intl: IntlShape): ComponentConfig<ButtonProps> => ({
+  label: intl.formatMessage({ id: 'Editor.cfg.button.label' }),
   fields: {
-    label: { type: 'text', label: 'Button Label' },
-    href: { type: 'text', label: 'Link URL' },
+    label: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.button.field.label' }) },
+    href: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.button.field.href' }) },
     variant: {
       type: 'select',
-      label: 'Variant',
+      label: intl.formatMessage({ id: 'Editor.cfg.button.field.variant' }),
       options: [
-        { value: 'primary', label: 'Primary' },
-        { value: 'secondary', label: 'Secondary' },
-        { value: 'outline', label: 'Outline' },
+        { value: 'primary', label: intl.formatMessage({ id: 'Editor.cfg.button.variant.primary' }) },
+        { value: 'secondary', label: intl.formatMessage({ id: 'Editor.cfg.button.variant.secondary' }) },
+        { value: 'outline', label: intl.formatMessage({ id: 'Editor.cfg.button.variant.outline' }) },
       ],
     },
     size: {
       type: 'select',
-      label: 'Size',
+      label: intl.formatMessage({ id: 'Editor.cfg.button.field.size' }),
       options: [
-        { value: 'sm', label: 'Small' },
-        { value: 'md', label: 'Medium' },
-        { value: 'lg', label: 'Large' },
+        { value: 'sm', label: intl.formatMessage({ id: 'Editor.cfg.button.size.small' }) },
+        { value: 'md', label: intl.formatMessage({ id: 'Editor.cfg.button.size.medium' }) },
+        { value: 'lg', label: intl.formatMessage({ id: 'Editor.cfg.button.size.large' }) },
       ],
     },
-    fontSize: FONT_SIZE_FIELD('Font Size Override'),
+    fontSize: createFontSizeField(intl, intl.formatMessage({ id: 'Editor.cfg.button.field.fontSize' })),
     align: {
       type: 'select',
-      label: 'Alignment',
+      label: intl.formatMessage({ id: 'Editor.cfg.button.field.align' }),
       options: [
-        { value: 'left', label: 'Left' },
-        { value: 'center', label: 'Center' },
-        { value: 'right', label: 'Right' },
+        { value: 'left', label: intl.formatMessage({ id: 'Editor.cfg.align.left' }) },
+        { value: 'center', label: intl.formatMessage({ id: 'Editor.cfg.align.center' }) },
+        { value: 'right', label: intl.formatMessage({ id: 'Editor.cfg.align.right' }) },
       ],
     },
-    openInNewTab: { type: 'radio', label: 'Open in New Tab', options: [
-      { value: true, label: 'Yes' },
-      { value: false, label: 'No' },
+    openInNewTab: { type: 'radio', label: intl.formatMessage({ id: 'Editor.cfg.button.field.openInNewTab' }), options: [
+      { value: true, label: intl.formatMessage({ id: 'Editor.cfg.yesNo.yes' }) },
+      { value: false, label: intl.formatMessage({ id: 'Editor.cfg.yesNo.no' }) },
     ]},
   },
   defaultProps: {
@@ -90,4 +91,4 @@ export const Button: ComponentConfig<ButtonProps> = {
       </a>
     </div>
   ),
-};
+});

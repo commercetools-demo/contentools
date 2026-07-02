@@ -1,4 +1,4 @@
-import React, { useCallback, useState, type ReactNode } from 'react';
+import React, { useCallback, useMemo, useState, type ReactNode } from 'react';
 import {
   BrowserRouter,
   Switch,
@@ -7,6 +7,7 @@ import {
   useParams,
   useLocation,
 } from 'react-router-dom';
+import { useIntl, FormattedMessage, type MessageDescriptor } from 'react-intl';
 import {
   PuckApiProvider,
   usePuckPages,
@@ -17,16 +18,11 @@ import {
   PropertiesResizer,
   PuckEditor,
   UnsavedChangesDialog,
-  defaultPuckConfig,
+  createDefaultPuckConfig,
 } from '@commercetools-demo/puck-editor';
 import { PuckRenderer } from '@commercetools-demo/puck-renderer';
 import { EnsureIntlProvider } from './EnsureIntlProvider';
 import { EnsureNimbusProvider } from './EnsureNimbusProvider';
-
-const DEFAULT_CONFIG: Config = {
-  ...defaultPuckConfig,
-  components: { ...defaultPuckConfig.components },
-};
 import type { Config } from '@measured/puck';
 import type { CreatePuckPageInput, PuckPageListItem } from '@commercetools-demo/puck-types';
 import {
@@ -60,16 +56,21 @@ import {
 
 const STATUS_BADGE: Record<
   'draft' | 'published' | 'none',
-  { colorPalette: 'warning' | 'positive' | 'neutral'; label: string }
+  { colorPalette: 'warning' | 'positive' | 'neutral'; message: MessageDescriptor }
 > = {
-  draft: { colorPalette: 'warning', label: 'Draft' },
-  published: { colorPalette: 'positive', label: 'Published' },
-  none: { colorPalette: 'neutral', label: 'No state' },
+  draft: { colorPalette: 'warning', message: { id: 'PageManager.statusDraft' } },
+  published: { colorPalette: 'positive', message: { id: 'PageManager.statusPublished' } },
+  none: { colorPalette: 'neutral', message: { id: 'PageManager.statusNone' } },
 };
 
 const StatusBadge: React.FC<{ variant: 'draft' | 'published' | 'none' }> = ({ variant }) => {
+  const intl = useIntl();
   const meta = STATUS_BADGE[variant];
-  return <Badge colorPalette={meta.colorPalette} size="xs">{meta.label}</Badge>;
+  return (
+    <Badge colorPalette={meta.colorPalette} size="xs">
+      {intl.formatMessage(meta.message)}
+    </Badge>
+  );
 };
 
 // ---------------------------------------------------------------------------
@@ -104,6 +105,7 @@ interface PageListProps {
 }
 
 const PageList: React.FC<PageListProps> = ({ backButton }) => {
+  const intl = useIntl();
   const history = useHistory();
   const { pages, loading, error, createPage, deletePage, refresh } = usePuckPages();
   const { templates } = usePuckTemplates('page');
@@ -122,8 +124,8 @@ const PageList: React.FC<PageListProps> = ({ backButton }) => {
   const [search, setSearch] = useState('');
 
   const handleCreate = async () => {
-    if (!newName.trim()) { setFormError('Name is required'); return; }
-    if (!newSlug.trim()) { setFormError('Slug is required'); return; }
+    if (!newName.trim()) { setFormError(intl.formatMessage({ id: 'PageManager.validationNameRequired' })); return; }
+    if (!newSlug.trim()) { setFormError(intl.formatMessage({ id: 'PageManager.validationSlugRequired' })); return; }
     setFormError('');
     setSubmitting(true);
     try {
@@ -171,7 +173,7 @@ const PageList: React.FC<PageListProps> = ({ backButton }) => {
   if (error) {
     return (
       <div style={{ padding: '32px' }}>
-        <Text color="critical.11">Error: {error}</Text>
+        <Text color="critical.11">{intl.formatMessage({ id: 'PageManager.error' }, { message: error })}</Text>
       </div>
     );
   }
@@ -190,13 +192,13 @@ const PageList: React.FC<PageListProps> = ({ backButton }) => {
   const columns: DataTableColumnItem<PageRow>[] = [
     {
       id: 'name',
-      header: 'Name',
+      header: intl.formatMessage({ id: 'PageManager.columnName' }),
       accessor: (row) => row.value.name,
       render: ({ row }) => <Text fontWeight="bold">{row.value.name}</Text>,
     },
     {
       id: 'slug',
-      header: 'Slug',
+      header: intl.formatMessage({ id: 'PageManager.columnSlug' }),
       accessor: (row) => row.value.slug,
       render: ({ row }) => (
         <code
@@ -214,7 +216,7 @@ const PageList: React.FC<PageListProps> = ({ backButton }) => {
     },
     {
       id: 'status',
-      header: 'Status',
+      header: intl.formatMessage({ id: 'PageManager.columnStatus' }),
       accessor: () => '',
       isSortable: false,
       render: ({ row }) => (
@@ -227,7 +229,7 @@ const PageList: React.FC<PageListProps> = ({ backButton }) => {
     },
     {
       id: 'updatedAt',
-      header: 'Updated',
+      header: intl.formatMessage({ id: 'PageManager.columnUpdated' }),
       accessor: (row) => row.value.updatedAt,
       render: ({ row }) => (
         <Text fontSize="xs" color="neutral.11">
@@ -237,13 +239,13 @@ const PageList: React.FC<PageListProps> = ({ backButton }) => {
     },
     {
       id: 'actions',
-      header: 'Actions',
+      header: intl.formatMessage({ id: 'PageManager.columnActions' }),
       accessor: () => '',
       isSortable: false,
       render: ({ row }) => (
         <Stack direction="row" gap="100" alignItems="center">
           <IconButton
-            aria-label={`Edit ${row.value.name}`}
+            aria-label={intl.formatMessage({ id: 'PageManager.editAria' }, { name: row.value.name })}
             variant="ghost"
             size="xs"
             onPress={() => history.push(`/${row.key}/edit`, { pageName: row.value.name })}
@@ -251,7 +253,7 @@ const PageList: React.FC<PageListProps> = ({ backButton }) => {
             <Edit />
           </IconButton>
           <IconButton
-            aria-label={`Preview ${row.value.name}`}
+            aria-label={intl.formatMessage({ id: 'PageManager.previewAria' }, { name: row.value.name })}
             variant="ghost"
             size="xs"
             onPress={() => history.push(`/${row.key}/preview`, { pageName: row.value.name })}
@@ -259,7 +261,7 @@ const PageList: React.FC<PageListProps> = ({ backButton }) => {
             <Visibility />
           </IconButton>
           <IconButton
-            aria-label={`Delete ${row.value.name}`}
+            aria-label={intl.formatMessage({ id: 'PageManager.deleteAria' }, { name: row.value.name })}
             variant="ghost"
             colorPalette="critical"
             size="xs"
@@ -279,10 +281,12 @@ const PageList: React.FC<PageListProps> = ({ backButton }) => {
         <Stack direction="row" justifyContent="space-between" alignItems="center">
           <Stack direction="row" gap="400" alignItems="center">
             {backButton}
-            <Text as="h1" fontSize="2xl" fontWeight="700">Pages</Text>
+            <Text as="h1" fontSize="2xl" fontWeight="700">
+              <FormattedMessage id="PageManager.pagesTitle" />
+            </Text>
           </Stack>
           <Button variant="solid" onPress={() => setCreating(true)}>
-            <Icon as={Add} /> New Page
+            <Icon as={Add} /> <FormattedMessage id="PageManager.newPage" />
           </Button>
         </Stack>
 
@@ -290,45 +294,55 @@ const PageList: React.FC<PageListProps> = ({ backButton }) => {
           <Card.Root variant="outlined">
             <Card.Body>
               <Stack direction="column" gap="400">
-                <Text as="h4" fontSize="xl" fontWeight="700">Create New Page</Text>
+                <Text as="h4" fontSize="xl" fontWeight="700">
+                  <FormattedMessage id="PageManager.createNewPage" />
+                </Text>
                 <Stack direction="row" gap="400">
                   <div style={{ flex: 1 }}>
                     <FormField.Root isRequired>
-                      <FormField.Label>Name</FormField.Label>
+                      <FormField.Label>
+                        <FormattedMessage id="PageManager.nameLabel" />
+                      </FormField.Label>
                       <FormField.Input>
                         <TextInput
                           value={newName}
                           onChange={(v) => setNewName(v)}
-                          placeholder="Home Page"
+                          placeholder={intl.formatMessage({ id: 'PageManager.namePlaceholder' })}
                         />
                       </FormField.Input>
                     </FormField.Root>
                   </div>
                   <div style={{ flex: 1 }}>
                     <FormField.Root isRequired>
-                      <FormField.Label>Slug</FormField.Label>
+                      <FormField.Label>
+                        <FormattedMessage id="PageManager.slugLabel" />
+                      </FormField.Label>
                       <FormField.Input>
                         <TextInput
                           value={newSlug}
                           onChange={(v) => setNewSlug(v)}
-                          placeholder="/home"
+                          placeholder={intl.formatMessage({ id: 'PageManager.slugPlaceholder' })}
                         />
                       </FormField.Input>
                     </FormField.Root>
                   </div>
                 </Stack>
                 <FormField.Root>
-                  <FormField.Label>Template</FormField.Label>
+                  <FormField.Label>
+                    <FormattedMessage id="PageManager.templateLabel" />
+                  </FormField.Label>
                   <FormField.Input>
                     <Select.Root
-                      aria-label="Template"
+                      aria-label={intl.formatMessage({ id: 'PageManager.templateLabel' })}
                       selectedKey={templateKey || 'empty'}
                       onSelectionChange={(key) =>
                         setTemplateKey(key == null || key === 'empty' ? '' : String(key))
                       }
                     >
                       <Select.Options>
-                        <Select.Option id="empty">Empty</Select.Option>
+                        <Select.Option id="empty">
+                          {intl.formatMessage({ id: 'PageManager.templateEmpty' })}
+                        </Select.Option>
                         {templates.map((t) => (
                           <Select.Option key={t.key} id={t.key}>
                             {t.value.name}
@@ -341,13 +355,15 @@ const PageList: React.FC<PageListProps> = ({ backButton }) => {
                 {formError && <Text color="critical.11">{formError}</Text>}
                 <Stack direction="row" gap="200">
                   <Button variant="solid" onPress={() => void handleCreate()} isDisabled={submitting}>
-                    {submitting ? 'Creating…' : 'Create'}
+                    {submitting
+                      ? intl.formatMessage({ id: 'PageManager.creating' })
+                      : intl.formatMessage({ id: 'PageManager.create' })}
                   </Button>
                   <Button
                     variant="outline"
                     onPress={() => { setCreating(false); setFormError(''); }}
                   >
-                    Cancel
+                    <FormattedMessage id="PageManager.cancel" />
                   </Button>
                 </Stack>
               </Stack>
@@ -357,9 +373,11 @@ const PageList: React.FC<PageListProps> = ({ backButton }) => {
 
         {pages.length === 0 && !creating ? (
           <Stack direction="column" gap="400" alignItems="center">
-            <Text color="neutral.11">No pages yet.</Text>
+            <Text color="neutral.11">
+              <FormattedMessage id="PageManager.noPages" />
+            </Text>
             <Button variant="solid" onPress={() => setCreating(true)}>
-              <Icon as={Add} /> Create first page
+              <Icon as={Add} /> <FormattedMessage id="PageManager.createFirstPage" />
             </Button>
           </Stack>
         ) : pages.length > 0 ? (
@@ -367,15 +385,15 @@ const PageList: React.FC<PageListProps> = ({ backButton }) => {
             {/* Search by name or path */}
             <div style={{ maxWidth: 360 }}>
               <TextInput
-                aria-label="Search pages"
-                placeholder="Search by name or path…"
+                aria-label={intl.formatMessage({ id: 'PageManager.searchAria' })}
+                placeholder={intl.formatMessage({ id: 'PageManager.searchPlaceholder' })}
                 value={search}
                 onChange={(v) => setSearch(v)}
                 width="100%"
                 trailingElement={
                   search !== '' ? (
                     <IconButton
-                      aria-label="Clear search"
+                      aria-label={intl.formatMessage({ id: 'PageManager.clearSearch' })}
                       variant="ghost"
                       colorPalette="neutral"
                       size="2xs"
@@ -396,7 +414,11 @@ const PageList: React.FC<PageListProps> = ({ backButton }) => {
                 .puck-page-list .pin-rows-column-header,
                 .puck-page-list [data-slot="pin-row-cell"] { display: none !important; }
               `}</style>
-              <DataTable columns={columns} rows={rows} aria-label="Pages" />
+              <DataTable
+                columns={columns}
+                rows={rows}
+                aria-label={intl.formatMessage({ id: 'PageManager.pagesTitle' })}
+              />
             </div>
           </Stack>
         ) : null}
@@ -411,21 +433,29 @@ const PageList: React.FC<PageListProps> = ({ backButton }) => {
       >
         <Dialog.Content>
           <Dialog.Header>
-            <Dialog.Title>Delete page?</Dialog.Title>
+            <Dialog.Title>
+              <FormattedMessage id="PageManager.deletePageTitle" />
+            </Dialog.Title>
             <Dialog.CloseTrigger />
           </Dialog.Header>
           <Dialog.Body>
             <Text>
-              Are you sure you want to delete{' '}
-              <Text as="span" fontWeight="700">
-                {pendingDelete?.value.name}
-              </Text>
-              ? This cannot be undone.
+              <FormattedMessage
+                id="PageManager.deleteConfirm"
+                values={{
+                  name: pendingDelete?.value.name,
+                  b: (chunks) => (
+                    <Text as="span" fontWeight="700">
+                      {chunks}
+                    </Text>
+                  ),
+                }}
+              />
             </Text>
           </Dialog.Body>
           <Dialog.Footer>
             <Button slot="close" variant="outline" isDisabled={deleting !== null}>
-              Cancel
+              <FormattedMessage id="PageManager.cancel" />
             </Button>
             <Button
               colorPalette="critical"
@@ -434,7 +464,9 @@ const PageList: React.FC<PageListProps> = ({ backButton }) => {
                 if (pendingDelete) void handleDelete(pendingDelete);
               }}
             >
-              {deleting !== null ? 'Deleting…' : 'Delete'}
+              {deleting !== null
+                ? intl.formatMessage({ id: 'PageManager.deleting' })
+                : intl.formatMessage({ id: 'PageManager.delete' })}
             </Button>
           </Dialog.Footer>
         </Dialog.Content>
@@ -453,12 +485,15 @@ interface RouteProps {
 }
 
 const PageEditorRoute: React.FC<RouteProps> = ({ config, backButton }) => {
+  const intl = useIntl();
   const { pageKey } = useParams<{ pageKey: string }>();
   const history = useHistory();
   const location = useLocation();
   const { baseURL, projectKey, businessUnitKey, jwtToken, locale } = usePuckApiContext();
   const pageName =
-    (location.state as { pageName?: string } | null)?.pageName ?? pageKey ?? 'Page';
+    (location.state as { pageName?: string } | null)?.pageName ??
+    pageKey ??
+    intl.formatMessage({ id: 'PageManager.defaultPageName' });
 
   // Unsaved-changes navigation guard. `pendingNav` holds the deferred
   // navigation until the user confirms in the Nimbus dialog.
@@ -485,7 +520,7 @@ const PageEditorRoute: React.FC<RouteProps> = ({ config, backButton }) => {
           variant="ghost"
           onPress={() => guardedNavigate(() => history.push('/'))}
         >
-          <Icon as={ChevronLeft} /> Pages
+          <Icon as={ChevronLeft} /> <FormattedMessage id="PageManager.pagesTitle" />
         </Button>
         <Text color="neutral.11">/</Text>
         <Text fontWeight="bold">{pageName}</Text>
@@ -525,11 +560,14 @@ const PageEditorRoute: React.FC<RouteProps> = ({ config, backButton }) => {
 // ---------------------------------------------------------------------------
 
 const PagePreviewRoute: React.FC<RouteProps> = ({ config, backButton }) => {
+  const intl = useIntl();
   const { pageKey } = useParams<{ pageKey: string }>();
   const history = useHistory();
   const location = useLocation();
   const pageName =
-    (location.state as { pageName?: string } | null)?.pageName ?? pageKey ?? 'Page';
+    (location.state as { pageName?: string } | null)?.pageName ??
+    pageKey ??
+    intl.formatMessage({ id: 'PageManager.defaultPageName' });
 
   return (
     <div>
@@ -537,14 +575,16 @@ const PagePreviewRoute: React.FC<RouteProps> = ({ config, backButton }) => {
         {backButton}
         {backButton && <Text color="neutral.11">/</Text>}
         <Button variant="ghost" onPress={() => history.push('/')}>
-          <Icon as={ChevronLeft} /> Pages
+          <Icon as={ChevronLeft} /> <FormattedMessage id="PageManager.pagesTitle" />
         </Button>
         <Text color="neutral.11">/</Text>
         <Text fontWeight="bold">{pageName}</Text>
-        <Badge colorPalette="primary" size="xs">Preview</Badge>
+        <Badge colorPalette="primary" size="xs">
+          <FormattedMessage id="PageManager.previewBadge" />
+        </Badge>
         <div style={{ marginLeft: 'auto' }}>
           <Button variant="outline" size="xs" onPress={() => history.goBack()}>
-            <Icon as={Close} /> Close preview
+            <Icon as={Close} /> <FormattedMessage id="PageManager.closePreview" />
           </Button>
         </div>
       </div>
@@ -558,23 +598,34 @@ const PagePreviewRoute: React.FC<RouteProps> = ({ config, backButton }) => {
 // ---------------------------------------------------------------------------
 
 interface PageManagerInnerProps {
-  config: Config;
+  config?: Config;
   backButton?: ReactNode;
 }
 
-const PageManagerInner: React.FC<PageManagerInnerProps> = ({ config, backButton }) => (
-  <Switch>
-    <Route exact path="/" render={() => <PageList backButton={backButton} />} />
-    <Route
-      path="/:pageKey/edit"
-      render={() => <PageEditorRoute config={config} backButton={backButton} />}
-    />
-    <Route
-      path="/:pageKey/preview"
-      render={() => <PagePreviewRoute config={config} backButton={backButton} />}
-    />
-  </Switch>
-);
+const PageManagerInner: React.FC<PageManagerInnerProps> = ({
+  config: configProp,
+  backButton,
+}) => {
+  const intl = useIntl();
+  // Build a locale-aware default config unless the host supplied one.
+  const config = useMemo(
+    () => configProp ?? createDefaultPuckConfig(intl),
+    [configProp, intl]
+  );
+  return (
+    <Switch>
+      <Route exact path="/" render={() => <PageList backButton={backButton} />} />
+      <Route
+        path="/:pageKey/edit"
+        render={() => <PageEditorRoute config={config} backButton={backButton} />}
+      />
+      <Route
+        path="/:pageKey/preview"
+        render={() => <PagePreviewRoute config={config} backButton={backButton} />}
+      />
+    </Switch>
+  );
+};
 
 // ---------------------------------------------------------------------------
 // Public component
@@ -593,6 +644,11 @@ export interface PageManagerProps {
   config?: Config;
   /** Optional element rendered before the breadcrumb in editor/preview headers */
   backButton?: ReactNode;
+  /**
+   * Optional per-key overrides for UI strings, applied on top of the resolved
+   * locale catalog. Keys are message ids (e.g. "PageManager.pagesTitle").
+   */
+  messageOverrides?: Record<string, string>;
 }
 
 export const PageManager: React.FC<PageManagerProps> = ({
@@ -602,11 +658,12 @@ export const PageManager: React.FC<PageManagerProps> = ({
   businessUnitKey,
   jwtToken,
   locale,
-  config = DEFAULT_CONFIG,
+  config,
   backButton,
+  messageOverrides,
 }) => (
   <EnsureNimbusProvider locale={locale}>
-    <EnsureIntlProvider>
+    <EnsureIntlProvider locale={locale} messageOverrides={messageOverrides}>
       <PuckApiProvider
         baseURL={baseURL}
         projectKey={projectKey}

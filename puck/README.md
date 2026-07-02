@@ -17,7 +17,7 @@ For the internal architecture and build workflow, see the package sources under
 | `@commercetools-demo/puck-content-manager` | `ContentManager` | Standalone content-block list + editor |
 | `@commercetools-demo/puck-theme-manager` | `ThemeManager` | Design-token editor |
 | `@commercetools-demo/puck-renderer` | `PuckRenderer`, `PuckDataRenderer` | Storefront rendering (data-fetching / pure) |
-| `@commercetools-demo/puck-editor` | `PuckEditor`, `defaultPuckConfig`, built-in components | Raw editor + Puck config for custom compositions |
+| `@commercetools-demo/puck-editor` | `PuckEditor`, `createDefaultPuckConfig`, built-in component factories | Raw editor + Puck config for custom compositions |
 | `@commercetools-demo/puck-api` | `PuckApiProvider`, hooks | Data layer (pages, contents, media, datasource, theme) |
 | `@commercetools-demo/puck-types` | types only | Shared TypeScript types |
 
@@ -102,7 +102,7 @@ const config = {
   projectKey: 'your-project-key',
   businessUnitKey: 'your-business-unit-key',
   jwtToken: 'your-jwt-token',
-  locale: 'en-US', // optional; used for locale-aware calls (e.g. product search)
+  locale: 'en-US', // optional; sets the UI language (en/es) + locale-aware calls (e.g. product search)
 };
 ```
 
@@ -122,7 +122,8 @@ export function PagesRoute() {
 ```
 
 Props: `parentUrl` (required), `baseURL`, `projectKey`, `businessUnitKey`,
-`jwtToken`, `locale?`, `config?` (custom Puck `Config`), `backButton?`.
+`jwtToken`, `locale?`, `config?` (custom Puck `Config`), `backButton?`,
+`messageOverrides?` (see [Localization](#localization-i18n)).
 
 ### Content manager
 
@@ -146,7 +147,8 @@ export function ThemeRoute() {
 }
 ```
 
-Props: `baseURL`, `projectKey`, `businessUnitKey`, `jwtToken`, `backButton?`.
+Props: `baseURL`, `projectKey`, `businessUnitKey`, `jwtToken`, `locale?`,
+`backButton?`, `messageOverrides?` (see [Localization](#localization-i18n)).
 
 ### Renderer (storefront)
 
@@ -190,25 +192,85 @@ import { PuckDataRenderer } from '@commercetools-demo/puck-renderer';
 
 ### Custom Puck config
 
-Every manager accepts a `config` prop. Start from `defaultPuckConfig` and extend
-it, or compose the exported built-in components:
+Every manager builds a **localized** default config automatically — omit the
+`config` prop and the built-in components render with labels in the active
+`locale`.
+
+To customize, build from `createDefaultPuckConfig(intl)` and extend it. Labels
+are resolved at build time, so build the config inside a component that has a
+react-intl context (e.g. your host app's `<IntlProvider>`):
 
 ```tsx
-import { defaultPuckConfig } from '@commercetools-demo/puck-editor';
+import { useMemo } from 'react';
+import { useIntl } from 'react-intl';
+import { createDefaultPuckConfig } from '@commercetools-demo/puck-editor';
 
-const myConfig = {
-  ...defaultPuckConfig,
-  components: {
-    ...defaultPuckConfig.components,
-    // your custom components here
-  },
-};
+function PagesRoute() {
+  const intl = useIntl();
+  const puckConfig = useMemo(() => {
+    const base = createDefaultPuckConfig(intl);
+    return {
+      ...base,
+      components: {
+        ...base.components,
+        // your custom components here
+      },
+    };
+  }, [intl]);
 
-<PageManager {...config} parentUrl="/pages" config={myConfig} />;
+  return <PageManager {...config} parentUrl="/pages" config={puckConfig} />;
+}
 ```
+
+> The older `defaultPuckConfig` **const** is still exported but **deprecated**
+> (English-only). Prefer `createDefaultPuckConfig(intl)` so component and field
+> labels follow the active locale.
 
 The **same `config` must be used** in the manager (authoring) and the renderer
 (display) so component data round-trips correctly.
+
+---
+
+## Localization (i18n)
+
+All manager UIs are localized with **react-intl**. Shipped languages: English
+(`en`) and Spanish (`es`). The `locale` prop selects the language; a full locale
+falls back to its base language (`en-US` → `en`, `es-PE` → `es`, anything else →
+`en`):
+
+```tsx
+<PageManager {...config} parentUrl="/pages" locale="es-PE" />
+```
+
+**Overrides.** Every manager accepts `messageOverrides` — a flat
+`{ messageId: string }` map applied on top of the resolved catalog:
+
+```tsx
+<PageManager
+  {...config}
+  parentUrl="/pages"
+  messageOverrides={{ 'PageManager.pagesTitle': 'My Pages' }}
+/>
+```
+
+**Host provider.** If your app already mounts a react-intl `<IntlProvider>`
+(e.g. the Merchant Center shell), its messages are preserved: each manager nests
+its own provider and merges the package catalogs on top.
+
+**Regenerating catalogs (maintainers).** Each package owns its catalog under
+`src/intl/` (`en.json` is the source of truth; `es.json` and other locales are
+generated, not hand-written). From the repo root:
+
+```bash
+node scripts/translate-messages.mjs --locale es          # generate/refresh es
+node scripts/translate-messages.mjs --locale es --force  # retranslate all keys
+```
+
+It machine-translates missing keys (Google Translate — set
+`GOOGLE_TRANSLATE_API_KEY` for the official API, otherwise a free endpoint is
+used), protects ICU placeholders and rich-text tags, and applies
+`scripts/i18n-glossary.json` for domain terms (e.g. `Slug`, `SKU`, `Hero`). Add
+a new language with `--locale <code>`.
 
 ---
 

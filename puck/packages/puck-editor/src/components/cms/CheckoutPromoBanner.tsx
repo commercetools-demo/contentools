@@ -1,5 +1,6 @@
 import React from 'react';
 import { type ComponentConfig } from '@measured/puck';
+import type { IntlShape } from 'react-intl';
 
 export interface CheckoutPromoBannerProps {
   title: string;
@@ -8,13 +9,15 @@ export interface CheckoutPromoBannerProps {
   ctaLink: string;
 }
 
-export const CheckoutPromoBanner: ComponentConfig<CheckoutPromoBannerProps> = {
-  label: 'Checkout Promo Banner',
+export const createCheckoutPromoBannerConfig = (
+  intl: IntlShape
+): ComponentConfig<CheckoutPromoBannerProps> => ({
+  label: intl.formatMessage({ id: 'Editor.cfg.checkoutPromoBanner.label' }),
   fields: {
-    title: { type: 'text', label: 'Title' },
-    message: { type: 'text', label: 'Message' },
-    ctaText: { type: 'text', label: 'CTA Text' },
-    ctaLink: { type: 'text', label: 'CTA Link' },
+    title: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.checkoutPromoBanner.field.title' }) },
+    message: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.checkoutPromoBanner.field.message' }) },
+    ctaText: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.checkoutPromoBanner.field.ctaText' }) },
+    ctaLink: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.checkoutPromoBanner.field.ctaLink' }) },
   },
   defaultProps: { title: '', message: '', ctaText: '', ctaLink: '' },
   render: ({ title, message, ctaText, ctaLink }) => {
@@ -44,4 +47,4 @@ export const CheckoutPromoBanner: ComponentConfig<CheckoutPromoBannerProps> = {
       </div>
     );
   },
-};
+});

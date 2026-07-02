@@ -1,5 +1,6 @@
 import React from 'react';
 import { type ComponentConfig } from '@measured/puck';
+import type { IntlShape } from 'react-intl';
 import { RichTextField } from '../../fields/RichTextField';
 import { sanitizeHtml } from '../../utils/sanitizeHtml';
 
@@ -7,12 +8,14 @@ export interface TextBlockProps {
   content: string;
 }
 
-export const TextBlock: ComponentConfig<TextBlockProps> = {
-  label: 'Text Block',
+export const createTextBlockConfig = (
+  intl: IntlShape
+): ComponentConfig<TextBlockProps> => ({
+  label: intl.formatMessage({ id: 'Editor.cfg.textBlock.label' }),
   fields: {
     content: {
       type: 'custom',
-      label: 'Content',
+      label: intl.formatMessage({ id: 'Editor.cfg.textBlock.field.content' }),
       render: ({ value, onChange }) => (
         <RichTextField value={value as string} onChange={onChange} />
       ),
@@ -34,4 +37,4 @@ export const TextBlock: ComponentConfig<TextBlockProps> = {
       />
     );
   },
-};
+});

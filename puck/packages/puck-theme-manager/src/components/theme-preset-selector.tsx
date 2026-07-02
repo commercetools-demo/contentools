@@ -1,20 +1,29 @@
 import React, { useState } from 'react';
+import { useIntl, type MessageDescriptor } from 'react-intl';
 import type { ThemeTokens } from '@commercetools-demo/puck-types';
 import { Button, Stack } from '@commercetools/nimbus';
 import {
   themePresets,
-  paradigmLabels,
   PRESET_KEYS_SELECTOR,
   type DesignParadigm,
 } from '../presets';
 
-const PRESET_OPTIONS = [
-  { value: '', label: 'Choose a preset…' },
-  ...PRESET_KEYS_SELECTOR.map((key: DesignParadigm) => ({
-    value: key,
-    label: paradigmLabels[key],
-  })),
-];
+/**
+ * Localized labels for each design paradigm shown in the preset selector.
+ * Resolved in-component via `useIntl()`; the public English `paradigmLabels`
+ * export in `../presets` is kept unchanged for external consumers.
+ */
+const PARADIGM_LABEL_MESSAGES: Record<DesignParadigm, MessageDescriptor> = {
+  flat: { id: 'ThemeManager.paradigmFlat' },
+  skeuomorphism: { id: 'ThemeManager.paradigmSkeuomorphism' },
+  material: { id: 'ThemeManager.paradigmMaterial' },
+  neumorphism: { id: 'ThemeManager.paradigmNeumorphism' },
+  glassmorphism: { id: 'ThemeManager.paradigmGlassmorphism' },
+  brutalism: { id: 'ThemeManager.paradigmBrutalism' },
+  claymorphism: { id: 'ThemeManager.paradigmClaymorphism' },
+  minimalism: { id: 'ThemeManager.paradigmMinimalism' },
+  'dark-moody': { id: 'ThemeManager.paradigmDarkMoody' },
+};
 
 const SELECT_STYLE: React.CSSProperties = {
   display: 'block',
@@ -33,6 +42,7 @@ interface ThemePresetSelectorProps {
 const ThemePresetSelector: React.FC<ThemePresetSelectorProps> = ({
   onSelectPreset,
 }) => {
+  const intl = useIntl();
   const [selectedKey, setSelectedKey] = useState<string>('');
 
   const handleApply = () => {
@@ -47,7 +57,7 @@ const ThemePresetSelector: React.FC<ThemePresetSelectorProps> = ({
         htmlFor="theme-preset-select"
         style={{ display: 'block', marginBottom: 4, fontSize: 13, fontWeight: 600 }}
       >
-        Quick apply preset
+        {intl.formatMessage({ id: 'ThemeManager.presetLabel' })}
       </label>
       <Stack direction="row" gap="200" alignItems="center">
         <select
@@ -56,12 +66,17 @@ const ThemePresetSelector: React.FC<ThemePresetSelectorProps> = ({
           onChange={(e) => setSelectedKey(e.target.value)}
           style={SELECT_STYLE}
         >
-          {PRESET_OPTIONS.map((o) => (
-            <option key={o.value} value={o.value}>{o.label}</option>
+          <option value="">
+            {intl.formatMessage({ id: 'ThemeManager.presetPlaceholder' })}
+          </option>
+          {PRESET_KEYS_SELECTOR.map((key: DesignParadigm) => (
+            <option key={key} value={key}>
+              {intl.formatMessage(PARADIGM_LABEL_MESSAGES[key])}
+            </option>
           ))}
         </select>
         <Button variant="solid" onPress={handleApply} isDisabled={!selectedKey}>
-          Apply
+          {intl.formatMessage({ id: 'ThemeManager.presetApply' })}
         </Button>
       </Stack>
     </Stack>

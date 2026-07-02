@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useIntl, FormattedMessage } from 'react-intl';
 import { Button, FormField, Icon, Select, Stack, Text, TextInput } from '@commercetools/nimbus';
 import { Close } from '@commercetools/nimbus-icons';
 import { useProductSearch } from '@commercetools-demo/puck-api';
@@ -25,10 +26,12 @@ export interface DatasourceFieldProps {
 // Options
 // ---------------------------------------------------------------------------
 
+// Option labels are resolved inside the component via `useIntl()` (module scope
+// has no react-intl context), so the constant holds MessageDescriptors.
 const TYPE_OPTIONS = [
-  { value: 'product-by-sku', label: 'Product by SKU' },
-  { value: 'products-by-sku', label: 'Products by SKU' },
-];
+  { value: 'product-by-sku', message: { id: 'Editor.datasourceProductBySku' } },
+  { value: 'products-by-sku', message: { id: 'Editor.datasourceProductsBySku' } },
+] as const;
 
 const EMPTY_VALUE: DatasourceValue = { type: 'product-by-sku', skus: [''] };
 
@@ -46,16 +49,19 @@ const ProductSearchPicker: React.FC<ProductSearchPickerProps> = ({
   selectedSkus,
   onSelect,
 }) => {
+  const intl = useIntl();
   const [query, setQuery] = useState('');
   const { results, loading, error } = useProductSearch(query);
 
   return (
     <Stack direction="column" gap="100">
       <FormField.Root>
-        <FormField.Label>Search products</FormField.Label>
+        <FormField.Label>
+          <FormattedMessage id="Editor.searchProducts" />
+        </FormField.Label>
         <FormField.Input>
           <TextInput
-            placeholder="Search by product name…"
+            placeholder={intl.formatMessage({ id: 'Editor.searchProductsPlaceholder' })}
             value={query}
             onChange={(value) => setQuery(value)}
           />
@@ -65,7 +71,7 @@ const ProductSearchPicker: React.FC<ProductSearchPickerProps> = ({
       {query.trim() !== '' && (
         <div
           role="listbox"
-          aria-label="Product search results"
+          aria-label={intl.formatMessage({ id: 'Editor.productSearchResults' })}
           aria-busy={loading}
           style={{
             maxHeight: 220,
@@ -77,7 +83,7 @@ const ProductSearchPicker: React.FC<ProductSearchPickerProps> = ({
         >
           {loading && (
             <div style={{ padding: 8, fontSize: 13, color: 'var(--color-neutral-40, #666)' }}>
-              Searching…
+              <FormattedMessage id="Editor.searching" />
             </div>
           )}
           {error && (
@@ -87,7 +93,7 @@ const ProductSearchPicker: React.FC<ProductSearchPickerProps> = ({
           )}
           {!loading && !error && results.length === 0 && (
             <div style={{ padding: 8, fontSize: 13, color: 'var(--color-neutral-40, #666)' }}>
-              No products found
+              <FormattedMessage id="Editor.noProductsFound" />
             </div>
           )}
           {results.map((product) => {
@@ -130,14 +136,18 @@ const ProductSearchPicker: React.FC<ProductSearchPickerProps> = ({
                 )}
                 <span style={{ flex: 1, minWidth: 0 }}>
                   <span style={{ display: 'block', fontSize: 13, fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                    {product.name ?? '(unnamed product)'}
+                    {product.name ?? intl.formatMessage({ id: 'Editor.unnamedProduct' })}
                   </span>
                   <span style={{ display: 'block', fontSize: 11, color: 'var(--color-neutral-40, #666)' }}>
-                    {sku ? `SKU: ${sku}` : 'No SKU on master variant'}
+                    {sku
+                      ? intl.formatMessage({ id: 'Editor.skuLabel' }, { sku })
+                      : intl.formatMessage({ id: 'Editor.noSkuOnMasterVariant' })}
                   </span>
                 </span>
                 {alreadySelected && (
-                  <span style={{ fontSize: 11, color: 'var(--color-primary, #1a1a2e)' }}>Added</span>
+                  <span style={{ fontSize: 11, color: 'var(--color-primary, #1a1a2e)' }}>
+                    <FormattedMessage id="Editor.added" />
+                  </span>
                 )}
               </button>
             );
@@ -156,6 +166,7 @@ export const DatasourceField: React.FC<DatasourceFieldProps> = ({
   value,
   onChange,
 }) => {
+  const intl = useIntl();
   const current: DatasourceValue = value ?? EMPTY_VALUE;
   const selectedSkus = current.skus.filter(Boolean);
 
@@ -178,7 +189,9 @@ export const DatasourceField: React.FC<DatasourceFieldProps> = ({
   return (
     <Stack direction="column" gap="200">
       <FormField.Root>
-        <FormField.Label>Datasource type</FormField.Label>
+        <FormField.Label>
+          <FormattedMessage id="Editor.datasourceType" />
+        </FormField.Label>
         <FormField.Input>
           <Select.Root
             selectedKey={current.type}
@@ -192,7 +205,9 @@ export const DatasourceField: React.FC<DatasourceFieldProps> = ({
           >
             <Select.Options>
               {TYPE_OPTIONS.map((o) => (
-                <Select.Option key={o.value} id={o.value}>{o.label}</Select.Option>
+                <Select.Option key={o.value} id={o.value}>
+                  {intl.formatMessage(o.message)}
+                </Select.Option>
               ))}
             </Select.Options>
           </Select.Root>
@@ -206,11 +221,13 @@ export const DatasourceField: React.FC<DatasourceFieldProps> = ({
 
       <Stack direction="column" gap="100">
         <Text fontSize="sm" fontWeight="700">
-          {current.type === 'product-by-sku' ? 'Selected product' : 'Selected products'}
+          {current.type === 'product-by-sku'
+            ? intl.formatMessage({ id: 'Editor.selectedProduct' })
+            : intl.formatMessage({ id: 'Editor.selectedProducts' })}
         </Text>
         {selectedSkus.length === 0 ? (
           <Text fontSize="sm" color="neutral.11">
-            No product selected — search above to add one.
+            <FormattedMessage id="Editor.noProductSelectedSearch" />
           </Text>
         ) : (
           <Stack direction="column" gap="100">
@@ -226,7 +243,7 @@ export const DatasourceField: React.FC<DatasourceFieldProps> = ({
                     whiteSpace: 'nowrap',
                   }}
                 >
-                  SKU: {sku}
+                  {intl.formatMessage({ id: 'Editor.skuLabel' }, { sku })}
                 </span>
                 <Button
                   variant="ghost"
@@ -234,7 +251,7 @@ export const DatasourceField: React.FC<DatasourceFieldProps> = ({
                   size="xs"
                   onPress={() => removeSkuValue(sku)}
                 >
-                  <Icon as={Close} /> Remove
+                  <Icon as={Close} /> <FormattedMessage id="Editor.remove" />
                 </Button>
               </Stack>
             ))}

@@ -14,3 +14,6 @@ export {
 export type { DesignParadigm } from './presets';
 
 export type { ThemeTokens, ImportResult } from '@commercetools-demo/puck-types';
+
+// Locale catalogs owned by this package (merged by the host app's intl provider)
+export { catalogs as intlCatalogs } from './intl';

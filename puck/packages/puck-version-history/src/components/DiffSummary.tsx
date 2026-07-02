@@ -1,4 +1,5 @@
 import React from 'react';
+import { useIntl, type MessageDescriptor } from 'react-intl';
 import type { PuckDataDiff } from '../types';
 import { Badge, Card, Stack, Text } from '@commercetools/nimbus';
 
@@ -8,10 +9,10 @@ interface DiffSummaryProps {
 
 type StatusPalette = 'positive' | 'critical' | 'warning';
 
-const STATUS_META: Record<string, { colorPalette: StatusPalette; label: string }> = {
-  added:   { colorPalette: 'positive', label: 'Added' },
-  removed: { colorPalette: 'critical', label: 'Removed' },
-  changed: { colorPalette: 'warning',  label: 'Changed' },
+const STATUS_META: Record<string, { colorPalette: StatusPalette; label: MessageDescriptor }> = {
+  added:   { colorPalette: 'positive', label: { id: 'VersionHistory.statusAdded' } },
+  removed: { colorPalette: 'critical', label: { id: 'VersionHistory.statusRemoved' } },
+  changed: { colorPalette: 'warning',  label: { id: 'VersionHistory.statusChanged' } },
 };
 
 /**
@@ -20,13 +21,15 @@ const STATUS_META: Record<string, { colorPalette: StatusPalette; label: string }
  * current draft.
  */
 export const DiffSummary: React.FC<DiffSummaryProps> = ({ diff }) => {
+  const intl = useIntl();
+
   if (!diff.hasChanges) {
-    return <Text color="neutral.11">No differences from current version</Text>;
+    return <Text color="neutral.11">{intl.formatMessage({ id: 'VersionHistory.noDifferences' })}</Text>;
   }
 
   return (
     <Stack direction="column" gap="200">
-      <Text fontSize="sm" fontWeight="700">Changes vs current</Text>
+      <Text fontSize="sm" fontWeight="700">{intl.formatMessage({ id: 'VersionHistory.changesVsCurrent' })}</Text>
 
       {diff.components.map((c) => {
         const meta = STATUS_META[c.status];
@@ -36,7 +39,7 @@ export const DiffSummary: React.FC<DiffSummaryProps> = ({ diff }) => {
               <Stack direction="column" gap="100">
                 <Stack direction="row" gap="200" alignItems="center">
                   <Text fontSize="sm" fontWeight="700">{c.type}</Text>
-                  <Badge colorPalette={meta.colorPalette} size="xs">{meta.label}</Badge>
+                  <Badge colorPalette={meta.colorPalette} size="xs">{intl.formatMessage(meta.label)}</Badge>
                 </Stack>
 
                 {c.status === 'changed' && c.changedProps.length > 0 && (
@@ -57,8 +60,8 @@ export const DiffSummary: React.FC<DiffSummaryProps> = ({ diff }) => {
           <Card.Body>
             <Stack direction="column" gap="100">
               <Stack direction="row" gap="200" alignItems="center">
-                <Text fontSize="sm" fontWeight="700">Root</Text>
-                <Badge colorPalette="warning" size="xs">Changed</Badge>
+                <Text fontSize="sm" fontWeight="700">{intl.formatMessage({ id: 'VersionHistory.rootLabel' })}</Text>
+                <Badge colorPalette="warning" size="xs">{intl.formatMessage({ id: 'VersionHistory.statusChanged' })}</Badge>
               </Stack>
               <Stack direction="row" gap="100" wrap="wrap" paddingLeft="100">
                 {diff.rootChanges.map((prop) => (

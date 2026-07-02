@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { type ComponentConfig } from '@measured/puck';
+import type { IntlShape } from 'react-intl';
 
 export interface CountdownBannerProps {
   headline: string;
@@ -73,18 +74,20 @@ const CountdownRender: React.FC<CountdownBannerProps> = ({
   );
 };
 
-export const CountdownBanner: ComponentConfig<CountdownBannerProps> = {
-  label: 'Countdown Banner',
+export const createCountdownBannerConfig = (
+  intl: IntlShape
+): ComponentConfig<CountdownBannerProps> => ({
+  label: intl.formatMessage({ id: 'Editor.cfg.countdownBanner.label' }),
   fields: {
-    headline: { type: 'text', label: 'Headline' },
-    subline: { type: 'text', label: 'Subline' },
-    endDate: { type: 'text', label: 'End Date (ISO, e.g. 2025-12-31T23:59:59)' },
-    ctaText: { type: 'text', label: 'CTA Text' },
-    ctaLink: { type: 'text', label: 'CTA Link' },
-    background: { type: 'text', label: 'Background Color' },
+    headline: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.countdownBanner.field.headline' }) },
+    subline: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.countdownBanner.field.subline' }) },
+    endDate: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.countdownBanner.field.endDate' }) },
+    ctaText: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.countdownBanner.field.ctaText' }) },
+    ctaLink: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.countdownBanner.field.ctaLink' }) },
+    background: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.countdownBanner.field.background' }) },
   },
   defaultProps: {
     headline: '', subline: '', endDate: '', ctaText: '', ctaLink: '', background: '#2c5530',
   },
   render: (props) => <CountdownRender {...props} />,
-};
+});

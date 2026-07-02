@@ -1,4 +1,5 @@
 import React from 'react';
+import { useIntl, FormattedMessage } from 'react-intl';
 import { useVersionHistoryContext } from '../context/VersionHistoryContext';
 import { VersionCard } from './VersionCard';
 import { DiffSummary } from './DiffSummary';
@@ -9,6 +10,7 @@ import { Button, LoadingSpinner, Stack, Text } from '@commercetools/nimbus';
  * Reads all state from VersionHistoryContext — no props needed.
  */
 export const VersionHistorySidebarContent: React.FC = () => {
+  const intl = useIntl();
   const {
     versions,
     isLoadingVersions,
@@ -31,11 +33,15 @@ export const VersionHistorySidebarContent: React.FC = () => {
           </div>
         ) : versions.length === 0 ? (
           <div style={{ padding: '12px 0' }}>
-            <Text color="neutral.11">No saved versions yet</Text>
+            <Text color="neutral.11">
+              <FormattedMessage id="VersionHistory.noSavedVersions" />
+            </Text>
           </div>
         ) : (
           <Stack direction="column" gap="200">
-            <Text fontSize="sm" fontWeight="700">Saved versions</Text>
+            <Text fontSize="sm" fontWeight="700">
+              <FormattedMessage id="VersionHistory.savedVersions" />
+            </Text>
             {versions.map((v, i) => (
               <VersionCard
                 key={v.id}
@@ -78,7 +84,7 @@ export const VersionHistorySidebarContent: React.FC = () => {
               onPress={onApply}
               isDisabled={isApplying}
             >
-              {isApplying ? 'Applying…' : 'Apply'}
+              {intl.formatMessage(isApplying ? { id: 'VersionHistory.applying' } : { id: 'VersionHistory.apply' })}
             </Button>
             <Button
               variant="outline"
@@ -86,7 +92,7 @@ export const VersionHistorySidebarContent: React.FC = () => {
               onPress={onDiscard}
               isDisabled={isApplying}
             >
-              Revert
+              <FormattedMessage id="VersionHistory.revert" />
             </Button>
           </Stack>
         </div>

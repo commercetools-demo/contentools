@@ -1,5 +1,6 @@
 import React from 'react';
 import { DropZone, type ComponentConfig } from '@measured/puck';
+import type { IntlShape } from 'react-intl';
 
 export interface GridProps {
   columnCount?: 1 | 2 | 3 | 4 | 5 | 6;
@@ -21,21 +22,21 @@ const COUNT_OPTIONS = [1, 2, 3, 4, 5, 6].map((n) => ({
  * This render function is shared by the editor and the Puck renderer
  * (puck-renderer runs the same config), so updating it here updates both.
  */
-export const Grid: ComponentConfig<GridProps> = {
-  label: 'Grid',
+export const createGridConfig = (intl: IntlShape): ComponentConfig<GridProps> => ({
+  label: intl.formatMessage({ id: 'Editor.cfg.grid.label' }),
   fields: {
     columnCount: {
       type: 'select',
-      label: 'Number of Columns',
+      label: intl.formatMessage({ id: 'Editor.cfg.grid.field.columnCount' }),
       options: COUNT_OPTIONS,
     },
     rowCount: {
       type: 'select',
-      label: 'Number of Rows',
+      label: intl.formatMessage({ id: 'Editor.cfg.grid.field.rowCount' }),
       options: COUNT_OPTIONS,
     },
-    gap: { type: 'text', label: 'Gap (CSS)' },
-    padding: { type: 'text', label: 'Padding (CSS)' },
+    gap: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.grid.field.gap' }) },
+    padding: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.grid.field.padding' }) },
   },
   defaultProps: {
     columnCount: 2,
@@ -67,4 +68,4 @@ export const Grid: ComponentConfig<GridProps> = {
       </div>
     );
   },
-};
+});
