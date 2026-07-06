@@ -438,6 +438,28 @@ const LibraryModal: React.FC<LibraryModalProps> = ({
 // ImagePickerField — standalone field component
 // ---------------------------------------------------------------------------
 
+/**
+ * Derives a friendly file name from an image URL for display, avoiding
+ * exposing the raw (often long / technical) URL to non-technical users.
+ * Returns null when no meaningful name can be extracted (e.g. data URLs).
+ */
+const getDisplayNameFromUrl = (url: string): string | null => {
+  if (!url || url.startsWith('data:')) return null;
+  try {
+    // Strip query/hash, then take the last path segment.
+    const pathname = url.split(/[?#]/)[0];
+    const segment = pathname.split('/').filter(Boolean).pop();
+    if (!segment) return null;
+    try {
+      return decodeURIComponent(segment);
+    } catch {
+      return segment;
+    }
+  } catch {
+    return null;
+  }
+};
+
 export interface ImagePickerFieldProps {
   value: string;
   onChange: (value: string) => void;
@@ -529,7 +551,11 @@ export const ImagePickerField: React.FC<ImagePickerFieldProps> = ({
                 style={{ width: '48px', height: '48px', objectFit: 'cover', borderRadius: '4px', flexShrink: 0 }}
               />
               <div style={{ flex: 1, minWidth: 0 }}>
-                <Text fontSize="sm" color="neutral.11" truncate>{value}</Text>
+                <Text fontSize="sm" color="neutral.11" truncate>
+                  {getDisplayNameFromUrl(value) ?? (
+                    <FormattedMessage id="ImagePicker.imageSelected" />
+                  )}
+                </Text>
               </div>
               <Button variant="ghost" colorPalette="critical" size="xs" onPress={() => onChange('')}>
                 <FormattedMessage id="ImagePicker.remove" />

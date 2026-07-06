@@ -1,5 +1,6 @@
 {
   "ImagePicker.noImageSelected": "No se ha seleccionado ninguna imagen",
+  "ImagePicker.imageSelected": "Imagen seleccionada",
   "ImagePicker.remove": "Eliminar",
   "ImagePicker.upload": "Subir",
   "ImagePicker.mediaLibrary": "Biblioteca multimedia",
