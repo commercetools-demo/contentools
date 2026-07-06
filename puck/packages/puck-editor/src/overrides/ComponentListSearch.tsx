@@ -157,16 +157,23 @@ export const ComponentsPanel: React.FC<{ children: ReactNode }> = ({ children })
         [class*="PuckCanvas_"] { padding-left: 4px !important; padding-right: 4px !important; }
         /* Make Puck fill its embedding container instead of 100dvh (which
            overflows below the app's nav bars and hides the sidebars' scroll).
-           Puck nests unclassed wrapper divs between .Puck and the layout grid,
-           so a height:100% chain breaks; pinning the inner grid to the
-           container with absolute inset:0 bypasses those wrappers entirely.
+           Puck nests an unclassed wrapper + .PuckLayout between .Puck and the
+           layout grid, all height:auto — so they collapse to 0 and a plain
+           height:100% on the grid has nothing to resolve against. Give every
+           link in that chain an explicit height so the grid can fill
+           .puck-editor-fill while staying in NORMAL FLOW.
+           Do NOT position the grid absolutely: an earlier 'position:absolute;
+           inset:0' approach filled the container but broke @dnd-kit's
+           pointer/collision tracking, so dragging components from the panel
+           into the canvas stopped working (no drop target, no placement
+           preview). '> div:not([class])' targets only the unclassed layout
+           wrapper, never its sibling _Puck-portal_ (which must keep height:0).
            Scoped to .puck-editor-fill so standalone usage keeps 100dvh. */
         .puck-editor-fill { position: relative; }
-        .puck-editor-fill [class*="PuckLayout-inner"] {
-          position: absolute !important;
-          inset: 0 !important;
-          height: auto !important;
-        }
+        .puck-editor-fill > .Puck,
+        .puck-editor-fill > .Puck > div:not([class]),
+        .puck-editor-fill [class*="PuckLayout_"] { height: 100%; }
+        .puck-editor-fill [class*="PuckLayout-inner"] { height: 100% !important; }
         /* Resizable properties (right) panel: override only the last grid track
            with a user-controlled width var (set by PropertiesResizer), falling
            back to Puck's default sidebar width. Two states: both panels open,

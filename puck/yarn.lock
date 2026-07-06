@@ -670,6 +670,7 @@ __metadata:
     "@commercetools/nimbus-icons": ^3.2.0
     react: ">=19.0.0"
     react-dom: ">=19.0.0"
+    react-intl: ">=6.0.0"
   languageName: unknown
   linkType: soft
 
@@ -687,6 +688,7 @@ __metadata:
     "@commercetools-demo/puck-editor": "workspace:^"
     "@commercetools-demo/puck-renderer": "workspace:^"
     "@commercetools-demo/puck-types": "workspace:^"
+    "@commercetools-demo/puck-version-history": "workspace:^"
     "@measured/puck": "npm:^0.18.2"
     "@types/react": "npm:^19"
     "@types/react-dom": "npm:^19"
@@ -744,6 +746,7 @@ __metadata:
     "@commercetools/nimbus": ^3.2.0
     react: ">=19.0.0"
     react-dom: ">=19.0.0"
+    react-intl: ">=6.0.0"
     react-router-dom: ">=5.0.0 <6"
   languageName: unknown
   linkType: soft
