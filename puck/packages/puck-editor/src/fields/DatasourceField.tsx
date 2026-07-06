@@ -20,6 +20,13 @@ export interface DatasourceValue {
 export interface DatasourceFieldProps {
   value: DatasourceValue | undefined;
   onChange: (value: DatasourceValue) => void;
+  /**
+   * When set, the datasource type is pinned to this value and the type
+   * selector dropdown is hidden. Use this for components that only ever work
+   * with a single datasource type (declared in their component config), so
+   * editors aren't shown an irrelevant choice.
+   */
+  fixedType?: DatasourceType;
 }
 
 // ---------------------------------------------------------------------------
@@ -165,9 +172,14 @@ const ProductSearchPicker: React.FC<ProductSearchPickerProps> = ({
 export const DatasourceField: React.FC<DatasourceFieldProps> = ({
   value,
   onChange,
+  fixedType,
 }) => {
   const intl = useIntl();
-  const current: DatasourceValue = value ?? EMPTY_VALUE;
+  const base: DatasourceValue = value ?? EMPTY_VALUE;
+  // When a component pins the type, honour it over whatever the value carries.
+  const current: DatasourceValue = fixedType
+    ? { ...base, type: fixedType }
+    : base;
   const selectedSkus = current.skus.filter(Boolean);
 
   const removeSkuValue = (sku: string) => {
@@ -188,31 +200,33 @@ export const DatasourceField: React.FC<DatasourceFieldProps> = ({
 
   return (
     <Stack direction="column" gap="200">
-      <FormField.Root>
-        <FormField.Label>
-          <FormattedMessage id="Editor.datasourceType" />
-        </FormField.Label>
-        <FormField.Input>
-          <Select.Root
-            selectedKey={current.type}
-            onSelectionChange={(key) => {
-              const newType = key as DatasourceType;
-              onChange({
-                type: newType,
-                skus: newType === 'product-by-sku' ? [current.skus[0] ?? ''] : current.skus,
-              });
-            }}
-          >
-            <Select.Options>
-              {TYPE_OPTIONS.map((o) => (
-                <Select.Option key={o.value} id={o.value}>
-                  {intl.formatMessage(o.message)}
-                </Select.Option>
-              ))}
-            </Select.Options>
-          </Select.Root>
-        </FormField.Input>
-      </FormField.Root>
+      {!fixedType && (
+        <FormField.Root>
+          <FormField.Label>
+            <FormattedMessage id="Editor.datasourceType" />
+          </FormField.Label>
+          <FormField.Input>
+            <Select.Root
+              selectedKey={current.type}
+              onSelectionChange={(key) => {
+                const newType = key as DatasourceType;
+                onChange({
+                  type: newType,
+                  skus: newType === 'product-by-sku' ? [current.skus[0] ?? ''] : current.skus,
+                });
+              }}
+            >
+              <Select.Options>
+                {TYPE_OPTIONS.map((o) => (
+                  <Select.Option key={o.value} id={o.value}>
+                    {intl.formatMessage(o.message)}
+                  </Select.Option>
+                ))}
+              </Select.Options>
+            </Select.Root>
+          </FormField.Input>
+        </FormField.Root>
+      )}
 
       <ProductSearchPicker
         selectedSkus={selectedSkus}

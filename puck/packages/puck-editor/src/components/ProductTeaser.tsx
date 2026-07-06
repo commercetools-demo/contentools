@@ -195,7 +195,7 @@ export const createProductTeaserConfig = (
       type: 'custom',
       label: intl.formatMessage({ id: 'Editor.cfg.productTeaser.field.datasource' }),
       render: ({ value, onChange }) => (
-        <DatasourceField value={value} onChange={onChange} />
+        <DatasourceField value={value} onChange={onChange} fixedType="product-by-sku" />
       ),
     },
     richText: richTextField(intl.formatMessage({ id: 'Editor.cfg.productTeaser.field.richText' })),

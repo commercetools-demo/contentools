@@ -109,7 +109,7 @@ export const createProductSliderConfig = (
     subtitle: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.productSlider.field.subtitle' }) },
     products: {
       type: 'custom', label: intl.formatMessage({ id: 'Editor.cfg.productSlider.field.products' }),
-      render: ({ value, onChange }) => <DatasourceField value={value} onChange={onChange} />,
+      render: ({ value, onChange }) => <DatasourceField value={value} onChange={onChange} fixedType="products-by-sku" />,
     },
     ...createProductLinkFields(intl),
   },

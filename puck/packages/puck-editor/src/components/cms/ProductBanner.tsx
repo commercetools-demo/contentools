@@ -144,7 +144,7 @@ export const createProductBannerConfig = (
     ctaLink: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.productBanner.field.ctaLink' }) },
     product: {
       type: 'custom', label: intl.formatMessage({ id: 'Editor.cfg.productBanner.field.product' }),
-      render: ({ value, onChange }) => <DatasourceField value={value} onChange={onChange} />,
+      render: ({ value, onChange }) => <DatasourceField value={value} onChange={onChange} fixedType="product-by-sku" />,
     },
     productOnLeft: {
       type: 'radio', label: intl.formatMessage({ id: 'Editor.cfg.productBanner.field.productOnLeft' }),

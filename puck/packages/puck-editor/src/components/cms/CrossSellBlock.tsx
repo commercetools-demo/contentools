@@ -95,7 +95,7 @@ export const createCrossSellBlockConfig = (
     title: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.crossSellBlock.field.title' }) },
     products: {
       type: 'custom', label: intl.formatMessage({ id: 'Editor.cfg.crossSellBlock.field.products' }),
-      render: ({ value, onChange }) => <DatasourceField value={value} onChange={onChange} />,
+      render: ({ value, onChange }) => <DatasourceField value={value} onChange={onChange} fixedType="products-by-sku" />,
     },
     ctaText: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.crossSellBlock.field.ctaText' }) },
     ...createProductLinkFields(intl),
