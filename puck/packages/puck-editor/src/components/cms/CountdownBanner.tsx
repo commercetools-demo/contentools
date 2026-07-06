@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { type ComponentConfig } from '@measured/puck';
 import type { IntlShape } from 'react-intl';
+import { ColorPickerField } from '../../fields/ColorPickerField';
 
 export interface CountdownBannerProps {
   headline: string;
@@ -84,7 +85,11 @@ export const createCountdownBannerConfig = (
     endDate: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.countdownBanner.field.endDate' }) },
     ctaText: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.countdownBanner.field.ctaText' }) },
     ctaLink: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.countdownBanner.field.ctaLink' }) },
-    background: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.countdownBanner.field.background' }) },
+    background: {
+      type: 'custom',
+      label: intl.formatMessage({ id: 'Editor.cfg.countdownBanner.field.background' }),
+      render: ({ value, onChange }) => <ColorPickerField value={value} onChange={onChange} />,
+    },
   },
   defaultProps: {
     headline: '', subline: '', endDate: '', ctaText: '', ctaLink: '', background: '#2c5530',

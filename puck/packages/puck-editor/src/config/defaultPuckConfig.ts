@@ -38,6 +38,7 @@ import {
   createVideoBlockConfig,
   createWebsiteLogoConfig,
 } from '../components';
+import { ColorPickerField } from '../fields/ColorPickerField';
 import en from '../intl/en.json';
 
 /**
@@ -167,8 +168,10 @@ export function createDefaultPuckConfig(intl: IntlShape): Config {
       fields: {
         title: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.root.field.title' }) },
         backgroundColor: {
-          type: 'text',
+          type: 'custom',
           label: intl.formatMessage({ id: 'Editor.cfg.root.field.backgroundColor' }),
+          render: ({ value, onChange }) =>
+            React.createElement(ColorPickerField, { value, onChange, allowNone: true }),
         },
         contentWidth: {
           type: 'select',

@@ -1,6 +1,7 @@
 import React from 'react';
 import type { ComponentConfig } from '@measured/puck';
 import type { IntlShape } from 'react-intl';
+import { ColorPickerField } from '../fields/ColorPickerField';
 
 export interface SpacerProps {
   height?: string;
@@ -20,7 +21,11 @@ export const createSpacerConfig = (intl: IntlShape): ComponentConfig<SpacerProps
         { value: false, label: intl.formatMessage({ id: 'Editor.cfg.yesNo.no' }) },
       ],
     },
-    lineColor: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.spacer.field.lineColor' }) },
+    lineColor: {
+      type: 'custom',
+      label: intl.formatMessage({ id: 'Editor.cfg.spacer.field.lineColor' }),
+      render: ({ value, onChange }) => <ColorPickerField value={value} onChange={onChange} />,
+    },
   },
   defaultProps: {
     height: '48px',

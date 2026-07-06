@@ -2,6 +2,7 @@ import React from 'react';
 import { type ComponentConfig } from '@measured/puck';
 import type { IntlShape } from 'react-intl';
 import { ImagePickerField } from '../../fields/ImagePickerField';
+import { ColorPickerField } from '../../fields/ColorPickerField';
 
 export interface PromotionalBannerProps {
   image: string;
@@ -25,7 +26,11 @@ export const createPromotionalBannerConfig = (
     subtitle: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.promotionalBanner.field.subtitle' }) },
     ctaText: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.promotionalBanner.field.ctaText' }) },
     ctaLink: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.promotionalBanner.field.ctaLink' }) },
-    background: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.promotionalBanner.field.background' }) },
+    background: {
+      type: 'custom',
+      label: intl.formatMessage({ id: 'Editor.cfg.promotionalBanner.field.background' }),
+      render: ({ value, onChange }) => <ColorPickerField value={value} onChange={onChange} />,
+    },
   },
   defaultProps: { image: '', title: '', subtitle: '', ctaText: '', ctaLink: '', background: '#f5f5f5' },
   render: ({ image, title, subtitle, ctaText, ctaLink, background }) => (

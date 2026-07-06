@@ -4,6 +4,7 @@ import { type ComponentConfig } from '@measured/puck';
 import { useDatasource } from '@commercetools-demo/puck-api';
 import { DatasourceField, type DatasourceValue } from '../../fields/DatasourceField';
 import { richTextField } from '../../fields/RichTextField';
+import { ColorPickerField } from '../../fields/ColorPickerField';
 import {
   formatPrice,
   getFirstPrice,
@@ -152,7 +153,11 @@ export const createProductBannerConfig = (
         { value: true, label: intl.formatMessage({ id: 'Editor.cfg.productBanner.productPosition.left' }) },
       ],
     },
-    background: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.productBanner.field.background' }) },
+    background: {
+      type: 'custom',
+      label: intl.formatMessage({ id: 'Editor.cfg.productBanner.field.background' }),
+      render: ({ value, onChange }) => <ColorPickerField value={value} onChange={onChange} />,
+    },
     ...createProductLinkFields(intl),
   },
   defaultProps: {

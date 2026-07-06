@@ -17,6 +17,7 @@ import { DEFAULT_THEME } from '../constants';
 import { EnsureNimbusProvider } from '../EnsureNimbusProvider';
 import { EnsureIntlProvider } from '../EnsureIntlProvider';
 import ThemePresetSelector from './theme-preset-selector';
+import { ColorField } from './color-field';
 
 // ---------------------------------------------------------------------------
 // Thin Nimbus adapters
@@ -501,171 +502,53 @@ const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
                     gridTemplateColumns="repeat(auto-fill, minmax(300px, 1fr))"
                   >
                     <Grid.Item>
-                      <div style={{ marginBottom: '1.5rem' }}>
-                        <FieldLabel title={intl.formatMessage({ id: 'ThemeManager.fieldPrimary' })} htmlFor="colorPrimary" />
-                        <Spacings.Inline alignItems="center" scale="s">
-                          <input
-                            type="color"
-                            id="colorPrimary"
-                            value={formValues.colorPrimary}
-                            onChange={(e) =>
-                              handleChange('colorPrimary', e.target.value)
-                            }
-                            style={{ width: 40, height: 32, cursor: 'pointer' }}
-                          />
-                          <TextInput
-                            value={formValues.colorPrimary}
-                            onChange={(e) =>
-                              handleChange('colorPrimary', e.target.value)
-                            }
-                            horizontalConstraint={3}
-                          />
-                        </Spacings.Inline>
-                      </div>
+                      <ColorField
+                        label={intl.formatMessage({ id: 'ThemeManager.fieldPrimary' })}
+                        value={formValues.colorPrimary}
+                        onChange={(v) => handleChange('colorPrimary', v)}
+                      />
                     </Grid.Item>
                     <Grid.Item>
-                      <div style={{ marginBottom: '1.5rem' }}>
-                        <FieldLabel
-                          title={intl.formatMessage({ id: 'ThemeManager.fieldPrimaryHover' })}
-                          htmlFor="colorPrimaryHover"
-                        />
-                        <Spacings.Inline alignItems="center" scale="s">
-                          <input
-                            type="color"
-                            id="colorPrimaryHover"
-                            value={formValues.colorPrimaryHover}
-                            onChange={(e) =>
-                              handleChange('colorPrimaryHover', e.target.value)
-                            }
-                            style={{ width: 40, height: 32, cursor: 'pointer' }}
-                          />
-                          <TextInput
-                            horizontalConstraint={3}
-                            value={formValues.colorPrimaryHover}
-                            onChange={(e) =>
-                              handleChange('colorPrimaryHover', e.target.value)
-                            }
-                          />
-                        </Spacings.Inline>
-                      </div>
+                      <ColorField
+                        label={intl.formatMessage({ id: 'ThemeManager.fieldPrimaryHover' })}
+                        value={formValues.colorPrimaryHover}
+                        onChange={(v) => handleChange('colorPrimaryHover', v)}
+                      />
                     </Grid.Item>
                     <Grid.Item>
-                      <div style={{ marginBottom: '1.5rem' }}>
-                        <FieldLabel title={intl.formatMessage({ id: 'ThemeManager.fieldSecondary' })} htmlFor="colorSecondary" />
-                        <Spacings.Inline alignItems="center" scale="s">
-                          <input
-                            type="color"
-                            id="colorSecondary"
-                            value={formValues.colorSecondary}
-                            onChange={(e) =>
-                              handleChange('colorSecondary', e.target.value)
-                            }
-                            style={{ width: 40, height: 32, cursor: 'pointer' }}
-                          />
-                          <TextInput
-                            horizontalConstraint={3}
-                            value={formValues.colorSecondary}
-                            onChange={(e) =>
-                              handleChange('colorSecondary', e.target.value)
-                            }
-                          />
-                        </Spacings.Inline>
-                      </div>
+                      <ColorField
+                        label={intl.formatMessage({ id: 'ThemeManager.fieldSecondary' })}
+                        value={formValues.colorSecondary}
+                        onChange={(v) => handleChange('colorSecondary', v)}
+                      />
                     </Grid.Item>
                     <Grid.Item>
-                      <div style={{ marginBottom: '1.5rem' }}>
-                        <FieldLabel
-                          title={intl.formatMessage({ id: 'ThemeManager.fieldBackground' })}
-                          htmlFor="colorBackground"
-                        />
-                        <Spacings.Inline alignItems="center" scale="s">
-                          <input
-                            type="color"
-                            id="colorBackground"
-                            value={formValues.colorBackground}
-                            onChange={(e) =>
-                              handleChange('colorBackground', e.target.value)
-                            }
-                            style={{ width: 40, height: 32, cursor: 'pointer' }}
-                          />
-                          <TextInput
-                            horizontalConstraint={3}
-                            value={formValues.colorBackground}
-                            onChange={(e) =>
-                              handleChange('colorBackground', e.target.value)
-                            }
-                          />
-                        </Spacings.Inline>
-                      </div>
+                      <ColorField
+                        label={intl.formatMessage({ id: 'ThemeManager.fieldBackground' })}
+                        value={formValues.colorBackground}
+                        onChange={(v) => handleChange('colorBackground', v)}
+                      />
                     </Grid.Item>
                     <Grid.Item>
-                      <div style={{ marginBottom: '1.5rem' }}>
-                        <FieldLabel title={intl.formatMessage({ id: 'ThemeManager.fieldSurface' })} htmlFor="colorSurface" />
-                        <Spacings.Inline alignItems="center" scale="s">
-                          <input
-                            type="color"
-                            id="colorSurface"
-                            value={formValues.colorSurface}
-                            onChange={(e) =>
-                              handleChange('colorSurface', e.target.value)
-                            }
-                            style={{ width: 40, height: 32, cursor: 'pointer' }}
-                          />
-                          <TextInput
-                            horizontalConstraint={3}
-                            value={formValues.colorSurface}
-                            onChange={(e) =>
-                              handleChange('colorSurface', e.target.value)
-                            }
-                          />
-                        </Spacings.Inline>
-                      </div>
+                      <ColorField
+                        label={intl.formatMessage({ id: 'ThemeManager.fieldSurface' })}
+                        value={formValues.colorSurface}
+                        onChange={(v) => handleChange('colorSurface', v)}
+                      />
                     </Grid.Item>
                     <Grid.Item>
-                      <div style={{ marginBottom: '1.5rem' }}>
-                        <FieldLabel title={intl.formatMessage({ id: 'ThemeManager.fieldText' })} htmlFor="colorText" />
-                        <Spacings.Inline alignItems="center" scale="s">
-                          <input
-                            type="color"
-                            id="colorText"
-                            value={formValues.colorText}
-                            onChange={(e) =>
-                              handleChange('colorText', e.target.value)
-                            }
-                            style={{ width: 40, height: 32, cursor: 'pointer' }}
-                          />
-                          <TextInput
-                            horizontalConstraint={3}
-                            value={formValues.colorText}
-                            onChange={(e) =>
-                              handleChange('colorText', e.target.value)
-                            }
-                          />
-                        </Spacings.Inline>
-                      </div>
+                      <ColorField
+                        label={intl.formatMessage({ id: 'ThemeManager.fieldText' })}
+                        value={formValues.colorText}
+                        onChange={(v) => handleChange('colorText', v)}
+                      />
                     </Grid.Item>
                     <Grid.Item>
-                      <div style={{ marginBottom: '1.5rem' }}>
-                        <FieldLabel title={intl.formatMessage({ id: 'ThemeManager.fieldTextMuted' })} htmlFor="colorTextMuted" />
-                        <Spacings.Inline alignItems="center" scale="s">
-                          <input
-                            type="color"
-                            id="colorTextMuted"
-                            value={formValues.colorTextMuted}
-                            onChange={(e) =>
-                              handleChange('colorTextMuted', e.target.value)
-                            }
-                            style={{ width: 40, height: 32, cursor: 'pointer' }}
-                          />
-                          <TextInput
-                            horizontalConstraint={3}
-                            value={formValues.colorTextMuted}
-                            onChange={(e) =>
-                              handleChange('colorTextMuted', e.target.value)
-                            }
-                          />
-                        </Spacings.Inline>
-                      </div>
+                      <ColorField
+                        label={intl.formatMessage({ id: 'ThemeManager.fieldTextMuted' })}
+                        value={formValues.colorTextMuted}
+                        onChange={(v) => handleChange('colorTextMuted', v)}
+                      />
                     </Grid.Item>
                   </Grid>
 
@@ -681,331 +564,100 @@ const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
                     gridTemplateColumns="repeat(auto-fill, minmax(300px, 1fr))"
                   >
                     <Grid.Item>
-                      <div style={{ marginBottom: '1.5rem' }}>
-                        <FieldLabel
-                          title={intl.formatMessage({ id: 'ThemeManager.fieldPrimaryForeground' })}
-                          htmlFor="colorPrimaryForeground"
-                        />
-                        <Spacings.Inline alignItems="center" scale="s">
-                          <input
-                            type="color"
-                            id="colorPrimaryForeground"
-                            value={formValues.colorPrimaryForeground || '#000000'}
-                            onChange={(e) =>
-                              handleChange('colorPrimaryForeground', e.target.value)
-                            }
-                            style={{ width: 40, height: 32, cursor: 'pointer' }}
-                          />
-                          <TextInput
-                            horizontalConstraint={3}
-                            value={formValues.colorPrimaryForeground ?? ''}
-                            onChange={(e) =>
-                              handleChange(
-                                'colorPrimaryForeground',
-                                (e.target as HTMLInputElement).value
-                              )
-                            }
-                          />
-                        </Spacings.Inline>
-                      </div>
+                      <ColorField
+                        label={intl.formatMessage({ id: 'ThemeManager.fieldPrimaryForeground' })}
+                        value={formValues.colorPrimaryForeground}
+                        onChange={(v) => handleChange('colorPrimaryForeground', v)}
+                        fallback="#000000"
+                      />
                     </Grid.Item>
                     <Grid.Item>
-                      <div style={{ marginBottom: '1.5rem' }}>
-                        <FieldLabel
-                          title={intl.formatMessage({ id: 'ThemeManager.fieldSecondaryForeground' })}
-                          htmlFor="colorSecondaryForeground"
-                        />
-                        <Spacings.Inline alignItems="center" scale="s">
-                          <input
-                            type="color"
-                            id="colorSecondaryForeground"
-                            value={formValues.colorSecondaryForeground || '#000000'}
-                            onChange={(e) =>
-                              handleChange('colorSecondaryForeground', e.target.value)
-                            }
-                            style={{ width: 40, height: 32, cursor: 'pointer' }}
-                          />
-                          <TextInput
-                            horizontalConstraint={3}
-                            value={formValues.colorSecondaryForeground ?? ''}
-                            onChange={(e) =>
-                              handleChange(
-                                'colorSecondaryForeground',
-                                (e.target as HTMLInputElement).value
-                              )
-                            }
-                          />
-                        </Spacings.Inline>
-                      </div>
+                      <ColorField
+                        label={intl.formatMessage({ id: 'ThemeManager.fieldSecondaryForeground' })}
+                        value={formValues.colorSecondaryForeground}
+                        onChange={(v) => handleChange('colorSecondaryForeground', v)}
+                        fallback="#000000"
+                      />
                     </Grid.Item>
                     <Grid.Item>
-                      <div style={{ marginBottom: '1.5rem' }}>
-                        <FieldLabel title={intl.formatMessage({ id: 'ThemeManager.fieldForeground' })} htmlFor="colorForeground" />
-                        <Spacings.Inline alignItems="center" scale="s">
-                          <input
-                            type="color"
-                            id="colorForeground"
-                            value={formValues.colorForeground || '#000000'}
-                            onChange={(e) =>
-                              handleChange('colorForeground', e.target.value)
-                            }
-                            style={{ width: 40, height: 32, cursor: 'pointer' }}
-                          />
-                          <TextInput
-                            horizontalConstraint={3}
-                            value={formValues.colorForeground ?? ''}
-                            onChange={(e) =>
-                              handleChange(
-                                'colorForeground',
-                                (e.target as HTMLInputElement).value
-                              )
-                            }
-                          />
-                        </Spacings.Inline>
-                      </div>
+                      <ColorField
+                        label={intl.formatMessage({ id: 'ThemeManager.fieldForeground' })}
+                        value={formValues.colorForeground}
+                        onChange={(v) => handleChange('colorForeground', v)}
+                        fallback="#000000"
+                      />
                     </Grid.Item>
                     <Grid.Item>
-                      <div style={{ marginBottom: '1.5rem' }}>
-                        <FieldLabel title={intl.formatMessage({ id: 'ThemeManager.fieldMuted' })} htmlFor="colorMuted" />
-                        <Spacings.Inline alignItems="center" scale="s">
-                          <input
-                            type="color"
-                            id="colorMuted"
-                            value={formValues.colorMuted || '#000000'}
-                            onChange={(e) =>
-                              handleChange('colorMuted', e.target.value)
-                            }
-                            style={{ width: 40, height: 32, cursor: 'pointer' }}
-                          />
-                          <TextInput
-                            horizontalConstraint={3}
-                            value={formValues.colorMuted ?? ''}
-                            onChange={(e) =>
-                              handleChange(
-                                'colorMuted',
-                                (e.target as HTMLInputElement).value
-                              )
-                            }
-                          />
-                        </Spacings.Inline>
-                      </div>
+                      <ColorField
+                        label={intl.formatMessage({ id: 'ThemeManager.fieldMuted' })}
+                        value={formValues.colorMuted}
+                        onChange={(v) => handleChange('colorMuted', v)}
+                        fallback="#000000"
+                      />
                     </Grid.Item>
                     <Grid.Item>
-                      <div style={{ marginBottom: '1.5rem' }}>
-                        <FieldLabel
-                          title={intl.formatMessage({ id: 'ThemeManager.fieldMutedForeground' })}
-                          htmlFor="colorMutedForeground"
-                        />
-                        <Spacings.Inline alignItems="center" scale="s">
-                          <input
-                            type="color"
-                            id="colorMutedForeground"
-                            value={formValues.colorMutedForeground || '#000000'}
-                            onChange={(e) =>
-                              handleChange('colorMutedForeground', e.target.value)
-                            }
-                            style={{ width: 40, height: 32, cursor: 'pointer' }}
-                          />
-                          <TextInput
-                            horizontalConstraint={3}
-                            value={formValues.colorMutedForeground ?? ''}
-                            onChange={(e) =>
-                              handleChange(
-                                'colorMutedForeground',
-                                (e.target as HTMLInputElement).value
-                              )
-                            }
-                          />
-                        </Spacings.Inline>
-                      </div>
+                      <ColorField
+                        label={intl.formatMessage({ id: 'ThemeManager.fieldMutedForeground' })}
+                        value={formValues.colorMutedForeground}
+                        onChange={(v) => handleChange('colorMutedForeground', v)}
+                        fallback="#000000"
+                      />
                     </Grid.Item>
                     <Grid.Item>
-                      <div style={{ marginBottom: '1.5rem' }}>
-                        <FieldLabel title={intl.formatMessage({ id: 'ThemeManager.fieldDestructive' })} htmlFor="colorDestructive" />
-                        <Spacings.Inline alignItems="center" scale="s">
-                          <input
-                            type="color"
-                            id="colorDestructive"
-                            value={formValues.colorDestructive || '#000000'}
-                            onChange={(e) =>
-                              handleChange('colorDestructive', e.target.value)
-                            }
-                            style={{ width: 40, height: 32, cursor: 'pointer' }}
-                          />
-                          <TextInput
-                            horizontalConstraint={3}
-                            value={formValues.colorDestructive ?? ''}
-                            onChange={(e) =>
-                              handleChange(
-                                'colorDestructive',
-                                (e.target as HTMLInputElement).value
-                              )
-                            }
-                          />
-                        </Spacings.Inline>
-                      </div>
+                      <ColorField
+                        label={intl.formatMessage({ id: 'ThemeManager.fieldDestructive' })}
+                        value={formValues.colorDestructive}
+                        onChange={(v) => handleChange('colorDestructive', v)}
+                        fallback="#000000"
+                      />
                     </Grid.Item>
                     <Grid.Item>
-                      <div style={{ marginBottom: '1.5rem' }}>
-                        <FieldLabel
-                          title={intl.formatMessage({ id: 'ThemeManager.fieldDestructiveForeground' })}
-                          htmlFor="colorDestructiveForeground"
-                        />
-                        <Spacings.Inline alignItems="center" scale="s">
-                          <input
-                            type="color"
-                            id="colorDestructiveForeground"
-                            value={formValues.colorDestructiveForeground || '#000000'}
-                            onChange={(e) =>
-                              handleChange('colorDestructiveForeground', e.target.value)
-                            }
-                            style={{ width: 40, height: 32, cursor: 'pointer' }}
-                          />
-                          <TextInput
-                            horizontalConstraint={3}
-                            value={formValues.colorDestructiveForeground ?? ''}
-                            onChange={(e) =>
-                              handleChange(
-                                'colorDestructiveForeground',
-                                (e.target as HTMLInputElement).value
-                              )
-                            }
-                          />
-                        </Spacings.Inline>
-                      </div>
+                      <ColorField
+                        label={intl.formatMessage({ id: 'ThemeManager.fieldDestructiveForeground' })}
+                        value={formValues.colorDestructiveForeground}
+                        onChange={(v) => handleChange('colorDestructiveForeground', v)}
+                        fallback="#000000"
+                      />
                     </Grid.Item>
                     <Grid.Item>
-                      <div style={{ marginBottom: '1.5rem' }}>
-                        <FieldLabel title={intl.formatMessage({ id: 'ThemeManager.fieldAccent' })} htmlFor="colorAccent" />
-                        <Spacings.Inline alignItems="center" scale="s">
-                          <input
-                            type="color"
-                            id="colorAccent"
-                            value={formValues.colorAccent || '#000000'}
-                            onChange={(e) =>
-                              handleChange('colorAccent', e.target.value)
-                            }
-                            style={{ width: 40, height: 32, cursor: 'pointer' }}
-                          />
-                          <TextInput
-                            horizontalConstraint={3}
-                            value={formValues.colorAccent ?? ''}
-                            onChange={(e) =>
-                              handleChange(
-                                'colorAccent',
-                                (e.target as HTMLInputElement).value
-                              )
-                            }
-                          />
-                        </Spacings.Inline>
-                      </div>
+                      <ColorField
+                        label={intl.formatMessage({ id: 'ThemeManager.fieldAccent' })}
+                        value={formValues.colorAccent}
+                        onChange={(v) => handleChange('colorAccent', v)}
+                        fallback="#000000"
+                      />
                     </Grid.Item>
                     <Grid.Item>
-                      <div style={{ marginBottom: '1.5rem' }}>
-                        <FieldLabel
-                          title={intl.formatMessage({ id: 'ThemeManager.fieldAccentForeground' })}
-                          htmlFor="colorAccentForeground"
-                        />
-                        <Spacings.Inline alignItems="center" scale="s">
-                          <input
-                            type="color"
-                            id="colorAccentForeground"
-                            value={formValues.colorAccentForeground || '#000000'}
-                            onChange={(e) =>
-                              handleChange('colorAccentForeground', e.target.value)
-                            }
-                            style={{ width: 40, height: 32, cursor: 'pointer' }}
-                          />
-                          <TextInput
-                            horizontalConstraint={3}
-                            value={formValues.colorAccentForeground ?? ''}
-                            onChange={(e) =>
-                              handleChange(
-                                'colorAccentForeground',
-                                (e.target as HTMLInputElement).value
-                              )
-                            }
-                          />
-                        </Spacings.Inline>
-                      </div>
+                      <ColorField
+                        label={intl.formatMessage({ id: 'ThemeManager.fieldAccentForeground' })}
+                        value={formValues.colorAccentForeground}
+                        onChange={(v) => handleChange('colorAccentForeground', v)}
+                        fallback="#000000"
+                      />
                     </Grid.Item>
                     <Grid.Item>
-                      <div style={{ marginBottom: '1.5rem' }}>
-                        <FieldLabel title={intl.formatMessage({ id: 'ThemeManager.fieldBorder' })} htmlFor="colorBorder" />
-                        <Spacings.Inline alignItems="center" scale="s">
-                          <input
-                            type="color"
-                            id="colorBorder"
-                            value={formValues.colorBorder || '#000000'}
-                            onChange={(e) =>
-                              handleChange('colorBorder', e.target.value)
-                            }
-                            style={{ width: 40, height: 32, cursor: 'pointer' }}
-                          />
-                          <TextInput
-                            horizontalConstraint={3}
-                            value={formValues.colorBorder ?? ''}
-                            onChange={(e) =>
-                              handleChange(
-                                'colorBorder',
-                                (e.target as HTMLInputElement).value
-                              )
-                            }
-                          />
-                        </Spacings.Inline>
-                      </div>
+                      <ColorField
+                        label={intl.formatMessage({ id: 'ThemeManager.fieldBorder' })}
+                        value={formValues.colorBorder}
+                        onChange={(v) => handleChange('colorBorder', v)}
+                        fallback="#000000"
+                      />
                     </Grid.Item>
                     <Grid.Item>
-                      <div style={{ marginBottom: '1.5rem' }}>
-                        <FieldLabel title={intl.formatMessage({ id: 'ThemeManager.fieldInput' })} htmlFor="colorInput" />
-                        <Spacings.Inline alignItems="center" scale="s">
-                          <input
-                            type="color"
-                            id="colorInput"
-                            value={formValues.colorInput || '#000000'}
-                            onChange={(e) =>
-                              handleChange('colorInput', e.target.value)
-                            }
-                            style={{ width: 40, height: 32, cursor: 'pointer' }}
-                          />
-                          <TextInput
-                            horizontalConstraint={3}
-                            value={formValues.colorInput ?? ''}
-                            onChange={(e) =>
-                              handleChange(
-                                'colorInput',
-                                (e.target as HTMLInputElement).value
-                              )
-                            }
-                          />
-                        </Spacings.Inline>
-                      </div>
+                      <ColorField
+                        label={intl.formatMessage({ id: 'ThemeManager.fieldInput' })}
+                        value={formValues.colorInput}
+                        onChange={(v) => handleChange('colorInput', v)}
+                        fallback="#000000"
+                      />
                     </Grid.Item>
                     <Grid.Item>
-                      <div style={{ marginBottom: '1.5rem' }}>
-                        <FieldLabel title={intl.formatMessage({ id: 'ThemeManager.fieldRing' })} htmlFor="colorRing" />
-                        <Spacings.Inline alignItems="center" scale="s">
-                          <input
-                            type="color"
-                            id="colorRing"
-                            value={formValues.colorRing || '#000000'}
-                            onChange={(e) =>
-                              handleChange('colorRing', e.target.value)
-                            }
-                            style={{ width: 40, height: 32, cursor: 'pointer' }}
-                          />
-                          <TextInput
-                            horizontalConstraint={3}
-                            value={formValues.colorRing ?? ''}
-                            onChange={(e) =>
-                              handleChange(
-                                'colorRing',
-                                (e.target as HTMLInputElement).value
-                              )
-                            }
-                          />
-                        </Spacings.Inline>
-                      </div>
+                      <ColorField
+                        label={intl.formatMessage({ id: 'ThemeManager.fieldRing' })}
+                        value={formValues.colorRing}
+                        onChange={(v) => handleChange('colorRing', v)}
+                        fallback="#000000"
+                      />
                     </Grid.Item>
                   </Grid>
 
@@ -1018,218 +670,20 @@ const ThemeEditorInner: React.FC<InnerProps> = ({ backButton }) => {
                     gridTemplateColumns="repeat(auto-fill, minmax(300px, 1fr))"
                   >
                     <Grid.Item>
-                      <div style={{ marginBottom: '1.5rem' }}>
-                        <FieldLabel title={intl.formatMessage({ id: 'ThemeManager.fieldFontFamily' })} htmlFor="fontFamily" />
-                        <TextInput
-                          horizontalConstraint={4}
-                          id="fontFamily"
-                          value={formValues.fontFamily}
-                          onChange={(e) =>
-                            handleChange('fontFamily', e.target.value)
-                          }
-                        />
-                      </div>
+                      <ColorField
+                        label={intl.formatMessage({ id: 'ThemeManager.fieldFontFamily' })}
+                        value={formValues.fontFamily}
+                        onChange={(v) => handleChange('fontFamily', v)}
+                        fallback="#ffffff"
+                      />
                     </Grid.Item>
                     <Grid.Item>
-                      <div style={{ marginBottom: '1.5rem' }}>
-                        <FieldLabel title={intl.formatMessage({ id: 'ThemeManager.fieldHeadingFont' })} htmlFor="fontHeading" />
-                        <TextInput
-                          horizontalConstraint={4}
-                          id="fontHeading"
-                          value={formValues.fontHeading}
-                          onChange={(e) =>
-                            handleChange('fontHeading', e.target.value)
-                          }
-                        />
-                      </div>
-                    </Grid.Item>
-                  </Grid>
-
-                  <Text.Headline as="h2">
-                    {intl.formatMessage({ id: 'ThemeManager.sectionLayoutComponents' })}
-                  </Text.Headline>
-                  <Grid
-                    gridGap="16px"
-                    gridAutoColumns="1fr"
-                    gridTemplateColumns="repeat(auto-fill, minmax(300px, 1fr))"
-                  >
-                    <Grid.Item>
-                      <div style={{ marginBottom: '1.5rem' }}>
-                        <FieldLabel title={intl.formatMessage({ id: 'ThemeManager.fieldSpacingScale' })} htmlFor="spacingScale" />
-                        <NumberInput
-                          id="spacingScale"
-                          horizontalConstraint={3}
-                          value={formValues.spacingScale}
-                          onChange={(e) =>
-                            handleChange(
-                              'spacingScale',
-                              e.target.value === '' ? 0 : Number(e.target.value)
-                            )
-                          }
-                        />
-                      </div>
-                    </Grid.Item>
-                    <Grid.Item>
-                      <div style={{ marginBottom: '1.5rem' }}>
-                        <FieldLabel title={intl.formatMessage({ id: 'ThemeManager.fieldBorderRadius' })} htmlFor="borderRadius" />
-                        <select
-                          id="borderRadius"
-                          value={formValues.borderRadius}
-                          onChange={(e) =>
-                            handleChange(
-                              'borderRadius',
-                              e.target.value as ThemeTokens['borderRadius']
-                            )
-                          }
-                          style={SELECT_STYLE}
-                        >
-                          {BORDER_RADIUS_OPTIONS.map((o) => (
-                            <option key={o.value} value={o.value}>{formatOption(o.label)}</option>
-                          ))}
-                        </select>
-                      </div>
-                    </Grid.Item>
-                    <Grid.Item>
-                      <div style={{ marginBottom: '1.5rem' }}>
-                        <FieldLabel title={intl.formatMessage({ id: 'ThemeManager.fieldBorderWidth' })} htmlFor="borderWidth" />
-                        <select
-                          id="borderWidth"
-                          value={formValues.borderWidth}
-                          onChange={(e) =>
-                            handleChange(
-                              'borderWidth',
-                              e.target.value as ThemeTokens['borderWidth']
-                            )
-                          }
-                          style={SELECT_STYLE}
-                        >
-                          {BORDER_WIDTH_OPTIONS.map((o) => (
-                            <option key={o.value} value={o.value}>{formatOption(o.label)}</option>
-                          ))}
-                        </select>
-                      </div>
-                    </Grid.Item>
-                    <Grid.Item>
-                      <div style={{ marginBottom: '1.5rem' }}>
-                        <FieldLabel title={intl.formatMessage({ id: 'ThemeManager.fieldButtonStyle' })} htmlFor="buttonStyle" />
-                        <select
-                          id="buttonStyle"
-                          value={formValues.buttonStyle}
-                          onChange={(e) =>
-                            handleChange(
-                              'buttonStyle',
-                              e.target.value as ThemeTokens['buttonStyle']
-                            )
-                          }
-                          style={SELECT_STYLE}
-                        >
-                          {BUTTON_STYLE_OPTIONS.map((o) => (
-                            <option key={o.value} value={o.value}>{formatOption(o.label)}</option>
-                          ))}
-                        </select>
-                      </div>
-                    </Grid.Item>
-                    <Grid.Item>
-                      <div style={{ marginBottom: '1.5rem' }}>
-                        <FieldLabel title={intl.formatMessage({ id: 'ThemeManager.fieldCardShadow' })} htmlFor="cardShadow" />
-                        <select
-                          id="cardShadow"
-                          value={formValues.cardShadow}
-                          onChange={(e) =>
-                            handleChange(
-                              'cardShadow',
-                              e.target.value as ThemeTokens['cardShadow']
-                            )
-                          }
-                          style={SELECT_STYLE}
-                        >
-                          {CARD_SHADOW_OPTIONS.map((o) => (
-                            <option key={o.value} value={o.value}>{formatOption(o.label)}</option>
-                          ))}
-                        </select>
-                      </div>
-                    </Grid.Item>
-                    <Grid.Item>
-                      <div style={{ marginBottom: '1.5rem' }}>
-                        <FieldLabel title={intl.formatMessage({ id: 'ThemeManager.fieldHeaderStyle' })} htmlFor="headerStyle" />
-                        <select
-                          id="headerStyle"
-                          value={formValues.headerStyle}
-                          onChange={(e) =>
-                            handleChange(
-                              'headerStyle',
-                              e.target.value as ThemeTokens['headerStyle']
-                            )
-                          }
-                          style={SELECT_STYLE}
-                        >
-                          {HEADER_STYLE_OPTIONS.map((o) => (
-                            <option key={o.value} value={o.value}>{formatOption(o.label)}</option>
-                          ))}
-                        </select>
-                      </div>
-                    </Grid.Item>
-                  </Grid>
-
-                  <Text.Headline as="h2">
-                    {intl.formatMessage({ id: 'ThemeManager.sectionShadowSurface' })}
-                  </Text.Headline>
-                  <Grid
-                    gridGap="16px"
-                    gridAutoColumns="1fr"
-                    gridTemplateColumns="repeat(auto-fill, minmax(300px, 1fr))"
-                  >
-                    <Grid.Item>
-                      <div style={{ marginBottom: '1.5rem' }}>
-                        <FieldLabel title={intl.formatMessage({ id: 'ThemeManager.fieldShadowLight' })} htmlFor="colorShadowLight" />
-                        <Spacings.Inline alignItems="center" scale="s">
-                          <input
-                            type="color"
-                            id="colorShadowLight"
-                            value={formValues.colorShadowLight ?? '#ffffff'}
-                            onChange={(e) =>
-                              handleChange('colorShadowLight', e.target.value)
-                            }
-                            style={{ width: 40, height: 32, cursor: 'pointer' }}
-                          />
-                          <TextInput
-                            horizontalConstraint={3}
-                            value={formValues.colorShadowLight ?? ''}
-                            onChange={(e) =>
-                              handleChange(
-                                'colorShadowLight',
-                                (e.target as HTMLInputElement).value
-                              )
-                            }
-                          />
-                        </Spacings.Inline>
-                      </div>
-                    </Grid.Item>
-                    <Grid.Item>
-                      <div style={{ marginBottom: '1.5rem' }}>
-                        <FieldLabel title={intl.formatMessage({ id: 'ThemeManager.fieldShadowDark' })} htmlFor="colorShadowDark" />
-                        <Spacings.Inline alignItems="center" scale="s">
-                          <input
-                            type="color"
-                            id="colorShadowDark"
-                            value={formValues.colorShadowDark ?? '#b8bec7'}
-                            onChange={(e) =>
-                              handleChange('colorShadowDark', e.target.value)
-                            }
-                            style={{ width: 40, height: 32, cursor: 'pointer' }}
-                          />
-                          <TextInput
-                            horizontalConstraint={3}
-                            value={formValues.colorShadowDark ?? ''}
-                            onChange={(e) =>
-                              handleChange(
-                                'colorShadowDark',
-                                (e.target as HTMLInputElement).value
-                              )
-                            }
-                          />
-                        </Spacings.Inline>
-                      </div>
+                      <ColorField
+                        label={intl.formatMessage({ id: 'ThemeManager.fieldShadowDark' })}
+                        value={formValues.colorShadowDark}
+                        onChange={(v) => handleChange('colorShadowDark', v)}
+                        fallback="#b8bec7"
+                      />
                     </Grid.Item>
                     <Grid.Item>
                       <div style={{ marginBottom: '1.5rem' }}>
