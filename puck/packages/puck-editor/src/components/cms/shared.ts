@@ -60,8 +60,8 @@ export type ProductLinkWith = 'slug' | 'sku';
  */
 export const resolveProductLink = (
   product: unknown,
-  linkWith: ProductLinkWith = 'slug',
-  baseUrl = '/p'
+  linkWith: ProductLinkWith = 'sku',
+  baseUrl = '/p/'
 ): string => {
   const p = product as any;
   const slug = getLocalizedText(p?.slug);
@@ -110,8 +110,8 @@ export const createProductLinkFields = (intl: IntlShape): Fields<ProductLinkProp
 
 /** Default values for the shared link props — spread into a component's defaultProps. */
 export const productLinkDefaults: ProductLinkProps = {
-  linkWith: 'slug',
-  baseUrl: '/p',
+  linkWith: 'sku',
+  baseUrl: '/p/',
 };
 
 // Colour palette shared across components
