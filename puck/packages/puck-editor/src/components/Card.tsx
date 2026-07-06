@@ -2,7 +2,7 @@ import React from 'react';
 import type { ComponentConfig } from '@measured/puck';
 import type { IntlShape } from 'react-intl';
 import { RichTextField } from '../fields/RichTextField';
-import { sanitizeHtml } from '../utils/sanitizeHtml';
+import { RichTextContent } from './RichTextContent';
 import { createFontSizeField } from '../fields/fontSizeField';
 
 export interface CardProps {
@@ -69,9 +69,9 @@ export const createCardConfig = (intl: IntlShape): ComponentConfig<CardProps> =>
       <div style={{ padding: '16px' }}>
         <h3 style={{ margin: '0 0 8px', fontSize: titleFontSize || '1.1rem' }}>{title}</h3>
         {body && (
-          <div
+          <RichTextContent
+            html={body}
             style={{ margin: '0 0 16px', color: '#555', fontSize: '14px' }}
-            dangerouslySetInnerHTML={{ __html: sanitizeHtml(body) }}
           />
         )}
         {ctaText && ctaUrl && (

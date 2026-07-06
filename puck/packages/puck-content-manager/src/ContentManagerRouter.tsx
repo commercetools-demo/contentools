@@ -15,6 +15,7 @@ import {
   ComponentSearchProvider,
   ComponentsPanel,
   ComponentItemFilter,
+  ComponentsResizer,
   CreateTemplateDialog,
   createDefaultPuckConfig,
   EditorToolbar,
@@ -772,6 +773,7 @@ const ContentEditorRoute: React.FC<ContentEditorRouteProps> = ({ config, backBut
               }}
             />
           </ComponentSearchProvider>
+          <ComponentsResizer />
           <PropertiesResizer />
         </div>
       </div>

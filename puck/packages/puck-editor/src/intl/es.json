@@ -36,6 +36,7 @@
   "Editor.searchComponentsPlaceholder": "Componentes de búsqueda…",
   "Editor.clearSearch": "Borrar búsqueda",
   "Editor.resizePropertiesPanel": "Redimensionar el panel de propiedades",
+  "Editor.resizeComponentsPanel": "Redimensionar el panel de componentes",
   "Editor.searchProducts": "Buscar productos",
   "Editor.searchProductsPlaceholder": "Buscar por nombre del producto…",
   "Editor.productSearchResults": "Resultados de la búsqueda de productos",

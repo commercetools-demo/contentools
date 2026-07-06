@@ -2,6 +2,7 @@ import React from 'react';
 import { type ComponentConfig } from '@measured/puck';
 import type { IntlShape } from 'react-intl';
 import { richTextField } from '../../fields/RichTextField';
+import { RichTextContent } from '../RichTextContent';
 
 export interface ProductGridHeaderProps {
   title: string;
@@ -25,8 +26,8 @@ export const createProductGridHeaderConfig = (
         </h1>
       )}
       {description && (
-        <div
-          dangerouslySetInnerHTML={{ __html: description }}
+        <RichTextContent
+          html={description}
           style={{ fontSize: '1rem', color: '#666', lineHeight: 1.5, maxWidth: '720px' }}
         />
       )}

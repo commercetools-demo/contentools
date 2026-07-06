@@ -2,7 +2,7 @@ import React from 'react';
 import type { ComponentConfig } from '@measured/puck';
 import type { IntlShape } from 'react-intl';
 import { RichTextField } from '../fields/RichTextField';
-import { sanitizeHtml } from '../utils/sanitizeHtml';
+import { RichTextContent } from './RichTextContent';
 
 export interface RichTextProps {
   content: string;
@@ -39,7 +39,8 @@ export const createRichTextConfig = (intl: IntlShape): ComponentConfig<RichTextP
     padding: '32px',
   },
   render: ({ content, align, maxWidth, padding }) => (
-    <div
+    <RichTextContent
+      html={content}
       style={{
         padding: padding ?? '32px',
         textAlign: align ?? 'left',
@@ -47,8 +48,6 @@ export const createRichTextConfig = (intl: IntlShape): ComponentConfig<RichTextP
         margin: maxWidth ? '0 auto' : undefined,
         boxSizing: 'border-box',
       }}
-      // HTML from the rich-text editor, sanitized before injection
-      dangerouslySetInnerHTML={{ __html: sanitizeHtml(content) }}
     />
   ),
 });

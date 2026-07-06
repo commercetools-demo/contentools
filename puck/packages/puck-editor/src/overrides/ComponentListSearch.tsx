@@ -174,18 +174,22 @@ export const ComponentsPanel: React.FC<{ children: ReactNode }> = ({ children })
         .puck-editor-fill > .Puck > div:not([class]),
         .puck-editor-fill [class*="PuckLayout_"] { height: 100%; }
         .puck-editor-fill [class*="PuckLayout-inner"] { height: 100% !important; }
-        /* Resizable properties (right) panel: override only the last grid track
-           with a user-controlled width var (set by PropertiesResizer), falling
-           back to Puck's default sidebar width. Two states: both panels open,
-           and right-only (left collapsed). */
+        /* Resizable sidebars: override the affected grid track(s) with a
+           user-controlled width var — --puck-components-width for the left
+           (set by ComponentsResizer) and --puck-properties-width for the right
+           (set by PropertiesResizer) — each falling back to Puck's default
+           sidebar width. One rule per visible-panel combination. */
         .puck-editor-fill [class*="PuckLayout--leftSideBarVisible"][class*="PuckLayout--rightSideBarVisible"] [class*="PuckLayout-inner"] {
-          grid-template-columns: var(--puck-side-bar-width) var(--puck-frame-width) var(--puck-properties-width, var(--puck-side-bar-width)) !important;
+          grid-template-columns: var(--puck-components-width, var(--puck-side-bar-width)) var(--puck-frame-width) var(--puck-properties-width, var(--puck-side-bar-width)) !important;
+        }
+        .puck-editor-fill [class*="PuckLayout--leftSideBarVisible"]:not([class*="PuckLayout--rightSideBarVisible"]) [class*="PuckLayout-inner"] {
+          grid-template-columns: var(--puck-components-width, var(--puck-side-bar-width)) var(--puck-frame-width) 0 !important;
         }
         .puck-editor-fill [class*="PuckLayout--rightSideBarVisible"]:not([class*="PuckLayout--leftSideBarVisible"]) [class*="PuckLayout-inner"] {
           grid-template-columns: 0 var(--puck-frame-width) var(--puck-properties-width, var(--puck-side-bar-width)) !important;
         }
-        /* Drag handle on the panel's left edge. */
-        .puck-props-resizer::before {
+        /* Drag handle: a thin divider centered on the panel's inner edge. */
+        .puck-panel-resizer::before {
           content: '';
           position: absolute;
           top: 0;
@@ -195,8 +199,8 @@ export const ComponentsPanel: React.FC<{ children: ReactNode }> = ({ children })
           background: var(--puck-color-grey-09, #e2e2e2);
           transition: background-color 0.12s, width 0.12s, left 0.12s;
         }
-        .puck-props-resizer:hover::before,
-        .puck-props-resizer:active::before {
+        .puck-panel-resizer:hover::before,
+        .puck-panel-resizer:active::before {
           left: 2px;
           width: 3px;
           background: var(--puck-color-azure-07, #1a73e8);

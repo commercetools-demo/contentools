@@ -15,6 +15,7 @@ import {
   usePuckApiContext,
 } from '@commercetools-demo/puck-api';
 import {
+  ComponentsResizer,
   PropertiesResizer,
   PuckEditor,
   UnsavedChangesDialog,
@@ -542,6 +543,7 @@ const PageEditorRoute: React.FC<RouteProps> = ({ config, backButton }) => {
           }
           onError={(err: Error) => { console.error('[PageManager] editor error:', err); }}
         />
+        <ComponentsResizer />
         <PropertiesResizer />
       </div>
       <UnsavedChangesDialog

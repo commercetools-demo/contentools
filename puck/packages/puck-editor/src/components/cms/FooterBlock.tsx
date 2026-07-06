@@ -2,6 +2,7 @@ import React from 'react';
 import { type ComponentConfig } from '@measured/puck';
 import type { IntlShape } from 'react-intl';
 import { richTextField } from '../../fields/RichTextField';
+import { RichTextContent } from '../RichTextContent';
 
 export interface FooterBlockProps {
   column1: string;
@@ -36,9 +37,9 @@ export const createFooterBlockConfig = (
             }}
           >
             {columns.map((html, i) => (
-              <div
+              <RichTextContent
                 key={i}
-                dangerouslySetInnerHTML={{ __html: html }}
+                html={html}
                 style={{ fontSize: '0.9rem', lineHeight: 1.6 }}
               />
             ))}

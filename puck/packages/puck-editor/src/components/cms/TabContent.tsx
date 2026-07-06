@@ -2,6 +2,7 @@ import React from 'react';
 import { type ComponentConfig } from '@measured/puck';
 import type { IntlShape } from 'react-intl';
 import { richTextField } from '../../fields/RichTextField';
+import { RichTextContent } from '../RichTextContent';
 
 export interface TabContentProps {
   tabLabel: string;
@@ -22,7 +23,7 @@ export const createTabContentConfig = (
     return (
       <div style={{ padding: '1.5rem 0', lineHeight: 1.6, color: '#333' }}>
         {tabLabel && <h3 style={{ marginBottom: '1rem' }}>{tabLabel}</h3>}
-        <div dangerouslySetInnerHTML={{ __html: content }} />
+        <RichTextContent html={content} />
       </div>
     );
   },

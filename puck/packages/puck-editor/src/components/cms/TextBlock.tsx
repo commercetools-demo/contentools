@@ -2,7 +2,7 @@ import React from 'react';
 import { type ComponentConfig } from '@measured/puck';
 import type { IntlShape } from 'react-intl';
 import { RichTextField } from '../../fields/RichTextField';
-import { sanitizeHtml } from '../../utils/sanitizeHtml';
+import { RichTextContent } from '../RichTextContent';
 
 export interface TextBlockProps {
   content: string;
@@ -25,8 +25,8 @@ export const createTextBlockConfig = (
   render: ({ content }) => {
     if (!content) return <></>;
     return (
-      <div
-        dangerouslySetInnerHTML={{ __html: sanitizeHtml(content) }}
+      <RichTextContent
+        html={content}
         style={{
           maxWidth: '720px',
           margin: '0 auto',

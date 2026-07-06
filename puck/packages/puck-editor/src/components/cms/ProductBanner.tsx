@@ -4,6 +4,7 @@ import { type ComponentConfig } from '@measured/puck';
 import { useDatasource } from '@commercetools-demo/puck-api';
 import { DatasourceField, type DatasourceValue } from '../../fields/DatasourceField';
 import { richTextField } from '../../fields/RichTextField';
+import { RichTextContent } from '../RichTextContent';
 import { ColorPickerField } from '../../fields/ColorPickerField';
 import {
   formatPrice,
@@ -62,8 +63,8 @@ const ProductBannerRender: React.FC<ProductBannerProps> = ({
       <div style={{ flex: 1, minWidth: '200px' }}>
         {title && <h2 style={{ fontSize: '2rem', fontWeight: 'bold', marginBottom: '1rem', color: '#333' }}>{title}</h2>}
         {description && (
-          <div
-            dangerouslySetInnerHTML={{ __html: description }}
+          <RichTextContent
+            html={description}
             style={{ marginBottom: '2rem', color: '#555', lineHeight: 1.6 }}
           />
         )}

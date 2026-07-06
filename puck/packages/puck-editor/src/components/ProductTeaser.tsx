@@ -4,6 +4,7 @@ import { type ComponentConfig } from '@measured/puck';
 import { useDatasource } from '@commercetools-demo/puck-api';
 import { DatasourceField, type DatasourceValue } from '../fields/DatasourceField';
 import { richTextField } from '../fields/RichTextField';
+import { RichTextContent } from './RichTextContent';
 import {
   productLinkDefaults,
   createProductLinkFields,
@@ -155,7 +156,7 @@ const ProductTeaserRender: React.FC<ProductTeaserProps> = ({
         }}
       >
         {richText ? (
-          <div dangerouslySetInnerHTML={{ __html: richText }} />
+          <RichTextContent html={richText} />
         ) : (
           <div style={{ color: '#9ca3af', fontSize: '13px' }}>
             <FormattedMessage id="Editor.noDescription" />

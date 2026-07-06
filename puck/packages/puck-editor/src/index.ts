@@ -72,9 +72,13 @@ export {
 // Nimbus-styled field-type overrides (text/textarea/select/radio inputs)
 export { nimbusFieldTypes } from './overrides/NimbusFieldTypes';
 
-// Draggable resize handle for the properties (right) panel
+// Draggable resize handles for the sidebars (left components / right properties)
+export { PanelResizer } from './overrides/PanelResizer';
+export type { PanelResizerProps, ResizerSide } from './overrides/PanelResizer';
 export { PropertiesResizer } from './overrides/PropertiesResizer';
 export type { PropertiesResizerProps } from './overrides/PropertiesResizer';
+export { ComponentsResizer } from './overrides/ComponentsResizer';
+export type { ComponentsResizerProps } from './overrides/ComponentsResizer';
 
 // i18n message catalogs (merge into a host IntlProvider to translate editor UI)
 export { catalogs as intlCatalogs } from './intl';

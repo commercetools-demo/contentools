@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { FormattedMessage, type IntlShape } from 'react-intl';
 import { type ComponentConfig } from '@measured/puck';
 import { richTextField } from '../../fields/RichTextField';
+import { RichTextContent } from '../RichTextContent';
 
 export interface FAQAccordionProps {
   question1: string; answer1: string;
@@ -50,8 +51,8 @@ const FAQRender: React.FC<FAQAccordionProps> = (props) => {
             <span style={{ fontSize: '1.2rem', lineHeight: 1 }}>{open === i ? '−' : '+'}</span>
           </button>
           {open === i && answer && (
-            <div
-              dangerouslySetInnerHTML={{ __html: answer }}
+            <RichTextContent
+              html={answer}
               style={{
                 padding: '1rem 1.25rem',
                 background: 'white',

@@ -2,6 +2,7 @@ import React from 'react';
 import { type ComponentConfig } from '@measured/puck';
 import type { IntlShape } from 'react-intl';
 import { richTextField } from '../../fields/RichTextField';
+import { RichTextContent } from '../RichTextContent';
 
 export interface ThankYouContentProps {
   headline: string;
@@ -27,8 +28,8 @@ export const createThankYouContentConfig = (
         <h1 style={{ fontSize: '2rem', color: '#2c5530', marginBottom: '1rem' }}>{headline}</h1>
       )}
       {message && (
-        <div
-          dangerouslySetInnerHTML={{ __html: message }}
+        <RichTextContent
+          html={message}
           style={{ fontSize: '1rem', lineHeight: 1.6, color: '#555', marginBottom: '2rem' }}
         />
       )}
