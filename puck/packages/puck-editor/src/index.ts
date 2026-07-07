@@ -40,7 +40,7 @@ export type { DatasourceFieldProps, DatasourceValue, DatasourceType } from './fi
 export { RichTextField, richTextField } from './fields/RichTextField';
 export type { RichTextFieldProps } from './fields/RichTextField';
 
-export { sanitizeHtml } from './utils/sanitizeHtml';
+export { sanitizeHtml } from '@commercetools-demo/puck-components';
 
 // CMS components
 export * from './components/cms';
@@ -81,4 +81,4 @@ export { ComponentsResizer } from './overrides/ComponentsResizer';
 export type { ComponentsResizerProps } from './overrides/ComponentsResizer';
 
 // i18n message catalogs (merge into a host IntlProvider to translate editor UI)
-export { catalogs as intlCatalogs } from './intl';
+export { intlCatalogs } from '@commercetools-demo/puck-components';

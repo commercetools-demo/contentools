@@ -1,6 +1,6 @@
 {
   "name": "@commercetools-demo/puck-renderer",
-  "version": "0.7.3",
+  "version": "0.8.0",
   "description": "Lightweight Puck page renderer for storefronts",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -26,13 +26,14 @@
   },
   "dependencies": {
     "@commercetools-demo/puck-api": "workspace:^",
-    "@commercetools-demo/puck-editor": "workspace:^",
+    "@commercetools-demo/puck-components": "workspace:^",
     "@commercetools-demo/puck-types": "workspace:^",
     "@measured/puck": "^0.18.2"
   },
   "peerDependencies": {
     "react": ">=19.0.0",
-    "react-dom": ">=19.0.0"
+    "react-dom": ">=19.0.0",
+    "react-intl": ">=6.0.0"
   },
   "devDependencies": {
     "@types/react": "^18",

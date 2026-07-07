@@ -10,7 +10,10 @@ export default defineConfig({
   external: [
     'react',
     'react-dom',
-    '@commercetools-demo/puck-types',
+    'react-intl',
+    '@measured/puck',
+    '@commercetools-demo/puck-components',
     '@commercetools-demo/puck-api',
+    '@commercetools-demo/puck-types',
   ],
 });

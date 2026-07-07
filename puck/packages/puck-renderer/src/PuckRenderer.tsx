@@ -1,6 +1,6 @@
 import React, { useEffect, useState, type ReactElement } from 'react';
 import { PuckApiProvider, usePuckApiContext } from '@commercetools-demo/puck-api';
-import { defaultPuckConfig } from '@commercetools-demo/puck-editor';
+import { defaultRenderConfig } from '@commercetools-demo/puck-components';
 import {
   getPublishedPuckPageApi,
   getPreviewPuckPageApi,
@@ -13,9 +13,9 @@ import type { PuckConfig, PuckData } from '@commercetools-demo/puck-types';
 import { PuckDataRenderer } from './PuckDataRenderer';
 
 const DEFAULT_CONFIG: PuckConfig = {
-  ...defaultPuckConfig,
-  components: { ...defaultPuckConfig.components },
-};
+  ...defaultRenderConfig,
+  components: { ...defaultRenderConfig.components },
+} as PuckConfig;
 
 // ---------------------------------------------------------------------------
 // Inner component (needs PuckApiContext)
@@ -29,6 +29,7 @@ interface PuckRendererInnerProps {
   query?: string;
   mode: 'published' | 'preview';
   config: PuckConfig;
+  locale?: string;
   loadingComponent?: ReactElement;
   errorComponent?: ReactElement;
   children?: React.ReactNode;
@@ -44,6 +45,7 @@ const PuckRendererInner: React.FC<PuckRendererInnerProps> = ({
   query,
   mode,
   config,
+  locale,
   loadingComponent,
   errorComponent,
   children,
@@ -156,7 +158,15 @@ const PuckRendererInner: React.FC<PuckRendererInnerProps> = ({
     );
   }
 
-  return <PuckDataRenderer data={data} config={config} className={className} style={style} />;
+  return (
+    <PuckDataRenderer
+      data={data}
+      config={config}
+      locale={locale}
+      className={className}
+      style={style}
+    />
+  );
 };
 
 // ---------------------------------------------------------------------------
@@ -194,9 +204,17 @@ export interface PuckRendererProps {
   mode?: 'published' | 'preview';
 
   /**
-   * Puck config — must match the config used in the editor. Defaults to defaultPuckConfig.
+   * Puck config — must match the config used in the editor. Defaults to the
+   * built-in Nimbus-free render config.
    */
   config?: PuckConfig;
+
+  /**
+   * Content locale (e.g. "en-US") used to resolve the rendered components'
+   * react-intl messages. Only `en`/`es` are shipped; unsupported locales fall
+   * back to English. Defaults to English.
+   */
+  locale?: string;
 
   /** Custom loading indicator. */
   loadingComponent?: ReactElement;
@@ -226,6 +244,7 @@ export const PuckRenderer: React.FC<PuckRendererProps> = ({
   query,
   mode = 'published',
   config = DEFAULT_CONFIG,
+  locale,
   loadingComponent,
   errorComponent,
   children,
@@ -241,6 +260,7 @@ export const PuckRenderer: React.FC<PuckRendererProps> = ({
       query={query}
       mode={mode}
       config={config}
+      locale={locale}
       loadingComponent={loadingComponent}
       errorComponent={errorComponent}
       className={className}

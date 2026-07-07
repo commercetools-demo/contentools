@@ -1,12 +1,8 @@
-import React from 'react';
-import { DropZone, type ComponentConfig } from '@measured/puck';
+import { type ComponentConfig } from '@measured/puck';
 import type { IntlShape } from 'react-intl';
+import { renderColumns, type ColumnsProps } from '@commercetools-demo/puck-components';
 
-export interface ColumnsProps {
-  columnCount?: 2 | 3 | 4;
-  gap?: string;
-  padding?: string;
-}
+export type { ColumnsProps };
 
 /**
  * @deprecated Use `Grid` instead (columns + rows). `Columns` is kept registered
@@ -33,24 +29,5 @@ export const createColumnsConfig = (intl: IntlShape): ComponentConfig<ColumnsPro
     gap: '16px',
     padding: '16px',
   },
-  render: ({ columnCount = 2, gap = '16px', padding = '16px' }) => {
-    const cols = Array.from({ length: columnCount }, (_, i) => i);
-    return (
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: `repeat(${columnCount}, 1fr)`,
-          gap,
-          padding,
-          boxSizing: 'border-box',
-        }}
-      >
-        {cols.map((i) => (
-          <div key={i}>
-            <DropZone zone={`column-${i}`} />
-          </div>
-        ))}
-      </div>
-    );
-  },
+  render: renderColumns,
 });

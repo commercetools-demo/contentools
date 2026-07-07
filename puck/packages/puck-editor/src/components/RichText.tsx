@@ -1,15 +1,9 @@
-import React from 'react';
 import type { ComponentConfig } from '@measured/puck';
 import type { IntlShape } from 'react-intl';
+import { renderRichText, type RichTextProps } from '@commercetools-demo/puck-components';
 import { RichTextField } from '../fields/RichTextField';
-import { RichTextContent } from './RichTextContent';
 
-export interface RichTextProps {
-  content: string;
-  align?: 'left' | 'center' | 'right';
-  maxWidth?: string;
-  padding?: string;
-}
+export type { RichTextProps };
 
 export const createRichTextConfig = (intl: IntlShape): ComponentConfig<RichTextProps> => ({
   label: intl.formatMessage({ id: 'Editor.cfg.richText.label' }),
@@ -38,16 +32,5 @@ export const createRichTextConfig = (intl: IntlShape): ComponentConfig<RichTextP
     align: 'left',
     padding: '32px',
   },
-  render: ({ content, align, maxWidth, padding }) => (
-    <RichTextContent
-      html={content}
-      style={{
-        padding: padding ?? '32px',
-        textAlign: align ?? 'left',
-        maxWidth: maxWidth,
-        margin: maxWidth ? '0 auto' : undefined,
-        boxSizing: 'border-box',
-      }}
-    />
-  ),
+  render: renderRichText,
 });

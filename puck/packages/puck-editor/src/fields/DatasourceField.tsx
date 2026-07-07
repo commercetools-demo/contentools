@@ -3,19 +3,15 @@ import { useIntl, FormattedMessage } from 'react-intl';
 import { Button, FormField, Icon, Select, Stack, Text, TextInput } from '@commercetools/nimbus';
 import { Close } from '@commercetools/nimbus-icons';
 import { useProductSearch } from '@commercetools-demo/puck-api';
+// Datasource value types live in the Nimbus-free render package; re-export them
+// here so existing imports of `../fields/DatasourceField` keep working.
+import type { DatasourceType, DatasourceValue } from '@commercetools-demo/puck-components';
 
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
 
-export type DatasourceType = 'product-by-sku' | 'products-by-sku';
-
-export interface DatasourceValue {
-  type: DatasourceType;
-  skus: string[];
-  /** Pre-resolved by the server on published/preview endpoints — use directly in render. */
-  resolvedData?: unknown;
-}
+export type { DatasourceType, DatasourceValue };
 
 export interface DatasourceFieldProps {
   value: DatasourceValue | undefined;

@@ -595,6 +595,25 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@commercetools-demo/puck-components@workspace:^, @commercetools-demo/puck-components@workspace:packages/puck-components":
+  version: 0.0.0-use.local
+  resolution: "@commercetools-demo/puck-components@workspace:packages/puck-components"
+  dependencies:
+    "@commercetools-demo/puck-api": "workspace:^"
+    "@commercetools-demo/puck-types": "workspace:^"
+    "@measured/puck": "npm:^0.18.2"
+    "@types/react": "npm:^18"
+    "@types/react-dom": "npm:^18"
+    isomorphic-dompurify: "npm:^3.18.0"
+    tsup: "npm:^8.3.0"
+    typescript: "npm:^5.7.2"
+  peerDependencies:
+    react: ">=19.0.0"
+    react-dom: ">=19.0.0"
+    react-intl: ">=6.0.0"
+  languageName: unknown
+  linkType: soft
+
 "@commercetools-demo/puck-content-manager@link:../packages/puck-content-manager::locator=puck-react-test%40workspace%3Apuck-react-test":
   version: 0.0.0-use.local
   resolution: "@commercetools-demo/puck-content-manager@link:../packages/puck-content-manager::locator=puck-react-test%40workspace%3Apuck-react-test"
@@ -638,6 +657,7 @@ __metadata:
   resolution: "@commercetools-demo/puck-editor@workspace:packages/puck-editor"
   dependencies:
     "@commercetools-demo/puck-api": "workspace:^"
+    "@commercetools-demo/puck-components": "workspace:^"
     "@commercetools-demo/puck-types": "workspace:^"
     "@commercetools-demo/puck-version-history": "workspace:^"
     "@measured/puck": "npm:^0.18.2"
@@ -717,7 +737,7 @@ __metadata:
   resolution: "@commercetools-demo/puck-renderer@workspace:packages/puck-renderer"
   dependencies:
     "@commercetools-demo/puck-api": "workspace:^"
-    "@commercetools-demo/puck-editor": "workspace:^"
+    "@commercetools-demo/puck-components": "workspace:^"
     "@commercetools-demo/puck-types": "workspace:^"
     "@measured/puck": "npm:^0.18.2"
     "@types/react": "npm:^18"
@@ -727,6 +747,7 @@ __metadata:
   peerDependencies:
     react: ">=19.0.0"
     react-dom: ">=19.0.0"
+    react-intl: ">=6.0.0"
   languageName: unknown
   linkType: soft
 

@@ -1,13 +1,8 @@
-import React from 'react';
-import { DropZone, type ComponentConfig } from '@measured/puck';
+import { type ComponentConfig } from '@measured/puck';
 import type { IntlShape } from 'react-intl';
+import { renderGrid, type GridProps } from '@commercetools-demo/puck-components';
 
-export interface GridProps {
-  columnCount?: 1 | 2 | 3 | 4 | 5 | 6;
-  rowCount?: 1 | 2 | 3 | 4 | 5 | 6;
-  gap?: string;
-  padding?: string;
-}
+export type { GridProps };
 
 const COUNT_OPTIONS = [1, 2, 3, 4, 5, 6].map((n) => ({
   value: n,
@@ -44,28 +39,5 @@ export const createGridConfig = (intl: IntlShape): ComponentConfig<GridProps> =>
     gap: '16px',
     padding: '16px',
   },
-  render: ({ columnCount = 2, rowCount = 1, gap = '16px', padding = '16px' }) => {
-    const cols = Math.max(1, columnCount);
-    const rows = Math.max(1, rowCount);
-    const cells = Array.from({ length: cols * rows }, (_, i) => i);
-    return (
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: `repeat(${cols}, 1fr)`,
-          gridTemplateRows: `repeat(${rows}, minmax(40px, auto))`,
-          gap,
-          padding,
-          boxSizing: 'border-box',
-        }}
-      >
-        {cells.map((i) => (
-          <div key={i}>
-            {/* Cells are indexed row-major: cell-0 = row 0 col 0, etc. */}
-            <DropZone zone={`cell-${i}`} />
-          </div>
-        ))}
-      </div>
-    );
-  },
+  render: renderGrid,
 });

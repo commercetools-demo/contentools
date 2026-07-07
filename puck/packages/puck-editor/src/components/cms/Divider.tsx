@@ -1,11 +1,8 @@
-import React from 'react';
 import { type ComponentConfig } from '@measured/puck';
 import type { IntlShape } from 'react-intl';
+import { renderDivider, type DividerProps } from '@commercetools-demo/puck-components';
 
-export interface DividerProps {
-  lineStyle: 'solid' | 'dashed' | 'dotted';
-  spacing: string;
-}
+export type { DividerProps };
 
 export const createDividerConfig = (
   intl: IntlShape
@@ -24,16 +21,5 @@ export const createDividerConfig = (
     spacing: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.divider.field.spacing' }) },
   },
   defaultProps: { lineStyle: 'solid', spacing: '24' },
-  render: ({ lineStyle, spacing }) => {
-    const s = parseInt(spacing, 10) || 24;
-    return (
-      <hr
-        style={{
-          border: 'none',
-          borderTop: `1px ${lineStyle} #ddd`,
-          margin: `${s / 2}px 0`,
-        }}
-      />
-    );
-  },
+  render: renderDivider,
 });

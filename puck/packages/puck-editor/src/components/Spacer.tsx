@@ -1,13 +1,9 @@
-import React from 'react';
-import type { ComponentConfig } from '@measured/puck';
+import { type ComponentConfig } from '@measured/puck';
 import type { IntlShape } from 'react-intl';
+import { renderSpacer, type SpacerProps } from '@commercetools-demo/puck-components';
 import { ColorPickerField } from '../fields/ColorPickerField';
 
-export interface SpacerProps {
-  height?: string;
-  showLine?: boolean;
-  lineColor?: string;
-}
+export type { SpacerProps };
 
 export const createSpacerConfig = (intl: IntlShape): ComponentConfig<SpacerProps> => ({
   label: intl.formatMessage({ id: 'Editor.cfg.spacer.label' }),
@@ -32,19 +28,5 @@ export const createSpacerConfig = (intl: IntlShape): ComponentConfig<SpacerProps
     showLine: false,
     lineColor: '#e0e0e0',
   },
-  render: ({ height = '48px', showLine = false, lineColor = '#e0e0e0' }) => (
-    <div
-      style={{
-        height,
-        display: 'flex',
-        alignItems: 'center',
-        padding: '0 16px',
-        boxSizing: 'border-box',
-      }}
-    >
-      {showLine && (
-        <hr style={{ width: '100%', border: 'none', borderTop: `1px solid ${lineColor}` }} />
-      )}
-    </div>
-  ),
+  render: renderSpacer,
 });

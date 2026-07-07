@@ -1,7 +1,7 @@
 import React, { useContext, type PropsWithChildren } from 'react';
 import { IntlContext, IntlProvider, ReactIntlErrorCode } from 'react-intl';
 import { intlCatalogs as versionHistoryCatalogs } from '@commercetools-demo/puck-version-history';
-import { catalogs as editorCatalogs } from './intl';
+import { intlCatalogs as editorCatalogs } from '@commercetools-demo/puck-components';
 
 /**
  * Ensures a react-intl context exists and is populated with this package's

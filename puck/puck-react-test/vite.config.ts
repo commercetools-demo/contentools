@@ -13,6 +13,7 @@ const pkg = (rel: string) => fileURLToPath(new URL(rel, import.meta.url));
  */
 const monorepoPackages = [
   '@commercetools-demo/puck-api',
+  '@commercetools-demo/puck-components',
   '@commercetools-demo/puck-editor',
   '@commercetools-demo/puck-version-history',
   '@commercetools-demo/puck-content-manager',
@@ -23,6 +24,7 @@ const monorepoPackages = [
 
 const sourceAlias: Record<string, string> = {
   '@commercetools-demo/puck-api':             pkg('../packages/puck-api/src/index.ts'),
+  '@commercetools-demo/puck-components':       pkg('../packages/puck-components/src/index.ts'),
   '@commercetools-demo/puck-editor':           pkg('../packages/puck-editor/src/index.ts'),
   '@commercetools-demo/puck-version-history':  pkg('../packages/puck-version-history/src/index.ts'),
   '@commercetools-demo/puck-content-manager':  pkg('../packages/puck-content-manager/src/index.ts'),
