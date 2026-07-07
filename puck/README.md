@@ -18,6 +18,7 @@ For the internal architecture and build workflow, see the package sources under
 | `@commercetools-demo/puck-theme-manager` | `ThemeManager` | Design-token editor |
 | `@commercetools-demo/puck-renderer` | `PuckRenderer`, `PuckDataRenderer` | Storefront rendering (data-fetching / pure) |
 | `@commercetools-demo/puck-editor` | `PuckEditor`, `createDefaultPuckConfig`, built-in component factories | Raw editor + Puck config for custom compositions |
+| [`@commercetools-demo/puck-components`](packages/puck-components/README.md) | `defaultRenderConfig`, render fns | Nimbus-free component render layer shared by the editor + renderer ([rich-text theming variables](packages/puck-components/README.md#theming-rich-text-puck-rich-text-content)) |
 | `@commercetools-demo/puck-api` | `PuckApiProvider`, hooks | Data layer (pages, contents, media, datasource, theme) |
 | `@commercetools-demo/puck-types` | types only | Shared TypeScript types |
 
@@ -189,6 +190,22 @@ import { PuckDataRenderer } from '@commercetools-demo/puck-renderer';
 
 `PuckRenderer`'s `baseURL`/`projectKey`/`businessUnitKey` are optional if a
 `PuckApiProvider` is already mounted higher in the tree.
+
+#### Theming rendered rich text
+
+Rich-text blocks render inside `.puck-rich-text-content` with a scoped
+stylesheet whose every property reads a CSS variable (default as fallback), so
+you can restyle headings, links, lists, code, etc. from your own CSS:
+
+```css
+.puck-rich-text-content {
+  --puck-rich-text-content--h1--font-size: 3rem;
+  --puck-rich-text-content--a--color: #e94560;
+}
+```
+
+See the full variable reference in
+[`@commercetools-demo/puck-components` README](packages/puck-components/README.md#theming-rich-text-puck-rich-text-content).
 
 ### Custom Puck config
 
