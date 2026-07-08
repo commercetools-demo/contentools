@@ -3,6 +3,7 @@ import type { IntlShape } from 'react-intl';
 import { renderCard, type CardProps } from '@commercetools-demo/puck-components';
 import { RichTextField } from '../fields/RichTextField';
 import { createFontSizeField } from '../fields/fontSizeField';
+import { createRadiusField } from '../fields/sizeFields';
 
 export type { CardProps };
 
@@ -29,7 +30,7 @@ export const createCardConfig = (intl: IntlShape): ComponentConfig<CardProps> =>
         { value: false, label: intl.formatMessage({ id: 'Editor.cfg.yesNo.no' }) },
       ],
     },
-    borderRadius: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.card.field.borderRadius' }) },
+    borderRadius: createRadiusField(intl.formatMessage({ id: 'Editor.cfg.card.field.borderRadius' })),
   },
   defaultProps: {
     title: 'Card Title',

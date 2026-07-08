@@ -2,6 +2,7 @@ import { type ComponentConfig } from '@measured/puck';
 import type { IntlShape } from 'react-intl';
 import { renderImage, type ImageProps } from '@commercetools-demo/puck-components';
 import { ImagePickerField } from '../fields/ImagePickerField';
+import { createWidthField, createImageHeightField, createRadiusField } from '../fields/sizeFields';
 
 export type { ImageProps };
 
@@ -21,8 +22,8 @@ export const createImageConfig = (intl: IntlShape): ComponentConfig<ImageProps> 
     },
     alt: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.image.field.alt' }) },
     caption: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.image.field.caption' }) },
-    width: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.image.field.width' }) },
-    height: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.image.field.height' }) },
+    width: createWidthField(intl.formatMessage({ id: 'Editor.cfg.image.field.width' })),
+    height: createImageHeightField(intl.formatMessage({ id: 'Editor.cfg.image.field.height' })),
     objectFit: {
       type: 'select',
       label: intl.formatMessage({ id: 'Editor.cfg.image.field.objectFit' }),
@@ -32,7 +33,7 @@ export const createImageConfig = (intl: IntlShape): ComponentConfig<ImageProps> 
         { value: 'fill', label: intl.formatMessage({ id: 'Editor.cfg.image.objectFit.fill' }) },
       ],
     },
-    borderRadius: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.image.field.borderRadius' }) },
+    borderRadius: createRadiusField(intl.formatMessage({ id: 'Editor.cfg.image.field.borderRadius' })),
     align: {
       type: 'select',
       label: intl.formatMessage({ id: 'Editor.cfg.image.field.align' }),

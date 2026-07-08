@@ -1,6 +1,7 @@
 import { type ComponentConfig } from '@measured/puck';
 import type { IntlShape } from 'react-intl';
 import { renderDivider, type DividerProps } from '@commercetools-demo/puck-components';
+import { createSpacingUnitlessField } from '../../fields/sizeFields';
 
 export type { DividerProps };
 
@@ -18,7 +19,7 @@ export const createDividerConfig = (
         { value: 'dotted', label: intl.formatMessage({ id: 'Editor.cfg.divider.lineStyle.dotted' }) },
       ],
     },
-    spacing: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.divider.field.spacing' }) },
+    spacing: createSpacingUnitlessField(intl.formatMessage({ id: 'Editor.cfg.divider.field.spacing' })),
   },
   defaultProps: { lineStyle: 'solid', spacing: '24' },
   render: renderDivider,

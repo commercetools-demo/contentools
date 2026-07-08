@@ -1,6 +1,7 @@
 import { type ComponentConfig } from '@measured/puck';
 import type { IntlShape } from 'react-intl';
 import { renderGrid, type GridProps } from '@commercetools-demo/puck-components';
+import { createSpacingField } from '../fields/sizeFields';
 
 export type { GridProps };
 
@@ -30,8 +31,8 @@ export const createGridConfig = (intl: IntlShape): ComponentConfig<GridProps> =>
       label: intl.formatMessage({ id: 'Editor.cfg.grid.field.rowCount' }),
       options: COUNT_OPTIONS,
     },
-    gap: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.grid.field.gap' }) },
-    padding: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.grid.field.padding' }) },
+    gap: createSpacingField(intl.formatMessage({ id: 'Editor.cfg.grid.field.gap' })),
+    padding: createSpacingField(intl.formatMessage({ id: 'Editor.cfg.grid.field.padding' })),
   },
   defaultProps: {
     columnCount: 2,

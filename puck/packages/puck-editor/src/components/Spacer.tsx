@@ -2,13 +2,14 @@ import { type ComponentConfig } from '@measured/puck';
 import type { IntlShape } from 'react-intl';
 import { renderSpacer, type SpacerProps } from '@commercetools-demo/puck-components';
 import { ColorPickerField } from '../fields/ColorPickerField';
+import { createSpacerHeightField } from '../fields/sizeFields';
 
 export type { SpacerProps };
 
 export const createSpacerConfig = (intl: IntlShape): ComponentConfig<SpacerProps> => ({
   label: intl.formatMessage({ id: 'Editor.cfg.spacer.label' }),
   fields: {
-    height: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.spacer.field.height' }) },
+    height: createSpacerHeightField(intl.formatMessage({ id: 'Editor.cfg.spacer.field.height' })),
     showLine: {
       type: 'radio',
       label: intl.formatMessage({ id: 'Editor.cfg.spacer.field.showLine' }),

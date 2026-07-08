@@ -2,6 +2,7 @@ import type { ComponentConfig } from '@measured/puck';
 import type { IntlShape } from 'react-intl';
 import { renderRichText, type RichTextProps } from '@commercetools-demo/puck-components';
 import { RichTextField } from '../fields/RichTextField';
+import { createContentWidthField, createSpacingField } from '../fields/sizeFields';
 
 export type { RichTextProps };
 
@@ -24,8 +25,8 @@ export const createRichTextConfig = (intl: IntlShape): ComponentConfig<RichTextP
         { value: 'right', label: intl.formatMessage({ id: 'Editor.cfg.align.right' }) },
       ],
     },
-    maxWidth: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.richText.field.maxWidth' }) },
-    padding: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.richText.field.padding' }) },
+    maxWidth: createContentWidthField(intl.formatMessage({ id: 'Editor.cfg.richText.field.maxWidth' })),
+    padding: createSpacingField(intl.formatMessage({ id: 'Editor.cfg.richText.field.padding' })),
   },
   defaultProps: {
     content: '<p>Add your content here…</p>',

@@ -2,6 +2,7 @@ import type { ComponentConfig } from '@measured/puck';
 import type { IntlShape } from 'react-intl';
 import { renderHero, type HeroProps } from '@commercetools-demo/puck-components';
 import { createFontSizeField } from '../fields/fontSizeField';
+import { createHeroHeightField } from '../fields/sizeFields';
 
 export type { HeroProps };
 
@@ -23,7 +24,7 @@ export const createHeroConfig = (intl: IntlShape): ComponentConfig<HeroProps> =>
         { value: 'left-aligned', label: intl.formatMessage({ id: 'Editor.cfg.hero.layout.leftAligned' }) },
       ],
     },
-    minHeight: { type: 'text', label: intl.formatMessage({ id: 'Editor.cfg.hero.field.minHeight' }) },
+    minHeight: createHeroHeightField(intl.formatMessage({ id: 'Editor.cfg.hero.field.minHeight' })),
   },
   defaultProps: {
     heading: 'Welcome',
