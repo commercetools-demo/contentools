@@ -1,6 +1,6 @@
 {
   "name": "@commercetools-demo/puck-editor",
-  "version": "0.8.1",
+  "version": "0.8.3",
   "description": "Puck editor wrapper with built-in components and CMS API integration",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

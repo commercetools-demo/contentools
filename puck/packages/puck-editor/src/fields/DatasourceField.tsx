@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useIntl, FormattedMessage } from 'react-intl';
 import { Button, FormField, Icon, Select, Stack, Text, TextInput } from '@commercetools/nimbus';
-import { Close } from '@commercetools/nimbus-icons';
+import { Close, DragIndicator } from '@commercetools/nimbus-icons';
 import { useProductSearch } from '@commercetools-demo/puck-api';
 // Datasource value types live in the Nimbus-free render package; re-export them
 // here so existing imports of `../fields/DatasourceField` keep working.
@@ -54,24 +54,37 @@ const ProductSearchPicker: React.FC<ProductSearchPickerProps> = ({
 }) => {
   const intl = useIntl();
   const [query, setQuery] = useState('');
+  // Whether the results list is shown. Typing (a query change) opens it;
+  // clicking inside the input dismisses it without clearing the text.
+  const [open, setOpen] = useState(false);
   const { results, loading, error } = useProductSearch(query);
 
   return (
     <Stack direction="column" gap="100">
-      <FormField.Root>
-        <FormField.Label>
-          <FormattedMessage id="Editor.searchProducts" />
-        </FormField.Label>
-        <FormField.Input>
-          <TextInput
-            placeholder={intl.formatMessage({ id: 'Editor.searchProductsPlaceholder' })}
-            value={query}
-            onChange={(value) => setQuery(value)}
-          />
-        </FormField.Input>
-      </FormField.Root>
+      {/* Mousedown inside the field dismisses an open results list. A plain
+          wrapper is used (rather than TextInput's own handlers) because Nimbus'
+          react-aria input doesn't forward raw DOM click events; the click still
+          bubbles to this div. Clicks on a result sit in a sibling node, so they
+          aren't caught here and selection keeps working. */}
+      <div onMouseDown={() => setOpen(false)}>
+        <FormField.Root>
+          <FormField.Label>
+            <FormattedMessage id="Editor.searchProducts" />
+          </FormField.Label>
+          <FormField.Input>
+            <TextInput
+              placeholder={intl.formatMessage({ id: 'Editor.searchProductsPlaceholder' })}
+              value={query}
+              onChange={(value) => {
+                setQuery(value);
+                setOpen(true);
+              }}
+            />
+          </FormField.Input>
+        </FormField.Root>
+      </div>
 
-      {query.trim() !== '' && (
+      {open && query.trim() !== '' && (
         <div
           role="listbox"
           aria-label={intl.formatMessage({ id: 'Editor.productSearchResults' })}
@@ -194,6 +207,27 @@ export const DatasourceField: React.FC<DatasourceFieldProps> = ({
     onChange({ ...current, skus: [...existing, sku] });
   };
 
+  // Drag-and-drop reordering of the selected products. The stored `skus` array
+  // *is* the display order (the renderer keeps it), so reordering is just moving
+  // an item in that array. Only meaningful for the multi-product type.
+  const reorderable =
+    current.type === 'products-by-sku' && selectedSkus.length > 1;
+  const [dragIndex, setDragIndex] = useState<number | null>(null);
+  const [overIndex, setOverIndex] = useState<number | null>(null);
+
+  const moveSku = (from: number, to: number) => {
+    if (from === to || from < 0 || to < 0) return;
+    const next = [...selectedSkus];
+    const [moved] = next.splice(from, 1);
+    next.splice(to, 0, moved);
+    onChange({ ...current, skus: next });
+  };
+
+  const resetDrag = () => {
+    setDragIndex(null);
+    setOverIndex(null);
+  };
+
   return (
     <Stack direction="column" gap="200">
       {!fixedType && (
@@ -235,36 +269,96 @@ export const DatasourceField: React.FC<DatasourceFieldProps> = ({
             ? intl.formatMessage({ id: 'Editor.selectedProduct' })
             : intl.formatMessage({ id: 'Editor.selectedProducts' })}
         </Text>
+        {reorderable && (
+          <Text fontSize="xs" color="neutral.11">
+            <FormattedMessage id="Editor.dragToReorder" />
+          </Text>
+        )}
         {selectedSkus.length === 0 ? (
           <Text fontSize="sm" color="neutral.11">
             <FormattedMessage id="Editor.noProductSelectedSearch" />
           </Text>
         ) : (
           <Stack direction="column" gap="100">
-            {selectedSkus.map((sku) => (
-              <Stack key={sku} direction="row" gap="100" alignItems="center" justifyContent="space-between">
-                <span
+            {selectedSkus.map((sku, i) => {
+              const isDragging = dragIndex === i;
+              const isDropTarget =
+                reorderable && overIndex === i && dragIndex !== null && dragIndex !== i;
+              return (
+                <div
+                  key={sku}
+                  draggable={reorderable}
+                  onDragStart={reorderable ? () => setDragIndex(i) : undefined}
+                  onDragOver={
+                    reorderable
+                      ? (e) => {
+                          // Required so the row is a valid drop target.
+                          e.preventDefault();
+                          if (overIndex !== i) setOverIndex(i);
+                        }
+                      : undefined
+                  }
+                  onDrop={
+                    reorderable
+                      ? (e) => {
+                          e.preventDefault();
+                          if (dragIndex !== null) moveSku(dragIndex, i);
+                          resetDrag();
+                        }
+                      : undefined
+                  }
+                  onDragEnd={reorderable ? resetDrag : undefined}
                   style={{
-                    flex: 1,
-                    minWidth: 0,
-                    fontSize: 13,
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 8,
+                    padding: '4px 6px',
+                    borderRadius: 4,
+                    background: isDropTarget ? 'var(--color-primary-95, #e6eefb)' : 'transparent',
+                    boxShadow: isDropTarget
+                      ? 'inset 0 0 0 2px var(--color-primary, #1a1a2e)'
+                      : 'none',
+                    opacity: isDragging ? 0.5 : 1,
                   }}
                 >
-                  {intl.formatMessage({ id: 'Editor.skuLabel' }, { sku })}
-                </span>
-                <Button
-                  variant="ghost"
-                  colorPalette="critical"
-                  size="xs"
-                  onPress={() => removeSkuValue(sku)}
-                >
-                  <Icon as={Close} /> <FormattedMessage id="Editor.remove" />
-                </Button>
-              </Stack>
-            ))}
+                  {reorderable && (
+                    <span
+                      aria-hidden="true"
+                      title={intl.formatMessage({ id: 'Editor.dragToReorder' })}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        cursor: 'grab',
+                        color: 'var(--color-neutral-40, #666)',
+                        flexShrink: 0,
+                      }}
+                    >
+                      <Icon as={DragIndicator} />
+                    </span>
+                  )}
+                  <span
+                    style={{
+                      flex: 1,
+                      minWidth: 0,
+                      fontSize: 13,
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    {intl.formatMessage({ id: 'Editor.skuLabel' }, { sku })}
+                  </span>
+                  <Button
+                    variant="ghost"
+                    colorPalette="critical"
+                    size="xs"
+                    onPress={() => removeSkuValue(sku)}
+                  >
+                    <Icon as={Close} /> <FormattedMessage id="Editor.remove" />
+                  </Button>
+                </div>
+              );
+            })}
           </Stack>
         )}
       </Stack>

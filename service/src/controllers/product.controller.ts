@@ -1,4 +1,7 @@
-import { LocalizedString } from '@commercetools/platform-sdk';
+import {
+  LocalizedString,
+  _SearchQueryExpression,
+} from '@commercetools/platform-sdk';
 import { searchProducts } from '../services/products';
 import { logger } from '../utils/logger.utils';
 import CustomError from '../errors/custom.error';
@@ -36,8 +39,42 @@ export const searchProductsController = async (
   const term = (text ?? '').trim();
   if (!term) return [];
 
+  // "Contains" match: wrap the term in wildcards so partial input matches, and
+  // drop any `*`/`?` the user typed so they can't inject their own wildcards.
+  const wildcardValue = `*${term.replace(/[*?]/g, '')}*`;
+
+  // Match on name OR description (both localized text — need a `language`) OR
+  // the variant SKU (a keyword field — not localized, so no `language`). Built
+  // as a typed array because `SearchOrExpression.or` is `SearchQuery[]` (an
+  // empty base type), which would reject inline expression literals.
+  const clauses: _SearchQueryExpression[] = [
+    {
+      wildcard: {
+        field: 'name',
+        language: locale,
+        value: wildcardValue,
+        caseInsensitive: true,
+      },
+    },
+    {
+      wildcard: {
+        field: 'description',
+        language: locale,
+        value: wildcardValue,
+        caseInsensitive: true,
+      },
+    },
+    {
+      wildcard: {
+        field: 'variants.sku',
+        value: wildcardValue,
+        caseInsensitive: true,
+      },
+    },
+  ];
+
   const response = await searchProducts(req, {
-    query: { fullText: { field: 'name', language: locale, value: term } },
+    query: { or: clauses },
     limit,
     productProjectionParameters: {},
   });

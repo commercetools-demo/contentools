@@ -53,6 +53,7 @@
   "Editor.selectedProducts": "Selected products",
   "Editor.noProductSelectedSearch": "No product selected — search above to add one.",
   "Editor.remove": "Remove",
+  "Editor.dragToReorder": "Drag to reorder",
   "Editor.richTextPlaceholder": "Start typing…",
   "Editor.uploadAFile": "Upload a file",
   "Editor.close": "Close",
