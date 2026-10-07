@@ -6,8 +6,13 @@ on:
 
 jobs:
   deploy:
+    name: Deploy (${{ matrix.region }})
     runs-on: ubuntu-latest
-    environment: 
+    strategy:
+      fail-fast: false
+      matrix:
+        region: [ us-central1, europe-west1, asia-southeast1 ]
+    environment:
       name: demo
     
     steps:
@@ -67,7 +72,7 @@ jobs:
         fi
         gcloud run deploy multitenant-contentools \
           --source service/ \
-          --region us-central1 \
+          --region "${{ matrix.region }}" \
           --allow-unauthenticated \
           --memory 512Mi \
           --min-instances 1 \
