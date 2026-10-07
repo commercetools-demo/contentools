@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { useApplicationContext } from '@commercetools-frontend/application-shell-connectors';
-import Spacings from '@commercetools-uikit/spacings';
-import Text from '@commercetools-uikit/text';
-import PrimaryButton from '@commercetools-uikit/primary-button';
-import SecondaryButton from '@commercetools-uikit/secondary-button';
-import Card from '@commercetools-uikit/card';
+import {
+  Button,
+  Card,
+  Heading,
+  LoadingSpinner,
+  Stack,
+  Text,
+} from '@commercetools/nimbus';
 import { useCreateApiClient } from '../hooks/use-create-api-client';
-import LoadingSpinner from '@commercetools-uikit/loading-spinner';
 import { useContentoolsApi } from '../hooks/use-contentools-api';
 import { useAuth } from '../contexts/auth';
 import { useSharedCredentialsSetter } from '../hooks/use-shared-custom-object-storage';
@@ -92,90 +94,100 @@ const ConnectProject = () => {
 
   return (
     <StyledDiv>
-      <Spacings.Stack scale="xl">
-        <Text.Headline as="h1">Configuration Wizard</Text.Headline>
-        <Text.Body>Connect your project to Contentools</Text.Body>
+      <Stack direction="column" gap="600">
+        <Heading as="h1" size="lg">
+          Configuration Wizard
+        </Heading>
+        <Text>Connect your project to Contentools</Text>
 
-        <Card theme="light" type="raised">
-          <Spacings.Stack scale="m">
-            <Text.Subheadline as="h4">
-              Create an API client for connection
-            </Text.Subheadline>
+        <Card.Root variant="outlined-elevated">
+          <Card.Body>
+            <Stack direction="column" gap="400">
+              <Heading as="h4" size="xs" fontWeight="medium">
+                Create an API client for connection
+              </Heading>
 
-            {!apiClientResult ? (
-              <Spacings.Stack scale="s">
-                <Text.Body>
-                  Create a new API client to use for connecting your project.
-                </Text.Body>
-                <Spacings.Inline scale="s" justifyContent="flex-start">
-                  <SecondaryButton
-                    label="Create API Client"
-                    onClick={handleCreateApiClient}
-                    iconRight={
-                      creatingApiClient ? <LoadingSpinner /> : undefined
-                    }
-                    isDisabled={creatingApiClient}
-                  />
-                </Spacings.Inline>
-              </Spacings.Stack>
-            ) : (
-              <Spacings.Stack scale="s">
-                <Text.Body tone="positive">
-                  API Client created successfully!
-                </Text.Body>
-                <div
-                  style={{
-                    padding: '12px',
-                    backgroundColor: '#f5f5f5',
-                    borderRadius: '4px',
-                    fontFamily: 'monospace',
-                    fontSize: '13px',
-                  }}
-                >
-                  <div style={{ marginBottom: '8px' }}>
-                    <strong>Client ID:</strong> {apiClientResult.clientId}
+              {!apiClientResult ? (
+                <Stack direction="column" gap="300">
+                  <Text>
+                    Create a new API client to use for connecting your project.
+                  </Text>
+                  <Stack direction="row" gap="300" justifyContent="flex-start">
+                    <Button
+                      variant="outline"
+                      colorPalette="primary"
+                      onPress={handleCreateApiClient}
+                      isDisabled={creatingApiClient}
+                    >
+                      Create API Client
+                      {creatingApiClient && <LoadingSpinner size="xs" />}
+                    </Button>
+                  </Stack>
+                </Stack>
+              ) : (
+                <Stack direction="column" gap="300">
+                  <Text color="positive.11">
+                    API Client created successfully!
+                  </Text>
+                  <div
+                    style={{
+                      padding: '12px',
+                      backgroundColor: '#f5f5f5',
+                      borderRadius: '4px',
+                      fontFamily: 'monospace',
+                      fontSize: '13px',
+                    }}
+                  >
+                    <div style={{ marginBottom: '8px' }}>
+                      <strong>Client ID:</strong> {apiClientResult.clientId}
+                    </div>
+                    <div style={{ marginBottom: '8px' }}>
+                      <strong>Client Secret:</strong> ••••••••••••••••
+                    </div>
+                    <div style={{ marginBottom: '8px' }}>
+                      <strong>Name:</strong> {apiClientResult.name}
+                    </div>
+                    <div>
+                      <strong>Scope:</strong> {apiClientResult.scope}
+                    </div>
                   </div>
-                  <div style={{ marginBottom: '8px' }}>
-                    <strong>Client Secret:</strong> ••••••••••••••••
-                  </div>
-                  <div style={{ marginBottom: '8px' }}>
-                    <strong>Name:</strong> {apiClientResult.name}
-                  </div>
-                  <div>
-                    <strong>Scope:</strong> {apiClientResult.scope}
-                  </div>
-                </div>
-              </Spacings.Stack>
-            )}
+                </Stack>
+              )}
 
-            {apiClientError && (
-              <Text.Body tone="critical">{apiClientError}</Text.Body>
-            )}
-          </Spacings.Stack>
-        </Card>
+              {apiClientError && (
+                <Text color="critical.11">{apiClientError}</Text>
+              )}
+            </Stack>
+          </Card.Body>
+        </Card.Root>
 
         {error && (
-          <Card theme="light" type="flat">
-            <Text.Body tone="critical">{error}</Text.Body>
-          </Card>
+          <Card.Root variant="outlined">
+            <Card.Body>
+              <Text color="critical.11">{error}</Text>
+            </Card.Body>
+          </Card.Root>
         )}
 
         {success && (
-          <Card theme="light" type="flat">
-            <Text.Body tone="positive">
-              Successfully connected project!
-            </Text.Body>
-          </Card>
+          <Card.Root variant="outlined">
+            <Card.Body>
+              <Text color="positive.11">Successfully connected project!</Text>
+            </Card.Body>
+          </Card.Root>
         )}
-        <Spacings.Inline scale="m">
-          <PrimaryButton
-            label="Connect"
-            onClick={handleConnect}
-            iconRight={loading ? <LoadingSpinner /> : undefined}
+        <Stack direction="row" gap="400">
+          <Button
+            variant="solid"
+            colorPalette="primary"
+            onPress={handleConnect}
             isDisabled={loading || success || !apiClientResult}
-          />
-        </Spacings.Inline>
-      </Spacings.Stack>
+          >
+            Connect
+            {loading && <LoadingSpinner size="xs" />}
+          </Button>
+        </Stack>
+      </Stack>
     </StyledDiv>
   );
 };

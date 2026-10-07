@@ -42,7 +42,7 @@ const config = {
         '*.asia-southeast1.run.app',
       ],
       'style-src': ['cdn.jsdelivr.net', 'rsms.me'],
-      'font-src': ['cdn.jsdelivr.net'],
+      'font-src': ['cdn.jsdelivr.net', 'rsms.me'],
       'frame-src': ['*.ct-poc.net'],
     },
   },
