@@ -21,7 +21,15 @@ const config = {
   },
   headers: {
     csp: {
-      'connect-src': ['*.commercetools.app', '*.commercetools.com', 'localhost:8080', "'unsafe-eval'", "*.us-central1.run.app"],
+      'connect-src': [
+        '*.commercetools.app',
+        '*.commercetools.com',
+        'localhost:8080',
+        "'unsafe-eval'",
+        '*.us-central1.run.app',
+        '*.europe-west1.run.app',
+        '*.asia-southeast1.run.app',
+      ],
       'script-src': [
         '*.commercetools.app',
         '*.commercetools.com',
@@ -29,7 +37,9 @@ const config = {
         'cdn.jsdelivr.net',
         'blob:',
         "'unsafe-eval'",
-        "*.us-central1.run.app",
+        '*.us-central1.run.app',
+        '*.europe-west1.run.app',
+        '*.asia-southeast1.run.app',
       ],
       'style-src': ['cdn.jsdelivr.net', 'rsms.me'],
       'font-src': ['cdn.jsdelivr.net'],
@@ -43,16 +53,20 @@ const config = {
       'view_business_units',
       'view_project_settings',
       'view_stores',
-      'view_api_clients'
+      'view_api_clients',
     ],
-    manage: ['manage_products', 'manage_key_value_documents', 'manage_api_clients'],
+    manage: [
+      'manage_products',
+      'manage_key_value_documents',
+      'manage_api_clients',
+    ],
   },
   icon: '${path:@tabler/icons/filled/square-letter-c.svg}',
   mainMenuLink: {
     defaultLabel: 'Contentools',
     labelAllLocales: [],
     permissions: [PERMISSIONS.View],
-  }
+  },
 };
 
 export default config;
