@@ -8,8 +8,7 @@ import {
   IconLayoutSidebarRightCollapse,
 } from '@tabler/icons-react';
 import styles from './admin-layout.module.css';
-import Spacings from '@commercetools-uikit/spacings';
-import SelectField from '@commercetools-uikit/select-field';
+import { Select, Stack, Text } from '@commercetools/nimbus';
 import { useBusinessUnit } from '../../contexts/business-unit';
 
 type NavItem = {
@@ -72,17 +71,24 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
               )}
             </div>
             {!collapsed && showDropdown && !isLoading && (
-              <Spacings.Stack scale="m">
-                <SelectField
-                  title="Business unit"
-                  value={selectedBusinessUnitKey}
-                  options={selectOptions}
-                  onChange={(event) => {
-                    const key = event.target.value as string;
-                    if (key) setSelectedBusinessUnitKey(key);
+              <Stack direction="column" gap="200">
+                <Text fontSize="sm" fontWeight="medium">
+                  Business unit
+                </Text>
+                <Select.Root
+                  aria-label="Business unit"
+                  selectedKey={selectedBusinessUnitKey}
+                  onSelectionChange={(key) => {
+                    if (key) setSelectedBusinessUnitKey(String(key));
                   }}
-                />
-              </Spacings.Stack>
+                >
+                  <Select.Options items={selectOptions}>
+                    {(item) => (
+                      <Select.Option id={item.value}>{item.label}</Select.Option>
+                    )}
+                  </Select.Options>
+                </Select.Root>
+              </Stack>
             )}
           </div>
 
