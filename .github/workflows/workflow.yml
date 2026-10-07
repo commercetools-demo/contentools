@@ -11,7 +11,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        region: [ us-central1, europe-west1, asia-southeast1 ]
+        region: [ us-central1, europe-west1 ]
     environment:
       name: demo
     
@@ -75,7 +75,7 @@ jobs:
           --region "${{ matrix.region }}" \
           --allow-unauthenticated \
           --memory 512Mi \
-          --min-instances 1 \
+          --min-instances 0 \
           --timeout 300 \
           --clear-base-image \
           "${ENV_ARGS[@]}"
