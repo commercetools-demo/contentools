@@ -2,8 +2,7 @@ import React, { createContext, ReactNode, useContext, useEffect } from 'react';
 import { useAuth } from './auth';
 import { useSharedCredentialsFetcher } from '../hooks/use-shared-custom-object-storage';
 import ConnectProject from '../components/connect-project';
-import LoadingSpinner from '@commercetools-uikit/loading-spinner';
-import Spacings from '@commercetools-uikit/spacings';
+import { LoadingSpinner, Stack } from '@commercetools/nimbus';
 
 interface ConnectProviderProps {
   children: ReactNode;
@@ -48,9 +47,9 @@ export const ConnectProvider: React.FC<ConnectProviderProps> = ({
 
   if (credentialsLoading || authLoading || isRefreshing) {
     return (
-      <Spacings.Stack alignItems="center" scale="xl">
-        <LoadingSpinner scale="l" />
-      </Spacings.Stack>
+      <Stack direction="column" alignItems="center" gap="600">
+        <LoadingSpinner size="lg" />
+      </Stack>
     );
   }
 

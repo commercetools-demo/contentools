@@ -1,4 +1,5 @@
 import { lazy } from 'react';
+import { NimbusProvider } from '@commercetools/nimbus';
 import {
   ApplicationShell,
   setupGlobalErrorListener,
@@ -28,13 +29,16 @@ const EntryPoint = () => (
     environment={window.app}
     applicationMessages={loadMessages}
   >
-    <AuthProvider>
-      <ConnectProvider>
-        <BusinessUnitProvider>
-          <AsyncApplicationRoutes />
-        </BusinessUnitProvider>
-      </ConnectProvider>
-    </AuthProvider>
+    {/* loadFonts={false}: the Merchant Center app-kit already loads Inter. */}
+    <NimbusProvider loadFonts={false}>
+      <AuthProvider>
+        <ConnectProvider>
+          <BusinessUnitProvider>
+            <AsyncApplicationRoutes />
+          </BusinessUnitProvider>
+        </ConnectProvider>
+      </AuthProvider>
+    </NimbusProvider>
   </ApplicationShell>
 );
 EntryPoint.displayName = 'EntryPoint';

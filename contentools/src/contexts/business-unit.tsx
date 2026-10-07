@@ -5,15 +5,9 @@ import React, {
   useState,
   useContext,
 } from 'react';
-import SelectField from '@commercetools-uikit/select-field';
-import Spacings from '@commercetools-uikit/spacings';
-import LoadingSpinner from '@commercetools-uikit/loading-spinner';
 import { useBusinessUnits } from '../hooks/use-business-units';
 
 const DEFAULT_OPTION = { key: 'default', label: 'Default' };
-
-import styled from 'styled-components';
-
 
 export type BusinessUnitOption = {
   key: string;
