@@ -15,6 +15,10 @@ const regionToCloudIdentifier = (region?: string) => {
     case 'aws-us':
       return 'us-east-2.aws';
     default:
+      // Already a cloud identifier, e.g. "europe-west1.gcp" or "eu-central-1.aws"
+      if (/^[a-z0-9-]+\.(gcp|aws)$/.test(region)) {
+        return region;
+      }
       return 'us-central1.gcp';
   }
 };
